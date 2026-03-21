@@ -110,3 +110,25 @@ api.registerContextEngine(id, factory)             // 上下文引擎
 - **#47472 是最好的切入点**: 需要理解 hook runner 的 `hasHooks` 检查逻辑，bug 可能在 `deliver-*.js` 的 `getGlobalHookRunner()` 时机
 - 修这个 bug 能展示我对插件系统的深度理解
 - **#40297 直接解决我的 nudge 需求**: 如果 `runHeartbeatOnce` 暴露出来，nudge 可以用它而不是 `enqueueSystemEvent`
+
+## 深入：#47472 根因调查（message_sent hook 不触发）
+
+### 初始假设（issue 描述）
+- api.on() 注册到 registry.hooks 而不是 registry.typedHooks → **错误**
+- 实际上 api.on() 确实注册到 registry.typedHooks
+
+### 代码路径跟踪
+1. Discord reply: `dispatch-from-config.ts → routeReply → deliverOutboundPayloads → deliver.ts`
+2. deliver.ts 里有 `createMessageSentEmitter` → `hookRunner.runMessageSent()` → 应该触发
+3. Discord outbound-adapter.ts 实现 `ChannelOutboundAdapter` → deliver.ts 通过它调用 send
+
+### 可能的真正根因
+- PR #40184 (2026-03-09): 修了 typed hook runner 的 singleton 问题（module-local state → globalThis + Symbol.for）
+- issue 在 2026-03-15 创建 → **可能已经部分修复但还有残留**
+- bundler 打包成多个 chunk 时，不同 chunk 看到不同的 registry → hasHooks 返回 false
+- 或者 extension 插件的加载时序跟 global hook runner 的初始化时序有冲突
+
+### 结论
+- 这个 bug 不是简单的"缺少 hook 调用"
+- 需要本地复现才能确认当前版本是否还存在
+- 修复可能涉及 singleton 管理或 bundle 配置
