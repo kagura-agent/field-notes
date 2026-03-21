@@ -63,3 +63,26 @@ api.registerContextEngine(id, factory)             // 上下文引擎
 - [ ] auto-reply 和 agents 模块的边界在哪里？为什么分开？
 - [ ] context-engine 只有 432 行，但有 slot 系统——这意味着核心逻辑在哪？
 - [ ] memory 模块 11k 行，这和 memex 有什么关系？
+
+## 深入：auto-reply 模块（消息处理核心）
+
+### 文件结构
+- `dispatch.ts` → `dispatch-from-config.ts` → 路由入口
+- `agent-runner.ts` (724行) → LLM 调用入口（`runReplyAgent`）
+- `agent-runner-memory.ts` (566行) → memoryFlush 触发逻辑
+- `memory-flush.ts` (228行) → memoryFlush 配置和 prompt 构建
+- `commands-*.ts` — 各种 slash 命令实现
+- `directive-handling.*.ts` — 消息指令解析（queue、model picker 等）
+
+### memoryFlush 实现细节
+- `DEFAULT_MEMORY_FLUSH_SOFT_TOKENS = 4000` — 剩余 4000 token 时触发
+- 默认 prompt: "Pre-compaction memory flush. Store durable memories..."
+- 硬编码安全规则：MEMORY.md/SOUL.md 等标为 read-only
+- 已有 `MEMORY_FLUSH_APPEND_ONLY_HINT` 防止覆写
+- 自定义 prompt 通过 `agents.defaults.memoryFlush.systemPrompt` 配置
+
+### Channel 迁移进度
+- src/ 里仍有: discord(12k行), telegram, whatsapp, signal, slack, imessage, line — **全部还在**
+- extensions/ 里有薄 wrapper: discord(4文件), feishu, imessage, line, 等
+- scoootscooob 的 PR 只做了第一步（创建 extension 入口 + shim re-exports）
+- 完整迁移（把实现代码移到 extensions/）还没有人做
