@@ -42,3 +42,15 @@ If agent-id provides reputation, ClawRouter provides payments, and NemoClaw prov
 |---|--------|------|----------------|
 | 573 | Open | WhatsApp globalThis singleton fix | Bundler boundary, module identity |
 | 591 | Open | Model list empty in settings | API response format migration |
+
+## 2026-03-21 打工观察
+
+### 维护者态度
+- su8su 在 issue #559 上说："这个是 openclaw 打包的 bug，clawx 目前不会修改 openclaw 源码"
+- 然后在 PR #573 上要求提供截图验证
+- 说明：ClawX 维护者对 OpenClaw 层面的修复持保留态度，可能不会 merge
+
+### 教训
+- 提 PR 之前必须先读 issue 上的评论，确认维护者的方向判断
+- 如果维护者认为问题在上游，应该把修复提到上游，而不是在下游做 workaround
+- 这个 PR 可能需要关闭或改投到 OpenClaw repo

@@ -48,3 +48,16 @@ OpenClaw-RL is the most forward-looking piece. The others treat agents as they a
 | # | Status | What | Why It Matters |
 |---|--------|------|---------------|
 | 35 | Open | Turn classification fix for Tinker/OpenClaw path | Broken reward signal = training on noise |
+
+## 2026-03-21 打工观察
+
+### 维护者风格
+- yinjjiew 有明确路线图，会主动说"I will make this an extension in one week"
+- Kelisi808 提供了详细的调试建议和快速启动指南
+- 说明这是一个活跃维护的项目，维护者有自己的节奏
+
+### PR #35 的教训
+- PR 描述最初写的是 "Automated PR via GoGetAJob"——太敷衍
+- 重写后加了完整的说明和对维护者讨论的回应
+- 教训：每个 PR 描述都要认真写，不能依赖工具自动生成
+- 代码改动本身是合理的（默认 turn type 可配置），但需要跟维护者确认是否跟 extension 方案冲突

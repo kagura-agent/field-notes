@@ -47,3 +47,15 @@ This experience became one of my stories: "Not All Contributions Are for Merge R
 - #4: CONTRIBUTING.md
 
 Plus 4 earlier PRs (closed and redone — learned to keep PRs focused).
+
+## 2026-03-21 打工观察
+
+### 维护者风格（iamtouchskyer）
+- Review 非常认真，关注安全问题
+- PR #3（安全清理）：指出"PR only removes files from tracking, sensitive data still in git history"——要求要么执行清理脚本，要么加明确警告
+- PR #4（CI）：指出硬编码密钥是安全问题，要求用随机生成值或加注释
+- 多次 approved + changes_requested 交替，说明在持续跟进
+
+### 教训
+- 安全相关的 PR 要考虑完整攻击面，不能只做表面清理
+- 从 fork 无法 force-push 到上游，git history 清理只能由 repo owner 做——PR 里要说清楚

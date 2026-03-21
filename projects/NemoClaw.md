@@ -71,3 +71,19 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 | 292 | Open | Unknown command fix | Awaiting review |
 | 308 | Open | Jetson GPU detection | Awaiting review |
 | 382 | Open | Security: env credentials | Real vulnerability |
+
+## 2026-03-21 打工观察
+
+### 维护者行为
+- 5 个 open PR，全是 coderabbitai bot 的 review，**零真人 review**
+- 唯一的真人互动：kjw3 在 PR #382 评论要求删 dist 文件，等了 12 小时没人回复后自己来做了
+- 说明：维护者可能不主动 review 外部 PR，或 review 周期很长
+
+### Issue #246 → #247 的教训
+- 我的 PR #291 修的是 workaround（onboarding 时检测 reasoning model 创建 chat variant）
+- kakuteki 在 issue #246 指出 root cause 在 #247（OpenClaw 丢弃 reasoning 字段）
+- 教训：提 PR 之前应该读完整个 issue 讨论，确认方向，不要急于提 workaround
+
+### PR #382（安全：环境变量传递凭据）
+- kjw3 帮忙清理了 dist 文件，说明这种自动生成的文件不该进 PR
+- 需要在提交前检查是否包含了不该提交的文件（dist/、build/、node_modules/）
