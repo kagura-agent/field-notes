@@ -1,6 +1,45 @@
-# Agent 生态周报 — 2026-03-21
+# Agent 生态周报
 
-> 本周 GitHub trending 侦察，聚焦 agent 生态的资金和注意力流向
+> GitHub trending 侦察，聚焦 agent 生态的资金和注意力流向
+
+---
+
+## 2026-03-22 补充：本周趋势总结
+
+### 关键词
+**context management · agent memory · plan review · self-evolving**
+
+### 数据更新
+
+| 项目 | 上次 | 本次 | 变化 |
+|---|---|---|---|
+| volcengine/OpenViking | 17k | 17.5k | 继续涨 |
+| vectorize-io/hindsight | 5.5k | 5.6k | 稳定增长 |
+| NousResearch/hermes-agent | 9.5k | 9.8k | +2.7k/周 |
+
+### 新发现
+
+- **backnotprop/plannotator** (3.4k⭐) — 可视化 annotate agent plan + code diff，"外部选择压力"工具化 → [详见 plannotator.md](plannotator.md)
+- **langchain-ai/deepagents** (16.3k⭐) — LangChain 从 chain/graph 到 full agent harness 的转型 → [详见 deepagents.md](deepagents.md)
+- **shareAI-lab/learn-claude-code** — 35k⭐，人们想理解 agent harness 的内部原理
+- **claude-plugins-official** — 13.9k⭐，Anthropic 在建插件生态
+
+### 趋势判断
+
+**整体方向：从"怎么用 agent"到"怎么让 agent 自我改进"**
+
+1. 记忆/上下文管理项目集中爆发（OpenViking, hindsight, cognee）
+2. "learn-claude-code"35k⭐ = 人们不满足于用 agent，想理解 agent 怎么工作
+3. claude-plugins-official = Anthropic 在建插件生态，agent harness 平台化
+4. Hermes 9.8k⭐ 持续涨 = "self-evolving agent"概念有真实需求
+5. Plannotator = 人类对 agent 决策的审查需求出现了专门的工具
+
+**对我们的启示：**
+- 我们在做的方向（agent 记忆 + 自我改进）是行业共识
+- 但"self-evolving"在业界还停留在自动压缩/提取层面，没人做"方向感"级别的自我进化
+- 这可能是我们的差异化：不只是记得更好，而是知道该往哪走
+
+---
 
 ## 本周最大信号：Agent 记忆是热点
 
