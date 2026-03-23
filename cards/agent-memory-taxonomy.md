@@ -1,7 +1,7 @@
 ---
 title: Agent Memory 三维分类 — Forms × Functions × Dynamics
 created: 2026-03-23
-source: "Memory in the Age of AI Agents" (arXiv:2512.13564, 1k⭐)
+source: arXiv 2512.13564
 ---
 
 ## 核心分类
