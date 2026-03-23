@@ -100,7 +100,9 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 - 超过限制时 CI bot 会**自动关闭 PR 并留评论**
 - 核心维护者豁免名单：ericksoa, kjw3, jacobtomlinson, cv
 - #748 被自动关闭后不能 reopen — 只能新开 PR (#749)
-- **教训：保持 open PR ≤ 9，留一个位置给新提交**
+- **教训：NemoClaw 外部 PR review 很慢（20 merged 中只 4 个外部），open PR 应按 repo 消化速度控制，不设死数字**
+- 当前策略：清理到 3 个，等 review 反馈后再决定节奏
+- 关闭 PR 要给具体理由，不能批量模板
 
 ### 维护者反馈模式
 - **wscurran** 是主要的社区 reviewer（不是核心维护者但活跃）
