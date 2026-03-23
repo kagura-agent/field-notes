@@ -77,3 +77,30 @@ beliefs-candidates   knowledge-base/
 ---
 
 See also [[self-evolution-architecture]], [[mechanism-vs-evolution]], [[knowledge-needs-upgrade-path]]
+
+## Eval Pipeline (2026-03-23 新增)
+
+从 [[hermes-self-evolution]] 学到的核心 gap：**evolution without eval is random mutation**。
+
+### Minimum Viable Eval
+不需要建 GEPA。只需要**计数已有数据**：
+
+| 指标 | 数据源 | baseline (2026-03-23) | 趋势预期 |
+|------|--------|----------------------|----------|
+| PR merge rate | gogetajob stats | 73% | ↑ |
+| Audit findings | evolution-log (daily-review) | ~15/day | ↓ |
+| Repeat gradients | beliefs-candidates.md | 2 | ↓ |
+| Total gradients | beliefs-candidates.md | 14 | 观察 |
+| DNA graduations | AGENTS.md commit history | 1 | ↑ slowly |
+
+### 记录时机
+- daily-review write_log 节点自动记录（已加入 review.yaml）
+- 每天 3:00 AM cron 执行
+
+### 与 [[hermes-self-evolution]] 的差异
+- Hermes: execution traces → GEPA optimizer → candidate variants → eval → PR
+- 我们: Luna feedback → beliefs-candidates → repeat 3x → DNA upgrade → daily-review verify
+- Hermes 是自动化的（$2-10/run），我们是半手动的（Luna 驱动 + cron 辅助）
+- 但我们有他们没有的：**adversarial audit**（独立 agent 审计 review 结论）
+
+See also [[evolution-needs-eval]], [[convergent-evolution]]
