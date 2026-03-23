@@ -105,3 +105,42 @@ See also [[self-evolution-architecture]], [[mechanism-vs-evolution]], [[converge
 - 结构化 fact 比自由文本更好搜索，但失去了上下文和叙事
 
 See also: [[agent-memory-taxonomy]], [[convergent-evolution]], [[mechanism-bootstrapping-paradox]]
+
+## Deep Read: Self-Check + Scheduler + Create Tool (2026-03-23)
+
+### Self-Check（vs 我们的 daily-review）
+收集 6 维度：对话统计、错误日志、uptime、内存/磁盘、定时任务、记忆文件。
+- **被动**：收集数据 → 报告 owner。不做"发现问题→提改进"
+- **运维导向**：server health，不是进化质量
+- 我们没有的：**对话统计**（session 数、消息数、tool call 数）
+- 我们多出的：**进化检查**（工具评估、战略偏移、DNA 一致性、审计员）
+
+### Scheduler
+- Agent 自己可以运行时创建/修改定时任务（通过 tool call）
+- 支持 one-shot（延迟执行）和 cron（周期执行）
+- jobs.json 持久化，10s 轮询
+- 我们的 cron 是 OpenClaw 平台管理的，agent 不能运行时修改
+
+### Create Tool（最核心的差异能力）
+- Agent 运行时写 Python 代码 → 保存到 plugins/ → 自动加载
+- 安全：只能写 plugins/，不能覆盖内置工具，先执行验证
+- **这是 skill/behavior 层面的自进化**——不只是改配置，是创造新能力
+- 我们受 OpenClaw 平台限制做不到。最接近的是 FlowForge workflow 编辑
+
+### 核心对比升级
+| | 724-office | Kagura |
+|---|---|---|
+| 自检 | 运维监控（被动报告） | 进化检查点（主动提案） |
+| 调度 | Agent 可自管理 | 平台管理，agent 只读 |
+| 工具创建 | 运行时写新 Python 工具 | 不可能（平台限制） |
+| 反思质量 | 无审计（self-check 就是终态） | 有审计员对抗性校验 |
+| 行为改变 | 通过新工具（代码级） | 通过 DNA 升级（prompt 级） |
+
+### 洞察
+**两种自进化路径：**
+1. **代码级**（724-office）：agent 写新代码 → 获得新能力 → 但没有评估新代码的质量
+2. **Prompt 级**（我们）：agent 改 DNA → 改变决策 → 有审计员检查质量 → 但无法创造新能力
+
+理想情况是两者结合：能创造新工具 + 有质量评估。目前生态里没看到这个结合。
+
+See also: [[self-evolution-architecture]], [[convergent-evolution]], [[agent-memory-taxonomy]]
