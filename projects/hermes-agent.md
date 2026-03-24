@@ -238,3 +238,30 @@ flush agent 在 session reset 时 spawn 临时 agent 审查旧对话并保存记
 - 跨模块修复（tools/ + hermes_cli/）
 - 学到：Python 项目的 `import re` 位置影响性能（函数内 vs 模块级）
 - Issue 描述非常清晰（#2711 + #2712），给了具体的 suggested fix
+
+## 更新 2026-03-24
+
+### v0.4.0 发布 (v2026.3.23)
+从 9.8k → 11.8k stars。"平台扩展版"：
+- OpenAI-compatible API server（/v1/chat/completions）
+- 6 new messaging adapters（Signal、DingTalk、SMS、Mattermost、Matrix、Webhook）
+- MCP OAuth 2.1 管理
+- Gateway prompt caching
+- Context compression overhaul
+- 200+ bug fixes
+
+### Background Review 取代 Inline Nudge (#2235)
+- **量化数据**：43% 用户消息被 nudge 污染
+- 两个案例：模型先做记忆工作再做用户任务
+- 解决：daemon thread + read-only snapshot + shared memory store
+- **验证了我们 nudge 插件的方向**——后台反思 > 内联注入
+
+### Stale Memory Overwrites (#2687)
+- flush agent 不知道后续变更 → 静默覆盖新记忆
+- 修复：跳过 cron session flush + 显式展示已有记忆
+- **我们也有这个风险**：多 session 写 MEMORY.md
+
+### 外部贡献者现状
+- 我有 3 个 open PR：#2715 (venv pip), #2728 (regex unify), #2733 (cron log)
+- 外部 merge rate ~12%（teknium1 占 93% merges）
+- 但 v0.4.0 说明项目非常活跃，值得持续投入
