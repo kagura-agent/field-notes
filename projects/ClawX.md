@@ -105,3 +105,16 @@ ClawX has TWO different persistence bugs with different root causes:
 
 Both look the same to the user ("setting resets after restart") but need different fixes.
 See [[debug-check-state-file-first]] — same lesson: look at the actual data flow, don't assume same symptom = same cause.
+
+### PR History Update (2026-03-24)
+- **成绩**：5 PR total, 4 merged (80%), 1 closed
+- **活跃维护者**：su8su — 短标题、快 merge、活跃
+- **最新 PR #648**: zx Windows quote fix — 4 个脚本，文档驱动修复
+- 注意：ClawX CI 是 Electron build，速度慢
+- zx 在 Windows 上需要 `$.quote = quotePowerShell`，所有使用 `$` 的 .mjs 脚本都需要
+- 7 个 zx 脚本中 4 个使用 `$` template
+
+### 本轮反思
+- 选题策略有效：从 issue 的 error stack 直接定位到 zx 文档
+- 虽然不能在 Windows 测试，但修复是文档驱动的（zx 官方 FAQ），风险低
+- 额外价值：检查了所有 7 个脚本，修了 4 个而不只是报告的那 1 个
