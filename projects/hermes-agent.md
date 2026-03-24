@@ -232,3 +232,9 @@ flush agent 在 session reset 时 spawn 临时 agent 审查旧对话并保存记
 - Skill: response 完成后检查（工具迭代计数）
 - Background spawn: response 投递后、return 前
 - 原则："runs AFTER the response is delivered so it never competes"
+
+### PR #2728: unify env-var interpolation
+- 合并两个不一致的正则 + pre-compile
+- 跨模块修复（tools/ + hermes_cli/）
+- 学到：Python 项目的 `import re` 位置影响性能（函数内 vs 模块级）
+- Issue 描述非常清晰（#2711 + #2712），给了具体的 suggested fix
