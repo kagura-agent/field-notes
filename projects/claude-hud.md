@@ -37,3 +37,10 @@ source: GitHub jarrodwatts/claude-hud
 - 没有 CI 自动跑测试，本地必须跑
 
 [[self-evolving-agent-landscape]]
+
+## PR #319 (2026-03-25): fix(setup): JSON escaping rules
+- 修复 setup.md Step 3 缺少 JSON 转义说明
+- 用 ACP (acpx exec) 完成 ✅
+- awk 里的 $(NF-1) 和 $(0) 写入 JSON 时需要 \\$
+- Claude Code 实际执行 setup 时按 markdown 指令操作，所以修的是指令不是代码
+- 265 测试全过
