@@ -49,3 +49,23 @@ nicoloboschi 是核心维护者，外部 merge rate ~65%——对贡献者非常
 
 ---
 *Created: 2026-03-24*
+
+## PR 记录
+
+### #678 (2026-03-25) — async context deadlock fix
+- fix(client): _run_async() 在 async context 下死锁
+- 根因：loop.run_until_complete() 在已有 running loop 时失败
+- 方案：检测 running loop → ThreadPoolExecutor 隔离线程执行
+- CI: 41 个 checks，Python 3.11/3.12/3.13/3.14 全测
+- 状态：pending
+
+### #669 (2026-03-24, merged) — context overflow fix
+- 进入 v0.4.20 release notes
+
+## 打工笔记
+- CI 非常重——41 个 checks（多语言客户端 + Docker + integration）
+- 测试需要真实 server（integration tests），本地只能跑 unit tests
+- python client 在 hindsight-clients/python/
+- acpx exec Claude Code 在这个 repo 太慢——1172 行的文件读半天
+- 下次直接手动改简单 bug，Claude Code 适合大改动
+- Hermes 最近 50 个 merged PR 中 48 个是 teknium1 自己的——外部 PR 排队久
