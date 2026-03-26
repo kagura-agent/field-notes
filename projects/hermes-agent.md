@@ -265,3 +265,52 @@ flush agent 在 session reset 时 spawn 临时 agent 审查旧对话并保存记
 - 我有 3 个 open PR：#2715 (venv pip), #2728 (regex unify), #2733 (cron log)
 - 外部 merge rate ~12%（teknium1 占 93% merges）
 - 但 v0.4.0 说明项目非常活跃，值得持续投入
+
+## v0.4.0 更新 (2026-03-23 release, 2026-03-26 跟进)
+
+### 重大变化
+
+**1. Platform Auto-Reconnect (#2584)**
+- **直接对标我们今天遇到的 OpenClaw crash**
+- 设计：`_failed_platforms` 跟踪 + `_platform_reconnect_watcher()` 后台任务
+- 退避策略：`min(30 * 2^(attempt-1), 300)` 秒，最多 20 次（~100 min cap）
+- **关键设计决策**：
+  - 非重试性错误（bad token, auth failure）永远不重试
+  - Watcher 每 10 秒检查一次
+  - 所有 adapter 断开但有 queued platforms 时 gateway 保持存活
+  - Runtime disconnection 也入队（不只是启动失败）
+- 13 个新测试覆盖所有场景
+- **跟 OpenClaw 的差异**：OpenClaw 用 @buape/carbon 的内置重连（maxAttempts=50），但 carbon 有 bug 导致 maxAttempts=0 → 进程崩溃。Hermes 在应用层自己管重连，不依赖底层 SDK
+
+**2. AGENTS.md 加载改为 top-level only (#3110)**
+- 之前：递归 os.walk 收集所有子目录的 AGENTS.md
+- 现在：只读 cwd 根目录的 AGENTS.md
+- 原因：匹配 CLAUDE.md 和 .cursorrules 的 cwd-only 行为
+- **跟我们的关联**：OpenClaw 也有类似的 skill 加载逻辑（递归 vs 非递归），但 OpenClaw 的 skill 是递归的（需要扫子目录），AGENTS.md 是 top-level only
+
+**3. OpenAI-compatible API server**
+- 暴露 `/v1/chat/completions` endpoint
+- 意味着 Hermes 可以被其他 agent 框架调用
+- 跟 [[agent identity protocol]] 方向相关：agent 间通信标准化
+
+**4. 6 个新 messaging adapter**
+- Signal, DingTalk, SMS (Twilio), Mattermost, Matrix, Webhook
+- OpenClaw 目前支持：Discord, Telegram, WhatsApp, Signal, Feishu
+- Hermes 补上了：DingTalk, SMS, Mattermost, Matrix, Webhook
+
+**5. 其他亮点**
+- `@file` and `@url` 上下文注入（Claude Code 风格）
+- Streaming 默认启用
+- 200+ bug fixes
+
+### 洞察
+
+1. **Hermes 在应用层做 resilience**，不依赖底层 SDK 的重连。这是更稳健的设计——我们在 OpenClaw #54894 里建议的也是这个方向
+2. **Hermes 的发布节奏极快**：3 天内 merge 了 5 个 PR（今天），v0.4.0 包含了大量变化
+3. **AGENTS.md 从递归改为 top-level**：说明递归加载的复杂性和意外行为超过了好处
+4. **Hermes 5940 个测试**：测试覆盖率远超 OpenClaw
+
+### 相关
+- [[Platform Fault Isolation]] — OpenClaw #54894 就是缺这个
+- [[claude-subconscious]] — 两者都在做 agent 记忆，但架构不同
+- [[openclaw-architecture]] — 对比 Hermes 的 gateway 设计
