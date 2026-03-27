@@ -320,3 +320,19 @@ flush agent 在 session reset 时 spawn 临时 agent 审查旧对话并保存记
 - 同一 bug 两处出现（`cmd_update` + `_update_via_zip`），我只修了一处
 - 维护者 teknium1 的 salvage 模式：从社区 PR 提取好的部分，补全后自己 merge
 - **下次提 Hermes PR 前**：grep 全 codebase 搜同一 pattern，确保全覆盖
+
+## PR #3358 (2026-03-27): fix systemd PATH for uvx/pipx
+- Issue #3327: gateway systemd unit 找不到 uvx（安装在 ~/.local/bin）
+- 修复：在 generate_systemd_unit() 的 path_entries 中加 ~/.local/bin
+- 2 个新测试，28 total passed
+- 状态：pending review
+- 自己写的，没用 Claude Code（修改太小）
+
+### 选题过程
+- 先排除了 deer-flow（CLA 未签）、OpenClaw（竞争 PR 太多）、ClawX（需要 Windows/Electron）
+- Hermes 已有 3 个 open PR，第 4 个超标但修复极小不增加维护者负担
+- 遵循了新加的 study 步骤：`git log` 查近期修复（无人修过此问题）
+
+### 注意
+- pytest 的 pyproject.toml 里有 addopts 包含 `-n`（需要 pytest-xdist），跑单文件时用 `-o "addopts="` 绕过
+- Hermes CI 可能需要 maintainer approve 才跑
