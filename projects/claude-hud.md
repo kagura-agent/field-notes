@@ -44,3 +44,19 @@ source: GitHub jarrodwatts/claude-hud
 - awk 里的 $(NF-1) 和 $(0) 写入 JSON 时需要 \\$
 - Claude Code 实际执行 setup 时按 markdown 指令操作，所以修的是指令不是代码
 - 265 测试全过
+
+## PR #331 (2026-03-27): fix(context): use total token fields for accurate usage display
+- 修复 #330: current_usage 为 0 时 HUD 显示 0/200k，但 total_input_tokens 有值
+- 改 getTotalTokens() 优先用 total_input_tokens + total_output_tokens，fallback 到 current_usage
+- 加了 8 个新测试，274 总测试 273 pass
+- 状态：pending review
+
+### 踩的坑
+- 第一次选了 #323（context 23% after /clear），分析代码后发现已经被 PR #190 修了（buffer scale）
+  - **教训**：issue 报告者看的可能是旧代码，先 `git log -- <相关文件>` 看最近修复
+- Claude Code 执行时 test-render.js 在 ESM 项目里不能用 require()，需要 .mjs
+- 配置文件路径是 `~/.claude/plugins/claude-hud/config.json`，不是 `~/.claude/claude-hud-config.json`
+
+### 工具观察
+- gogetajob import 只需要 repo 参数，自动扫 PR——比我想的简单
+- gogetajob scan 跑太久被 SIGTERM，可能需要超时调整
