@@ -136,3 +136,12 @@ Possibly. It has an OpenClaw plugin. But:
 ### 下次注意
 - Acontext 的 Go API 测试文件在 `*_test.go` 旁边，这次没写测试（issue 没要求但最好加）
 - 如果 review 要求加测试，mock pattern 参考 `agent_skills_test.go`
+
+## 本地测试环境（2026-03-28 配置）
+- **Go API**: `cd src/server/api/go && go test ./... -count=1`
+- **TS SDK**: `cd src/client/acontext-ts && npm install && npx jest`
+- **Python SDK**: 无独立测试（CI 里跑）
+- Go 需要 1.22+（本地 1.26.1）
+- TS 需要 Node.js（本地 v20）
+- mock 文件位置：`tests/mocks.ts`（TS）、`*_test.go`（Go，每个 handler/service 文件旁边）
+- **注意**：改接口必须同步更新所有 mock 文件，CI 会检查
