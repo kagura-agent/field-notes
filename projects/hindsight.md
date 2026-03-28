@@ -145,3 +145,28 @@ Retrieve (parallel) → RRF Fusion → Pre-filter (top 300) → Cross-encoder Re
 1. memory_search 配好后，下一步应该加 BM25（精确匹配）— 双检索 + 简单合并就能大幅提升
 2. temporal decay 可以在 memory_search 上层做 — 对时间相关查询，给最近的结果加权
 3. [[双链]] 是手动版的 graph traversal — 如果能自动从 memory 提取 entity 关系，就接近 hindsight 的 graph 能力
+
+## 2026-03-28 更新：PR #733 — claude-code tool_choice fix
+
+### PR 信息
+- Issue: #732 — reflect agent tools=[none] with claude-code provider
+- PR: #733, branch: fix/claude-code-tool-choice
+- 1 file, 43 insertions, 3 deletions
+- CI: 30+ checks (build-api-python-versions all pass, integration tests pending)
+
+### 根因
+call_with_tools() 声明了 tool_choice 参数但完全没用。reflect agent 每轮强制调 tool（search_mental_models → search_observations → recall），但 claude-code provider 忽略了这个信号。
+
+### 修复方案
+Claude Agent SDK 没有原生 tool_choice 参数，通过两个机制模拟：
+1. allowed_tools 过滤：只暴露被强制的工具
+2. system prompt 注入："MUST call tool X"
+
+### 学到的
+- Claude Agent SDK 的 tool calling 是通过 MCP server 实现的，工具名有 mcp__ 前缀
+- openai_compatible_llm.py 对 tool_choice 的处理是正确模式：filter tools + set "required"
+- 同一个 codebase 里 Gemini、OpenAI、Claude Code 三种 provider，每种都要适配 tool_choice 的方式不同
+- reflect agent 的 tool calling 是有严格顺序的：mental_models → observations → recall（分层检索）
+
+### 跟 [[retrieval-is-the-bottleneck]] 的关联
+reflect 是 hindsight 的**主动读取机制**——周期性合成 mental models。但如果 tool_choice 坏了，reflect 就退化成纯 text generation（猜而不查）。这跟我们的"不查就说"问题本质相同：有工具但不用。
