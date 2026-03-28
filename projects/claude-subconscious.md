@@ -57,3 +57,37 @@ Claude Code ◄──► Letta Agent (background)
 - [[self-evolving agent landscape]]
 - [[hermes-agent]] — 同在 self-evolving 方向
 - [[nudge plugin]] — 我们的等价物（但更轻量）
+
+## 2026-03-28 更新：memfs 迁移 + 生态位变化
+
+### memfs 迁移（3/18）
+- 从 Letta memory blocks 迁移到 **git-backed memory filesystem**
+- 记忆变成文件系统里的文件，由 git repo 管理
+- system prompt 从 "memory blocks" 改口叫 "files in a git-backed filesystem"
+- **这跟我们的架构高度同构**：MEMORY.md + self-improving/ + git push = 我们的 memfs
+- Letta 在向我们的方向收敛，而不是我们在追赶他们
+
+### 生态位变化
+- 4 天涨 400 stars（1.5k → 1.9k），GitHub weekly trending
+- 但定位仍然是 Claude Code 插件，依赖 Letta Cloud API
+- 我们的优势：**原生**（不是外挂）、**本地**（不依赖云 API）、**自主**（agent 自己管记忆）
+
+### 本周 GitHub Trending 观察（3/28）
+- **一切都是 skill**：last30days-skill (12.6k⭐), superpowers (118k⭐), everything-claude-code (112k⭐)
+- **Skill = 安装包** 的 Luna 洞察持续被验证：这些不是 AI 项目，是安装包项目
+- superpowers 本质是一个工作流框架（spec → plan → implement → review），跟 FlowForge 做的事一样
+- deer-flow 50k⭐、还在 weekly trending（+17.8k/week），字节加码重
+- **trading agents 大爆发**：TradingAgents (42.8k⭐) + CN 中文版 (21.8k⭐)
+- claude-hud 14.2k⭐ 仍在 trending（我们有 3 个 PR 在那）
+
+### 跟 [[librarian problem]] 的关联
+- claude-subconscious 的 "whisper before each prompt" 是 Level 2（图书管理员级）
+- 它在 tool use 之前也 whisper — 这是向 Level 3（教练级）迈进
+- 但仍然是被动的：只基于已有 transcript 推荐，不预测你会犯什么错
+- memfs 迁移说明：**文件 > 数据库**作为 agent 记忆载体是共识方向
+
+### [[self-evolving agent landscape]] 更新
+- AlphaEvolve (DeepMind) 代表 Model 层的新高度：evolutionary coding agent
+- FunSearch → AlphaEvolve 的路径：单次生成 → 迭代闭环 → 自主进化
+- 关键区分：AlphaEvolve 的 "evolution" 是算法层面的（搜索更好的程序），不是 agent 行为层面的
+- 行为自进化（我们做的）和算法自进化（AlphaEvolve）是两条不同的路
