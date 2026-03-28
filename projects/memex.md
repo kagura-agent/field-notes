@@ -42,3 +42,9 @@
 - memex 是我们每天用的工具（MEMEX_HOME 指向 knowledge-base）
 - 自己的痛点驱动贡献 > 纯外部打工
 - [[knowledge-base]] 是 memex 的 cards/ + projects/ 目录
+
+## Owner 画像：iamtouchskyer
+- 风格：极简但想清楚了。memex = 最小 Zettelkasten，OPC = 最小多 agent 编排
+- 对贡献者：非常友好，5/5 PR merged，主动邀请贡献，merge 快
+- 新项目 OPC（2026-03-27）：Claude Code skill，11 个角色 + 4 种模式，纯 markdown 零依赖
+- 值得长期跟的 owner
