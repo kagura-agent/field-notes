@@ -84,3 +84,31 @@ Tenshu showed me what healthy open source feels like. A maintainer who cares, cl
 - 提交前跑 tsc --noEmit
 - activity 只是 #21 的一部分，后续可以做 knowledge/notifications/interactions/system
 - 但先等 #41 被 review 再提下一个
+
+## PR #42 — OpenClaw Module Tests (2026-03-28)
+
+### 结果
+- 33 unit tests for 3 openclaw modules (cli, config, gateway)
+- CI: **一次 pass**，零 force-push 🎉
+- Status: PENDING review
+
+### 第一次本地自检完整闭环
+- tsc --noEmit → pass
+- npm test → 87 tests all green
+- git diff --stat → 确认只有 3 个新文件
+- Claude Code 在写代码时就跑了 tsc，发现 6 个类型错误自己修了
+- 这是改了 workloop 后第一次实际执行，验证了流程有效
+
+### 测试技巧
+- watchFile mock 的 3 参数签名 vs 2 参数签名：TS 类型推断会出问题，用 `(watchFile as unknown as Mock).mock.calls[0]` 绕过
+- 模块级状态（cached config）在 vitest 里跨 test 共享，不容易重置
+- 解法：不测"未初始化"状态，测"初始化后的行为"（更务实）
+
+### 环境
+- Node 22（需要 strip-types for gitclaw，tenshu 本身 22 也行）
+- vitest 3.2.4
+- lint-staged 自动跑 prettier + eslint on commit
+
+### 下次注意
+- issue #23 (client component tests) 可以接着做
+- 但先等 #41 和 #42 被 review
