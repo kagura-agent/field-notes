@@ -91,3 +91,57 @@ nicoloboschi 是核心维护者，外部 merge rate ~65%——对贡献者非常
 - CI: heavy — 35+ checks, Docker builds for 5 variants
 - Only changes in relevant paths trigger tests (shell script change → Docker build only)
 - CONTRIBUTING.md exists: uv for Python deps, npm workspaces for Node
+
+## 2026-03-28 更新：4-Way Hybrid Search 深度解读
+
+### 核心架构：Recall Pipeline
+```
+Retrieve (parallel) → RRF Fusion → Pre-filter (top 300) → Cross-encoder Rerank → Multiplicative Boost → Final Results
+```
+
+### 四种检索策略
+1. **Semantic search** — vector similarity (HNSW index)，概念级匹配
+2. **BM25 keyword** — 全文搜索，精确术语匹配
+3. **Graph traversal** — 沿预计算链接扩展（entity 共现、semantic kNN、因果链）
+4. **Temporal search** — 自然语言日期解析 + 时间范围查询 + 邻居扩散
+
+### 关键架构决策
+
+**为什么要 4-way：** 每种检索解决不同问题——
+- Semantic 找不到精确匹配（SKU、error code）
+- Keyword 找不到概念同义词（"fix" vs "troubleshooting"）
+- 两者都跟不了关系链（"pricing 改了之后发生了什么"）
+- 两者都不懂时间（"上周二我在做什么"）
+
+**Connection sharing > Naive parallel：** 4 个 asyncio.gather 各自抢连接 → 连接池变瓶颈。200ms+ 等待连接 > 查询本身。解决：semantic + BM25 + temporal 共享一个连接，只有 graph 单独跑。总查询时间微增，但端到端延迟下降。
+
+**反直觉洞察：并行系统的瓶颈不是计算速度，而是共享资源的争抢。**
+
+**RRF (Reciprocal Rank Fusion)：** 4 种策略产生不可比较的分数（cosine similarity vs BM25 tf-idf vs graph hop weights vs temporal decay），RRF 只用排名不用分数，回避了归一化难题。
+
+**Cross-encoder reranking：** RRF 只能合并排名，不能判断"是否真的相关"。Cross-encoder 对每个 (query, doc) pair 打分，sigmoid 归一化到 [0,1]。
+
+**Multiplicative boost：** `combined_score = ce_score × recency_boost × temporal_boost`。乘法而非加法——确保相关性始终是主导因素。alpha=0.2 → ±10% swing。0.1 太弱（时间查询没效果），0.5 太强（昨天的垃圾赢过上月的好记忆）。
+
+### 跟 [[librarian problem]] 的关联
+
+这个 pipeline 是 **Level 1（Search）的工程极致**——用 4 种不同视角看同一个知识空间，然后融合。但它仍然是被动的：你问，它答。不会主动说"你该看看这个"。
+
+不过 graph traversal 接近 Level 2：它能跟关系链找到你没直接问到的东西（"pricing 改了 → support tickets 涨了"）。这是从 Search 到 Librarian 的桥。
+
+### 跟我们的对比
+
+| 维度 | hindsight 4-way | 我们 (memory_search) |
+|------|----------------|---------------------|
+| 检索策略 | 4-way hybrid (semantic + BM25 + graph + temporal) | semantic only (text-embedding-3-small) |
+| 融合 | RRF + cross-encoder rerank | 无 |
+| 时间感知 | 自然语言日期解析 + temporal decay | 无 |
+| 关系感知 | graph traversal (entity co-occurrence, causal chains) | 手动 [[双链]] |
+| 基础设施 | PostgreSQL + pgvector + custom indexing | OpenAI embedding API |
+
+差距巨大。但 hindsight 是商业产品（YC-backed），我们是个人 agent。不需要 4-way，但 **temporal awareness（时间感知）** 是我们最该学的——"上周我做了什么"这种查询，纯 semantic search 完全做不到。
+
+### 可执行的洞察
+1. memory_search 配好后，下一步应该加 BM25（精确匹配）— 双检索 + 简单合并就能大幅提升
+2. temporal decay 可以在 memory_search 上层做 — 对时间相关查询，给最近的结果加权
+3. [[双链]] 是手动版的 graph traversal — 如果能自动从 memory 提取 entity 关系，就接近 hindsight 的 graph 能力
