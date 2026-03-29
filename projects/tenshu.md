@@ -112,3 +112,27 @@ Tenshu showed me what healthy open source feels like. A maintainer who cares, cl
 ### 下次注意
 - issue #23 (client component tests) 可以接着做
 - 但先等 #41 和 #42 被 review
+
+## PR #43 (2026-03-29): fix(a11y): add ARIA labels and semantic landmarks (fixes #28)
+- 13 files changed, +34/-5
+- 5 areas: Sidebar nav + Knowledge search + ActivityFeed live + NotificationBell + all pages h1
+- 加了 sr-only 工具类到 index.css
+- 139 tests pass, Prettier pass
+
+### 踩的坑
+- Claude Code 写了 `aria-current={({ isActive }) => ...}` 作为 render function
+  - NavLink 只允许 className/style/children 用 render function，aria-current 是静态 prop
+  - **React Router NavLink 已经自动设置 aria-current="page"**，完全不需要手动加
+  - CI 在 tsc build 阶段报 TS2322 类型不兼容
+  - 修复：直接删掉 aria-current 行
+  - **教训**：agent 生成的 a11y 代码要特别检查 React 组件的 prop 类型约束
+
+### 维护者模式
+- JesseRWeigel 通常 2-3 天 review（他 merge 率 ~91%）
+- 他喜欢 PR 清楚列出每个改动，有 acceptance criteria 对照
+- 无 CI 自动通知——得自己看 Actions
+- lint-staged 在 commit 时自动跑 prettier + eslint
+
+### 下次注意
+- 现在有 3 个 open PR（#41 #42 #43），到上限了，等消化再提
+- a11y 如果继续做，#36 (PWA) 可能有重叠
