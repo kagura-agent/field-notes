@@ -60,3 +60,11 @@
 - 无竞争 PR，无 blocker，upstream 最新 commit 1986d87
 - 实现顺序：基础设施 → 接入搜索 → MCP → 文档
 - 注意：Node 16 没有 fetch，用原生 https 模块
+
+### PR #34 — Semantic search implementation (2026-03-31)
+- Closes #29
+- 923 行净增，7 文件改动，25 新测试，322 总测试全过
+- 架构：EmbeddingProvider 接口 + OpenAI 实现 + JSON 缓存 + 混合评分
+- 零新依赖（原生 https + crypto）
+- 关键设计：content hash > mtime，pluggable provider，incremental embedding
+- Owner 之前确认了 text-embedding-3-small 和 .memex/embeddings/ 缓存路径
