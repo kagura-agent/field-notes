@@ -48,3 +48,15 @@
 - 对贡献者：非常友好，5/5 PR merged，主动邀请贡献，merge 快
 - 新项目 OPC（2026-03-27）：Claude Code skill，11 个角色 + 4 种模式，纯 markdown 零依赖
 - 值得长期跟的 owner
+
+### Issue #29 — Semantic Search 实现方案 (2026-03-31 study)
+- Owner 确认：text-embedding-3-small, cache in .memex/embeddings/
+- 设计：EmbeddingProvider 接口 → OpenAI 实现 → 单 JSON 缓存 → content hash 失效
+- 搜索：--semantic flag, 混合评分 0.7 semantic + 0.3 keyword
+- 零新依赖（原生 https 调 OpenAI）
+- 文件：新建 embeddings.ts (~200行), 改 search.ts (+60), config.ts (+10), cli.ts (+5), mcp/server.ts (+5)
+- 测试：embeddings.test.ts (~150行), search-semantic.test.ts (~120行)
+- 总计 ~550 行
+- 无竞争 PR，无 blocker，upstream 最新 commit 1986d87
+- 实现顺序：基础设施 → 接入搜索 → MCP → 文档
+- 注意：Node 16 没有 fetch，用原生 https 模块
