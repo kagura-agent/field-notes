@@ -50,3 +50,11 @@
 互补关系：探索用 Browser-Use，稳定后写成 OpenCLI 适配器
 
 Links: [[cli-everything]], [[agent-as-router]]
+
+### PR #624 — Substack selector fix (2026-03-31)
+- Issue: #621 — Substack DOM redesign，`<article>` → `<div role="article">`
+- Fix: 2 行选择器更新（`a[href*="/p/"]` for feed, `[role="article"]` for archive）
+- CI 全过（adapter-test, unit-test, build 三平台, docs 等）
+- 关键洞察：evaluate() 的数据提取代码本来就不依赖 article 标签，wait() 只是 readiness gate
+- 401 tests 全过，无需加新测试（改的是 wait selector 不是 scraping 逻辑）
+- opencli merge rate 极高（91%），maintainer jackwener 响应快
