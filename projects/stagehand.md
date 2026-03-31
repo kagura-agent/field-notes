@@ -47,3 +47,14 @@ Browser-Use (85k⭐)  →  Stagehand (22k⭐)  →  Playwright MCP (30k⭐)
 
 ---
 *Created: 2026-03-30 | Source: firecrawl.dev, awesomeagents.ai, GitHub*
+
+## 打工记录
+
+### PR #1918 — fix: add zod/v4 fallback for toJSONSchema detection (fixes #1845)
+- **日期**: 2026-03-30
+- **问题**: Zod v4 把 `toJSONSchema` 移到 `zod/v4` 子路径，`zodCompat.ts` 里的检测只认顶层 `zod`，导致 v4 用户 schema 转换失败
+- **修复**: 在 `zodCompat.ts` 加 `zod/v4` fallback 检测，先查 `zod/v4`（v4 原生路径），再 fallback 到 `zod`（v3 + polyfill）
+- **文件**: `packages/core/lib/v3/zodCompat.ts`，+37/-3 lines
+- **测试**: 347 tests pass，tsc clean
+- **CI 注意**: 外部 PR 需要团队成员 approve 才触发完整 CI
+- **changeset-bot**: 会自动提示补 changeset 文件

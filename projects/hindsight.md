@@ -201,3 +201,13 @@ reflect 是 hindsight 的**主动读取机制**——周期性合成 mental mode
 ### 选题反思
 - claude-hud 有 4 个 open PR 堆积，触发了 ≤3 限制 → 正确地转向了 hindsight
 - 选择规则有效：先看 open PR 数量再选 repo
+
+### PR #790 — Cohere Azure reranker 404 fix (2026-03-31)
+- Issue: #783 — Cohere SDK appends `/v1/rerank` to base_url，Azure AI Foundry 已有完整路径 → 404
+- Fix: `base_url` 存在时用 httpx.Client 直接 POST，不用 Cohere SDK
+- 参考了同文件的 ZeroEntropyCrossEncoder 和 RemoteTEICrossEncoder 的 httpx 模式
+- 加了 12 个测试，覆盖 native/Azure 两种路径
+- lint + pre-commit hook 全过
+- CI: Python build 3.11-3.14 全过，其余在跑
+- 注意：这个 repo 用 `uv sync` 装依赖，`./scripts/hooks/lint.sh` 跑 lint
+- 文件：`hindsight-api-slim/hindsight_api/engine/cross_encoder.py`
