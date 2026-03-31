@@ -211,3 +211,12 @@ reflect 是 hindsight 的**主动读取机制**——周期性合成 mental mode
 - CI: Python build 3.11-3.14 全过，其余在跑
 - 注意：这个 repo 用 `uv sync` 装依赖，`./scripts/hooks/lint.sh` 跑 lint
 - 文件：`hindsight-api-slim/hindsight_api/engine/cross_encoder.py`
+
+## 2026-03-31 贡献
+- PR #794: delete_memory_unit HTTP DELETE endpoint (issue #791)
+- PR #795: track retrieval frequency on memory units (issue #793)
+  - access_count 曾在初始 schema 存在，PR #178 删了（未使用），现在重新加回
+  - 只有 user-facing recall increment，内部操作用 _quiet=True 排除
+  - 为 decay/utility scoring 打基础
+- #748 跳过：维护者明确拒绝暴露 relevance score（composite score 不适合给客户端 threshold）
+- 当前 3 open PR (#790 + #794 + #795)，等 merge 再投入
