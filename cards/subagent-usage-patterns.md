@@ -50,3 +50,9 @@ type: reference
 
 subagent 不自己手写代码，代码交给 Claude Code。
 subagent 的价值是：不阻塞主 session + 隔离执行环境。
+
+## Copilot API 流式超时（2026-04-01 确认）
+- GitHub Copilot API 有 ~60s stream idle timeout
+- 大 context（>3000行源码）让模型思考时间超过 60s → 连接断开 → 子 agent "超时"
+- OpenClaw runTimeoutSeconds 只用于 parent wait，不传给 child embedded run
+- 解决：拆分任务，每次 ≤1000 行源码；或用主 session 交互式读

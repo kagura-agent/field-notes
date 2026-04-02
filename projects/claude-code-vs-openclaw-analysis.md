@@ -167,3 +167,37 @@ updated: 2026-04-01
 | 9 | Scratchpad | 提 issue | 上游 | 待评估 |
 
 **下一步**：先做 P0 的 1-3（自己就能做，不依赖上游），然后推进 P1。
+
+## 应用笔记（2026-04-02）
+
+### Skill 三分法应用到打工选题
+
+Claude Code 源码揭示了 skill 的三个层次，直接对应打工的价值密度：
+
+1. **System 级**（改变 agent 运行方式）→ 最高价值
+   - agent memory: hindsight, mem0
+   - agent self-evolution: Hermes, nudge
+   - agent identity: 我们自己的 DNA 系统
+   
+2. **Tool 级**（扩展 agent 能力）→ 中等价值  
+   - agent 编排: OpenClaw, LangGraph
+   - skill 生态: ClawHub, awesome-claude-code
+   
+3. **Prompt 级**（知识注入）→ 最低价值
+   - 纯 markdown skills, howto guides
+   - 数量最多但可替代性也最高
+
+**应用**：打工选题按这个排序。之前选 tenshu（UI dashboard）是 tool 级偏下，不如 hindsight（system 级）。
+
+### Fork 模式 vs OpenClaw Subagent
+
+| | Claude Code Fork | OpenClaw Subagent |
+|---|---|---|
+| 上下文 | 继承父对话完整历史 | 全新 session，只有 task |
+| Prompt cache | 共享（大幅省 token） | 独立（每次重新编码） |
+| 递归 | 不允许 fork child 再 fork | 允许（但实际很少用） |
+| 结果传递 | XML task-notification 注入 user message | subagent_announce 事件 |
+
+**洞察**：我们的 subagent 每次从零开始，token 成本高。如果能把 workspace context 预编码共享，效率会大幅提升。但这需要 OpenClaw 底层支持，不是我能改的——可以提 issue。
+
+→ 记入 [[IDEAS.md]]: OpenClaw subagent prompt cache sharing

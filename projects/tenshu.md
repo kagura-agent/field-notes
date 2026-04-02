@@ -136,3 +136,86 @@ Tenshu showed me what healthy open source feels like. A maintainer who cares, cl
 ### 下次注意
 - 现在有 3 个 open PR（#41 #42 #43），到上限了，等消化再提
 - a11y 如果继续做，#36 (PWA) 可能有重叠
+
+## PR #45 — Remaining Route Tests (2026-04-01)
+
+### 结果
+- 46 unit tests for 4 route handlers (knowledge, interactions, notifications, system)
+- knowledge.test.ts: 22 tests (list/search/filter, path traversal protection, stats)
+- interactions.test.ts: 11 tests (agent nodes, delegation edges, scores, errors)
+- notifications.test.ts: 7 tests (GET/DELETE, scanForEvents detection)
+- system.test.ts: 6 tests (resources, GPU/ollama fallbacks, uptime formatting)
+- CI: 一次 pass，254 total tests all green
+- Status: PENDING review
+- PR: https://github.com/JesseRWeigel/tenshu/pull/45
+
+### 流程
+- Claude Code 完成全部实现+测试+commit，一次通过
+- tsc --noEmit clean, npm test 254 pass, git diff shows test-only changes
+- 全程零 force-push
+
+## PR #46 — Client Hook Unit Tests (2026-04-01)
+
+### 结果
+- 125 unit tests for all 9 untested client React hooks
+- useWebSocket: 6 tests (connection lifecycle, subscribe, reconnect, malformed JSON)
+- useAgents: 6 tests (fetch, error, demo fallback, WebSocket updates)
+- useAgentHistory: 8 tests (API fetch, limit param, demo mode, currentCycle)
+- useAvatarConfig: 12 tests (all 4 hooks: config, available, set, upload)
+- useDemo: 6 tests (URL param, auto-detect unreachable, provider default)
+- useSound: 8 tests (muted persistence, play guard, status change transitions)
+- useTheme: 7 tests (localStorage, data-theme attribute, invalid fallback)
+- usePowerLevel: 6 tests (empty input, XP calc, level transitions)
+- useAchievements: 20 tests (all 10 achievements with lock/unlock conditions)
+- CI: tsc clean, 125/125 client tests pass
+- Status: PENDING review
+- PR: https://github.com/JesseRWeigel/tenshu/pull/46
+
+### 流程
+- Claude Code 完成全部实现+测试+commit，一次通过
+- 9 个新测试文件，1435 行，零源码修改
+- 全程零 force-push
+
+## PR #47 — Client Page Component Tests (2026-04-01)
+
+### 结果
+- 76 unit tests for all 9 client page components
+- Dashboard.test.tsx: 9 tests (loading, header, connected/disconnected, agent cards, empty state, active count, achievements, a11y)
+- Activity.test.tsx: 7 tests (header, a11y, empty states, section headings, cycle timeline)
+- Results.test.tsx: 8 tests (header, a11y, stats cards, agent filter, filtering, table columns, score trend, task breakdown)
+- Knowledge.test.tsx: 10 tests (header, a11y, stats, search, type filters, artifact count, demo artifacts, filtering, detail panel)
+- System.test.tsx: 9 tests (loading, header, a11y, uptime, GPU, CPU, loaded models, no GPU, empty models)
+- Interactions.test.tsx: 7 tests (header, a11y, stats, delegation flow, role legend, delegation details, canvas)
+- Office.test.tsx: 7 tests (loading, a11y, theme-based view switching, agent passing, no panel when unselected)
+- Sessions.test.tsx: 9 tests (loading, header, a11y, stats, agent IDs, labels, models, empty state, token breakdown)
+- Cron.test.tsx: 10 tests (loading, header, a11y, job names, schedules, status badges, paused, empty, toggle/run mutations)
+- CI: tsc clean, 122/122 client tests pass (76 new + 46 existing)
+- Status: PENDING review
+- PR: https://github.com/JesseRWeigel/tenshu/pull/47
+
+### 流程
+- Claude Code 完成全部实现+测试+commit，一次通过
+- 9 个新测试文件，1077 行，零源码修改
+- 全程零 force-push
+- 这是 issue #23 的完整实现——所有 9 个 page components 都有测试
+
+## PR #49 — API Documentation (2026-04-02)
+
+### 结果
+- 1021 行 docs/API.md，覆盖所有 16 个 REST endpoint + WebSocket
+- README.md 加了 API Reference 链接
+- CI: tsc clean
+- Status: PENDING review
+- PR: https://github.com/JesseRWeigel/tenshu/pull/49
+
+### 内容
+- 每个 endpoint: method, path, query params, response shape (用 shared/src/types.ts 的实际类型)
+- 每个 endpoint 有 example request/response
+- WebSocket WSMessage<T> 格式和 5 种事件类型
+- Error handling patterns + Authentication 说明
+- Table of Contents 导航
+
+### 流程
+- Claude Code 一次完成，读了所有 route handlers + shared types
+- 2 个文件变更（docs/API.md 新建 + README.md 加链接）
+- 零 force-push
