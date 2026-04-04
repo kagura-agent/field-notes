@@ -149,3 +149,25 @@ api.registerContextEngine(id, factory)             // 上下文引擎
   - Fix options: union payloads / stream-collect from session / wait-for-idle
 - 两个问题应一起修
 - **学习点**：这种代码级追踪分析方式（A 调 B 等 C 等 A）是精确诊断的范例
+
+## 打工教训：plugins-allowlist.ts (#60596 / #60610)
+
+### 事件
+- 2026-04-04: 提交 PR #60610 修复 #60596（`ensurePluginAllowlisted` 在 `plugins.allow` 为 undefined 时 no-op）
+- 另一个 contributor (hclsys) 也提了 #60623，同样的修法
+- **两个 PR 都被 maintainer (steipete) 关掉了**
+
+### 为什么被拒
+1. `ensurePluginAllowlisted()` 是**共享 helper**，不只手动 enable 用，auto-enable 也调
+2. auto-enable 有明确契约：**不应该在 allowlist 不存在时创建它**（有测试 `"does not create plugins.allow when allowlist is unset"`）
+3. 如果凭空创建 `plugins.allow`，它变成权威列表，**其他未列入的插件会被意外禁用**
+4. maintainer 质疑 bug 是否真实存在：手动 enable 已经通过 `plugins.entries.<id>.enabled = true` 工作
+
+### 根因
+- 改共享函数只看了自己关注的路径（manual enable），没检查 auto-enable 路径
+- 没写 failing test 证明 bug 存在就直接改了
+
+### 规则
+- **改共享函数前 grep 所有 caller**，理解每条路径的契约
+- **先写 failing test**：issue 说有 bug ≠ 真有 bug，先证明再修
+- 注意 `plugins.allow` 的语义：存在 = 权威白名单（restrictive），不存在 = 开放
