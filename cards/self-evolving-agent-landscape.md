@@ -46,3 +46,33 @@ Skill 层 + Memory 层 + Workflow 层。没有 Model 层。
 劣势：没有自动化 skill 提取（手动 nudge），没有 reward model
 
 See [[mechanism-vs-evolution]] for the philosophy behind layer separation.
+
+## 2026-04-05 更新：Skill 层爆发
+
+新发现两个重要 Skill 层项目：
+
+### AgentFactory (arxiv 2603.18000)
+- **Code as skill**：把成功方案保存为可执行 Python subagent，而不是文本经验
+- 三阶段：install → self-evolve → deploy
+- Batch 2 复用 token 减少 57%
+- SKILL.md 格式跟 OpenClaw 高度同构
+
+### OpenSpace (HKUDS)
+- Skill 自进化引擎 + community cloud (open-space.cloud)
+- 三种模式：FIX / DERIVED / CAPTURED
+- 46% fewer tokens, 4.2× performance
+- v0.1.0 2026-04-03 刚发
+- 已有 skill quality monitoring
+
+### Engram (Ironact) — Memory 层新玩家
+- 开源 Mem0 替代，OpenClaw 一等公民插件
+- Auto-capture + auto-recall + dedup
+- Self-hosted, SQLite + local embeddings
+
+### 新趋势
+- **Code > Text**：AgentFactory 证明可执行代码比文本经验更可靠
+- **Community sharing**：OpenSpace 的 open-space.cloud 已经跑起来了
+- **Auto-extraction**：从执行轨迹自动提取 skill 是共识方向
+- **Quality monitoring**：skill 需要持续监控和自动修复
+
+See [[agentfactory]], [[openspace]], [[engram]]

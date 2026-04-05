@@ -28,6 +28,7 @@
 | NemoClaw #288 | #248 已经修了同一个 bug |
 | NemoClaw #382 | 核心维护者 ericksoa 说 "Closing in favor of #330" |
 | ClawRouter #105 | 维护者说 "already addressed in commit 1a0992b" |
+| NemoClaw #750 | Issue #738 被维护者用更好的方案解决（#1256 + #1368：自动化 + 移除 workaround），我的 PR 只是加提示消息 |
 
 **教训：提 PR 前必须检查**：
 1. `gh pr list --search "关键词"` — 有没有竞争 PR

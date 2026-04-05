@@ -167,3 +167,15 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 - #750 (onboarding guidance)
 - #871 (fork bomb)
 - #879 (gosu multi-arch)
+
+## 更新：2026-04-04 (Day 25)
+
+### PR #750 被上游方案超越
+- 我的 PR：给 setup-spark.sh 添加提示信息，告诉用户运行完 setup 后要重跑 `nemoclaw onboard`
+- 上游方案（2 个 commit，2026-04-02~03）：
+  - #1256 (paritoshd-nv)：把 install.sh 改为自动做 onboarding 步骤，不需要用户手动跑
+  - #1368 (zyang-dev)：完全移除 cgroup v2 workaround，因为 OpenShell 已经直接处理了
+- **对比**：我的方案是告诉用户"你还需要做 X"；上游方案是让 X 自动发生或不再需要。上游方案明显更好。
+- Issue #738 已被维护者关闭（2026-04-03）
+- **教训：fix the cause, not the symptom。** 添加提示信息是 band-aid，真正的解法是消除用户手动步骤的必要性。外部贡献者常常只看到表面问题（"用户不知道要做 X"），而维护者能看到根因（"不应该让用户做 X"）。
+- **行动：应关闭 PR #750，感谢维护者的更好方案。**
