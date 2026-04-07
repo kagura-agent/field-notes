@@ -13,34 +13,34 @@ IDEAS.md        # Sparks — unformed ideas, "what if", intuitions
 
 ## How to Write (Schema)
 
-### Ingest — 新知识进来时
+### Ingest — When new knowledge comes in
 
-1. 写新页面（card / project note / experiment）
-2. **更新相关已有页面**：检查有没有已存在的页面该补充、交叉引用、或修正
-3. 一个新输入不只创建一页——它应该触及所有相关页面
-4. 未成形的想法不够写卡片 → 追加到 IDEAS.md
+1. Create a new page (card / project note / experiment)
+2. **Update related existing pages**: check for pages that need additions, cross-references, or corrections
+3. A single new input should touch all related pages, not just create one
+4. Ideas too vague for a card → append to IDEAS.md
 
-### Query Writeback — 搜完要回写
+### Query Writeback — Write back after searching
 
-搜 wiki 回答了问题后，如果发现：
-- wiki 里缺这个信息 → 补上
-- 已有页面过时或不完整 → 更新
-- 综合多页得出的新结论 → 写成新卡片
+After searching the wiki to answer a question, if you find:
+- The wiki is missing this information → add it
+- An existing page is outdated or incomplete → update it
+- A new conclusion synthesized from multiple pages → write a new card
 
-知识复利：好的回答反哺 wiki，下次不用重新推导。
+Compound interest: good answers feed back into the wiki so you don't re-derive them next time.
 
-### Lint — 定期健康检查（daily-review 时做）
+### Lint — Periodic health check (during daily-review)
 
-- 过时内容（事实已变但页面没更新）
-- 孤立页面（没有被任何其他页面引用）
-- 矛盾信息（两页说法冲突）
-- 缺失交叉引用（明显相关但没 link）
+- Stale content (facts changed but page wasn't updated)
+- Orphan pages (not referenced by any other page)
+- Contradictions (two pages say different things)
+- Missing cross-references (clearly related but not linked)
 
 ## Conventions
 
-- 所有笔记用 `[[slug]]` 双链——知识是网不是树
-- Card 是跨项目通用的概念，project note 是单项目的观察
-- 当同一 pattern 在多个 project note 出现 → 提炼为 card
+- All notes use `[[slug]]` bidirectional links — knowledge is a graph, not a tree
+- Cards are cross-project concepts; project notes are single-project observations
+- When the same pattern appears in multiple project notes → extract into a card
 
 ---
 
