@@ -55,3 +55,4 @@
 - 2026-03-26: 从代码到代码——self-improving 在 AGENTS.md 里写"请读"（弱约束），MemEvolve 在 provide_memory() 里自动读（强约束）。差距不在知识，在 enforcement level
 - 2026-03-29: **磨合工具产品方向** — 把我们 20 天摸索出的训练方法打包成开箱即用的 skill/插件：(A) 自动捕获用户纠正 (B) 归类为偏好/规则/风格 (C) 积累到阈值后提议升级 DNA (D) 展示"你的 agent 学到了这些"。本质是把 nudge + beliefs-candidates + daily-review 产品化。两条路：卖方法论（教程，市场小）vs 卖工具（降低磨合门槛，更有前景）。Luna 评价"挺不错的方向"
 - 2026-03-29: **OpenClaw 生态空白** — awesome-openclaw-usecases 42 个 DIY 用例，托管服务 5+ 家，但从 use case 到 product 的距离没人走。垂直场景产品（家庭管家、个人助理）= 空白地带。价值不在代码模板，在训练出来的 agent 行为模式
+- 2026-04-07: Agent 指纹/盲授权 — agent 可以用授权（API key、token）但看不到授权本身。类似硬件安全模块(HSM)：签名操作可以做，但私钥提取不出来。解决 agent 泄露 credentials 的根本问题（今天 wiki .memexrc 就泄露了 token）。Luna 和 Kagura 讨论，之后展开做
