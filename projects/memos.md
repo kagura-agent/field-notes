@@ -71,3 +71,8 @@ MemOS 在 OpenClaw 生态里是一等公民，有两个官方插件：
 - [[hermes-agent]] — 同为 agent 基础设施，memory 层互补
 - [[openclaw]] — 已有官方插件集成
 - [[skill-creator]] — #1423 直接涉及 skill 规范
+
+### Skill Generation 应用到自身 (2026-04-08)
+- 已将 MemOS 的 skill generation 思路应用到 Kagura 自身
+- 双通道实现：NUDGE.md 第 5 步（被动，agent_end 每 5 轮）+ skill-extractor skill（主动，daily review/reflect）
+- 灵感来源：MemOS `generator.ts` + Hermes `skill_nudge`
