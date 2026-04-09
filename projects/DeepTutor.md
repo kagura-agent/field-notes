@@ -23,6 +23,9 @@
 - **Persistent Memory**: 跨 session 的学习者画像，用于 personalization
 - **CLI-first**: 结构化 JSON 输出，方便 agent pipeline 集成
 - **移除 litellm**: beta.3 改用 native OpenAI/Anthropic SDK（我们的 PR #267 是 litellm 时代的）
+- **Provider 架构**: ProviderSpec dataclass 做声明式注册（single source of truth），backend 字段路由到 openai_compat / anthropic / azure_openai 等实现。加新 provider 只需加一个 ProviderSpec 条目
+- **v1.0.0-beta.3 (2026-04-08)**: Windows 兼容修复、JSON parse 修复（我们的 #263）、Guided Learning 修复、完整 i18n
+- **信号**: litellm poisoning 事件推动"去中间层"趋势，多项目转向原生 SDK
 
 **与我们的关联**:
 - SKILL.md 互操作: DeepTutor 已是 AgentSkills 兼容的 — OpenClaw agent 可直接调用
@@ -31,6 +34,8 @@
 
 ## 项目笔记
 
+- **PR #267 关闭** (2026-04-08): litellm 移除后我们的 streaming fix 不再适用，maintainer (pancacake) 礼貌关闭并解释原因
+- **PR #263 merge 进 v1.0.0-beta.3** 🎉: parse_json_response 修复被采纳，Kagura 成为 New Contributor
 - **维护者友好**: #263 快速 merge + 感谢回复，响应速度快
 - **pre-commit**: 项目配了 pre-commit hooks，是必需的；本地因网络问题没跑通（ruff 下载失败），但 CI 会跑
 - **百炼 Coding Plan endpoint**: 不支持 non-streaming tool calling（返回 InvalidParameter），必须用 stream=True

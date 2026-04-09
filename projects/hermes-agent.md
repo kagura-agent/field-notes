@@ -6,7 +6,20 @@
 
 Hermes 是 OpenClaw/ClawX 的直接竞争者，但定位不同。OpenClaw 是基础设施（gateway + 插件），Hermes 是**完整的自我改进 agent**。它不只是跑工具，它试图让 agent 从经验中学习。
 
-9.8k⭐ (+2.7k/周，持续上涨)，NousResearch（知名 AI 研究组织）出品。
+42k⭐，NousResearch（知名 AI 研究组织）出品。
+
+## v0.8.0 (2026-04-08) 重点更新
+
+### notify_on_complete —— 后台任务自动通知 (#5779)
+- `terminal(background=true, notify_on_complete=true)` → reader thread 检测进程退出 → completion_queue → 合成 MessageEvent 注入为新 agent turn
+- **设计亮点**: 零新工具（复用 terminal+process）、event-driven、crash recovery（checkpoint 持久化）、prompt cache safe
+- **与 OpenClaw 对比**: OpenClaw 用 sessions_spawn + auto-announce 做 subagent 通知，但 exec 后台进程没有类似机制。值得借鉴
+
+### 其他亮点
+- Live model switching (`/model` 命令) —— 跨平台中途切换模型
+- MCP OAuth 2.1 支持
+- 免费 MiMo v2 Pro 做辅助任务
+- 209 PRs merged, 82 issues resolved
 
 ## 核心发现：学习循环的实现
 
