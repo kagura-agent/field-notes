@@ -44,6 +44,13 @@ source: GitHub jarrodwatts/claude-hud
 - **Note**: claude --print hung with no output after 5+ min — had to implement manually
 - **Lesson**: For well-scoped features with clear architecture, manual implementation is faster than waiting for Claude Code
 
+## 2026-04-09 Issue #408 — lineLayout: compact has no visible effect
+
+- **Root cause** (community-identified by bar-dzi): Claude Code runs statusLine as subprocess with piped stdout → `process.stderr.columns` is 0 → falls back to `UNKNOWN_TERMINAL_WIDTH = 40` → compact one-liner wraps into 5+ lines
+- **Fix approach**: `getTerminalWidth()` should read `process.env.COLUMNS` as fallback, or the plugin command wrapper should `export COLUMNS=$(tput cols)` before exec
+- **Workaround**: User adds `export COLUMNS` to `.zshrc` — confirmed working by yriiolik
+- **Architecture insight**: Plugin runs as subprocess, not in-process. Terminal dimensions don't propagate through pipes — classic Unix gotcha. [[mechanism-vs-evolution]] — the "compact" feature was designed correctly at render level but the execution environment broke the assumption.
+
 [[self-evolving-agent-landscape]]
 
 ## PR #319 (2026-03-25): fix(setup): JSON escaping rules

@@ -76,6 +76,19 @@
 - 或者：把我们的 nudge 做得更像 MetaClaw 的 skill evolver（自动分析失败 → 自动生成 skill）
 - [[self-evolving-agent-landscape]] 需要更新：MetaClaw 填补了 "framework 层" 的空白
 
+## 贡献机会（2026-04-09 扫描）
+
+- **Issue #63** — benchmark 文档和硬编码路径问题（docs + scripts 里 hardcoded `/home/xkaiwen`），用户已表示愿意修，但无人 assign。低门槛，适合首次贡献
+- 14 个 open issues，大多是用户使用问题/feature request
+- OpenClaw plugin 作为 release asset 分发（metaclaw-plugin.zip, 1712 downloads），不在 repo 源码树里
+- **潜在贡献**：帮修 #63（替换硬编码路径为相对路径/环境变量）、改善 benchmark README
+
+## 统计（2026-04-09）
+
+- ⭐ 3530 | 🍴 393 forks | 14 open issues
+- 最后 push: 2026-04-03
+- OpenClaw plugin 下载: 1712 次
+
 ## Links
 - GitHub: https://github.com/aiming-lab/MetaClaw
 - Website: https://metaclaw.bot/
