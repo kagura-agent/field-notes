@@ -29,9 +29,18 @@ tags: [workflow, self-evolving, agent-design, flowforge]
 3. **合并节点**：重复检查合并，减少 `flowforge next` 的次数
 4. **信任分级**：对某 repo 打过 10 个 PR 全 merge → 放松该 repo 的 study 深度
 
+## 实践记录
+
+### 2026-04-09: study.yaml quick_scout 模式
+首次实际应用轻量版 workflow 方向。在 study workflow 的 entry 节点增加了：
+- **quick_scout 节点**：10 分钟快速扫描，只记标题+一句话判断，不深入
+- **决策辅助提示**：entry 节点提示先查最近 memory，避免连续同模式
+- 这是可能方向 #2（轻量版 workflow）的最小实现
+- commit: de92a0c
+
 ## 状态
 
-**仅记录。** Luna 判断先不做，机制已经太多。
+**部分实践中。** 轻量版 workflow 已在 study 中落地（quick_scout），其他方向仍为记录。
 
 See [[mechanism-vs-evolution]] — adding workflow nodes ≠ better outcomes.
 See [[skill-injection-via-hooks]] — same tension between automation and overhead.
