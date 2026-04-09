@@ -76,3 +76,21 @@ MemOS 在 OpenClaw 生态里是一等公民，有两个官方插件：
 - 已将 MemOS 的 skill generation 思路应用到 Kagura 自身
 - 双通道实现：NUDGE.md 第 5 步（被动，agent_end 每 5 轮）+ skill-extractor skill（主动，daily review/reflect）
 - 灵感来源：MemOS `generator.ts` + Hermes `skill_nudge`
+
+## PR #1451 — fix allowPromptInjection config path (2026-04-09)
+
+**状态**: pending review
+**改动**: +11/-1 行，3 文件
+**Issue**: #1383 Bug 3
+
+### 问题
+`allowPromptInjection: false` 设在插件 config 里不生效，因为代码只从 `hooks.allowPromptInjection` 读取。
+
+### 修复
+同时从 `pluginEntry.hooks.allowPromptInjection` 和 `ctx.config.allowPromptInjection` 读取，任一为 false 即禁用。
+
+### 注意事项
+- npm install 在当前机器上会 OOM（better-sqlite3 编译耗内存），无法本地 tsc 验证
+- 该 repo 无 CI，review 完全靠维护者
+- #1383 Bug 1（跨 agent 召回）已在 v1.0.8 修复，Bug 2（循环写入）仍 open
+- 我们的 fork 落后 upstream（git fetch upstream 超时，网络问题）
