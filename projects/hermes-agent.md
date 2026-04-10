@@ -519,3 +519,17 @@ Links: [[openclaw-plugin-nudge]], [[self-evolution-architecture]], [[hermes-self
   2. 改动应局限在问题发生的层（auxiliary_client），不要扩散到 auth 层
   3. 测试覆盖 edge case（9 vs 3），不只是 happy path
 - **维护者模式**: teknium1 会把多个社区 PR salvage 合并成一个大 PR（#5983 合了 4 个），说明他偏好整合而不是逐个 merge
+
+## 2026-04-10 更新
+
+### Gateway Fast Mode (Priority Processing)
+- 新增 `agent.service_tier: fast` 配置项 → OpenAI API 的 `service_tier: "priority"`
+- `/fast` 命令在 gateway 聊天中 toggle on/off/status
+- `resolve_fast_mode_overrides()` 按模型检查兼容性（仅 OpenAI）
+- **设计模式**: provider-specific 能力通过统一 gateway 命令暴露，config 驱动而非硬编码
+- 与之前的 `/reasoning` 命令一脉相承：把 provider 差异抽象为用户可切换的开关
+
+### Weixin 平台完整性审计 (16 integration points)
+- 系统性审计发现微信适配器在 16 处缺失（5 代码 + 11 文档）
+- **经验**: 新平台接入必然遗漏——gateway routing、CLI setup/dump/skills-config、每个列出平台的文档页面都要更新
+- **对我们的启示**: 添加新平台后应做 parity audit（grep 所有平台列表，确认新平台不缺席）
