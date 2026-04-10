@@ -65,8 +65,8 @@ SkillFoundry 的 5 步管线：Domain Tree → Mine → Extract → Compile → 
 
 1. ✅ 写本设计文档
 2. [ ] 对 wiki/cards/ 中 top-20 高价值条目做 actionable 标注
-3. [ ] 找 3 个可直接转 skill 的 cards，用 skill-creator 手动转化一次，验证流程
-4. [ ] 基于手动经验决定是否值得写 scan 脚本
+3. ✅ 手动转化验证：4 cards → `contribution-quality` skill, 1 card → `debug-state-files` skill（详见 wiki-to-skill-results.md）
+4. ✅ 结论：不需要 scan 脚本。手动聚类+转化比自动化更有效。下一步应做 actionable 标注+主题聚类
 
 ## 相关
 
