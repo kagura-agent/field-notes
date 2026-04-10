@@ -22,11 +22,16 @@
 | PR | Issue | 状态 | 备注 |
 |---|---|---|---|
 | #1033 | #967 | pending | corrupt JSON silent fallback → throw error |
+| #1034 | #964 | pending | ghost worktree cleanup false success |
+| #1037 | #1035 | pending | Windows path spaces in --spawn terminal |
 
 ## 注意事项
 - eslint 禁止 unused vars，catch 里不用的 error 要命名为 `_err`
 - `packages/core/src/db/connection.ts` 是 mock 重点 — 测试通过 `mock.module('./connection', ...)` 注入
 - SQLite 返回 TEXT string，PostgreSQL 返回 JSONB object — 两种 path 都要测
+- `trySpawn` 返回 true 只要 child.pid 存在 — 不代表子进程真的成功了（Windows 尤其如此）
+- Windows terminal spawning 必须 quote 路径（spaces 问题 #1035）
+- lint-staged 在 commit 时自动跑 eslint+prettier，不需要手动跑
 
 ## PR History
 
