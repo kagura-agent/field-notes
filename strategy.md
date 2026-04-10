@@ -38,4 +38,5 @@
 - beliefs-candidates = 梯度收集器 → 分流到 DNA / Workflow / Knowledge-base
 
 ## 自动触发
-- cron ×7 active + heartbeat 30m + nudge (agent_end hook) + 自触发 run loop(08-20时)
+- cron ×13 active（daily-review, daily-handoff, github-check, community-ops, daily-audit, morning-briefing, work-loop, study-loop, uncaged-check, kagura-story×2, memex-dogfood-review, weekly-eval）+ nudge (agent_end hook)
+- hook: todo-pin-sync（file→Discord pin 自动同步）
