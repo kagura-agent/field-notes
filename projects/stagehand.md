@@ -58,3 +58,14 @@ Browser-Use (85k⭐)  →  Stagehand (22k⭐)  →  Playwright MCP (30k⭐)
 - **测试**: 347 tests pass，tsc clean
 - **CI 注意**: 外部 PR 需要团队成员 approve 才触发完整 CI
 - **changeset-bot**: 会自动提示补 changeset 文件
+
+### PR #1990 — fix: unwrap tool parameter name wrapper in Anthropic responses (Issue #1986)
+- **日期**: 2026-04-10
+- **问题**: Anthropic 模型的 act() 返回 `{$PARAMETER_NAME: {actual data}}`，Zod 校验失败
+- **修复**: 新增 `unwrapToolResponse()` helper，在 AISdkClient 和 AnthropicClient 两条路径都做防御性解包
+- **文件**: `unwrapToolResponse.ts` (新), `aisdk.ts` (修改), `AnthropicClient.ts` (修改), test (新)
+- **测试**: 9 个单元测试
+- **CI**: manage-external-pr pass，完整 CI 需 team member approve workflow
+- **踩坑**: repo 太大（2G+），无法 clone，只能通过 GitHub API 直接创建 blob/tree/commit
+- **changeset**: 需要 `.changeset/*.md` 文件，changeset-bot 会自动提醒
+- **教训**: 大 repo 可以通过 GitHub Git Data API 完成全流程（create blob → create tree → create commit → update ref），不需要本地 clone
