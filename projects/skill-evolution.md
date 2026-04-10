@@ -63,7 +63,7 @@ Progressive loading: 50 个 skill 的上下文开销 = 1 个（metadata ~100 wor
 
 ## 可移植的设计
 
-- [x] **Determinism ladder** → 加到 skill-creator 的审查标准（2026-04-10, references/determinism-audit.md）
+- [x] **Determinism ladder** → 加到 skill-creator 的审查标准（2026-04-10, references/determinism-audit.md）✅ 5-level maturity ladder 已集成
 - [ ] **Escalation 机制** → 加到 nudge 反思：连续 2 次同问题 → 升级为结构性问题
 - [ ] **Maturity signals** → beliefs-candidates 升级标准增加"稳定期"维度
 - [ ] **Progressive loading** → OpenClaw skill injection 已有类似机制，确认对齐
