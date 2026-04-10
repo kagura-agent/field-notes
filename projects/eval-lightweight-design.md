@@ -48,7 +48,7 @@ Add eval checks to the existing nudge plugin — every N turns, check if recent 
 Start with **Option A** — a simple cron job. It's the least infrastructure, produces visible artifacts, and can be upgraded later. The key insight from the cards: **any eval is better than no eval**.
 
 ## Next Steps
-- [ ] Write the eval script (shell + grep/awk)
-- [ ] Set up weekly cron job
-- [ ] Run first baseline measurement
-- [ ] After 4 weeks, decide if metrics are useful enough to keep
+- [x] Write the eval script (shell + grep/awk) — `scripts/weekly-eval.sh` (2026-04-10)
+- [x] Set up weekly cron job — `weekly-eval` cron, Mon 9:00 CST (2026-04-10)
+- [x] Run first baseline measurement — W15 report: 54% merge rate, 2 unupgraded gradients, 12 audit findings (2026-04-10)
+- [ ] After 4 weeks (W19, ~2026-05-11), decide if metrics are useful enough to keep
