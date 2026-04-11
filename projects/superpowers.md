@@ -59,3 +59,12 @@
 - **Marketplace**: superpowers 已经在多个平台的 plugin marketplace 上线，是 [[skill-distribution]] 的参考案例
 - **对比 [[Archon]]**: Archon 做 harness builder（构建 agent），superpowers 做 skill framework（增强 agent）— 不同层
 - **反直觉**: 不是新 framework，是寄生在现有 coding agent 上的 skill 层 — 暗示 skill 层比 framework 层有更大的分发优势
+
+## 应用记录
+
+### 2026-04-11: TDD for Skills → coding-agent SKILL.md
+- **RED（失败模式识别）**: 从 beliefs-candidates.md 提取 5 个已记录的 coding-agent 失败：手写代码×2、不测试就 push×2、误杀 --print 进程×1
+- **GREEN（写规则）**: 新增 Rule #10（test-before-push）、#11（never-hand-write-code）、扩展 #3（--print patience）
+- **REFACTOR（防绕过）**: 加入 "Known Failure Modes" 表，每条失败映射到规则，让未来的 agent 有具体案例参考而非抽象规则
+- **验证**: 规则可直接 grep 检查——如果 subagent 输出包含 `edit` 而非 `claude`/`codex`，说明 #11 被违反
+- **效果预期**: 减少"改了没测"和"自己动手写"两类最高频错误
