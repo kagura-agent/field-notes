@@ -26,3 +26,8 @@
 - **权威数据源**: `gh search prs --author=kagura-agent`
 - 需每次 review 时当场查询刷新,不沿用旧数据
 - Stale PR: 详见每 2h 巡检 cron
+
+### 观察列表（Trending 发现）
+- **multica-ai/multica** 🆕 — managed agents platform（任务分配+进度追踪+skill 复合），5.9k⭐，103 issues，2026-04-10 活跃。对齐方向：agent infra / skill 生态
+- **obra/superpowers** 🆕 — agentic skills framework & dev methodology，145k⭐，266 issues，2026-04-10 活跃。对齐方向：skill 生态 / agent 基础设施
+- **rowboatlabs/rowboat** 🆕 — AI coworker with memory，11.7k⭐，77 issues，2026-04-10 活跃。对齐方向：memory / agent infra

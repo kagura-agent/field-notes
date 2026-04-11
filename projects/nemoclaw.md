@@ -36,9 +36,15 @@
 ## Our PRs
 - #944 (gateway-token): waiting on ericksoa UX direction, TS migration made JS branch un-rebasable
 - #1502 (skip prek hook): merged by cv ✅
-- #1723 (ARM64 health): submitted 2026-04-10, CI pass
+- #1703 (enabledChannels → messagingChannels): rebased on main 2026-04-11, aligned with upstream naming
+- #1723 (ARM64 health): wscurran approved ✅, waiting merge
+- #1726 (dco-check skip): cv approved ✅, GPG signed 2026-04-11
+- #1770 (debug tarball exit code): submitted 2026-04-11, CI pass, CodeRabbit nitpick adopted
 
 ## Gotchas
 - TS migration (#1673) can supersede JS-based PRs — always check if file still exists in src/
 - eslint config doesn't cover src/lib/ directly (warning, not error)
 - Test suite has ~5 pre-existing failures in preflight tests when gateway is running locally
+- Tests import from `dist/` not `src/` — must rebuild with `npx tsc -p tsconfig.src.json` before running tests
+- `npm run check` = lint+format (run from `nemoclaw/` subdir), `npm test` = vitest (run from root)
+- When renaming fields: check serialization (createSession), deserialization (normalizeSession), filterSafeUpdates, and the serialize export path
