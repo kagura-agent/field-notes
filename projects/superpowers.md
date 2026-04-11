@@ -20,6 +20,38 @@
 - **Subagent 驱动**: 每个工程任务一个 fresh subagent，然后 review — 类似 [[FlowForge]] spawn 节点
 - **Plugin marketplace 模式**: 通过 marketplace 分发 skills
 
+## 深读笔记 (2026-04-11)
+
+### 规模与增长
+- 145k⭐, 12.5k forks — 本周 trending 没上榜但稳定巨大
+- 语言: Shell（技巧性的——skills 就是 markdown，不需要编译）
+- 零依赖设计：不引入任何第三方库
+
+### Skill 架构细节
+- **SKILL.md 结构**: YAML frontmatter（name + description）+ markdown body
+- **触发机制**: description 字段以 "Use when..." 开头，agent 根据意图匹配
+- **Skill 工具调用**: Claude Code 用 `Skill` tool，Gemini 用 `activate_skill`，Copilot 用 `skill` tool
+- **强制性**: "even 1% chance a skill might apply → MUST invoke" — 极端强制策略
+- **优先级**: User instructions > Superpowers skills > Default system prompt
+
+### Skill 创建哲学 — TDD for Skills
+- **核心洞察**: Writing skills = TDD applied to process documentation
+- RED: 跑 baseline，看 agent 没有 skill 时怎么犯错
+- GREEN: 写 skill，让 agent 遵守
+- REFACTOR: 找新的绕过方式，堵住
+- **反模式**: 不先看 agent 失败就写 skill = 不写测试就写代码
+
+### PR 管理 — 94% 拒绝率
+- 明确反对: bulk PRs, speculative fixes, compliance rewrites, fork syncs
+- 要求: 真实问题驱动，人类审查 diff，搜索已有 PR
+- **教训**: 高星项目的 contribution bar 极高，agent 打工需要精准
+
+### 对我们 skill 系统的启示
+1. **description 字段规范**: 我们的 SKILL.md 也用 description 匹配，superpowers 证明这个模式有效
+2. **TDD for skills**: 我们可以借鉴——写 skill 前先看 agent 不用 skill 时犯什么错
+3. **零依赖哲学**: skill 就是 markdown，越简单分发越广
+4. **强制 vs 建议**: superpowers 极端强制（1% 就触发），我们偏温和（"clearly applies"）
+
 ## 与我们的关联
 
 - **[[AgentSkills]] 的同路人**: 都在做 composable agent skills，但 superpowers 专注 coding workflow
