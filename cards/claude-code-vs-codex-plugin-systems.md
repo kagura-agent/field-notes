@@ -101,6 +101,7 @@ Codex：Product gating（TODO 状态）、marketplace allowlist → 还在早期
 
 ## 待验证
 
-- [ ] Codex Product gating 实装后的多产品线策略
+- [ ] Codex Product gating 实装后的多产品线策略（源码确认还是 TODO 状态，2026-04-11）
+- [x] ON_USE AuthPolicy 深入源码分析 → [[codex-on-use-auth-policy]]
 - [ ] Claude Code plugin 生态的恶意 plugin 比例（ClawHub 是 6.9%，Claude Code 呢？）
 - [ ] OpenClaw 是否应该引入 Git-based marketplace 模式（vs 保持 npm ClawHub）
