@@ -69,3 +69,12 @@ Browser-Use (85k⭐)  →  Stagehand (22k⭐)  →  Playwright MCP (30k⭐)
 - **踩坑**: repo 太大（2G+），无法 clone，只能通过 GitHub API 直接创建 blob/tree/commit
 - **changeset**: 需要 `.changeset/*.md` 文件，changeset-bot 会自动提醒
 - **教训**: 大 repo 可以通过 GitHub Git Data API 完成全流程（create blob → create tree → create commit → update ref），不需要本地 clone
+
+### PR #1997 — fix: respect opts.debug in installV3ShadowPiercer (fixes #1996)
+- **日期**: 2026-04-11
+- **问题**: `V3ShadowPatchOptions.debug` 选项被忽略，`DEBUG` 硬编码为 `true`，导致每次 `attachShadow` 都打 console.info
+- **修复**: `const DEBUG = opts.debug ?? false;` 一行替换
+- **文件**: `packages/core/lib/v3/dom/piercer.runtime.ts`，+1/-2 lines
+- **CI**: manage-external-pr SUCCESS, cubic AI reviewer COMMENTED (non-blocking)
+- **注意**: 这个 repo pnpm install 在我们的机器上 OOM (SIGKILL)，无法本地跑完整测试。类型安全通过人工验证
+- **changeset**: 未加（如被要求，参考 #1918 经验）
