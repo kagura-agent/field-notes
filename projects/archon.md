@@ -60,3 +60,10 @@
   - All 3 packages pass tsc --noEmit
 - **PR patterns**: CodeRabbit reviews are thorough; address Major issues promptly
 - **hermes#2890**: Upstream restructured STT config significantly (added providers, mistral). Rebase required careful conflict resolution to merge our `device` field with new provider structure
+
+### PR #1084 — fix(orchestrator): surface AI error results (fixes #1076)
+- **Root cause**: `handleStreamMode` and `handleBatchMode` required `msg.sessionId` truthy to process result messages; auth errors have `session_id: undefined` → silently dropped
+- **Fix**: Split result handler to process `sessionId` and `isError` independently; send error message when no assistant content produced
+- **CodeRabbit review**: Suggested provider-aware auth hint (don't hardcode 'Claude') → used `aiClient.getType()`, good catch
+- **Tests**: 5 new tests, all pass + type-check clean
+- **Pattern**: "dishonest silence" bugs (function returns void/success but operation failed) — same family as #1034's ghost worktree
