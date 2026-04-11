@@ -56,3 +56,18 @@
 - **Key fix**: Interactive prompt gate was `ch.requireMentionEnvKey && ch.serverIdEnvKey` — Telegram has no serverIdEnvKey, changed to `!ch.serverIdEnvKey || process.env[ch.serverIdEnvKey]`
 - **Tests**: 3 new vitest tests (mention-only, open, empty config)
 - **GPG**: Commit signed ✅
+- **CodeRabbit feedback**: (1) Validate TELEGRAM_REQUIRE_MENTION — addressed in 04f2b988 (reject invalid values with error+exit). (2) Sandbox reuse ignores config changes — acknowledged as pre-existing, outside diff scope.
+
+## PR #1771 — install.sh provider help text (2026-04-11)
+- **Status**: PENDING, CI pass
+- **Scope**: 1 line in install.sh — list all 9 valid NEMOCLAW_PROVIDER values
+- **CodeRabbit**: Use canonical names (build/nim-local) not aliases (cloud/nim) — addressed
+
+## PR #1770 — debug tarball exit code (2026-04-11)
+- **Status**: PENDING, CI pass
+- **CodeRabbit**: Return boolean from createTarball() — adopted
+
+## Maintainer Insights (2026-04-11)
+- cv: strict on commit signing (GPG required), responsive, will close stale PRs (closed #944)
+- wscurran: thorough approver, positive feedback
+- Feature parity PRs ("X has it, add to Y") are ideal for NemoClaw — clear spec, existing patterns
