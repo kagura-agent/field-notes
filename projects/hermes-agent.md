@@ -533,3 +533,12 @@ Links: [[openclaw-plugin-nudge]], [[self-evolution-architecture]], [[hermes-self
 - 系统性审计发现微信适配器在 16 处缺失（5 代码 + 11 文档）
 - **经验**: 新平台接入必然遗漏——gateway routing、CLI setup/dump/skills-config、每个列出平台的文档页面都要更新
 - **对我们的启示**: 添加新平台后应做 parity audit（grep 所有平台列表，确认新平台不缺席）
+
+## 2026-04-11 更新
+
+### notify_on_complete user identity propagation (#7643 → PR #7664)
+- **问题**: `_run_process_watcher()` 构造 `SessionSource` 时缺少 `user_id`/`user_name`，导致 auth 拒绝，触发 pairing flow
+- **修复**: 4 文件 36 行，在 session_context → _set_session_env → terminal_tool → process_registry → _run_process_watcher 全链路传播 user identity
+- **模式**: hermes 的 gateway 并发用 `contextvars.ContextVar` 而非 `os.environ`，新增 session 字段必须同步更新 5 个位置（ContextVar定义、set/clear、env传递、watcher创建、watcher消费）
+- **测试状况**: 2419 pass, 9 fail 全是 upstream 预存的（feishu adapter、email session、discord bot filter 等）
+- **选题经验**: hermes 高流量 issue，很多在提出后几分钟就有人抢 PR（如 #7579→#7581 同时提交）。选无竞争 PR 的 issue 很重要
