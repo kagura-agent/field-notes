@@ -95,8 +95,8 @@
 ## 行动项
 
 - [x] Phase 0 skill trajectory tracking 开始（2026-04-12）
-- [ ] 将 conservative editing protocol 纳入 skill-creator skill
-- [ ] 评估 PRM 思路是否可集成到 nudge（per-session 质量评分）
+- [x] 将 conservative editing protocol 写成 wiki 卡片 → cards/conservative-skill-editing.md (2026-04-12)
+- [x] 评估 PRM 思路是否可集成到 nudge → cards/prm-scoring-nudge-eval.md (2026-04-12, 结论: 轻量 session quality signal 可行，等 Phase 1)
 - [ ] 关注 issue #1: "Can skillclaw support Hermes?" — 如果 Hermes 支持进展，可能影响打工方向
 
 ## 关联
