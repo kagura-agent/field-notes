@@ -93,15 +93,56 @@ Phase 2 创建 skill：
   - 允许只读复制 internal state 文件
   - → 安全方向：nanobot 在认真做 LLM 沙箱限制
 
-## 统计 (2026-04-12 18:46)
-- ⭐ 39,131 | pushed today
+## Cron 噪声问题与解法 (2026-04-12 deep read)
+
+### 问题
+nanobot 用户今天报了两个 cron 相关 issue (#3064, #3066)：cron job 执行时，agent 的中间思考消息（"Checking...", "Connecting to provider..."）泄漏到 channel，导致定时任务非常吵。
+
+### nanobot 解法 (PR #3065, +4/-0 code + 100 行测试)
+```python
+# 在 on_cron_job handler 中传入 no-op progress callback
+async def _silent(*_args, **_kwargs) -> None:
+    pass
+
+await loop.process_direct(
+    session_key=f"cron:{job.id}",
+    on_progress=_silent,  # ← 关键：阻断 _bus_progress 回调
+)
+```
+- `process_direct()` 接受 `on_progress` 参数，默认是 `_bus_progress`（发到 message bus → channel）
+- 传 no-op 就阻断了中间消息，只保留最终结果
+- heartbeat handler 已经用了同样模式，cron 漏掉了
+
+### 测试设计优秀
+- 正向测试：传 `_silent`，验证 outbound queue 无 `_progress` metadata 消息
+- 反向测试：不传 `on_progress`，验证 `_progress` 消息确实出现（证明 bug 存在）
+- 用 `MessageBus.outbound.get_nowait()` drain queue 检查
+
+### 我们的对比
+我们的 channel 架构天然避免了这个问题：
+- cron 执行结果写入 `memory/YYYY-MM-DD.md`，不直接发到 channel
+- 主 session 读 memory 获取 cron 输出
+- 但如果未来 Workshop 的 cron scheduler 直接发消息到 channel，就会遇到同样问题
+- **启发**：Workshop cron 实现中应预留 progress suppression 机制
+
+## Task Timeout 机制 (PR #3063)
+- `NANOBOT_TASK_TIMEOUT_MINUTES` env var (default: 60)
+- `asyncio.wait_for()` 包裹 `_process_message()`
+- 超时返回友好错误消息
+- 与我们的 Copilot API ~60s 流式空闲超时不同：nanobot 的是整体任务超时，解决无限循环/资源泄漏
+- 我们的 subagent 超时是 API 层面限制，不是 agent 层面控制
+
+## 统计 (2026-04-12 19:45)
+- ⭐ ~39,200 | pushed today (多个 commit)
 - v0.1.5 (Apr 6) — latest release
-- 活跃度极高，每天都有 commit
+- 5 个新 open issues/PRs 全部今天创建，活跃度极高
+- 社区正在快速提 cron/timeout/progress 相关 issue → 说明 nanobot 进入 production 使用阶段
 
 ## 下一步
 - [x] 实验：在 nudge hook 中加 `[SKILL]` 标签 (2026-04-12, NUDGE.md Step 5 重写)
 - [ ] 对比 Dream 的 staleness 规则和我们的 memory hygiene（14天 vs 我们的 ad hoc）
 - [ ] 看 lifecycle hooks 设计，跟 OpenClaw hooks 对比
+- [ ] Workshop cron scheduler 添加 progress suppression（借鉴 PR #3065）
 
 ## Links
 - [[self-evolving-agent-landscape]]
