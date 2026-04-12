@@ -21,13 +21,13 @@
 
 ## 支持的 Runtime
 
-Claude Code, Codex, [[OpenClaw]], OpenCode — 把自己定位为 runtime-agnostic 管理层。
+Claude Code, Codex, [[openclaw-architecture]], OpenCode — 把自己定位为 runtime-agnostic 管理层。
 
 ## 与 OpenClaw 的关系
 
 **竞品+互补**:
 - multica 专注 **agent as managed worker**（任务板、进度追踪、团队协作）
-- [[OpenClaw]] 专注 **agent as personal assistant**（消息路由、多平台、生活集成）
+- [[openclaw-architecture]] 专注 **agent as personal assistant**（消息路由、多平台、生活集成）
 - multica 把 OpenClaw 列为支持的 runtime 之一，说明他们认为两者是不同层
 
 **启发**: 如果 OpenClaw 想做 "多 agent 协作" 方向，multica 的 skill reuse 机制值得参考。但 OpenClaw 的优势在消息和个人化，不需要直接竞争任务管理赛道。

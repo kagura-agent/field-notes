@@ -17,7 +17,7 @@
 
 - **Skills 自动触发**: 不需要手动调用，agent 识别意图后自动激活对应 skill
 - **跨平台**: Claude Code plugin marketplace + Cursor + Codex + OpenCode + Copilot + Gemini
-- **Subagent 驱动**: 每个工程任务一个 fresh subagent，然后 review — 类似 [[FlowForge]] spawn 节点
+- **Subagent 驱动**: 每个工程任务一个 fresh subagent，然后 review — 类似 [[flowforge]] spawn 节点
 - **Plugin marketplace 模式**: 通过 marketplace 分发 skills
 
 ## 深读笔记 (2026-04-11)
@@ -55,7 +55,7 @@
 ## 与我们的关联
 
 - **[[AgentSkills]] 的同路人**: 都在做 composable agent skills，但 superpowers 专注 coding workflow
-- **自动触发 vs 显式调用**: superpowers 靠意图识别自动触发 skill，[[OpenClaw]] 靠 SKILL.md description 匹配 — 理念一致
+- **自动触发 vs 显式调用**: superpowers 靠意图识别自动触发 skill，[[openclaw-architecture]] 靠 SKILL.md description 匹配 — 理念一致
 - **Marketplace**: superpowers 已经在多个平台的 plugin marketplace 上线，是 [[skill-distribution]] 的参考案例
 - **对比 [[Archon]]**: Archon 做 harness builder（构建 agent），superpowers 做 skill framework（增强 agent）— 不同层
 - **反直觉**: 不是新 framework，是寄生在现有 coding agent 上的 skill 层 — 暗示 skill 层比 framework 层有更大的分发优势

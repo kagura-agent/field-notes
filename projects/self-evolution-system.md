@@ -22,8 +22,8 @@ Luna 反馈 / 犯错 / 打工经验 / 学习洞察
   行为级              知识级
      ↓                 ↓
 beliefs-candidates   knowledge-base/
-     ↓               ├── projects/  (项目笔记，[[双链]])
-  重复 3 次            ├── cards/    (概念卡片，[[双链]])
+     ↓               ├── projects/  (项目笔记，[[wikilinks]])
+  重复 3 次            ├── cards/    (概念卡片，[[wikilinks]])
      ↓                └── grep 全库搜索
   DNA 升级
   (SOUL/AGENTS/NUDGE/HEARTBEAT)
@@ -70,7 +70,7 @@ beliefs-candidates   knowledge-base/
 
 - **nudge 从 10 步精简到 4 步**（2026-03-23）：回归 Hermes 的简单触发初衷，重活留给 daily-review
 - **field-notes + memex 合并为 knowledge-base**（2026-03-23）：分离是因为工具不同，不是知识需要分离
-- **所有笔记用 [[双链]]**（2026-03-23）：Obsidian 理念，知识是网不是树
+- **所有笔记用 [[wikilinks]]**（2026-03-23）：Obsidian 理念，知识是网不是树
 - **grep 替代 memex search**（2026-03-23）：memex search 只搜 cards/，grep 搜全库。已提 issue #10
 - **进化动作需 Luna 确认**（2026-03-23）：review 只发现和提案，不自动执行
 

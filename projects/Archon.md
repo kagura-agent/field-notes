@@ -48,4 +48,4 @@ Archon 的核心洞察：**structure 是 deterministic 的，intelligence 是 no
 - **worktree isolation**: 并行打工时避免 branch 冲突
 
 ## Tags
-#workflow #agent-coding #determinism #[[FlowForge]] #[[skill-evolution]]
+#workflow #agent-coding #determinism #[[flowforge]] #[[skill-evolution]]

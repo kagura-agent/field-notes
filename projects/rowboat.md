@@ -40,7 +40,7 @@
 
 ## 生态位
 
-- 竞品：[[Mem0]]（API-first memory）、Notion AI、Obsidian + 各种 AI 插件
+- 竞品：[[mem0-letta]]（API-first memory）、Notion AI、Obsidian + 各种 AI 插件
 - 差异化：开源 + 本地优先 + 知识图谱（不只是向量搜索）
 - YC 背书 + 11.7k⭐ 说明"AI + persistent memory"方向有市场验证
 

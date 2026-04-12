@@ -68,7 +68,7 @@
 
 ## 生态位置
 
-- 与 [[OpenClaw]] 的关系：nanobot 明确 inspired by OpenClaw，Skills 目录结构几乎相同
+- 与 [[openclaw-architecture]] 的关系：nanobot 明确 inspired by OpenClaw，Skills 目录结构几乎相同
 - 与 [[EvoAgentX]] 的关系：DeepTutor 是垂直场景（教育），EvoAgentX 是横向能力（agent 进化）
 - 与 [[MemOS]] 的关系：TutorBot 的 Memory 系统是轻量版 memory management，MemOS 更重
 - [[mechanism-vs-evolution]]: DeepTutor 的 Capability 层是 mechanism（明确 stages），但 TutorBot 的 skill 进化更接近 evolution

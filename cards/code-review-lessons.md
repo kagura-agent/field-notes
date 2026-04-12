@@ -24,4 +24,4 @@ created: 2026-03-26
 Summary → Related Issue → Changes → Testing → Checklist
 
 ---
-来源：[[acontext]] PR #506 review, [[hindsight]] PR #678 复盘, [[hermes]] PR #2715 复盘
+来源：[[acontext]] PR #506 review, [[hindsight]] PR #678 复盘, [[hermes-agent]] PR #2715 复盘

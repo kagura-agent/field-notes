@@ -75,7 +75,7 @@
 3. FlowForge skill 可以发 ClawHub——当前没有 workflow 管控类 skill
 
 ## 相关笔记
-- [[self-evolving agent landscape]] — 2026-03-22 的生态地图需要更新
+- [[self-evolving-agent-landscape]] — 2026-03-22 的生态地图需要更新
 - [[Capability Evolver]] — Gene/Capsule 模式
 - [[hermes-agent]] — nudge/inline reflection
 - [[hindsight]] — agent memory

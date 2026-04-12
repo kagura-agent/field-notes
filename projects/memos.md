@@ -7,7 +7,7 @@
 
 MemOS 把 AI 记忆当作一等公民来管理，提供类操作系统的抽象层：memory allocation、retrieval、lifecycle management。核心思路是把散落在各处的 context/memory 统一成可管理的资源。
 
-## 跟 [[openclaw]] 的关系
+## 跟 [[openclaw-architecture]] 的关系
 
 MemOS 在 OpenClaw 生态里是一等公民，有两个官方插件：
 - **local 插件** — 本地部署，memory 存本机
@@ -69,7 +69,7 @@ MemOS 在 OpenClaw 生态里是一等公民，有两个官方插件：
 ## 关联
 
 - [[hermes-agent]] — 同为 agent 基础设施，memory 层互补
-- [[openclaw]] — 已有官方插件集成
+- [[openclaw-architecture]] — 已有官方插件集成
 - [[skill-creator]] — #1423 直接涉及 skill 规范
 
 ### Skill Generation 应用到自身 (2026-04-08)

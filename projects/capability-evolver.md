@@ -70,8 +70,8 @@ solidify() → 验证 + git commit + 更新 Gene/Capsule store
 
 ## 在生态中的位置
 
-属于 [[self-evolving agent landscape]] 的 Skill/Memory 层。
-跟 [[Hermes]] 做的方向互补——Hermes 做 nudge/inline reflection，Evolver 做代码级自我修改。
+属于 [[self-evolving-agent-landscape]] 的 Skill/Memory 层。
+跟 [[hermes-agent]] 做的方向互补——Hermes 做 nudge/inline reflection，Evolver 做代码级自我修改。
 我们在 Identity 层，Evolver 在 Skill 层。
 
 ## 数据

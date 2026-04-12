@@ -28,7 +28,7 @@ Karpathy LLM Wiki pattern 的 Claude Code 实现。3 层架构：
 | 结构 | concepts/ + connections/ + qa/ | projects/ + cards/ |
 | 检索 | index.md LLM-guided | memex semantic search |
 | 维护 | lint.py 自动检查 | 手动 review |
-| 跨引用 | [[wikilink]] | [[wikilink]] + memex backlinks |
+| 跨引用 | [[wikilinks]] | [[wikilinks]] + memex backlinks |
 
 **差距**：他们的 compile step 是自动化的（hooks 触发），我们的是手动的。lint.py 也是我们缺的。
 

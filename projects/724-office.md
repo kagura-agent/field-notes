@@ -20,7 +20,7 @@
 | 身份文件 | SOUL.md + AGENT.md + USER.md | SOUL.md + AGENTS.md + USER.md + IDENTITY.md + NUDGE.md |
 | 自修复 | daily self-check cron | daily-review 7步 FlowForge workflow |
 | 工具创建 | runtime create_tool（运行时写新 Python 工具） | 无（受 OpenClaw 平台限制） |
-| 知识搜索 | LanceDB vector search | grep + [[双链]] |
+| 知识搜索 | LanceDB vector search | grep + [[wikilinks]] |
 | 多租户 | Docker 容器隔离，auto-provision | 不适用（单用户） |
 
 ## 核心洞察
@@ -67,7 +67,7 @@
 
 ## 在 [[self-evolving-landscape]] 中的位置
 
-属于 **Skills/Memory 层**（跟 [[Acontext]]、[[Hermes]] 同层），但比他们更完整——是一个可运行的完整 agent，不只是一个组件。
+属于 **Skills/Memory 层**（跟 [[acontext]]、[[hermes-agent]] 同层），但比他们更完整——是一个可运行的完整 agent，不只是一个组件。
 
 跟我们最像的项目。但他在"进化"方面比我们浅——有 self-repair 没有 self-evolution。我们在 DNA 管线上走得更远。
 
@@ -93,7 +93,7 @@ See also [[self-evolution-architecture]], [[mechanism-vs-evolution]], [[converge
 |------|-----------|--------|
 | 触发 | 自动（session 消息被驱逐时） | 手动（nudge 触发反思决定记什么） |
 | 存储 | LanceDB 向量数据库 | 文件（memory/ + knowledge-base/） |
-| 检索 | 语义搜索（embedding） | keyword grep + [[双链]] |
+| 检索 | 语义搜索（embedding） | keyword grep + [[wikilinks]] |
 | 去重 | cosine similarity 0.92 | 无（靠人工不重复） |
 | 结构 | 原子 fact（JSON） | 自由文本（markdown） |
 | 压缩 | LLM 自动压缩 | 人工策展 |

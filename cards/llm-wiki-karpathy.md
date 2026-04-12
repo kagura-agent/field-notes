@@ -68,7 +68,7 @@ LLM Wiki：LLM 在写入时就把知识整合进持久化的 wiki，知识是编
 
 1. **index.md 自动维护** — Karpathy 核心创新：LLM 维护一个带一行摘要的页面目录。我们 98 cards + 125 project notes 没有索引，每次靠 memex search。**行动项**：写一个 `wiki/index.md` 自动生成脚本（读所有 .md → 提取标题+首行 → 按分类输出），集成到 ingest 流程
 2. **log.md 操作日志** — 时间线记录 wiki 变更（ingest/query/lint）。我们的 memory/ 是全局日志，wiki 本身没有变更记录。**行动项**：考虑给 wiki commit 加结构化 prefix（`card:`, `project:`, `lint:`）便于 grep
-3. **Lint 操作** — 定期检查：孤立页（无 inbound link）、过时内容、缺失交叉引用、概念被提及但没有自己的页面。**行动项**：写一个 wiki-lint 脚本，检查 [[双链]] 的 broken links + orphan pages
+3. **Lint 操作** — 定期检查：孤立页（无 inbound link）、过时内容、缺失交叉引用、概念被提及但没有自己的页面。**行动项**：写一个 wiki-lint 脚本，检查 [[wikilinks]] 的 broken links + orphan pages
 4. **Query→Wiki 回写** — 好的分析直接写成新 card。我们偶尔做但不系统。**行动项**：study workflow 的 note 节点已有此设计，需确保执行
 
 ### qmd 作为 Memex 竞品/参考

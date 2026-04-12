@@ -136,7 +136,7 @@ Retrieve (parallel) → RRF Fusion → Pre-filter (top 300) → Cross-encoder Re
 | 检索策略 | 4-way hybrid (semantic + BM25 + graph + temporal) | semantic only (text-embedding-3-small) |
 | 融合 | RRF + cross-encoder rerank | 无 |
 | 时间感知 | 自然语言日期解析 + temporal decay | 无 |
-| 关系感知 | graph traversal (entity co-occurrence, causal chains) | 手动 [[双链]] |
+| 关系感知 | graph traversal (entity co-occurrence, causal chains) | 手动 [[wikilinks]] |
 | 基础设施 | PostgreSQL + pgvector + custom indexing | OpenAI embedding API |
 
 差距巨大。但 hindsight 是商业产品（YC-backed），我们是个人 agent。不需要 4-way，但 **temporal awareness（时间感知）** 是我们最该学的——"上周我做了什么"这种查询，纯 semantic search 完全做不到。
@@ -144,7 +144,7 @@ Retrieve (parallel) → RRF Fusion → Pre-filter (top 300) → Cross-encoder Re
 ### 可执行的洞察
 1. memory_search 配好后，下一步应该加 BM25（精确匹配）— 双检索 + 简单合并就能大幅提升
 2. temporal decay 可以在 memory_search 上层做 — 对时间相关查询，给最近的结果加权
-3. [[双链]] 是手动版的 graph traversal — 如果能自动从 memory 提取 entity 关系，就接近 hindsight 的 graph 能力
+3. [[wikilinks]] 是手动版的 graph traversal — 如果能自动从 memory 提取 entity 关系，就接近 hindsight 的 graph 能力
 
 ## 2026-03-28 更新：PR #733 — claude-code tool_choice fix
 

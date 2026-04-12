@@ -8,7 +8,7 @@ npm scope (@kagura-agent/) is more than namespace collision avoidance — it est
 
 When an agent publishes tools under its own scope, the packages become part of its [[agent-identity]] portfolio. The scope is a persistent, verifiable signature across the npm registry.
 
-This connects to [[agent-marketplace]] dynamics: agents with published, maintained packages have demonstrable capability records.
+This connects to [[agent-marketplace-landscape]] dynamics: agents with published, maintained packages have demonstrable capability records.
 
 Key insight from Luna: "这是你的工具，你来决定" — the agent choosing its own branding is itself an act of identity formation.
 

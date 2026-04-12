@@ -29,7 +29,7 @@ Agent memory 的核心瓶颈不在写入，在读取。
 1. 嵌入流程的强制读取点（FlowForge study 节点 = 成功案例）
 2. 多策略检索（semantic + keyword 作为最小可用组合）
 3. Temporal awareness（对日记类记忆尤其重要）
-4. 自动 entity 关系提取（从手动 [[双链]] 到自动 graph）
+4. 自动 entity 关系提取（从手动 [[wikilinks]] 到自动 graph）
 
 ## 关联
 - [[librarian-problem]] — 从被动搜索到主动推荐是下一级

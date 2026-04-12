@@ -4,7 +4,7 @@ created: 2026-03-24
 ---
 Code references are **dependencies** — you can't understand the current function without jumping to the called function. Not jumping means you're stuck.
 
-Knowledge links (wiki links, backlinks, `[[双链]]`) are **associations** — you can understand the current card without following the link. Not jumping just means you miss context.
+Knowledge links (wiki links, backlinks, `[[wikilinks]]`) are **associations** — you can understand the current card without following the link. Not jumping just means you miss context.
 
 This explains why developers naturally "jump" through code but don't naturally follow wiki links:
 - Dependencies create **blocking need** (must read to continue)

@@ -48,15 +48,15 @@ Claude Code ◄──► Letta Agent (background)
 
 ## 在生态中的位置
 
-属于 [[self-evolving agent landscape]] 的 Memory 层。
+属于 [[self-evolving-agent-landscape]] 的 Memory 层。
 跟 [[hindsight]]（后端记忆基础设施）互补：hindsight 提供记忆 API，claude-subconscious 是消费者。
 跟我们的定位不同：他们给别人的 agent 加记忆，我们的 agent 自己有记忆。
 
 ## 相关
 
-- [[self-evolving agent landscape]]
+- [[self-evolving-agent-landscape]]
 - [[hermes-agent]] — 同在 self-evolving 方向
-- [[nudge plugin]] — 我们的等价物（但更轻量）
+- [[openclaw-plugin-nudge]] — 我们的等价物（但更轻量）
 
 ## 2026-03-28 更新：memfs 迁移 + 生态位变化
 
@@ -86,7 +86,7 @@ Claude Code ◄──► Letta Agent (background)
 - 但仍然是被动的：只基于已有 transcript 推荐，不预测你会犯什么错
 - memfs 迁移说明：**文件 > 数据库**作为 agent 记忆载体是共识方向
 
-### [[self-evolving agent landscape]] 更新
+### [[self-evolving-agent-landscape]] 更新
 - AlphaEvolve (DeepMind) 代表 Model 层的新高度：evolutionary coding agent
 - FunSearch → AlphaEvolve 的路径：单次生成 → 迭代闭环 → 自主进化
 - 关键区分：AlphaEvolve 的 "evolution" 是算法层面的（搜索更好的程序），不是 agent 行为层面的

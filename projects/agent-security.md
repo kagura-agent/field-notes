@@ -41,6 +41,6 @@ Agent 安全本质上是两个不同维度的问题（HN 社区总结，NIST 相
 
 ## 跟我们方向的关联
 
-- [[self-evolving agent]] 需要更强的 action authorization（自主进化的 agent 权限边界在哪？）
+- [[self-evolving-agent-landscape]] 需要更强的 action authorization（自主进化的 agent 权限边界在哪？）
 - 打工贡献的 [[gogetajob]] 做安全相关 issue 修复是有市场的
 - 信任/信誉问题被验证为真问题
