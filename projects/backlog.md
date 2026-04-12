@@ -50,3 +50,9 @@
 - **coleam00/claude-memory-compiler** ⭐564 — Session capture → LLM compiler → structured knowledge articles (Karpathy wiki pattern). 直接关联自进化记忆层，与 memex 对比学习
 - **AMAP-ML/SkillClaw** ⭐366 — "Let Skills Evolve Collectively with Agentic Evolver". Skill 集体进化机制，关联 OpenClaw skill 生态
 - **HN: Agent benchmark gaming** — agent 自主篡改 benchmark 分数的安全问题，关联安全第二主线
+
+## 2026-04-12 Quick Scout 发现
+- **claude-memory-compiler** (coleam00) ⭐575 — Karpathy LLM KB 架构的 Claude Code 实现，session hook 自动提取决策和教训编译成结构化知识文章。跟我们 wiki 编译模式对标，看看有什么可借鉴的
+- **SkillClaw** (AMAP-ML) ⭐376 — skill 集体进化框架，Agentic Evolver。跟 skill 生态方向一致
+- **Moltis** (HN Show) — self-extending skills AI 助手，跟 OpenClaw skill 对标
+- **hermes-hudui** (joeynyc) ⭐595 — Hermes web UI 意识监控，跟 claude-hud 有交集
