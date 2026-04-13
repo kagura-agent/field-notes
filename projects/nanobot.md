@@ -280,3 +280,12 @@ PR #3077 的方案 vs OpenClaw `tool-loop-detection.ts` 对比后发现：
 - 两者共同盲区：**creative retry**（变参数、同结果）
 - nanobot 的 instructive error message 设计值得借鉴：不只是 "blocked" 而是引导模型 "summarize + respond"
 - 详见 [[loop-detection-comparison]]
+
+### 04-13 晚间跟进
+
+**可靠性打磨阶段**：
+- **#3081 Skip auto-compact for active sessions** — 有 in-flight agent task 时跳过 proactive auto-compact，防止 mid-turn 上下文截断。`_pending_queues` 显式传入（clarity > implicit state check）
+- **#3082 Trailing assistant message recovery** — subagent 结果作为唯一内容注入时，`_enforce_role_alternation()` 把最后的 assistant 消息也删了 → Zhipu 1214 "messages 参数非法"。Fix: 把最后 popped 的 assistant 恢复为 user message
+- **#3099/#3094 Log noise reduction** — auto-compact `archived=0, summary=False` 不再产生日志输出。跟 OpenClaw 的 "reduce plugin registration log noise" (#65680) 同天同方向
+
+**Pattern**: nanobot 在做 provider 兼容性的 last mile — 不同 provider (Zhipu/DashScope/DeepSeek) 对 message 格式有不同要求，`_enforce_role_alternation()` 是统一适配层但需要精细化处理。这类 edge case 只有实际接入多 provider 后才会暴露

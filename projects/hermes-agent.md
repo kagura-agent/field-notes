@@ -663,3 +663,53 @@ teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这
 - **#8937 Budget notification** (merged): Follow-up to #8935 — shows dim warning `⚠ Iteration budget reached (90/90) — response may be incomplete` after response panel. User always knows when budget was the limiting factor.
 - **Pattern**: Budget exhaustion → empty response is a **dead code trap** — feature was "implemented" but a control flow bug made it unreachable. Classic example of code that passes review but fails in production. The fix was deletion, not addition.
 - **Reliability sprint summary**: #8863 (stream recovery) + #8935/#8937 (budget exhaustion) = hermes closing two major "silent failure" categories in one day. Both are cases where the agent appeared to work but gave no/wrong output under specific conditions.
+
+## 2026-04-13 19:45 跟进：State Snapshot System + Operational Hardening
+
+### #8971 — SQLite Safe Backup + /snapshot Command (merged)
+**三合一 PR，解决 agent state 持久化安全问题：**
+
+1. **Bug fix: SQLite WAL mode safe copy** — `hermes backup` 之前对 `.db` 文件用 raw `zf.write()`，WAL 模式下可能产生损坏备份。改用 `sqlite3.Connection.backup()` API（官方一致性快照 API）+ 失败时 fallback 到 raw copy
+2. **`hermes backup --quick`** — 只备份关键 state 文件（state.db, config.yaml, .env, auth.json, cron/jobs.json 等 8 个），存入 `~/.hermes/state-snapshots/`，自动 prune 到 20 个
+3. **`/snapshot` slash command** — 在对话中直接管理快照：list/create/restore/prune
+
+**设计洞察：**
+- `_QUICK_STATE_FILES` 明确定义哪些文件是"critical state"（8 个）——其他一切可再生（logs、cache、sessions/）
+- manifest.json 记录每个快照的元数据（文件数、总大小、label）
+- restore 支持 by ID 或 by number（`/snapshot restore 1` = 最近的）
+- restore 后提示 restart recommended（state.db 变更需要重启生效）
+- 548 additions / 7 deletions，24 个新测试覆盖：WAL 复制、快照创建/列表/恢复/自动 prune
+
+**跟 [[write-ahead-session-persistence]] 的关系：**
+- nanobot 在 crash 前持久化 session 状态，hermes 在 backup 时确保 DB 一致性——同一个问题的两面
+- agent state 比代码更脆弱：代码可以 git reset，state.db 损坏无法恢复
+- 这可能是 OpenClaw 缺失的能力——`openclaw backup` 命令目前不存在
+
+### #8982 — Home Assistant XML Tool Calling Loop Fix (merged)
+- 开源模型用 XML tool calling 时，嵌套 JSON 对象无法在 XML tag 内正确表达 → 无限 400 Bad Request 循环
+- 修复：把 `data` 参数类型从 object 改为 string → 模型输出 JSON 字符串 → runtime `json.loads()` 反序列化
+- **Pattern**: 当 LLM 输出格式和 API 期望格式不匹配时，在 runtime 层做 adaptor 而非要求 LLM 改变输出
+
+### #8974 — .env Token Duplication Fix (merged)
+- `_sanitize_env_lines()` 之前只在 write path 运行 → 已损坏的 .env 文件（KEY=VALUE 连接成一行）产生 mangled values（8× 重复 token）
+- Fix: read path 也 sanitize（load_env + load_hermes_dotenv）
+- **Salvage 模式继续**: PR #8939 by @MagicRay1217 的 salvage
+
+### #8975 — Dead Utility Cleanup (merged)
+- 移除 5 个从未被 import 的 utils 函数（read_json_file, read_jsonl, append_jsonl, env_str, env_lower）
+- 由 PR #8936 尝试增强这些死函数触发 → 代码审查发现它们根本没用
+- **Pattern**: 增强一个函数前先检查它是否有 consumer——enhancement to dead code is noise
+
+### 跨项目趋势观察（04-13 晚间）
+- **hermes**: operational hardening 阶段——SQLite 安全、备份快照、环境变量防腐、死代码清理
+- **multica**: UX 打磨阶段——bubble menu 富文本编辑、onboarding wizard（4 步引导）、cookie auth 修复、Windows 全平台支持完成
+- **nanobot**: 可靠性阶段——auto-compact 跳过活跃 session、trailing assistant message 恢复（Zhipu 兼容）、日志降噪
+- **OpenClaw**: 平台扩展——Feishu QR 扫码创建应用流程（#65680，减少手动输入 App ID/Secret 的摩擦）
+- **趋势**: 四个头部框架同周从 feature-building → operational excellence。这不是巧合——行业从"有功能"阶段进入"能用好"阶段
+
+### multica #852 — Full-Screen Onboarding Wizard
+- 4 步引导：Create Workspace → Connect Runtime → Create Agent → Get Started
+- 哲学："building your AI team" 而非 "configuring a tool"
+- WebSocket 实时检测 runtime 连接状态
+- 992 additions / 301 deletions（21 files）
+- **对我们的启示**: onboarding 是 product-market fit 的入口——hermes/multica 都在投入 first-run experience，OpenClaw 的 Feishu QR 也是同方向

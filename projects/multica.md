@@ -197,3 +197,15 @@ multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 
 **Platform expansion signal**: 9 PRs in one evening, half devoted to Windows. multica is not just fixing bugs — they're aggressively expanding platform reach. This mirrors what happened with [[nanobot]] (provider dialect explosion) and [[hermes-agent]] (multi-runtime): when a project hits product-market fit, they immediately expand surface area.
 
 **Architectural maturity**: Build tags for platform-specific code (not `runtime.GOOS` switches) = they're planning for sustainable cross-platform. The symlink fallback chain (`symlink → junction → copy`) shows defensive coding for Windows's quirky filesystem semantics.
+
+### 04-13 晚间跟进
+
+**UX 打磨加速**：
+- **#869 Bubble Menu 富文本编辑** — 选中文字后弹出格式化菜单（bold/italic/link/heading 等），chat-first 产品的标配功能
+- **#870 Cookie Auth 修复** — `AuthInitializer` 未支持 cookie auth 模式，self-hosted 部署路径修复
+- **#862 OpenClaw JSON 兼容** — 有 `durationMs` 但无 `payloads` 的 JSON 结果被错误拒绝，一行 fix
+- **#852 Onboarding Wizard** — 全屏 4 步引导（Create Workspace → Connect Runtime → Create Agent → Get Started），哲学是 "building your AI team" 而非 "configuring a tool"，WebSocket 实时检测 runtime 连接状态。992+/-301, 21 files
+
+**跟 [[hermes-agent]] 的收敛**：hermes 做 operational hardening（SQLite backup、env sanitize），multica 做 UX polish（onboarding、editor）。不同侧重，但都是从 feature-building → production-ready 转型
+
+**对我们的启示**：onboarding wizard 是 product-market fit 信号——项目到了"有人用但不好用"阶段就会投入 first-run experience。OpenClaw 的 Feishu QR (#65680) 是同方向的投入
