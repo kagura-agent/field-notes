@@ -1,4 +1,11 @@
 
+## 2026-04-13 Quick Scout #25 (20:22)
+- [ ] easy-agent (ConardLi, ⭐193): 从零重建 Claude Code — 理解 agent loop 架构
+- [ ] tui-use (onesuper, ⭐165): Agent 操控 TUI 程序 — 直接相关 agent tooling 能力扩展
+- [x] fireworks-tech-graph (⭐1863): Claude Code skill 生成 SVG 图表 — 验证 skill marketplace 需求爆发
+
+**判断：** easy-agent 和 tui-use 值得日后深读（agent 架构 + 工具扩展），fireworks-tech-graph 是信号确认不需深读。
+
 ## 2026-04-10 Quick Scout 发现
 - **Archon** (coleam00/Archon, 14.5k⭐): "First open-source harness builder for AI coding" — 直接相关，看 deterministic agent harness 设计
 - **andrej-karpathy-skills** (forrestchang, 10.7k⭐): 从 Karpathy 观察提炼的 CLAUDE.md — 看能否借鉴到我们的 coding-agent skill
