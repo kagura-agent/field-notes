@@ -22,6 +22,10 @@
 - 4/4 教训：openclaw #60610 修复方向错（改共享 helper 没查所有 caller）→ 打工必须走 FlowForge workloop
 - 4/5 NemoClaw #1502 修复 #746 回归 bug（prek 路径问题），等 review
 
+## PR 管理观察
+- **30 PR 饱和问题 (2026-04-13)**: 30 open PRs across 8 repos，大多数 repo 有 3+ open PR。maintainer 可能因为同一作者过多 PR 而 review fatigue。对策：本周不开新 PR，等存量消化。考虑是否需要设定 per-repo 上限（例如每 repo ≤3 open PR）
+- **品牌 repo 等待周期长**: openclaw/hermes/NemoClaw 等高品牌 repo 的 review 周期 5-18 天，属正常范围。小 repo (stagehand/Archon) 也没更快，说明瓶颈不是品牌而是 maintainer 带宽
+
 ## 打工成果
 - **权威数据源**: `gh search prs --author=kagura-agent`
 - 需每次 review 时当场查询刷新,不沿用旧数据

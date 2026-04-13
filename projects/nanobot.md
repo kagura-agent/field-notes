@@ -145,11 +145,25 @@ await loop.process_direct(
 - +28 行测试（test_skill_phase_uses_builtin_skill_creator_path + test_skill_write_tool_accepts_workspace_relative_skill_path）
 - **启发**: 写工具做路径限制时，workspace root 和 allowed_dir 是两个独立关注点，不能混为一谈
 
+## Provider Dialects PR #263 (2026-04-13 跟进)
+
+### 重大架构变化
+- **新 Dialect 类型**: 用 dialect 选择 LLM client 实现，而不是依赖 model name 推断
+- **新 `llmProviders` 配置**: 多 provider 支持，通过 `{provider}/{model}` 引用
+- **统一 agents 目录**: `agents/*.md` 即使 `nanobot.yaml` 存在也会被读取，markdown 优先
+- 后向兼容: openai/anthropic 内置，无 provider 前缀默认 OpenAI
+
+### 设计洞察
+- **Dialect 模式跟 OpenClaw execution contract 异曲同工**: 都是根据 provider/model 组合决定运行时行为，但 nanobot 更显式（dialect 类型），OpenClaw 更隐式（自动激活）
+- **markdown-first agents**: nanobot 也在走「markdown 定义 agent」路线，跟 [[multica]] 的 skills.sh import 和 OpenClaw 的 AGENTS.md 异曲同工
+- 这个 PR 开了 11 天未合并，规模较大（统一多个关注点）
+
 ## 下一步
 - [x] 实验：在 nudge hook 中加 `[SKILL]` 标签 (2026-04-12, NUDGE.md Step 5 重写)
 - [ ] 对比 Dream 的 staleness 规则和我们的 memory hygiene（14天 vs 我们的 ad hoc）
 - [ ] 看 lifecycle hooks 设计，跟 OpenClaw hooks 对比
 - [ ] Workshop cron scheduler 添加 progress suppression（借鉴 PR #3065）
+- [ ] 跟进 PR #263 合并后的 dialect 实际使用效果
 
 ## Links
 - [[self-evolving-agent-landscape]]

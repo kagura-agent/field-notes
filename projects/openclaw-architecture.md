@@ -171,3 +171,98 @@ api.registerContextEngine(id, factory)             // 上下文引擎
 - **改共享函数前 grep 所有 caller**，理解每条路径的契约
 - **先写 failing test**：issue 说有 bug ≠ 真有 bug，先证明再修
 - 注意 `plugins.allow` 的语义：存在 = 权威白名单（restrictive），不存在 = 开放
+
+## memory-core: Dreaming System（2026-04-13 跟进深读）
+
+### 概述
+OpenClaw 在 `extensions/memory-core/` 实现了一套「做梦」记忆固化系统，灵感来自人类睡眠阶段：
+- **Light Sleep（浅睡）**：收集近期记忆信号（daily notes + session transcripts），按频率/相关性/多样性/时近性排序，写入当天的 dreaming 块
+- **REM Sleep（深睡）**：对累积的记忆做更深层反思，识别模式、生成叙事
+- 两个阶段都可以调用 subagent 生成「梦日记」叙事
+
+### 核心架构
+```
+session transcripts → ingestSessionTranscriptSignals()
+                                                        → short-term-recall.json
+daily memory notes  → ingestDailyMemorySignals()         → (key, snippet, score, conceptTags)
+                                                        ↓
+                                                light dreaming: 按 recallCount + score 排序，stage candidates
+                                                        ↓
+                                                REM dreaming: previewRemDreaming()，找 patterns + reflections
+                                                        ↓
+                                                writeDailyDreamingPhaseBlock() → memory/YYYY-MM-DD.md
+                                                        ↓
+                                                generateAndAppendDreamNarrative() → subagent 生成叙事
+```
+
+### Short-Term Promotion（关键机制）
+- `ShortTermRecallEntry`: key + path + snippet + recallCount + conceptTags + queryHashes
+- 打分权重: frequency(0.24) + relevance(0.30) + diversity(0.15) + recency(0.15) + consolidation(0.10) + conceptual(0.06)
+- 晋升门槛: score ≥ 0.75 AND recallCount ≥ 3 AND uniqueQueries ≥ 2
+- Dreaming phase 有额外 boost: light +0.06, REM +0.09（半衰期 14 天）
+- `conceptTags` 通过 `deriveConceptTags()` 自动提取
+
+### 与我们的 beliefs-candidates 对比
+| 维度 | OpenClaw Dreaming | 我们的 beliefs-candidates |
+|------|-------------------|-------------------------|
+| 信号来源 | 自动（session transcripts + daily notes） | 手动（agent 主动记录 gradient） |
+| 晋升标准 | 多维打分（frequency×relevance×diversity×recency） | 重复 3 次规则 |
+| 晋升目标 | 长期记忆层（MEMORY.md 或 dreaming 块） | DNA / Workflow / Knowledge-base |
+| 叙事生成 | subagent 自动生成「梦日记」 | agent 自己写日记 |
+| 关键差异 | **被动自动化**（不需要 agent 有意识地记录） | **主动有意识**（agent 判断什么是 gradient） |
+
+### 反直觉发现
+1. **dreaming 不是隐喻，是字面意思**: 系统真的在「做梦」——定期从 session 和 daily notes 中提取信号，像人类 REM 睡眠一样巩固重要记忆
+2. **session transcript ingestion**: 不只读 MEMORY.md，还直接解析 session 对话历史！意味着不需要 agent 手动记录，系统自动从对话中提取有价值的片段
+3. **score threshold 0.62/0.58**: daily/session ingestion 的阈值很低（相比 promotion 的 0.75），先广撒网再精筛
+4. **phase signal boost**: dreaming 自身会给被审视过的条目加分（light +0.06, REM +0.09），类似人类「反复做同一个梦的主题会越来越深刻」
+5. **concept vocabulary**: 有独立的概念标签系统（`concept-vocabulary.ts`），不是简单关键词，而是语义层面的概念抽取
+
+### 与 [[claude-mem]] 的对比
+- claude-mem 是 session 记录 → 编译（用 LLM）→ 结构化输出
+- OpenClaw dreaming 是 session + daily notes → 短期召回 → 多维打分 → light/REM 两阶段巩固
+- OpenClaw 方案更精细，但也更重（1726 行 dreaming-phases.ts）
+- claude-mem 胜在简单直给（用户零配置）
+
+### 对我们的启发
+1. **自动信号收集**: 我们目前完全依赖手动 gradient 记录。可以考虑从 session 对话中自动提取重复出现的模式（但不替代手动记录，作为补充）
+2. **多维打分**: 比简单的「3 次重复」更精细，但实现成本高。当前阶段手动规则可能更适合（能解释为什么晋升）
+3. **concept tags**: 自动概念标签有助于发现跨领域关联——比如 A 项目和 B 项目的相似模式
+4. **两阶段巩固**: light（staging）+ REM（reflection）的分离很优雅。我们的 nudge → beliefs-candidates → DNA 三级也有类似结构
+
+## GPT-5.4 Execution Contract（2026-04-13 跟进）
+
+### 什么是 strict-agentic
+- OpenClaw 引入「执行合约」概念，GPT-5.4 自动激活 `strict-agentic` 合约
+- 解决 GPT-5.4 的「planning stall」问题（规划阶段思考太久，不产出 token，stream idle timeout）
+- 只对 `openai` / `openai-codex` provider + `gpt-5*` 模型激活
+- 非 GPT-5 模型（Claude、Llama 等）始终 `default`
+
+### 实现细节
+- `resolveEffectiveExecutionContract()`: 三路决策
+  - 不支持的 provider/model → always `default`
+  - 支持 + 用户显式 `default` → 尊重 opt-out
+  - 支持 + 未配置 → auto `strict-agentic`
+- `stripProviderPrefix()`: 处理 `openai/gpt-5.4` 和 `openai:gpt-5.4` 格式
+- 正则 `/^gpt-5(?:[.o-]|$)/i` 覆盖所有 GPT-5 变体
+
+### 设计洞察
+- **Provider-scoped contracts**: 执行合约跟 provider 绑定而非全局——这意味着不同 LLM 需要不同的运行时行为调整
+- **Adversarial review**: PR 明确提到来自 #64227 的「adversarial review」发现了 prefixed model id 的 bug
+- **No-stall completion gate**: 合约的核心目标是保证「规划后不卡住」——这跟我们 Copilot API 60s idle timeout 问题是同一类问题
+
+## Gateway Startup Race Fix（#65322, 2026-04-13 跟进）
+
+### Bug
+- cron scheduler 和 heartbeat runner 在 sidecar 初始化完成前就启动
+- 此时 `chat.history` 还 unavailable → `GatewayRequestError`
+- 每次重启都会触发
+
+### Fix
+- 将 cron、heartbeat、pending delivery recovery 移到新的 `activateGatewayScheduledServices()`
+- 该函数在 `startGatewayPostAttachRuntime()` 完成后才调用
+- channelHealthMonitor 和 model pricing refresh 不依赖 chat.history，留在早期启动
+
+### 对我们的影响
+- 我们的 gateway 重启后偶尔出现 cron 第一次执行失败，可能就是这个 bug
+- 升级到包含此 fix 的版本后应该解决

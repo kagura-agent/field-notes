@@ -82,3 +82,23 @@ Multica 的 Skill 是 DB-backed 的结构化对象，跟我们的 file-based Age
 - 真正的 compounding 应该是 agent 自己从任务中提取 skill 并改进——目前还没到这步
 - 值得关注 #669 等 skill 相关 issue，看社区怎么推动这个方向
 - 作为打工目标合适：Go+TS monorepo，issue 活跃，OpenClaw 直接相关
+
+## v0.1.27 跟进 (2026-04-13)
+
+### 发布节奏
+- v0.1.25 (Apr 11) → v0.1.26 (Apr 11) → v0.1.27 (Apr 12) — **一天两个 release**，速度极快
+- 日均 ~10 commits，主要修 bug 和完善基础设施
+
+### 关键变化
+- **`.claude/skills/` candidate path** (#792): skill importer 新增 Claude Code 原生的 skill 路径 `.claude/skills/{name}/SKILL.md`
+  - 这说明 multica 在主动适配 Claude Code 的 skill 生态，不是只做自己的格式
+  - 跟 [[openclaw]] 的 AgentSkills 和 [[nanobot]] 的 agents/*.md 趋势一致：多平台 skill 互通
+- **cycle detection** (#788): BatchUpdateIssues parent_issue_id 处理加循环检测
+- **local file storage fallback** (#710): 自托管不再强制需要 S3，本地文件系统即可
+  - 降低自托管门槛 — 跟北极星方向（个人场景）对齐
+- **Codex sandbox network access** (#796): Codex sandbox 默认无网络，现在可以配置开放
+
+### 生态信号
+- multica 在快速补齐自托管能力（local storage、auth graceful degradation）
+- skill 路径适配多平台 → skill 格式标准化趋势加速
+- 社区活跃度高，contributor 多样
