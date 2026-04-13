@@ -62,3 +62,16 @@
 - **方向**: on-device Android agent, Gemma 4, no cloud
 - **关联**: 北极星"家庭管家" — 隐私 + 本地运行
 - **优先级**: 中 — 等 stars 稳定后深读
+
+## 2026-04-13 Quick Scout (12:15)
+- **fireworks-tech-graph** (yizhiyanhua-ai, 1.7k⭐): Claude Code skill for generating SVG+PNG tech diagrams, 8 diagram types, 5 visual styles — 已知类型(skill)，看实现可参考
+- **hermes-hudui** (joeynyc, 733⭐): Web UI consciousness monitor for Hermes, persistent memory visualization — 值得了解，agent 记忆可视化
+- **auto-deep-researcher-24x7** (Xiangyue-Zhang, 330⭐): 24/7 自动跑 DL 实验 agent — 已知(04-11)
+- **SkillClaw** (AMAP-ML, 454⭐): "Let Skills Evolve Collectively with Agentic Evolver" — 值得深入：直接相关我们的 skill 进化方向！学术论文级项目
+- **Learn-Open-Harness** (joyehuang, 231⭐): OpenHarness 零到英雄 12 章教程 — 教育内容，不深入
+- **debug-agent** (millionco, 191⭐): AI agent debugging skill — 看 skill 设计
+- **MindAct** (KeploreAI-Lab, 148⭐): AI Agent + 特定知识 = 真正自主 AI — 看架构
+- **mindvault** (etinpres, 28⭐): 代码库自动转知识图谱+wiki+搜索索引 — 跟 memex 相关，小项目但思路有趣
+- **engram-agent** (lessthanno, 7⭐): 本地 agent 持久记忆，观察工作模式 — 小项目，概念跟我们的 memory 层重合
+
+**判断：** SkillClaw (AMAP-ML) 454⭐ 最值得深入 — "Skills Evolve Collectively" 直接对标我们的 skill 进化方向，且是学术论文级项目。hermes-hudui 的记忆可视化也有启发价值。mindvault 的代码→wiki 自动转换思路值得关注。

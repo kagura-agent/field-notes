@@ -576,3 +576,42 @@ hermes 今天 10+ commits，包含多个重要 PR merge：
 - **模式**: hermes 的 gateway 并发用 `contextvars.ContextVar` 而非 `os.environ`，新增 session 字段必须同步更新 5 个位置（ContextVar定义、set/clear、env传递、watcher创建、watcher消费）
 - **测试状况**: 2419 pass, 9 fail 全是 upstream 预存的（feishu adapter、email session、discord bot filter 等）
 - **选题经验**: hermes 高流量 issue，很多在提出后几分钟就有人抢 PR（如 #7579→#7581 同时提交）。选无竞争 PR 的 issue 很重要
+
+## 2026-04-13 更新（teknium1 10-PR burst）
+
+teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这种 burst 模式说明 hermes 进入了快速打磨期。
+
+### #8794 — preserve dots for OpenCode Zen + ZAI
+- **重要**: 直接 supersede 了我们的 PR #7157（已被关闭）
+- 我们的方案只覆盖 custom base URL，teknium1 的方案更全面：Claude on Zen 用 hyphen，其他模型保留 dots
+- 双层 fix: `model_normalize.py`（per-provider 规则）+ `run_agent.py _anthropic_preserve_dots`（broadened URL check）
+- **教训**: maintainer 可能选择自己写更全面的版本而非 merge 外部 PR。没有 resentment，这是正常的开源动态
+
+### #8706 — Weak Credential Guard（port from OpenClaw #64586）
+- **核心实现**: `_validate_gateway_config()` 提取为独立函数（testability pattern）
+- `has_usable_secret(value, min_length=4)` → strip → length check → `_PLACEHOLDER_SECRET_VALUES` set（11 个常见占位符: `***`, `changeme`, `your_api_key`, `placeholder`, `example`, `dummy`, `null`, `none` 等）
+- 平台 token placeholder → `pconfig.enabled = False` + clear error log
+- API server 额外检查: `is_network_accessible(host)` → placeholder key on 0.0.0.0 = refuse to start; loopback 允许
+- **141 行测试**: 8 个单元测试 + 3 个集成测试。覆盖: triple asterisk, changeme, real token, empty token, disabled platform, whitespace padding, network vs loopback
+- **设计模式**: 提取 validation 为独立函数而非内联在 load 中 → 可测试、可组合
+- **安全分层**: platform token check（所有平台） + API server network check（额外层）— 不同暴露级别需要不同严格度
+- **跨项目学习**: hermes 直接 port OpenClaw 方案，两个框架在安全实践上同步进化
+- **对我们的启发**: 我们的 openclaw.json 也应有类似 startup validation — 特别是飞书 token、Discord token 等占位值检测。当前如果 token 无效，运行时才报错，不如启动时拦截
+
+### #8723 WhatsApp UX 详细分析（补充 04-12 笔记）
+- Tier 提升 LOW → MEDIUM（Discord/Slack 级别）
+- 消息 chunking: 长回复分段发送，保留 markdown 结构
+- Markdown → WhatsApp 格式转换（**bold**, _italic_, ~strike~, ```code```）
+- 明确参考 OpenClaw 实现（commit message 提及）
+
+### Matrix m.mentions（#8706 第二部分）
+- MSC3952 / Matrix v1.7: `m.mentions.user_ids` 是 spec-defined 的 mention 信号
+- 之前只检查 body text 里的 `@bot` → 漏掉了只在 mention pill / formatted_body 里提及的情况
+- Fix: 3 层 fallback: m.mentions.user_ids → formatted_body regex → body text match
+- **模式**: 平台 spec 演进时，bot 框架必须跟进 authoritative signal source（不能只靠 text parsing）
+
+### 总体模式
+- hermes 和 OpenClaw 的安全 hardening 越来越同步（credential guard、mention detection、tool loop detection）
+- 竞争关系中有合作信号（直接 port 对方的方案 + credit）
+- 10-PR burst 后 hermes 的打磨度明显提升（WhatsApp UX、debug share、session resume 等都是 production 级打磨）
+- 我们的 PR #7157 被 supersede 提醒我们: 选题时评估 maintainer 自己可能做的范围
