@@ -38,6 +38,18 @@
 - beliefs-candidates = 梯度收集器 → 分流到 DNA / Workflow / Knowledge-base
 
 ## 自动触发
-- cron ×16 active（daily-review, daily-handoff, github-check, community-ops, daily-audit, morning-briefing, work-loop, study-loop, abti-loop, moltbook-loop, uncaged-check, kagura-story×2, memex-dogfood-review, weekly-eval, abti-push[disabled]）+ nudge (agent_end hook)
+- cron ×24 active（含 dreaming managed cron）+ nudge (agent_end hook, interval=10)
 - hook: todo-pin-sync（file→Discord pin 自动同步）
-- Discord: 3 层架构（顶层 private → Daily Channels → Project Channels），channel 数 ~12
+- Discord: 3 层架构（顶层 private → Daily Channels → Project Channels），channel 数 ~19
+- channel 文件准则：开发优先、巡检次要（2026-04-13 翻转）
+
+## GTM（2026-04-13 启动）
+- **核心问题**：一直在 build，没有 business。没用户、没收入、没分发
+- 收款基础设施：爱发电 + 知识星球（Luna 副业）+ Stripe
+- 方向：内容先行（人+AI 自治公司经历本身就是内容）
+- 状态：还在找第一块钱，依赖 Luna 决策
+
+## Workshop（2026-04-13 暂停）
+- v0.3.1 完成（19 PR merged），但产品方向未定
+- Luna 洞察：project != channel != repo，三者是独立维度
+- 暂停开发，先在 Discord 上跑出痛点再考虑是否重启
