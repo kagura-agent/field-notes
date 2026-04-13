@@ -87,3 +87,11 @@
 - 对 agent 的价值：先扫索引判断相关性，再按需 fetch 详情，约 10x token 节省
 - 对齐 [[skill-lazy-loading-poc]] 的分层哲学：always tier ≈ compact，discoverable tier ≈ full read
 - Branch: `feat/compact-search`，待验证后提 PR
+
+### PR #53 — feat: compact search (2026-04-13)
+- **状态**: ✅ MERGED (iamtouchskyer double-approved)
+- **实现**: `--compact` / `-c` CLI flag + `formatCompactSearchResult()` + MCP compact option
+- **亮点**: iamtouchskyer 对质量非常满意，双重 approved
+- **模式**: progressive disclosure 是 memex 核心产品理念的延伸 — 从卡片到搜索都走分层
+- **影响**: memex 总 merged PR 数达 6，我们是该项目的核心贡献者
+- **merge rate**: 6/7 = 86% — 所有项目中最高

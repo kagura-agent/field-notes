@@ -633,3 +633,19 @@ teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这
 **`c052cf0` Path Traversal Fix**
 - `ha_call_service` domain/service 参数未校验，可注入路径穿越
 - 跟 OpenClaw #65717 shell-wrapper detection 同天修复——两个框架同日 security sprint
+
+## 2026-04-13 Workloop #176 跟进
+
+### PR #7157 关闭（superseded by #8794）
+- 我们的方案只覆盖 custom base URL，teknium1 的 #8794 更全面（per-provider dot preservation rules）
+- 这是 hermes 典型的 salvage 模式：社区 PR 被关，但思路被维护者重新实现
+- 无 resentment，这是正常的开源动态
+
+### PR #8151（24 tests fix）仍在等待
+- 修复 24 个失败测试，但 teknium1 在 10-PR burst 中可能还没看到
+- hermes 当前 open PR 数: 3，在上限边缘
+
+### Open PR 状态
+- 3 open PRs: #3358 (systemd PATH), #3935 (Alibaba endpoint), #8151 (24 tests)
+- 策略: 不新开 PR，等已有 PR 被消化
+- hermes merge rate ~12%，耐心是关键

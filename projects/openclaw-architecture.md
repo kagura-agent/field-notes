@@ -476,3 +476,12 @@ GPT-5.4 parity proof 测试场景恢复（从 conflicted #65224 salvage）。QA 
 **版本**: 用户在 2026.3.2，当前最新 beta 可能已部分修复 startup race，但 stale catch-up 和 kill switch 问题看起来是设计缺陷，不是 bug。
 
 → 详见 [[cron-runaway-safety]] 卡片
+
+**2026-04-13 贡献**: 在 issue #65774 发表了 [root cause analysis comment](https://github.com/openclaw/openclaw/issues/65774#issuecomment-4234692715)，包含代码路径追踪 + 3 fix proposals。等 maintainer 回应后提 PR。
+
+## Security Fix #62382 — allowedSymlinkTarget (2026-04-13)
+
+**PR #62382**: 修复 `allowedSymlinkTarget` 安全检查。已 push，等 maintainer review。
+- 这是 security-category PR，维护者通常响应较快
+- 属于 defense-in-depth 类修复
+- 状态: PENDING REVIEW
