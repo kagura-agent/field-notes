@@ -370,3 +370,38 @@ Dreaming phase tests were flaky because they used real dates. Fixture transcript
 ## QA Lab Parity Proof (#65664, 2026-04-13)
 
 GPT-5.4 parity proof 测试场景恢复（从 conflicted #65224 salvage）。QA lab 现在有完整的 GPT-5.4 vs Claude parity 验证管道，包含 mock auth staging 和 parity-gate workflow。
+
+## Dreaming Runtime Verification + Upgrade Assessment (2026-04-13 13:45)
+
+### 运行状态验证
+- **dreaming cron job**: 已注册，ID `0df29bb1`，schedule `30 3 * * *` Asia/Shanghai，target `main` session
+- **状态**: idle（从未运行），首次 sweep 预计 2026-04-14 03:30 AM
+- **reconciliation warning**: gateway restart 后出现 1 次 `"managed dreaming cron could not be reconciled (cron service unavailable)"`
+  - 这是 [[#Gateway Startup Race Fix|startup race bug (#65365)]] 的症状——cron service 在 memory-core 尝试 reconcile 时还未就绪
+  - 但 job 本身在首次创建时（09:56）成功写入 cron store，后续 reconcile 失败不影响执行
+
+### Recall Store 现状
+- 39 条 short-term recall entries（自 Apr 11 开始收集）
+- 最高 recallCount: 3（3 条达到 minRecallCount 阈值）
+- 所有 compositeScore = 0.000（正常——score 只在 dreaming sweep 时计算）
+- 所有 queryTexts = 空（uniqueQueries = 0）——这意味着 minUniqueQueries=2 条件可能无法满足
+- **风险**: 如果 scoring 要求 uniqueQueries ≥ 2 且当前全为 0，首次 sweep 可能 promote 0 条
+
+### 升级评估
+| 版本 | 状态 | 包含关键 fix? |
+|------|------|---------------|
+| 2026.4.11 (当前) | stable | ❌ 无 startup race fix, 无 dreaming improvements |
+| 2026.4.12-beta.1 | pre-release (Apr 12 23:27Z) | ✅ dreaming confidence/promotion/narrative fixes, ❌ startup race (#65365 merged 00:41Z post-beta) |
+| 2026.4.12 stable | 未发布 | ✅ 应包含所有 fix |
+
+**结论**: 等 2026.4.12 stable。Beta 有大量 dreaming fix 但缺关键的 startup race fix。当前版本 dreaming 应能正常运行（job 在 cron store 中），但 reconciliation 机制不够健壮。
+
+### 升级后验证清单
+- [ ] `grep "reconcil" /tmp/openclaw/openclaw-*.log` — 不应再出现 "cron service unavailable"
+- [ ] `openclaw cron list` — dreaming job 从 idle 变为 ok（有 lastRun）
+- [ ] `cat memory/.dreams/` — 有 dreaming reports
+- [ ] `git log --oneline MEMORY.md` — dreaming 有 promote 条目
+
+### 关联
+- [[dreaming-vs-beliefs-candidates]] — 两条记忆固化路径对比
+- [[progressive-disclosure-memory]] — recall 信号来源
