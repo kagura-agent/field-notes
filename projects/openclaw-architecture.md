@@ -405,3 +405,62 @@ GPT-5.4 parity proof 测试场景恢复（从 conflicted #65224 salvage）。QA 
 ### 关联
 - [[dreaming-vs-beliefs-candidates]] — 两条记忆固化路径对比
 - [[progressive-disclosure-memory]] — recall 信号来源
+
+## 2026-04-13 Security Sprint — Sandbox Exec Hardening
+
+来源: 3 个 PR 由 pgondhi987 在数小时内 merge（#65713, #65714, #65717），全部 [AI-assisted]。
+
+### PR #65714: Empty Approver List → Authorization Bypass
+
+**漏洞链**: `allowFrom: []` → `createResolvedApproverActionAuthAdapter` returns `{ authorized: true }` → `resolveApprovalCommandAuthorization` 将其标记为 `explicit: true` → `/approve` handler 跳过 `isAuthorizedSender` check → **任何人可以 /approve exec 命令**。
+
+**修复**: 引入 `IMPLICIT_SAME_CHAT_APPROVAL_AUTHORIZATION` Symbol 作为非可枚举 taint marker。empty approver list 返回的 `authorized: true` 被标记为 "implicit same-chat"，不再升级为 `explicit: true`。
+
+**架构洞察**:
+- Symbol + `Object.defineProperty` 做 taint tracking — 不改 JSON 形状，不影响序列化，但按引用传递时可检测
+- 跟 nanobot 的 `pending_user_turn` flag 是同类模式: 用 metadata marker 区分 "有意为之" vs "默认行为"
+- 这是 **authorization confusion** 漏洞：多层权限系统中，一层的 "合法默认值" 被另一层误读为 "显式授权"
+
+### PR #65713: busybox/toybox 从 Interpreter-Like Safe Bins 移除
+
+**攻击向量**: `busybox awk 'BEGIN{system("malicious_command")}'` — busybox 被信任为 safe binary，但其 applets（awk/find/xargs）可执行任意命令。
+
+**修复**: 新建 `OPAQUE_MUTABLE_SCRIPT_RUNNERS` set。busybox/toybox 不再 auto-trusted，且 `opaqueMultiplexerSeen` flag 强制 fail-closed（需要 stable approval binding）。
+
+**设计决策**: 不是简单 blocklist，而是改变 unwrap 逻辑——busybox 做 multiplexer 时，后续 applet 被视为 opaque（不可分析），强制走审批。
+
+### PR #65717: Shell Wrapper Detection + env-argv Injection
+
+**三个子问题**:
+1. `sh script.sh` 不触发 shell-wrapper 过滤（只检查 inline `-c` payload）
+2. `env VAR=val cmd` 中的 `SHELLOPTS`/`PS4` 等危险变量绕过 sanitizer
+3. `LC_*` locale 变量用精确匹配而非前缀匹配
+
+**修复**: `isShellWrapperInvocation()` 新函数独立于 shellPayload 检测；`parseEnvInvocationPrelude()` 提取 assignment keys → `inspectHostExecEnvOverrides()` 验证；`LC_*` 改为前缀匹配。
+
+### 跨 PR 模式总结
+
+| 模式 | 出现 | 描述 |
+|------|------|------|
+| Fail-Closed Default | #65713, #65717 | 不可分析 = 需要审批 |
+| Taint/Marker Tracking | #65714 | metadata flag 区分 implicit vs explicit |
+| Authorization Layer Confusion | #65714 | 多层系统间语义不一致导致权限升级 |
+| Opaque Multiplexer | #65713 | 无法静态分析子命令 → 整体视为 unsafe |
+| Prefix Matching | #65717 | 精确匹配太脆弱，`LC_*` 这类族群应前缀匹配 |
+
+### 对我们的启示
+- **[[agent-credential-security]]**: sandbox exec policy 是凭证隔离的前置防线
+- **[[startup-credential-guard]]**: 同一 sprint 中安全修复互相强化（startup guard + runtime policy = defense in depth）
+- 安全第二主线验证: 两个头部框架同日做安全 sprint（OpenClaw 3 PRs + hermes path traversal + multica security audit），production agent 框架正在系统化加固
+- 考虑 PR 方向: 如果有新的 sandbox escape 向量可报告，OpenClaw 合入速度极快（pgondhi987 当日 merge）
+
+### Hermes 同日安全动态
+- #8756: web UI dashboard（新攻击面，但有 FastAPI REST backend + 独立端口）
+- `c052cf0`: `ha_call_service` path traversal validation（domain/service 参数校验）
+- `/restart` 改用 systemd `RestartForceExitStatus=75`（不再 detached subprocess，避免 cgroup cleanup kill）
+
+### multica 同日
+- #819: HttpOnly cookie auth（session token 不再暴露给 JS）
+- #822: CSP headers
+
+三个框架同日做安全加固 = **agent security 是 2026-04 的行业主题**，不只是我们的第二主线。

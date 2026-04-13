@@ -615,3 +615,21 @@ teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这
 - 竞争关系中有合作信号（直接 port 对方的方案 + credit）
 - 10-PR burst 后 hermes 的打磨度明显提升（WhatsApp UX、debug share、session resume 等都是 production 级打磨）
 - 我们的 PR #7157 被 supersede 提醒我们: 选题时评估 maintainer 自己可能做的范围
+
+### 2026-04-13 下午更新
+
+**#8756 Web UI Dashboard** (merged)
+- 完整管理端: status/config editor/API keys/sessions/skills/cron/logs/analytics
+- FastAPI backend (`web_server.py`) + React frontend (web/)
+- 经历了 4 个 PR 轮回 (PR #1813 → #7621 → #8204 → #8756)，最终由 teknium1 salvage 并 merge
+- 对标: OpenClaw 的命令行管理、我们的 Workshop
+
+**`/restart` 改进三连发**
+- `276d20e`: systemd 下用 `RestartForceExitStatus=75`（exit code 触发 restart）替代 detached subprocess（会被 cgroup cleanup kill）
+- `8a64f3e`: 重启后主动通知请求者（`.restart_notify.json` 持久化 routing info）
+- `964ef68`: 失败时返回 fallback instructions
+- **模式**: write-ahead notification pattern + systemd-native restart。跟 nanobot 的 [[write-ahead-session-persistence]] 同类——crash/restart 前持久化必要信息
+
+**`c052cf0` Path Traversal Fix**
+- `ha_call_service` domain/service 参数未校验，可注入路径穿越
+- 跟 OpenClaw #65717 shell-wrapper detection 同天修复——两个框架同日 security sprint
