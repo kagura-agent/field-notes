@@ -226,6 +226,53 @@ Agent 反复调用同一个 tool、相同参数，烧完 max_iterations 也不�
 - [[skill-trigger-eval]]
 - [[skill-trajectory-tracking]]
 
+## Session Resilience Sprint (2026-04-13, 5 commits in ~4h)
+
+### Three-Layer Crash Recovery
+
+nanobot shipped a coordinated session resilience sprint (Apr 12 20:57 - Apr 13 03:30 UTC):
+
+**Layer 1: Write-Ahead User Message** (ea94a9c, +20/-1)
+- Problem: `_save_turn()` writes user message at turn END → OOM/SIGKILL mid-turn = prompt silently lost
+- Solution: Append user message + flush to disk BEFORE agent loop. Skip offset adjusted in `_save_turn()` to avoid duplication
+- Scope: Text content only; media blocks still go through end-of-turn sanitization
+- Uses `pending_user_turn` metadata flag as transaction marker
+
+**Layer 2: Interrupted Turn Closure** (6484c7c, +30/-0)
+- Problem: After crash, dangling user message with no response confuses next turn
+- Solution: `_restore_pending_user_turn()` on session load — if flag exists + last msg is user, inject synthetic `"Error: Task interrupted"` assistant message
+- Design choice: Explicit error > silent deletion — preserves user's question, signals interruption
+
+**Layer 3: Auto-Compact Protection** (becaff3, +13/-4 code + 98 lines tests)
+- Problem: Proactive session compaction archives expired sessions, truncating context of active tasks
+- Solution: `check_expired()` accepts `active_session_keys` (from `_pending_queues.keys()`), skips active sessions
+
+**Bonus: Provider Defensiveness** (ac71480)
+- Subagent result as assistant → role alternation drops it → [system only] → Zhipu/GLM 1214 error
+- Recovery: convert last-popped assistant to user message when no user/tool messages remain
+
+### Write-Ahead + Flag Pattern (Key Innovation)
+```
+1. Write user message → set pending_user_turn flag → flush
+2. Run agent loop
+3. Save turn → clear flag → flush
+4. On crash recovery: flag present + last=user → inject error → clear
+```
+Effectively a **mini write-ahead log** using session metadata as transaction marker. No separate WAL file, no transaction log — just a boolean flag distinguishing "user saved but turn incomplete" from "turn completed normally".
+
+→ New card: [[write-ahead-session-persistence]]
+
+### Testing Quality
+- 98 lines autocompact tests (3 scenarios: skip active, archive after complete, partial set)
+- 48 lines user persistence tests (crash→close→new turn lifecycle)
+- 47 lines provider alternation tests (recovery + 2 negatives)
+- Test:code ≈ 3.5:1
+
+### Relevance
+- OpenClaw cron sessions could lose context on SIGKILL (we experienced this 04-12)
+- Workshop agent runner should consider write-ahead for user inputs
+- The flag pattern is reusable anywhere with two-phase persistence
+
 ## Tool Stagnation Detection 深度对比（2026-04-13）
 
 PR #3077 的方案 vs OpenClaw `tool-loop-detection.ts` 对比后发现：
