@@ -7,6 +7,8 @@
 
 多 agent 运营层，把 Claude Code CLI 变成一个 38 agent 团队。目标用户：独立创始人/CEO。
 
+相关：[[openclaw-architecture]], [[workshop]], [[hermes-agent]], [[flowforge]], [[skillclaw]], [[nanobot]]
+
 ## 架构
 
 ### Agent 层
@@ -31,7 +33,7 @@
 - 核心用途：**内部语言解码** — "ask todd about the PSR for phoenix" → 全称+上下文
 - Memory lint: 周日自动检查一致性
 - Memory sync: 每日自动将当日上下文整理归档
-- 可选 [[MemPalace]] 接入（ChromaDB 本地向量搜索）
+- 可选 MemPalace 接入（ChromaDB 本地向量搜索，cf. [[memex]]）
 
 ### Dashboard 层
 - React + Flask，Docker 部署
