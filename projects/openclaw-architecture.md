@@ -274,3 +274,31 @@ daily memory notes  → ingestDailyMemorySignals()         → (key, snippet, sc
 ### 对我们的影响
 - 我们的 gateway 重启后偶尔出现 cron 第一次执行失败，可能就是这个 bug
 - 升级到包含此 fix 的版本后应该解决
+
+## Tool Loop Detection（源码深读 2026-04-13）
+
+### 架构
+`src/agents/tool-loop-detection.ts` (~400 行)，session-scoped sliding window。
+
+**4 个检测器：**
+- `genericRepeat` — 同工具同参数重复，仅 warn（default threshold 10）
+- `knownPollNoProgress` — poll 类工具（process poll/log, command_status）同参数同结果，warn 10 / critical 20
+- `pingPong` — A-B-A-B 交替模式且结果不变，warn 10 / critical 20
+- `globalCircuitBreaker` — 任何工具同结果重复 30 次（最后防线）
+
+**哈希方式：** SHA-256 of stable-serialized params（sort_keys）。结果哈希包含 details + text content，对 process/poll 有特殊处理。
+
+### 已知缺陷（Issues #34574, #64500）
+1. **Exec volatile fields**: `durationMs`, `pid`, `cwd` 使每次 exec 调用哈希不同 → 逃过检测（#34687 部分修复）
+2. **Creative retry 盲区**: 模型变换参数但得到相同错误 → 不被捕获（heavensea 报告：49 次 SSH 不同参数，28 次相同 Permission denied）
+3. **Per-tool circuit breaker**: 阻断工具 A 不阻断配对工具 B → ping-pong 重启
+4. **高默认阈值**: 10/20/30 允许大量浪费迭代
+
+### 我的贡献
+- 评论 #34574 提议 `resultSimilarity` 检测器：追踪每个工具的连续相同结果（不看参数），warn 3 / critical 5
+- 对比 [[nanobot]] PR #3077 的更简单方案（阈值 3，per-run reset）
+- 详细对比见 [[loop-detection-comparison]]
+
+### 对我们的影响
+- 我们的 cron 不是 tool runner（Workshop 发 prompt 给外部 agent），tool stagnation 不在我们的层
+- 但 cron output stagnation（同一 cron 连续产出相同输出）是类似模式，可以借鉴
