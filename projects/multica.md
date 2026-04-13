@@ -83,7 +83,51 @@ Multica 的 Skill 是 DB-backed 的结构化对象，跟我们的 file-based Age
 - 值得关注 #669 等 skill 相关 issue，看社区怎么推动这个方向
 - 作为打工目标合适：Go+TS monorepo，issue 活跃，OpenClaw 直接相关
 
-## v0.1.27 跟进 (2026-04-13)
+## 2026-04-13 Afternoon Sprint: Security Audit + Cross-Platform Observability
+
+### Security Audit Sprint (MUL-566)
+multica 做了系统化安全审计（跟 [[openclaw-architecture]] 同天做 3 个 security PR 是巧合但有意义）：
+
+- **#819 HttpOnly Cookie Auth** (359 additions, 14 files): auth token 从 localStorage 迁移到 HttpOnly cookie + CSRF double-submit validation + WebSocket Origin 白名单。经典 XSS mitigation。
+  - 亮点：Electron desktop 保留 token auth（cookie 在 Electron 里不好用），web 用 cookie — 按 runtime 区分 auth 策略
+  - 新增 `POST /auth/logout` 清除 server-side cookie
+- **#822 CSP Headers** (57 additions): `script-src 'self'`, `object-src 'none'`, `frame-ancestors 'none'` — 基本但必要
+- **#831 Legacy Auth Fallback**: WebSocket 降级到 token-mode 兼容老 localStorage 用户
+- **#837 Online Status Revert**: 上午合了 #821（online 状态指示器），几小时后被 revert — 说明快速迭代但也快速回滚
+
+**跟 OpenClaw 同步进化**: hermes 04-13 port 了 [[startup-credential-guard]] 从 OpenClaw，multica 04-13 做了 auth 全面升级。三个头部框架同天安全加固，不是巧合——agent security 是 2026-04 行业主题。
+
+### Cross-Platform Token Usage Scanning (#824)
+**这是今天最重要的发现之一。**
+
+multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 token usage：
+
+| Runtime | 路径 | 解析方式 |
+|---------|------|----------|
+| OpenClaw | `~/.openclaw/agents/*/sessions/*.jsonl` | assistant messages with `usage` field |
+| Hermes | `~/.hermes/sessions/*.jsonl` | assistant messages + `usage_update` entries |
+| OpenCode | `~/.local/share/opencode/storage/message/ses_*/*.json` | assistant token usage |
+
+**OpenClaw scanner 实现细节**:
+- `openClawLine` struct: type, timestamp, message.role/provider/model/usage(input/output/cacheRead/cacheWrite)
+- Fast pre-filter: 先 `bytesContains` 检查 `"usage"` 和 `"assistant"`，避免 JSON 解析所有行
+- Model normalization: `normalizeOpenClawModel(provider, model)` — provider 不为空时拼 `provider/model`
+- 按天+model 聚合为 `Record`
+- 14 个单元测试，Go
+
+**关键洞察**: multica 把自己定位为 **meta-observability layer** — 不管你用什么 agent 框架，multica 都能汇总你的 token 使用。这跟 [[cron-observability-metrics]] 卡片提的需求完全一致，只是 multica 从外部文件扫描，而我们需要的是内部 runtime metrics。
+
+**对我们的启发**:
+1. OpenClaw JSONL session 文件里已有完整的 token usage 数据 — 我们不需要新 API，只需要解析现有文件
+2. multica 的 `mergeRecords()` 按 date+provider+model 聚合 — 合理的粒度
+3. 这验证了 [[cron-observability-metrics]] 的方向：token cost tracking 是 production agent 的基础设施
+
+### 其他变化
+- **#800**: ws:task:dispatch 事件加 issue_id（给前端做 realtime issue 关联）
+- **#829**: comment-triggered 任务把 triggering comment 内容嵌入 agent prompt（之前 agent 可能看不到触发评论的内容，如果 workdir 有 stale output）
+- **#827**: workspace list 从 Zustand 迁移到 React Query
+
+## v0.1.27 跟进 (2026-04-13 morning)
 
 ### 发布节奏
 - v0.1.25 (Apr 11) → v0.1.26 (Apr 11) → v0.1.27 (Apr 12) — **一天两个 release**，速度极快

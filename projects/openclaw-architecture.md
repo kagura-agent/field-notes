@@ -464,3 +464,15 @@ GPT-5.4 parity proof 测试场景恢复（从 conflicted #65224 salvage）。QA 
 - #822: CSP headers
 
 三个框架同日做安全加固 = **agent security 是 2026-04 的行业主题**，不只是我们的第二主线。
+
+## Cron Safety Issue #65774 (2026-04-13)
+
+**真实生产事故**: 用户配置了 9AM-5PM 的 WhatsApp 营销 cron，gateway 重连后所有 stale cron 在 1:02 AM 集体触发，给 9 个牙科诊所发了消息。用户无法停止 — `cron delete` 返回 `{ok: true, removed: false}` 但执行继续。只有断开 WhatsApp 账号才停住。
+
+**三重失败**: stale catch-up 无时间窗口检查 + `cron delete` 不杀 in-flight 执行 + 无 kill switch。
+
+**我们的风险**: 我们也有 gateway 重启后 cron reconciliation 问题（#65365 startup race 已确认）。虽然我们的 cron 只 announce 到 Discord 不发外部消息，但如果有发外部消息的 cron 也会中招。
+
+**版本**: 用户在 2026.3.2，当前最新 beta 可能已部分修复 startup race，但 stale catch-up 和 kill switch 问题看起来是设计缺陷，不是 bug。
+
+→ 详见 [[cron-runaway-safety]] 卡片

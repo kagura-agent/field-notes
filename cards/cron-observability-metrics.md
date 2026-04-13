@@ -38,3 +38,14 @@ Tracking token cost, success rate, and duration per cron job / routine.
 - [[evo-nexus]] — 完整实现参考
 - [[flowforge]] — 可加 metrics 的执行引擎
 - [[cron-progress-suppression]] — cron 输出管理的另一面
+- [[multica]] — #824 实现了跨平台 token usage 扫描（OpenClaw+Hermes+OpenCode session 文件解析），验证这个方向是 production 刚需
+
+## multica 实现参考 (2026-04-13 #824)
+
+multica daemon 从本地 session 文件扫描 token usage，不需要 API：
+- OpenClaw: `~/.openclaw/agents/*/sessions/*.jsonl` — 解析 assistant messages 的 usage 字段
+- Fast pre-filter: `bytesContains("usage")` + `bytesContains("assistant")` 避免 JSON 解析每行
+- 按 date+provider+model 聚合 `mergeRecords()`
+- 14 个单元测试，Go
+
+这说明 OpenClaw session JSONL 已有完整数据，我们不需要新 API，只要解析现有文件就能做 cron cost tracking。
