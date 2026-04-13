@@ -649,3 +649,11 @@ teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这
 - 3 open PRs: #3358 (systemd PATH), #3935 (Alibaba endpoint), #8151 (24 tests)
 - 策略: 不新开 PR，等已有 PR 被消化
 - hermes merge rate ~12%，耐心是关键
+
+### 2026-04-13 Evening Updates
+- **#8863 Partial Stream Recovery** (merged): OpenRouter 125s inactivity timeout kills Anthropic SSE mid-stream → fix preserves `_current_streamed_assistant_text` as final response instead of retrying/discarding
+  - Two insertion points: (1) stub response carries partial content instead of `content=None` (2) empty-response recovery chain checks partial stream BEFORE falling back to prior-turn content or retries
+  - 3 focused tests: direct recovery, empty-stub recovery, preempts prior-turn fallback
+  - Directly relevant to our Copilot API 60s timeout pattern — same class of problem
+- **#8864 Web Dashboard docs**: full documentation for the new management web UI
+- **#7735 venv symlink**: keep python symlink unresolved when remapping paths for systemd unit (not merged)

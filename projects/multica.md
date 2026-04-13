@@ -177,3 +177,8 @@ multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 
 - multica's afternoon sprint is infrastructure-heavy (GC, caching, auth) — post-security-audit stabilization phase
 - Same pattern we saw in hermes post-launch: security sprint → infrastructure hardening → docs (#8864)
 - All three frameworks (OpenClaw/hermes/multica) now in a "maturation" phase: fewer new features, more resilience/security/observability
+
+### 2026-04-13 Evening
+- **#848 WebSocket First-Message Auth** (MUL-580, merged): Token was exposed in WS URL query params (`?token=eyJ...`), logged by proxies/CDNs/browser history. Fix: non-cookie clients send JWT as first WS message after connection opens, 10s timeout. Cookie-based auth (web) unchanged
+- **#847**: Make create-workspace button always visible in dropdown
+- **#746**: Default create status to "todo" instead of "backlog"
