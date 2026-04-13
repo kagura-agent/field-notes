@@ -22,6 +22,29 @@ Any agent platform with scheduled jobs sending external messages should implemen
 5. **Send rate limiting**: cap messages-per-minute to prevent floods even during normal operation
 6. **Acknowledgment for external sends**: cron jobs that message real people should require explicit "send window" confirmation
 
+## Code-Level Root Cause (2026-04-13 source trace)
+
+**`isRunnableJob()`** in `src/cron/service/timer.ts` only checks `nextRunAtMs <= now`. When a job was stuck in `running` for days:
+1. Startup path clears `runningAtMs` locks
+2. `isRunnableJob()` sees stale `nextRunAtMs` (days old) < `now` → returns `true`
+3. Never re-evaluates the cron expression against current time → `0 9-12,14-17 * * *` fires at 1 AM
+
+**`cron delete`** updates the store but doesn't touch the `AbortController` used by `executeJobCoreWithTimeout()`. Once execution starts, there's no cancellation path.
+
+**No channel-level kill switch**: `gateway stop` terminates the process but doesn't guarantee in-flight WhatsApp sends abort cleanly.
+
+### Applied (2026-04-13)
+Posted [root cause analysis comment](https://github.com/openclaw/openclaw/issues/65774#issuecomment-4234692715) on #65774 with:
+- Code path trace (planStartupCatchup → isRunnableJob → no time re-check)
+- Three compounding failure analysis
+- Links to related PRs (#43816, #55160, #65365)
+- Offered to submit PR for time-window re-check fix
+
+### Related PRs
+- **#43816** (open): per-job stuck lock threshold — addresses stale lock duration but not time-window enforcement
+- **#55160** (open): maintenance window with deferred replay — addresses time-gating but XL scope, unlikely to merge quickly
+- **#65365** (merged): startup race fix — defers cron start until sidecars ready, but doesn't add time-window re-check
+
 ## Relevance
 
 - 我们的 cron 配置了 `08-22` 小时范围（study-loop, workshop-loop 等），如果 gateway 重启，理论上也可能有 stale catch-up
