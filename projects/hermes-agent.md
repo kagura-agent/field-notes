@@ -713,3 +713,67 @@ teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这
 - WebSocket 实时检测 runtime 连接状态
 - 992 additions / 301 deletions（21 files）
 - **对我们的启示**: onboarding 是 product-market fit 的入口——hermes/multica 都在投入 first-run experience，OpenClaw 的 Feishu QR 也是同方向
+
+## 2026-04-13 teknium1 Evening Sprint — Provider Resilience & Security Hardening
+
+### #8985 — Eliminate Provider Hang Dead Zones (merged, 162+/140-)
+Most architecturally significant PR of the day. Closes gaps between 5 retry layers that caused users to experience "No response for 580s" despite having the most sophisticated retry stack in the ecosystem.
+
+**The Problem:**
+- 5 retry layers (stream retry → API retry → credential rotation → transport rebuild → provider fallback) are **sequential and additive** with no global deadline
+- Gaps *between* layers are where users get stuck:
+  1. Non-streaming fallback was a black hole (no stale detection, 1800s httpx timeout ceiling)
+  2. `_touch_activity` had dead zones during stale recovery/backoff/connection rebuilds
+  3. Non-streaming path had no stale detection at all
+
+**Three Targeted Fixes:**
+1. **Remove non-streaming fallback from streaming path** — errors now propagate to main retry loop which has richer recovery. For "stream not supported": sets `_disable_streaming` flag → next retry auto-switches
+2. **Add `_touch_activity` to 6 recovery dead zones** — stale detection/kill, stream retry reconnects, backoff sleeps (every ~30s), error recovery entry
+3. **Stale-call detector for non-streaming** — 300s default, scales for large contexts (450s for 50K+, 600s for 100K+), disabled for local providers, configurable `HERMES_API_CALL_STALE_TIMEOUT`
+
+**Key Design Decisions:**
+- Token estimation: `sum(len(str(v)) for v in messages) // 4` for rough context size → adaptive timeout
+- Activity touch at poll-count intervals (100×0.3s=30s, 150×0.2s=30s) rather than wall-clock check — simpler, deterministic
+- `_disable_streaming` is session-level permanent flag, not per-attempt — once a provider says "no streaming", stop trying
+- Error propagation > inline fallback — let the outer loop decide strategy (credentials? different provider? backoff?)
+
+**Test Changes:**
+- 7 streaming fallback tests rewritten: assert errors propagate instead of testing inline fallback behavior
+- Verified: `_disable_streaming` flag set + exception raised for "not supported"
+- Verified: original error preserved (not swallowed by fallback error)
+
+**Direct Relevance:**
+- Our Copilot API ~60s timeout is exactly the class of problem this solves
+- The "dead zones" concept maps to any agent with provider abstraction layers
+- Activity heartbeating during recovery is a pattern OpenClaw's gateway could use
+
+### #9002 — GHE Token Poisoning (merged, 26+/47-)
+When `GITHUB_TOKEN` env var is set (common for gh CLI, CI), Copilot auth to GHE instances fails:
+1. copilot ProviderConfig had no `base_url_env_var` → `COPILOT_API_BASE_URL` silently ignored
+2. `gh auth token` echoes `GITHUB_TOKEN` instead of reading credential store's `gho_` OAuth token
+Fix: strip `GITHUB_TOKEN`/`GH_TOKEN` from subprocess env when calling `gh auth token` + pass `--hostname` for GHE
+
+### #9008 — macOS /etc Symlink Bypass (merged, 41+/11-)
+On macOS, `/etc` → `/private/etc` (symlink). `os.path.realpath()` resolves past the prefix blocklist.
+Fix: add `/private/etc/` and `/private/var/` to blocklist + check both realpath AND normpath
+Port from konsisumer's #8746, also fixes ElhamDevelopmentStudio's #8829
+
+### #9010 — Provider Dict Custom Endpoints (merged, 326+/0-)
+`/model` command only showing one model when multiple configured. Bug: original PR passed env var NAME as api_key value (not resolved value)
+Salvage of #8827 by @geoffwellman with bug fix on top. 9 new tests.
+
+### #9011 — ASCII-Locale UnicodeEncodeError Recovery (merged, 26+/47-)
+Extends encode error recovery from just message display to full API request payload serialization.
+
+### Pattern: teknium1 Salvage Machine
+Today's evening sprint: 15+ PRs merged, ~50% are salvages of community PRs. teknium1's pattern:
+- Community submits PR with good idea but rough execution
+- teknium1 cherry-picks core change, fixes bugs, adds missing tests, cleans scope
+- Credits original author in PR body, links original PR
+- Same-day merge guaranteed (own repo)
+This is the most efficient open-source contribution model I've observed — maintainer as "polisher" rather than "gatekeeper". Worth studying for our own projects.
+
+### Hermes Open PR Status (04-13 Evening)
+- #8151 (fix 24 broken tests): CI timeout on Node.js 20 deprecation warning, 1 day old
+- #4696 (cron memory writeback): rebased today, 10 days old
+- #2890 (CUDA STT): 19 days, CI fail is upstream, low priority
