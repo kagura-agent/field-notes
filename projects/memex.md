@@ -75,3 +75,15 @@
 - OpenAI API retry with exponential backoff (1s→2s→4s, max 3)
 - 维护者对 #34 评价极高，双 APPROVED，merge 很快
 - 策略：趁热打铁，reviewer suggestions 即刻实现 → 建立信任
+
+## 2026-04-13 Apply: Compact Search (Progressive Disclosure)
+- 发现 `compact?: boolean` 和 `formatCompactSearchResult` import 存在于代码中但从未实现
+- 灵感来源：[[progressive-disclosure-memory]]（从 [[claude-mem]] v12 MCP Search Tools 学到）
+- 实现：`--compact` / `-c` CLI flag + `formatCompactSearchResult()`（一行一条：slug + title）
+- 三层 progressive disclosure 完整实现：
+  - Layer 1 (compact): `memex search "query" --compact` → slug + title，~20 tokens/result
+  - Layer 2 (normal): `memex search "query"` → slug + title + firstParagraph + matchLine + links，~200 tokens/result
+  - Layer 3 (full): `memex read <slug>` → 完整卡片内容
+- 对 agent 的价值：先扫索引判断相关性，再按需 fetch 详情，约 10x token 节省
+- 对齐 [[skill-lazy-loading-poc]] 的分层哲学：always tier ≈ compact，discoverable tier ≈ full read
+- Branch: `feat/compact-search`，待验证后提 PR

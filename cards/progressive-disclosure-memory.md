@@ -31,5 +31,13 @@
 
 全量注入所有 context（token 浪费）。claude-mem Knowledge Agents 有趣的是，它在 corpus query 时反而用全量注入（因为已经经过 build 阶段的过滤），progressive disclosure 只在 search 阶段使用。
 
+## 应用状态
+
+- ✅ **memex search `--compact`**: 实现中（feat/compact-search branch）—— Layer 1 (index) + Layer 2 (normal) + Layer 3 (`memex read`)
+- ✅ **skill lazy loading**: [[skill-lazy-loading-poc]] PR 已提交（openclaw #65139）—— always tier ≈ compact, discoverable ≈ deferred load
+- ⏳ **memory_search**: OpenClaw 内置，未改（但 dreaming system 的 light sleep → REM 已是类似模式）
+- ⏳ **cron observability**: [[cron-observability-metrics]] 概念卡已有，未实现
+
 ---
 *Created: 2026-04-13 | Source: [[claude-mem]] MCP Search Tools*
+*Updated: 2026-04-13 | Applied to memex compact search*
