@@ -182,3 +182,18 @@ multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 
 - **#848 WebSocket First-Message Auth** (MUL-580, merged): Token was exposed in WS URL query params (`?token=eyJ...`), logged by proxies/CDNs/browser history. Fix: non-cookie clients send JWT as first WS message after connection opens, 10s timeout. Cookie-based auth (web) unchanged
 - **#847**: Make create-workspace button always visible in dropdown
 - **#746**: Default create status to "todo" instead of "backlog"
+
+### 2026-04-13 Late Evening: Windows Support Push + v0.1.28
+- **v0.1.28 released** (#867): major theme is Windows support + bug fixes
+- **#854 Windows installation**: PowerShell installer, GoReleaser Windows build target, `install.sh` redirects Windows users
+- **#855 Unix/Windows platform separation** (MUL-690): Go build tags (`//go:build !windows` / `//go:build windows`) for daemon syscalls — `Setsid` vs `CREATE_NEW_PROCESS_GROUP`, `SIGTERM` vs `process.Kill()`, `tail` vs native Go file reading
+- **#856 Windows build target**: GoReleaser .zip archive for Windows
+- **#859 Windows symlink fallback** (MUL-691): `os.Symlink` → junction (`mklink /J`) → file copy fallback. No Developer Mode or admin required
+- **#860 Path separator fix**: Replace hardcoded `/` with `filepath.Join` and `os.TempDir()`
+- **#865 Sub-issue progress from DB** (MUL-702): Client-side computation was wrong (paginated cache missed done issues beyond page 1). Fix: server-side aggregation endpoint
+- **#861 Chat UI overhaul**: Resizable window, expand/restore, open/close animations, session history improvements, draft persistence. Major UX polish
+- **#857 Keyboard navigation**: Arrow keys in assignee picker — accessibility improvement
+
+**Platform expansion signal**: 9 PRs in one evening, half devoted to Windows. multica is not just fixing bugs — they're aggressively expanding platform reach. This mirrors what happened with [[nanobot]] (provider dialect explosion) and [[hermes-agent]] (multi-runtime): when a project hits product-market fit, they immediately expand surface area.
+
+**Architectural maturity**: Build tags for platform-specific code (not `runtime.GOOS` switches) = they're planning for sustainable cross-platform. The symlink fallback chain (`symlink → junction → copy`) shows defensive coding for Windows's quirky filesystem semantics.

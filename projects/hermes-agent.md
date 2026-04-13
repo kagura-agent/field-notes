@@ -657,3 +657,9 @@ teknium1（maintainer）在一天内 merge 了 10 个 PR，全部自己写。这
   - Directly relevant to our Copilot API 60s timeout pattern — same class of problem
 - **#8864 Web Dashboard docs**: full documentation for the new management web UI
 - **#7735 venv symlink**: keep python symlink unresolved when remapping paths for systemd unit (not merged)
+
+### 2026-04-13 Late Evening: Budget Exhaustion Sprint
+- **#8935 Budget-exhausted empty response fix** (merged): Dead code at line ~10156 injected summary request but couldn't re-enter while loop; the flag `_budget_grace_call=True` also blocked the fallback `_handle_max_iterations`. Fix: remove broken grace block, let `_handle_max_iterations` handle it directly. Net -14 lines.
+- **#8937 Budget notification** (merged): Follow-up to #8935 — shows dim warning `⚠ Iteration budget reached (90/90) — response may be incomplete` after response panel. User always knows when budget was the limiting factor.
+- **Pattern**: Budget exhaustion → empty response is a **dead code trap** — feature was "implemented" but a control flow bug made it unreachable. Classic example of code that passes review but fails in production. The fix was deletion, not addition.
+- **Reliability sprint summary**: #8863 (stream recovery) + #8935/#8937 (budget exhaustion) = hermes closing two major "silent failure" categories in one day. Both are cases where the agent appeared to work but gave no/wrong output under specific conditions.

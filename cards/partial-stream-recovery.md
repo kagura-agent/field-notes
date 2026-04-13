@@ -30,6 +30,11 @@ Two critical insertion points:
 - Both are crash-resilience patterns for the two sides of a conversation turn
 - See also: [[execution-contract-pattern]] (preventing stalls vs recovering from them)
 
+## Related: Budget Exhaustion Silent Failure
+hermes #8935 (2026-04-13) revealed a sibling pattern: budget exhaustion → empty response due to **dead code**. A grace-call mechanism was "implemented" but couldn't re-enter the while loop, AND its flag blocked the working fallback. Fix: delete the broken code, let the working path run. Net -14 lines.
+
+Both partial-stream-recovery and budget-exhaustion-fix are **silent failure eliminations** — the agent appeared to work but produced no/wrong output under specific conditions. Together they close the two main categories of "agent ran but user got nothing."
+
 ## Applicability
 - Any agent framework with streaming LLM responses
 - Especially important for long-reasoning models (o3, GPT-5) where thinking time >> proxy timeouts

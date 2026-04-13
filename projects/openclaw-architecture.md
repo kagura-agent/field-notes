@@ -485,3 +485,16 @@ GPT-5.4 parity proof 测试场景恢复（从 conflicted #65224 salvage）。QA 
 - 这是 security-category PR，维护者通常响应较快
 - 属于 defense-in-depth 类修复
 - 状态: PENDING REVIEW
+
+## Feishu QR Onboarding #65680 (2026-04-13)
+
+Streamlined Feishu channel setup: QR code scan-to-create flow for app registration via OAuth device-code flow. Key changes:
+- `auth.login` command: `openclaw channels login --channel feishu` enters onboard flow directly
+- Interactive group chat policy selection (allowlist/open/disabled, default: allowlist)
+- DM policy auto-configured as `dmPolicy=allowlist` when openId available
+- Manual credential fallback preserved
+- **Directly relevant to our setup**: we onboarded Feishu manually — next time (or for recommending to others) this flow will be much smoother
+
+## Session Status Runtime #65807 (2026-04-13)
+
+Extracted `buildStatusText` from `auto-reply/reply/commands-status.ts` into a neutral `src/status/` module. Fixes the `session_status` tool importing reply-layer runtime internals (import cycle risk). The tool now uses a local runtime shim.
