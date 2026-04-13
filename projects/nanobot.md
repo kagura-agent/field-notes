@@ -132,11 +132,10 @@ await loop.process_direct(
 - 与我们的 Copilot API ~60s 流式空闲超时不同：nanobot 的是整体任务超时，解决无限循环/资源泄漏
 - 我们的 subagent 超时是 API 层面限制，不是 agent 层面控制
 
-## 统计 (2026-04-12 21:46)
-- ⭐ ~39,200 | pushed today (多个 commit)
+## 统计 (2026-04-13 09:56)
+- ⭐ ~39,200+ | 持续高频 push
 - v0.1.5 (Apr 6) — latest release
-- 5 个新 open issues/PRs 全部今天创建，活跃度极高
-- 社区正在快速提 cron/timeout/progress 相关 issue → 说明 nanobot 进入 production 使用阶段
+- 社区快速提 cron/timeout/progress/safety 相关 issue → production 使用阶段确认
 
 ### Dream Skill Discovery Bug Fix (7a7f5c9, 2026-04-12)
 - **问题**: `WriteFileTool` 以 `skills/` 为 workspace root，但 prompt 要模型写 `skills/<name>/SKILL.md` → 路径解析失败
@@ -158,12 +157,67 @@ await loop.process_direct(
 - **markdown-first agents**: nanobot 也在走「markdown 定义 agent」路线，跟 [[multica]] 的 skills.sh import 和 OpenClaw 的 AGENTS.md 异曲同工
 - 这个 PR 开了 11 天未合并，规模较大（统一多个关注点）
 
+## Infinite Tool Call Loop Detection (PR #3077, 2026-04-13)
+
+### 问题
+Agent 反复调用同一个 tool、相同参数，烧完 max_iterations 也不产出结果。典型场景：问"最近发生了什么"→ 模型反复 `read_file(history.jsonl, limit=50, offset=1)` 15+ 次。
+
+### 解法 (57 行新代码 + 165 行测试)
+
+**核心组件**：
+1. `tool_call_signature(name, args)` — JSON序列化 + sort_keys，确定性 key
+2. `repeated_tool_call_error(name, args, seen_counts, max_repeats=3)` — 计数器，超 3 次返回错误消息
+3. Runner 层集成：`tool_call_counts: dict[str, int]` 在 `run()` 范围内维护，`_run_tool()` 每次调用前检查
+
+**设计亮点**：
+- 与已有的 `repeated_external_lookup_error`（web_search/web_fetch 专用, max=2）并行，general guard 作为第二道防线
+- 不同参数 = 不同签名 → 读 10 个不同文件完全不受影响
+- 每次 `run()` 重置计数 → 跨 turn 不误判
+- 阈值 3（宽松够 retry，严格够防循环）
+- 错误消息引导模型总结已有信息并回复用户
+
+**测试设计**（5 个新测试）：
+- 签名确定性（参数顺序无关）+ 参数差异区分
+- 阈值行为（前 3 次 None, 第 4 次 error）
+- Runner 集成（模型被阻断后正确产出 final response）
+- 负面用例（不同参数不被阻断）
+- 已有的 subagent max_iterations 测试也更新了（使用不同参数避免误触 stagnation guard）
+
+### 与我们的关联
+- **我们没有类似机制** — OpenClaw exec/tool 执行由 gateway 管理，但无 stagnation detection
+- **Workshop agent runner 应考虑加入** — cron 场景尤其需要（无人值守时 infinite loop 浪费 token 更严重）
+- **可提 OpenClaw issue** — suggest adding tool stagnation guard in the agent runner
+- 与 [[berkeley-benchmark-gaming]] 关联：benchmark gaming 也是 tool 行为偏离预期的表现
+
+## User Message Pre-persistence (PR #3076, 2026-04-13)
+
+### 问题
+`_process_message` 在 turn **结束**才写 user message 到 session history。如果进程在 turn 中被杀（OOM/SIGKILL/self-restart），用户消息丢失不可恢复。
+
+### 解法 (20 行改动)
+- turn 开始前立即 `session.messages.append({role:"user", ...})` + `sessions.save()`
+- `_save_turn()` 时 skip offset +1（避免重复写入）
+- 只处理 text content；media blocks 仍走原路径（需 sanitization）
+- `process_direct()` (CLI) 不受影响
+
+### 启发
+- **我们的 cron session 也可能有类似问题** — 如果 cron 执行中被 SIGKILL（我们 04-12 就遇到了），context 可能丢失
+- **Write-ahead pattern** 是 production agent 基本要求：先持久化输入，再执行
+
+## Provider Hardening (2026-04-13 凌晨)
+- `fix: add guard for non-dict tool call parameters` — 模型返回 list 等非法参数类型时，registry 返回清晰错误让模型自纠正
+- `fix(mcp): hint on stdio protocol pollution` — MCP stdio 协议污染提示
+- `fix(provider): preserve static error helper compatibility` + `clarify local 502 recovery hints`
+- 模式：nanobot 在做 **defensive programming against model misbehavior** — 不信任模型输出格式
+
 ## 下一步
 - [x] 实验：在 nudge hook 中加 `[SKILL]` 标签 (2026-04-12, NUDGE.md Step 5 重写)
 - [ ] 对比 Dream 的 staleness 规则和我们的 memory hygiene（14天 vs 我们的 ad hoc）
 - [ ] 看 lifecycle hooks 设计，跟 OpenClaw hooks 对比
 - [ ] Workshop cron scheduler 添加 progress suppression（借鉴 PR #3065）
 - [ ] 跟进 PR #263 合并后的 dialect 实际使用效果
+- [ ] 考虑向 OpenClaw 提 issue: tool stagnation guard（借鉴 PR #3077）
+- [ ] Workshop agent runner 加入 stagnation detection（参考 nanobot 实现）
 
 ## Links
 - [[self-evolving-agent-landscape]]
