@@ -146,3 +146,34 @@ multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 
 - multica 在快速补齐自托管能力（local storage、auth graceful degradation）
 - skill 路径适配多平台 → skill 格式标准化趋势加速
 - 社区活跃度高，contributor 多样
+
+## 2026-04-13 Afternoon Sprint
+
+### Workspace GC (#839, 692 lines)
+- Background GC loop in daemon: scans local workspace dirs, removes those with `done`/`canceled` issue status + TTL expired
+- `.gc_meta.json` written at task completion (issue_id, workspace_id) → GC uses API to check issue status
+- Orphan cleanup (no metadata or deleted issues) after 30 days
+- Env vars: `MULTICA_GC_ENABLED`, `MULTICA_GC_INTERVAL` (1h), `MULTICA_GC_TTL` (5d), `MULTICA_GC_ORPHAN_TTL` (30d)
+- Prunes stale git worktree references from bare repo caches each cycle
+- **Pattern**: metadata breadcrumb at creation + API-driven lifecycle check at cleanup = robust garbage collection
+
+### Claude control_request Dead Code (#811)
+- `handleControlRequest()` was implemented but `"control_request"` case missing from switch → tool-use permission prompts silently dropped → Claude stalls indefinitely
+- 5-line fix. Classic "dead code from incomplete integration" pattern
+- **Relevant to us**: our `--permission-mode bypassPermissions` usage means this specific bug wouldn't bite us, but the pattern (implement handler, forget to wire case) is universal
+
+### Other Afternoon PRs
+- **#836**: OpenClaw result incremental parsing — stream stderr line by line, detect JSON result immediately (was: wait for full stream close)
+- **#842**: Desktop strip Origin header from WS requests (workaround for #819's origin whitelist blocking Electron localhost)
+- **#840**: Repo cache sync in background to unblock heartbeat (was blocking main loop)
+- **#626**: Desktop Google login via deep link (OAuth flow through custom protocol handler)
+
+### Sprint Pace
+- 10+ PRs merged in a single day, across security (#819/#822/#831), infrastructure (#839/#840), Claude integration (#811/#836), and desktop (#842/#626)
+- Consistent pattern: security audit (MUL-566) → infrastructure → integration polish → desktop UX
+- multica is shipping at hermes-level velocity now (~10 PRs/day)
+
+### Consolidation Signal
+- multica's afternoon sprint is infrastructure-heavy (GC, caching, auth) — post-security-audit stabilization phase
+- Same pattern we saw in hermes post-launch: security sprint → infrastructure hardening → docs (#8864)
+- All three frameworks (OpenClaw/hermes/multica) now in a "maturation" phase: fewer new features, more resilience/security/observability
