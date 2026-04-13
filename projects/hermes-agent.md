@@ -534,6 +534,40 @@ Links: [[openclaw-plugin-nudge]], [[self-evolution-architecture]], [[hermes-self
 - **经验**: 新平台接入必然遗漏——gateway routing、CLI setup/dump/skills-config、每个列出平台的文档页面都要更新
 - **对我们的启示**: 添加新平台后应做 parity audit（grep 所有平台列表，确认新平台不缺席）
 
+## 2026-04-13 跟进
+
+### 活跃度极高
+hermes 今天 10+ commits，包含多个重要 PR merge：
+
+### WhatsApp UX 大修 (#8723)
+- **触发**：用户推特投诉 "sends the whole code all the time" + "terminal gets interrupted"
+- **竞品分析**：明确参考了 OpenClaw 的 WhatsApp 实现（`markdownToWhatsApp()`）
+- **三个 fix**：
+  1. WhatsApp 从 TIER_LOW → TIER_MEDIUM（Baileys 已支持 edit endpoint → 启用 streaming + tool progress）
+  2. send() 加 chunking + formatting（65536→4096 limit，300ms 间隔，代码块边界检测）
+  3. format_message() 做 markdown→WhatsApp 语法转换（`**bold**`→`*bold*`，header→bold，link→text(url)）
+- **22 新测试**，86 WhatsApp + display_config 全过
+- **对我们的启示**：平台适配不只是协议对接——UX 细节（chunking、格式转换、streaming feedback）决定用户感受。OpenClaw 被 hermes 当作竞品分析对象 ✅
+
+### /debug 命令 + debug share (#8681)
+- 一键收集 system info + recent logs → paste 服务 → 返回 shareable URL
+- 跨所有平台可用（CLI、Telegram、Discord、Slack）
+- 这是 production agent 框架的标配——用户报 bug 时需要一个简单的诊断分享方式
+
+### Credential Rejection at Startup (port from OpenClaw #64586)
+- .env.example 占位值未更改 → 清晰 startup error（而非运行时 auth failure）
+- 反模式：用户拷贝 .env.example 不改就启动 → 迷惑的 API 认证失败
+- **hermes 直接 port OpenClaw 的方案**——两个项目在安全实践上互相学习 ✅
+
+### Session Resume 全文 (#8724) + UTF-16 Telegram Splitting (#8725)
+- resume 最后一条 assistant response 显示全文（之前截断 200 chars）
+- Telegram 4096 limit 按 UTF-16 code units 计算（emoji 是 surrogate pair = 2 units）
+- 两者都是平台 UX 打磨
+
+### Verbose Tool Progress (#8735)
+- tool_preview_length=0 时 verbose mode 被截断到 200 chars —— 既然用户选了 verbose，就不该限制
+- 一行 fix，但逻辑清晰
+
 ## 2026-04-11 更新
 
 ### notify_on_complete user identity propagation (#7643 → PR #7664)

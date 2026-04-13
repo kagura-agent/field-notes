@@ -302,3 +302,54 @@ daily memory notes  → ingestDailyMemorySignals()         → (key, snippet, sc
 ### 对我们的影响
 - 我们的 cron 不是 tool runner（Workshop 发 prompt 给外部 agent），tool stagnation 不在我们的层
 - 但 cron output stagnation（同一 cron 连续产出相同输出）是类似模式，可以借鉴
+
+## GPT-5 Single-Action-Then-Narrative Detection（#65597, 2026-04-13）
+
+### 问题
+GPT-5 有一个"规划停滞"模式：调一个 tool（如 `read`），然后输出"I'll do X next"就停了。从用户角度，这跟纯规划没区别——只做了一件事就停下来叙述。
+
+### 解决方案
+`isSingleActionThenNarrativePattern()` 检测：
+- **条件**：恰好 1 个 non-plan tool call + 可见文本 <700 chars + 匹配继续意图正则
+- **继续意图正则**：`going to`, `first/next/then, i'll`, `i can do that next`, `let me ... next/then/first`
+- **排除**：结果风格文本（`I'll summarize:`, `root cause:`, `here's what`）——这些是有实质内容的回答
+- **Safety guard**：只对 `SINGLE_ACTION_RETRY_SAFE_TOOL_NAMES`（read/search/find/grep/glob/ls）允许 retry——有副作用的 tool 不重试
+
+### Prompt Overlay 变更
+新增 `OPENAI_GPT5_TOOL_CALL_STYLE` prompt 段：
+```
+Call tools directly without narrating. Do not describe a plan before each tool call.
+If multiple tool calls are needed, call them in sequence without stopping to explain.
+Narrate only when it genuinely helps.
+```
+这段加入 `stablePrefix`（不走 `sectionOverrides`），因为 `tool_call_style` section 包含动态审批指引（per-channel），不能被静态字符串覆盖。
+
+### 架构洞察
+1. **Prompt + Runtime 双管齐下**：prompt overlay 改行为倾向（软约束），incomplete-turn detector 强制重试（硬约束）。单独靠 prompt 不够，单独靠检测也不够
+2. **Safe tool allowlist**：retry 只对无副作用的工具安全——这是对 tool 分类的隐式要求
+3. **正则 vs LLM 判断**：用正则检测意图（便宜、确定性）而非 LLM 判断（昂贵、不确定）——production agent 系统偏好确定性规则
+4. **Model-specific behavior shaping**：不同 model 需要不同的 runtime 调整，execution contract 就是这个抽象层
+
+### 测试覆盖
+11 个测试用例覆盖：触发 retry（"I can do that next"、planning prose）、不触发（2+ tools、completion language、handoff、answer-style summary、side-effect tools、unclassified tools）
+
+### 对我们的启发
+- 我们的 AGENTS.md 已有 `Tool Call Style` 段（"do not narrate routine tool calls"），这跟 GPT-5 overlay 的方向完全一致
+- 差异：我们是自我约束（DNA 级），OpenClaw 是 runtime enforcement。哪个更可靠？理论上 runtime enforcement，因为 prompt 在长 context 下容易被淹没
+- 相关：[[tool-stagnation-detection]]、[[loop-detection-comparison]]、[[execution-contract-pattern]]
+
+## QA Lab Credential Broker（#65596, 2026-04-13）
+
+### 概述
+Convex-backed credential leasing for Telegram QA — 解决 E2E 测试需要共享凭证的问题。
+每个 CI lane / maintainer 从 pool 中 lease credential，用完归还。防止并发测试互相踩踏。
+
+### 关联
+- 我们的测试（Workshop、FlowForge）还没到需要 credential pool 的阶段
+- 但这是 agent 框架 E2E 测试的最佳实践参考
+
+## Gateway Startup Race Fix — 追踪确认（2026-04-13）
+
+- #65322 已 merge（defer cron + heartbeat until sidecars ready）
+- #65365 是跟进 fix（defer gateway scheduled services，带 @lml2468 的 credit）
+- **影响确认**：我们偶发的 cron 首次失败可能就是这个 bug。下次升级 OpenClaw 后验证是否解决
