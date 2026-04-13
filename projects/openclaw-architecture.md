@@ -230,6 +230,14 @@ daily memory notes  → ingestDailyMemorySignals()         → (key, snippet, sc
 3. **concept tags**: 自动概念标签有助于发现跨领域关联——比如 A 项目和 B 项目的相似模式
 4. **两阶段巩固**: light（staging）+ REM（reflection）的分离很优雅。我们的 nudge → beliefs-candidates → DNA 三级也有类似结构
 
+### 已应用（2026-04-13）
+- **启用 dreaming**: 在 `~/.openclaw/openclaw.json` 配置了 `memory-core.dreaming.enabled: true`
+- **保守参数**: cron 3:30 AM（在 daily-review 3:00 之后）, limit 5, minScore 0.8, minRecallCount 3, minUniqueQueries 2
+- **可观测性**: verboseLogging=on, storage mode=both（inline + 独立 reports）
+- **现有数据**: short-term-recall.json 已有 36 条 recall entries（自 Apr 11 开始自动收集），等待首次 dreaming sweep
+- **待验证**: 需要 gateway restart 生效；首次 sweep 预计明晨 3:30 AM
+- **对比分析**: 详见 wiki card [[dreaming-vs-beliefs-candidates]]
+
 ## GPT-5.4 Execution Contract（2026-04-13 跟进）
 
 ### 什么是 strict-agentic
