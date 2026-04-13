@@ -49,3 +49,19 @@
 - Fork PR 提交后 CI 不自动跑，需要 maintainer approve workflow
 - E2E 跑三平台，Windows 和 macOS 上的行为可能与 Linux 不同
 - 本地 `npm test` 的 6 个 fail 是 peer dep 缺失导致的 pre-existing 问题，不影响 PR
+
+### PR #848 — fix(exec): suppress Dock icon bounce for child processes on macOS (Issue #834)
+- **状态**: pending review, CI 6/6 全绿 ✅
+- **根因**: child_process.spawn/exec 继承 Electron GUI context，macOS 把子进程当前台应用显示 Dock 图标
+- **修复**: 在 gateway fetch-preload 脚本加 macOS block，给所有 child_process 方法注入 LSUIElement=1 环境变量
+- **实现方式**: 镜像已有 Windows windowsHide 补丁模式，+40 行
+- **踩坑**: 
+  - npm install 这个项目很容易 OOM（2G+ Electron），需 `rm -rf node_modules` 完全重装
+  - PR #1084 base 不是 main 而是 dev，rebase 时要确认 target branch
+  - `pnpm-lock.yaml` 被 lint-staged 自动创建但 main 上不存在，需移除
+- **维护者模式**: 非常活跃（每天 merge），PR 描述需清晰（问题+根因+修复+测试），CI 必须全绿
+
+## 观察
+- ClawX 有完善的 Windows 兼容性补丁但 macOS 的被忽略——后续可扫描是否有其他 macOS 缺失的兼容处理
+- preload 脚本是 template string 内嵌 JS，不受 TypeScript 类型检查
+- E2E 跑三平台（ubuntu/windows/macos），fork PR 需 maintainer approve workflow
