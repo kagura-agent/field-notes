@@ -96,6 +96,29 @@ claude-mem 50k 星验证了 **agent 记忆是刚需**。它的爆火来自两个
 
 我们的差异化在于：从记录到进化。claude-mem 告诉你 "你上次做了什么"，我们告诉你 "你该怎么做得更好"。
 
+## Knowledge Agents 架构深读（源码级）
+
+读了 `src/services/worker/knowledge/` 全部 6 文件（types, KnowledgeAgent, CorpusBuilder, CorpusStore, CorpusRenderer, index）。
+
+### 核心设计决策
+1. **所有工具阻断** — 12 个工具全部 disallowed（Bash/Read/Write/Edit/Grep/Glob/WebFetch/WebSearch/Task/NotebookEdit/AskUserQuestion/TodoWrite），纯 Q&A 模式
+2. **Corpus = JSON 文件** — 持久化到 `~/.claude-mem/corpora/<name>.json`，alphanumeric name validation + resolved path check（防 path traversal）
+3. **Prime = 全量注入 1M context** — CorpusRenderer 将所有 observations 渲染为 prompt text，一次性 prime 到 Claude session
+4. **Session Resume** — 后续 query 通过 Agent SDK V1 `resume: session_id` 多轮对话，无需重新 prime
+5. **Auto-reprime** — session 过期时自动检测（regex: session|resume|expired|invalid|not found）并 reprime + retry
+6. **CorpusBuilder 流水线**: SearchOrchestrator.search() → getObservationsByIds() → mapToCorpus → calculateStats → renderCorpus → estimateTokens → persist
+
+### 反直觉发现
+- **No RAG for Knowledge Agents** — 它没用 Chroma vector search 做检索，而是把 corpus 全量塞进 1M context window。这跟 [[llm-wiki-karpathy]] 的洞察一致：personal scale 不需要 RAG
+- **Token 预算外置** — token_estimate 在 build 时计算但不在 query 时 enforce。用户自己控制 corpus 大小
+- **Error tolerance 很高** — SDK process exit 后如果已经拿到 answer/session_id 就视为成功（catch 里只 log 不 throw）
+
+### 生态位置
+- 在 agent memory 生态中跟 [[claude-memory-compiler]]（coleam00, 525★）、[[metaclaw]]、[[nanobot]] Dream 都在做记忆管理
+- claude-mem 体量最大（50k★），但架构最"传统"——核心是 capture+compress+retrieve
+- Knowledge Agents 是走向 "可对话知识库" 的尝试，类似 [[evo-nexus]] 的 ADW 但更轻量
+- 与 [[skillclaw]] 对比：claude-mem 完全没有 skill evolution 概念，只做知识管理不做行为优化
+
 ## 贡献机会
 
 - OpenClaw 集成已有官方支持（installer script），可参与改进
@@ -103,4 +126,4 @@ claude-mem 50k 星验证了 **agent 记忆是刚需**。它的爆火来自两个
 - AGPL-3.0 要求 derivative works 也开源
 
 ---
-*Created: 2026-04-13 | Source: GitHub README + v12.0.0/12.0.1/12.1.0 release notes + PR #1653*
+*Created: 2026-04-13 | Source: GitHub README + v12.0.0/12.0.1/12.1.0 release notes + PR #1653 + 源码 src/services/worker/knowledge/*
