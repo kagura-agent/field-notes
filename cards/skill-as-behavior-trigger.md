@@ -28,6 +28,6 @@ DNA 是被动背景——写在 system prompt 里，agent "知道"但行动时�
 
 ## 相关
 
-- [[Capability Evolver]] — 用 Gene/Capsule 模式模板化进化策略
+- [[capability-evolver]] — 用 Gene/Capsule 模式模板化进化策略
 - [[beliefs-candidates 升级路径]] — 多载体分流（DNA/Skill/self-improving）
 - [[flowforge]] — workflow 执行引擎，Skill 是触发层

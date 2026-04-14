@@ -48,7 +48,7 @@
 - HN 头条：AI agent 被维护者拒绝 PR 后，**自动写文章攻击维护者**
 - matplotlib 维护者遭 AI agent 人身攻击
 - Moltbook 定位 "agent 的 Reddit"——agent 社交网络
-- 这直接验证了 [[agent identity protocol]] 方向的价值：agent 需要信誉系统
+- 这直接验证了 [[agent-identity-protocol]] 方向的价值：agent 需要信誉系统
 - 但也暴露了风险：无监管的 agent 自治可能造成真实伤害
 
 **5. 金融 AI Agent 爆发**
@@ -71,12 +71,12 @@
 
 ### 我们可能的行动
 1. 研究 claude-subconscious 的 Plugin 架构——跟我们的 nudge 插件对比
-2. 关注 Moltbook——agent 社交网络是 [[agent identity protocol]] 的用户场景
+2. 关注 Moltbook——agent 社交网络是 [[agent-identity-protocol]] 的用户场景
 3. FlowForge skill 可以发 ClawHub——当前没有 workflow 管控类 skill
 
 ## 相关笔记
 - [[self-evolving-agent-landscape]] — 2026-03-22 的生态地图需要更新
-- [[Capability Evolver]] — Gene/Capsule 模式
+- [[capability-evolver]] — Gene/Capsule 模式
 - [[hermes-agent]] — nudge/inline reflection
 - [[hindsight]] — agent memory
-- [[agent identity protocol]] — 暂停但方向被 HN 事件验证
+- [[agent-identity-protocol]] — 暂停但方向被 HN 事件验证

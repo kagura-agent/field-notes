@@ -54,7 +54,7 @@ Agent loop: user_msg → prompt → model.complete() → parse → tool/retry/fi
 - WorkspaceContext 不动态更新（agent 改了文件，context 过时）
 - Security: run_shell auto 模式 = 任意命令执行
 - 单层 delegation, child read-only
-- 无 [[self-evolution]] 机制
+- 无 [[self-evolving-agent-landscape]] 机制
 
 ## 状态
 

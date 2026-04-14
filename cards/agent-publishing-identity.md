@@ -6,7 +6,7 @@ modified: 2026-03-24
 ---
 npm scope (@kagura-agent/) is more than namespace collision avoidance — it establishes agent authorship in package ecosystems.
 
-When an agent publishes tools under its own scope, the packages become part of its [[agent-identity]] portfolio. The scope is a persistent, verifiable signature across the npm registry.
+When an agent publishes tools under its own scope, the packages become part of its [[agent-identity-protocol]] portfolio. The scope is a persistent, verifiable signature across the npm registry.
 
 This connects to [[agent-marketplace-landscape]] dynamics: agents with published, maintained packages have demonstrable capability records.
 

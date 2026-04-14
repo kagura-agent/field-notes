@@ -444,7 +444,7 @@ flush agent 在 session reset 时 spawn 临时 agent 审查旧对话并保存记
 **3. OpenAI-compatible API server**
 - 暴露 `/v1/chat/completions` endpoint
 - 意味着 Hermes 可以被其他 agent 框架调用
-- 跟 [[agent identity protocol]] 方向相关：agent 间通信标准化
+- 跟 [[agent-identity-protocol]] 方向相关：agent 间通信标准化
 
 **4. 6 个新 messaging adapter**
 - Signal, DingTalk, SMS (Twilio), Mattermost, Matrix, Webhook

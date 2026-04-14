@@ -31,7 +31,7 @@ Massive release — 50+ changes. Key signals for our direction:
 
 ### Relevant to OpenClaw / Agent Harness
 - **Memory leak fix**: Long sessions retained dozens of historical message list copies in virtual scroller. We run long sessions — this matters.
-- **Hardcoded 5-min timeout removed**: `API_TIMEOUT_MS` now actually works. Directly relates to our Copilot API 60s stream idle timeout issue (see [[AGENTS.md]] subagent section). Shows timeout configurability is a real pain point.
+- **Hardcoded 5-min timeout removed**: `API_TIMEOUT_MS` now actually works. Directly relates to our Copilot API 60s stream idle timeout issue (see [[openclaw]] subagent section). Shows timeout configurability is a real pain point.
 - **Subagent worktree access fix**: Sub-agents were denied Read/Edit inside their own worktree. Bug pattern: isolation too aggressive → agents can't do their job. Tension between security and capability.
 - **`--resume` chain recovery**: Fixed bridging into unrelated subagent conversations. Session continuity across restarts is hard — same problem we face with memory files.
 - **Plugin hooks + managed settings**: Enterprise MDM deployment templates added. Claude Code moving into enterprise = more compliance features = more hooks for us to learn from.

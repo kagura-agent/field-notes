@@ -23,5 +23,5 @@
 ## 关联
 
 - [[beliefs-candidates]] — gradient 来源
-- [[AGENTS.md]] — 规则载体
-- [[verify-before-claim]] — 最高频 pattern
+- [[openclaw]] — 规则载体
+- [[verification-discipline-evolution]] — 最高频 pattern

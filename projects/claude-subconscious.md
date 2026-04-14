@@ -80,7 +80,7 @@ Claude Code ◄──► Letta Agent (background)
 - **trading agents 大爆发**：TradingAgents (42.8k⭐) + CN 中文版 (21.8k⭐)
 - claude-hud 14.2k⭐ 仍在 trending（我们有 3 个 PR 在那）
 
-### 跟 [[librarian problem]] 的关联
+### 跟 [[librarian-problem]] 的关联
 - claude-subconscious 的 "whisper before each prompt" 是 Level 2（图书管理员级）
 - 它在 tool use 之前也 whisper — 这是向 Level 3（教练级）迈进
 - 但仍然是被动的：只基于已有 transcript 推荐，不预测你会犯什么错

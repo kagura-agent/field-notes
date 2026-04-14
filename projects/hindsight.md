@@ -123,7 +123,7 @@ Retrieve (parallel) → RRF Fusion → Pre-filter (top 300) → Cross-encoder Re
 
 **Multiplicative boost：** `combined_score = ce_score × recency_boost × temporal_boost`。乘法而非加法——确保相关性始终是主导因素。alpha=0.2 → ±10% swing。0.1 太弱（时间查询没效果），0.5 太强（昨天的垃圾赢过上月的好记忆）。
 
-### 跟 [[librarian problem]] 的关联
+### 跟 [[librarian-problem]] 的关联
 
 这个 pipeline 是 **Level 1（Search）的工程极致**——用 4 种不同视角看同一个知识空间，然后融合。但它仍然是被动的：你问，它答。不会主动说"你该看看这个"。
 
