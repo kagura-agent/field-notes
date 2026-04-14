@@ -94,3 +94,9 @@ MemOS 在 OpenClaw 生态里是一等公民，有两个官方插件：
 - 该 repo 无 CI，review 完全靠维护者
 - #1383 Bug 1（跨 agent 召回）已在 v1.0.8 修复，Bug 2（循环写入）仍 open
 - 我们的 fork 落后 upstream（git fetch upstream 超时，网络问题）
+
+## 外部 PR Review 模式 (2026-04-14 观察)
+- **maintainer**: hijzy（MemTensor org 成员），几乎只 merge 内部 PR
+- **外部 PR**: 无可见的外部贡献者被 merge
+- **结论**: 内部优先 repo，外部 PR 不 review。不再投入
+- **行动**: 关闭全部 4 个 PR（#1434/#1451/#1453/#1455）

@@ -996,3 +996,9 @@ This is the most efficient open-source contribution model I've observed — main
 **Architecture Insight**: Credential pool is a shared resource across processes (file-based `auth.json`). Read operations must not have write side effects that assume single-process semantics. This is a general pattern violation — [[read-path-purity]].
 
 **Related**: PR #9322 (explicit api_key override) also touches credential pool resolution chain. Both fixes address credential handling correctness in custom provider setups.
+
+## 外部 PR Review 模式 (2026-04-14 更新)
+- **maintainer**: teknium1，基本只 merge 自己的 PR
+- **外部 PR salvage 模式**: 外部代码被吸收进 maintainer 的大 PR（如 #5983 吸收 #5786/#5789），PR 不 merge 但代码被用
+- **merge 率**: 0%（我们的 PR 从未被直接 merge）
+- **结论**: 继续少量高质量提交（test fix 等），不期待 merge，当作学习和品牌曝光

@@ -67,3 +67,9 @@
 - **CodeRabbit review**: Suggested provider-aware auth hint (don't hardcode 'Claude') → used `aiClient.getType()`, good catch
 - **Tests**: 5 new tests, all pass + type-check clean
 - **Pattern**: "dishonest silence" bugs (function returns void/success but operation failed) — same family as #1034's ghost worktree
+
+## 外部 PR Review 模式 (2026-04-14 观察)
+- **核心贡献者**: Wirasm（连续 5 个 merge），可能是 co-maintainer
+- **外部 PR**: 有被 merge 的迹象，repo 活跃
+- **注意**: PR base branch 可能是 dev 不是 main（#1084 教训）
+- **结论**: 值得继续投入，正常等待 review

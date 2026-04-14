@@ -93,3 +93,9 @@ source: GitHub jarrodwatts/claude-hud
 - **CI**: Uses Node 18.x and 20.x matrix
 - **Note**: `npm install` can hang with proxy env vars — always `unset http_proxy https_proxy all_proxy`
 - **node_modules**: Can get corrupted; `rm -rf node_modules && npm install` fixes
+
+## 外部 PR Review 模式 (2026-04-14 观察)
+- **maintainer**: jarrodwatts，基本只 merge 自己和 dependabot 的 PR
+- **最近外部 merge**: 2026-04-05 @Yimaha #381，极少
+- **结论**: 外部 PR review 率极低，不值得继续投入
+- **行动**: 关闭 #396 和 #402，保留 #410 短期观察后也关

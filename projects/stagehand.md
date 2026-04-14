@@ -78,3 +78,8 @@ Browser-Use (85k⭐)  →  Stagehand (22k⭐)  →  Playwright MCP (30k⭐)
 - **CI**: manage-external-pr SUCCESS, cubic AI reviewer COMMENTED (non-blocking)
 - **注意**: 这个 repo pnpm install 在我们的机器上 OOM (SIGKILL)，无法本地跑完整测试。类型安全通过人工验证
 - **changeset**: 未加（如被要求，参考 #1918 经验）
+
+## 外部 PR Review 模式 (2026-04-14 观察)
+- **活跃 merge**: 外部贡献者 sameelarif, tkattkat 等被 merge
+- **claim 模式**: pirate 会 claim 外部 PR 到内部 branch（如 #1918 → #1989）
+- **结论**: 值得继续投入，代码会被采纳（即使 PR 被 claim）
