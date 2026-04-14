@@ -1,6 +1,6 @@
 # SkillClaw
 
-> AMAP-ML/SkillClaw | 404⭐ (2026-04-12) | Python | 2026-04-10
+> AMAP-ML/SkillClaw | 515⭐ (2026-04-14) | Python | 2026-04-10
 > "Let Skills Evolve Collectively with Agentic Evolver"
 > Paper: arxiv.org/abs/2604.08377 (2026-04-09)
 > Built on: MetaClaw, WildClawBench, OpenClaw-RL
@@ -92,12 +92,54 @@
 4. **Conservative editing protocol**：默认改局部、不重写、区分 skill/agent/env 问题 — 可以纳入我们的 skill-creator workflow
 5. **PRM scoring**：per-turn 质量评分，为 skill 进化提供量化信号 — 我们目前没有类似机制，但 eval-lightweight 设计可以借鉴
 
+## 04-14 重大更新：Multi-Framework + Verification Pipeline
+
+### Hermes 集成 (f3a23d4)
+- 70 files changed, -10k lines net（代码大清理）+ 正式 Hermes 支持
+- `claw_adapter.py` 统一 9 个框架适配器：OpenClaw, Hermes, CoPaw, IronClaw, PicoClaw, ZeroClaw, NanoClaw, NemoClaw + none
+- Hermes 适配：patch `~/.hermes/config.yaml`（provider→custom, base_url→proxy, model→skillclaw-model）
+- 意义：skill 进化从 OpenClaw-only 走向多框架，Hermes 78k★ = 巨大新分发渠道
+
+### Skill Verifier（新增 publication gate）
+- `pipeline/skill_verifier.py` — LLM-based 4 维度检查（grounded_in_evidence, preserves_existing_value, specificity_and_reusability, safe_to_publish）
+- 在 skill 生成后、上传前拦截，不通过就 block
+- 解决的问题：防止 LLM 生成的 generic best-practice 稀释具体环境知识
+- 关键设计：reject 条件 > accept 条件（默认倾向保守）
+
+### Session Judge（新增 session 评分）
+- `pipeline/session_judge.py` — 4 维度 session 级评分：task_completion(0.55), response_quality(0.30), efficiency(0.05), tool_usage(0.10)
+- 基于 trajectory + summary，不依赖 benchmark labels
+- 关键指导：区分 "missing evidence" vs "clear failure"，不重罚框架启动噪音
+
+### Validation Worker（分布式验证）
+- `skillclaw/validation_worker.py` — 闲置客户端后台验证其他 agent 的 skill 候选
+- 设计约束：默认禁用、仅共享模式生效、仅客户端空闲时运行
+- 创新：把分布式计算思路用在 skill 质量验证上——闲置的 agent 帮忙审核
+
+### Evolve Server 重构
+- `evolve_server/` 从 `agent_evolve_server/` 升级，保留两个引擎：
+  - `workflow`：确定性 3 阶段 pipeline（summarize→aggregate→execute），新增 judge + verifier 阶段
+  - `agent`：OpenClaw agent 自主进化（EVOLVE_AGENTS.md 协议不变）
+- 新增 `ValidationStore` + `validation_publish` 流程：候选 skill → 验证 → 发布（异步 3 阶段）
+
+### 跨框架 Skill 讨论
+- 与 Deer-Flow (ByteDance) 讨论 cross-framework skill sharing (04-12)
+- WeChat 讨论群上线 (04-14)
+
+### 对我们的意义
+1. **Hermes 适配器模式可参考**：如果我们要做 skill proxy，适配器设计很成熟
+2. **Skill Verifier 是缺失的一环**：我们的 beliefs-candidates 升级没有 publication gate，直接靠 3 次重复。Verifier 4 维度框架值得借鉴
+3. **Session Judge 权重分配**：task_completion 0.55 远高于 efficiency 0.05，验证了 "完成 > 效率" 的直觉
+4. **Validation Worker**：分布式 idle-time 验证是新思路，Haru/Ren 团队可以用类似模式——空闲时 review 彼此的 skill 变更
+
 ## 行动项
 
 - [x] Phase 0 skill trajectory tracking 开始（2026-04-12）
 - [x] 将 conservative editing protocol 写成 wiki 卡片 → cards/conservative-skill-editing.md (2026-04-12)
 - [x] 评估 PRM 思路是否可集成到 nudge → cards/prm-scoring-nudge-eval.md (2026-04-12, 结论: 轻量 session quality signal 可行，等 Phase 1)
-- [ ] 关注 issue #1: "Can skillclaw support Hermes?" — 如果 Hermes 支持进展，可能影响打工方向
+- [x] ~~关注 issue #1: "Can skillclaw support Hermes?"~~ ✅ 已实现 (04-14 f3a23d4)
+- [ ] 考虑借鉴 Skill Verifier 4 维度框架到我们的 beliefs-candidates 升级流程
+- [ ] 评估 Validation Worker 模式是否适用于 Haru/Ren 团队协作
 
 ## 关联
 
