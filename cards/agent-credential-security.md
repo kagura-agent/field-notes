@@ -1,5 +1,7 @@
 # Agent 凭证安全：指纹模式
 
+> Agent credential security: fingerprint model for runtime-injected credentials. Agents use credentials (API keys, tokens) without seeing them — runtime injects on demand, like fingerprint payment.
+
 ## 核心问题
 Agent 需要使用凭证（API key、OAuth token、app secret），但不应该能"看到"凭证。
 当前现实：agent 可以 `cat` 配置文件直接读到所有 secret。

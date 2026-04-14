@@ -4,6 +4,8 @@ created: 2026-03-25
 source: "Memory in the Age of AI Agents" (arxiv 2512.13564, 47 authors, HF Daily Paper #1)
 ---
 
+> Agent memory taxonomy and comparison framework. Three dimensions for analyzing agent memory systems: Forms (token/parametric/latent), Functions (factual/experiential/working), Dynamics (formation/evolution/retrieval).
+
 ## 核心框架
 
 综述提出三个维度分析 agent memory：
