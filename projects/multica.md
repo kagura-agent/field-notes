@@ -210,6 +210,52 @@ multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 
 
 **对我们的启示**：onboarding wizard 是 product-market fit 信号——项目到了"有人用但不好用"阶段就会投入 first-run experience。OpenClaw 的 Feishu QR (#65680) 是同方向的投入
 
+## 2026-04-14 Afternoon: OpenClaw Backend P0+P1 + Daemon Watchdog
+
+### #910 OpenClaw Backend P0+P1 Improvements (809+/-36, merged)
+multica 的 OpenClaw 集成从 "basic adapter" 升级到 "first-class backend"：
+
+**P0 — 用户体验**：
+- **Streaming output**: NDJSON events (text/tool_use/tool_result/step_start/step_finish/lifecycle) 实时 emit，不再等最终 blob
+- **Tool use support**: parse `tool_use` + `tool_result` events，匹配 Claude/OpenCode 后端行为
+- **--model / --system-prompt passthrough**: 转发到 OpenClaw CLI
+
+**P1 — 鲁棒性**：
+- **Hardened JSON parsing**: `tryParseOpenclawResult` 要求行以 `{` 开头（之前扫描任何包含 brace 的行 → false match log 行）
+- **Lifecycle event handling**: 新增 `lifecycle` event type + phase tracking (error/failed/cancelled) + 结构化 error 对象
+- **Usage field name variants**: `parseOpenclawUsage` 支持 input/inputTokens/input_tokens 三种命名 + cacheRead/cachedInputTokens/cache_read_input_tokens + 增量累积 across step_finish events
+
+**测试**: 31 个新 OpenClaw 单元测试（从 4 个增长到 35 个），全面覆盖 legacy blob + streaming events + edge cases
+
+**关键洞察**: multica 现在完全理解 OpenClaw 的 NDJSON 流协议。这意味着 multica 用户能用 OpenClaw 做 coding agent 并获得跟 Claude 一样的实时反馈体验。OpenClaw 在 multica 生态中从 "also supported" 变为 "fully integrated"。
+
+### #947 Daemon Stall Watchdog (123+/-58, merged)
+**三层防挂机制**，解决 agent CLI 进程卡住（如 tool call 访问不可达路径）导致任务永久 `running` 的问题：
+
+**Layer 1 — Agent Backend Watchdog** (claude.go / opencode.go / openclaw.go / gemini.go):
+- goroutine 监听 `runCtx.Done()`，context 取消时主动 `Close()` stdout/stderr pipe → 强制 scanner.Scan() 返回
+- `cmd.WaitDelay = 10s` — Go 进程退出后 10s 内强制关闭 pipe（OS 级保障）
+- 所有 4 个 backend 统一应用，不是只修一个
+
+**Layer 2 — Drain Timeout** (daemon.go executeAndDrain):
+- 独立于 backend timeout，额外 +30s 缓冲
+- `select` 同时监听 message channel + drainCtx.Done()，不会因 backend 故障无限阻塞
+- 默认 21 分钟（无 timeout 时），足够覆盖长任务
+
+**Layer 3 — Ping Context-Aware** (daemon.go handlePing):
+- ping 操作加 `select` 监听 pingCtx.Done()，不再裸 `<-session.Result` 死等
+- 超时后主动报告 `"failed"` + duration_ms 而非 deadlock
+
+**为什么这重要**：
+- 直接关联我们的 subagent timeout 问题（Copilot API 60s idle timeout + Claude Code OOM SIGKILL）
+- multica 的三层方案是 defense in depth：进程级(pipe close) → goroutine级(drain timeout) → 功能级(ping select)
+- 我们的 OpenClaw exec 只有单层超时（exec timeout），没有 pipe close watchdog 和 drain timeout
+- **可借鉴**: 给 OpenClaw subagent spawn 加 pipe close watchdog，防止 hung process 阻塞 session
+
+### 其他 04-14 变化
+- **#938**: Description click-to-focus UX fix
+- **#910 + #947 合体效果**: multica 的 OpenClaw 后端现在既有实时流（#910）又有防挂保护（#947），生产可靠性大幅提升
+
 ## 2026-04-14 跟进：爆发持续 + 架构扩展
 
 ### 增长数据
