@@ -1,4 +1,17 @@
 
+## 2026-04-14 Quick Scout #3 (19:20)
+- [ ] **RivonClaw** (gaoyangz77/rivonclaw, ⭐252): OpenClaw 之上的自然语言规则+反馈进化层，"personal digital butler"。直接对标 Kagura 的 skill 进化 + 北极星"人类伴侣"方向 — **值得深入**
+- [ ] **oh-my-pi** (can1357/oh-my-pi, ⭐2987): terminal coding agent, hash-anchored edits + subagent 架构 — 竞品分析，值得关注
+- [ ] **auto-deep-researcher-24x7** (⭐419, ↑22 from 397): Leader-Worker 24/7 自治 + constant-size memory — 架构参考，和 Kagura 自治运行高度相关
+- [ ] **LibreFang** (librefang/librefang, ⭐218): Rust agent OS, Fly.io demo — 新方向，观察
+- [ ] HN: "M×N problem of tool calling and open-source models" — tool calling 标准化问题，和 skill 生态互操作直接相关
+- [x] HN: "Multi-Agentic Software Dev Is a Distributed Systems Problem" — 已知，今天 study #231 已深读
+- SkillClaw ⭐525 (↑120 from 404) — 已知，今天已深读+应用
+- fireworks-tech-graph ⭐2247 — 已知
+- hermes-hudui ⭐856 — 已知
+
+**判断：** RivonClaw 最值得深入 — OpenClaw 生态的"进化层"，和我们方向高度重合。oh-my-pi 3k★是竞品信号。auto-deep-researcher 持续涨表明 24/7 自治 agent 需求真实。
+
 ## 2026-04-14 Quick Scout #2 (13:45)
 - [ ] nashsu/llm_wiki (⭐1178): 文档→wiki 知识库（非 RAG），incremental wiki building — **和 memex 高度相关，值得深入**
 - [ ] crisandrews/ClawCode (⭐37): Claude Code persistent agent（SQLite+FTS5 memory, nightly dreaming, messaging plugins）— **和我们 dreaming 方向重合**
