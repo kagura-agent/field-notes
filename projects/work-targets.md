@@ -80,3 +80,18 @@
 - 考虑：workloop cron 在饱和期从每小时改每 2 小时
 
 **工具状态**: gh CLI ✅, flowforge ✅。gogetajob 未使用（直接 gh 更快）
+
+## Workloop #213 反思 (2026-04-14 13:10)
+
+**连续第 8 轮 PR 饱和跳过 find_work。** 全 8 repo 均达 ≤3 上限。
+
+**PR 状态全量检查**:
+- 33 open PRs，全部 MERGEABLE，0 conflicts，0 human reviews 待回应
+- 0 条未读 GitHub 通知
+- hermes #4696 已于 04-13 被关闭（未 merge），hermes #2890 同
+- Issue comments (#65774 cron safety, #34574 resultSimilarity) 仍无 maintainer 回应
+- claude-hud #396 (7d+, CLEAN) 已 ping，无响应
+
+**成功模式**: 饱和期 workloop 的正确行为是纯 followup（检查状态+标已读），不硬开新 PR。遵守 TODO directive。
+
+**工具状态**: gh CLI ✅, flowforge ✅, 无 bug
