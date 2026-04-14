@@ -558,3 +558,32 @@ The grounded system was an attempt to verify recalled memories against evidence 
 - [[dreaming-vs-beliefs-candidates]] — existing comparison, still valid post-simplification
 - [[progressive-disclosure-memory]] — recall signals unchanged
 - 上次笔记: [[#Dreaming Runtime Verification + Upgrade Assessment]] (2026-04-13)
+
+## Process Supervisor Analysis (2026-04-14)
+
+### Current Architecture
+- `supervisor.ts`: Two timeout mechanisms (overall + no-output), both fire `requestCancel()` → immediate `SIGKILL`
+- `child.ts`: `killProcessTree(pid)` + `child.kill("SIGKILL")`, with `FORCE_KILL_WAIT_FALLBACK_MS = 4000` (Windows-only drain)
+- No SIGTERM → SIGKILL escalation, no cross-platform drain timeout, no pipe close watchdog
+
+### Gap Analysis (vs multica #947 three-layer pattern)
+| Layer | multica | OpenClaw | Gap |
+|-------|---------|----------|-----|
+| Pipe close watchdog | `stdout.Close()` on ctx.Done | None | Missing |
+| Signal escalation | SIGTERM → wait → SIGKILL | Direct SIGKILL | Missing |
+| Independent drain timeout | backend timeout + 30s buffer | 4s Windows-only fallback | Partial |
+| Context-aware ping | select on pingCtx.Done | N/A (no ping system) | N/A |
+
+### Issue Filed
+- **openclaw #66399**: "Process supervisor: graceful signal escalation and drain timeout for exec tool"
+- Proposes: SIGTERM → 5s grace → SIGKILL + cross-platform drain timeout + optional pipe close
+- Cites multica #947 and Go's `exec.Cmd.WaitDelay` as prior art
+
+### Relevance
+- Explains observed subagent SIGKILL behavior (gogetajob, Claude Code in cron)
+- Signal escalation would let coding agents clean up temp files and partial writes
+- Cross-platform drain timeout prevents potential zombie process hangs on POSIX
+
+### Related
+- [[process-hang-watchdog]] — concept card with three-layer pattern
+- [[tool-execution-policy-enforcement]] — tool blocking patterns across frameworks
