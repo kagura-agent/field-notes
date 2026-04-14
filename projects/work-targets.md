@@ -62,3 +62,21 @@
 **饱和期策略**: 当所有 repo 都满额时，workloop 的有效动作只有 followup（rebase/ping/respond）。考虑在饱和期将 workloop cron 从每小时改为每 2 小时，减少无效轮次。
 
 **工具状态**: gh CLI ✅, flowforge ✅, gogetajob 未使用（gh direct 更快）。无 bug 发现。
+
+## Workloop #210 反思 (2026-04-14 12:10)
+
+**连续第 6 轮 PR 饱和跳过 find_work。** hermes 实际有 3 个 open PR（#9353/#9322/#8151），之前误报为 2 — 因为 #8151 较老容易遗漏。
+
+**成功分析**:
+- pattern: **PR saturation ceiling 稳定** — 全 8 repo 满额（≤3 limit），纯 maintenance 期。正确决策是不开新 PR
+- applies_when: 所有 repo 都在 ≤3 限制时
+- key_decision: 遵守 TODO directive "本周跟进不开新"
+- approach: 只做 followup（check status + check notifications + mark read），不浪费时间找 issue
+
+**饱和期观察**:
+- 30 open PRs 已持续 3 天（04-12 至今），merge 速度跟不上
+- 最老 PR: openclaw #53270 (21d), openclaw #54234 (21d), openclaw #55007 (20d)
+- claude-hud 3 PRs 零 review 持续 8 天，已 ping 昨天
+- 考虑：workloop cron 在饱和期从每小时改每 2 小时
+
+**工具状态**: gh CLI ✅, flowforge ✅。gogetajob 未使用（直接 gh 更快）
