@@ -35,3 +35,20 @@
 - **multica-ai/multica** 🆕 — managed agents platform（任务分配+进度追踪+skill 复合），5.9k⭐，103 issues，2026-04-10 活跃。对齐方向：agent infra / skill 生态
 - **obra/superpowers** 🆕 — agentic skills framework & dev methodology，145k⭐，266 issues，2026-04-10 活跃。对齐方向：skill 生态 / agent 基础设施
 - **rowboatlabs/rowboat** 🆕 — AI coworker with memory，11.7k⭐，77 issues，2026-04-10 活跃。对齐方向：memory / agent infra
+
+## PR 饱和更新 (2026-04-14 08:00)
+
+**每 repo open PR 数**:
+| Repo | Count | Limit | Status |
+|------|-------|-------|--------|
+| openclaw | 8 | ≤3 | 🔴 严重超标 |
+| NemoClaw | 5 | ≤3 | 🔴 超标 |
+| Archon | 4 | ≤3 | 🟡 超标 |
+| MemOS | 4 | ≤3 | 🟡 超标 |
+| claude-hud | 3 | ≤3 | 🟡 满额 |
+| stagehand | 3 | ≤3 | 🟡 满额 |
+| ClawX | 3 | ≤3 | 🟡 满额 |
+| hermes | 1 | ≤3 | ✅ 有余量 |
+
+**决策**: 本周不开新 PR。hermes #9270 (empty response placeholder leak) 记入 backlog。
+**Issue 评论等待**: openclaw #65774 (cron safety, 2d no response) + #34574 (resultSimilarity, 2 users confirmed, 0 maintainer response)
