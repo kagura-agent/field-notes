@@ -132,14 +132,51 @@
 3. **Session Judge 权重分配**：task_completion 0.55 远高于 efficiency 0.05，验证了 "完成 > 效率" 的直觉
 4. **Validation Worker**：分布式 idle-time 验证是新思路，Haru/Ren 团队可以用类似模式——空闲时 review 彼此的 skill 变更
 
+## Validation Pipeline 深读 (04-14 20:45)
+
+### Two-Tier 验证架构
+
+**Tier 1: Skill Verifier** (服务端 pre-upload gate)
+- `evolve_server/pipeline/skill_verifier.py` — 1 LLM call, 4 维度评分 (grounded_in_evidence, preserves_existing_value, specificity_and_reusability, safe_to_publish)
+- score >= 0.75 AND decision == "accept" → 通过；解析失败/调用失败 → reject（默认保守）
+- optimize_description 只验证触发准确性，create_skill 验证独特性
+
+**Tier 2: Validation Worker** (客户端分布式 replay A/B test)
+- `skillclaw/validation_worker.py` — idle-time 后台运行，从 ValidationStore 拉 job
+- 核心方法 `_replay_validate_job`: 用真实 case 同时跑 baseline(current skill) vs candidate(new skill)
+- PRM majority voting 评分，candidate_mean >= threshold(0.75) AND >= baseline_mean → accept
+- 限流: daily quota + 并发限制 + idle 检测 (IdleStateProvider protocol)
+- API 成本: 每 job = 2 × cases(≤3) × (LLM replay + PRM × prm_m)
+
+**ValidationStore** (共享存储 3 阶段)
+- 阶段 1: evolve server 创建 job → 阶段 2: idle 客户端提交 result → 阶段 3: evolve server 汇总 decision
+- 后端: OSS/S3/local，group_id 隔离
+- Key 结构: `{group_id}/validation_{jobs|results|decisions}/{job_id}/`
+
+**PRM Scorer** (`skillclaw/prm_scorer.py`)
+- 任何 OpenAI-compatible API 做 judge，prompt: "Was the response helpful? Score: 1/-1/0"
+- majority voting (prm_m 次独立评分)，输入消毒 (XML tags → neutral labels)
+
+### 关键设计洞察
+1. **Replay > Judgment** — Tier 2 实际重放 task 对比 before/after，比纯 LLM judgment 更接近 ground truth
+2. **两层解耦** — Tier 1 fast gate (1 call), Tier 2 slow A/B test (many calls)。可只用 Tier 1
+3. **Asymmetric confidence** — 两层都 default reject，保守面一致
+4. **Group isolation** — 同一 sharing group 互相验证，适合团队
+
+### 对 Haru/Ren 团队评估 (结论)
+- **直接可用性: ❌** — 依赖 SkillClaw proxy 架构，我们用 OpenClaw native skill system
+- **Replay A/B pattern: ✅ 可借鉴** — 在 skill-creator/daily-audit 中用历史 case replay 验证变更效果
+- **Two-tier gate: ✅ 可借鉴** — Tier 1 ≈ beliefs 3 次重复规则，Tier 2 (DNA 变更后效果验证) 我们缺失
+- **暂不实现分布式验证** — 3 agents + 低频 skill 变更不值得复杂度。checklist 更实际
+
 ## 行动项
 
 - [x] Phase 0 skill trajectory tracking 开始（2026-04-12）
 - [x] 将 conservative editing protocol 写成 wiki 卡片 → cards/conservative-skill-editing.md (2026-04-12)
 - [x] 评估 PRM 思路是否可集成到 nudge → cards/prm-scoring-nudge-eval.md (2026-04-12, 结论: 轻量 session quality signal 可行，等 Phase 1)
 - [x] ~~关注 issue #1: "Can skillclaw support Hermes?"~~ ✅ 已实现 (04-14 f3a23d4)
-- [ ] 考虑借鉴 Skill Verifier 4 维度框架到我们的 beliefs-candidates 升级流程
-- [ ] 评估 Validation Worker 模式是否适用于 Haru/Ren 团队协作
+- [x] 评估 Validation Worker 模式是否适用于 Haru/Ren 团队协作 → 结论: 不直接适用，但 replay A/B 和 two-tier gate 可借鉴 (04-14)
+- [ ] 考虑借鉴 Skill Verifier 4 维度 checklist 到 beliefs-candidates 升级流程（轻量版，不需 LLM 调用）
 
 ## 关联
 
