@@ -981,3 +981,18 @@ This is the most efficient open-source contribution model I've observed — main
 
 ---
 *Deep read completed: 2026-04-14 | Source: v0.9.0 release + 04-13 全天逐 PR 跟踪*
+
+## Credential Pool Env-Seeded Pruning Fix (2026-04-14)
+
+**Issue**: #9331 — `load_pool()` destructively prunes env-seeded credentials when the env var is absent from the current process
+
+**Root Cause**: `_prune_stale_seeded_entries()` removes entries whose `env:` source isn't in `active_sources`. But `active_sources` is built only from the current process's `os.environ`. In multi-process deployments (gateway + CLI + cron), processes have different env vars.
+
+**Fix (PR #9353)**: Only prune env-seeded entries with **positive evidence** of staleness:
+- Env var absent from `os.environ` → preserve (another process may have it)
+- Env var present but empty → prune (explicit removal)
+- Singleton sources (`claude_code`/`hermes_pkce`) → existing behavior preserved
+
+**Architecture Insight**: Credential pool is a shared resource across processes (file-based `auth.json`). Read operations must not have write side effects that assume single-process semantics. This is a general pattern violation — [[read-path-purity]].
+
+**Related**: PR #9322 (explicit api_key override) also touches credential pool resolution chain. Both fixes address credential handling correctness in custom provider setups.
