@@ -2,7 +2,7 @@
 
 **Repo**: [multica-ai/multica](https://github.com/multica-ai/multica)
 **首次关注**: 2026-04-10
-**Stars**: 5.3k (+1680/day，爆发期)
+**Stars**: 11,471 (04-14, +6k in 4 days — 爆发持续加速)
 **语言**: TypeScript
 **License**: Apache-2.0
 
@@ -209,3 +209,64 @@ multica daemon 现在能扫描 3 种 agent 框架的本地 session 文件提取 
 **跟 [[hermes-agent]] 的收敛**：hermes 做 operational hardening（SQLite backup、env sanitize），multica 做 UX polish（onboarding、editor）。不同侧重，但都是从 feature-building → production-ready 转型
 
 **对我们的启示**：onboarding wizard 是 product-market fit 信号——项目到了"有人用但不好用"阶段就会投入 first-run experience。OpenClaw 的 Feishu QR (#65680) 是同方向的投入
+
+## 2026-04-14 跟进：爆发持续 + 架构扩展
+
+### 增长数据
+- **Stars**: 5.3k (04-10) → 11.4k (04-14) — 4 天翻倍，日均 +1.5k
+- **Forks**: 1,423
+- 15+ PRs merged in 24h（04-13 evening → 04-14 morning）
+- 从 "快速增长" 进入 "生态扩张" 阶段
+
+### Gemini CLI Backend (#755, merged 04-13)
+**multica 第六个 runtime provider**（alongside claude, codex, opencode, [[openclaw-architecture]], hermes）
+
+关键设计：
+- `geminiBackend` implements polymorphic `Backend` interface
+- Spawns: `gemini -p <prompt> --yolo -o text [-m <model>] [-r <session>]`
+- Context deadline → `"timeout"` status，跟 Claude/Codex 契约一致
+- `GEMINI.md` meta-skill injection（Gemini CLI natively discovers GEMINI.md）
+- 4 unit tests covering `buildGeminiArgs` variations
+- **最小可行集成**：272 additions, 5 deletions, 6 files — 利用已有的多态架构
+
+**洞察**：multica 的 `Backend` interface 足够泛化，新 provider 只需 ~270 行。这说明他们的 agent-agnostic 架构是真的不是口号。对 [[openclaw-architecture]] 也有参考——skill injection 应该 provider-native（写到各框架的原生发现路径）而不是统一格式。
+
+### 安全审计第二波 (MUL-577~582)
+继 04-13 HttpOnly Cookie + CSP 后，今日继续系统性修复：
+
+| PR | 级别 | 修复内容 |
+|----|------|----------|
+| #934 | LOW | JWT 30d→72h + attachment UUID v7→v4（防时间枚举） |
+| #935 | MED | Cross-workspace subscription injection + upload missing member check |
+| #936 | MED | S3 keys scoped per workspace（`workspaces/{id}/{uuid}.{ext}`）|
+
+**Pattern**: 系统化安全审计 → 编号跟踪（MUL-566/577/580/581/582） → 按严重度分批修复。multica 的安全工程成熟度在快速提升。对比 [[agent-security]]，这是 "agent platform security" 跟 "agent runtime security" 的区别——multica 关注的是多租户隔离，我们关注的是 agent 权限边界。
+
+### CLI 重构 (#888, merged 04-13)
+- `install.sh` 不再写 config.json — 安装与配置解耦
+- 新命令：`multica setup` / `multica setup cloud` / `multica setup self-host`
+- `resolveServerURL` 不再静默 fallback 到 `multica.ai` — fail loudly
+- Overwrite protection + health check probe
+- **教训**：silent defaults 是 self-host 产品的大敌。"默认连到 SaaS" 对免费版可以，对 self-host 是安全隐患。
+
+### 任务生命周期完善 (#940)
+- Issue status → `cancelled` 时自动 cancel active agent tasks
+- Daemon polling 5s 内生效
+- 12 行 fix — 利用已有的 polling infrastructure
+- 体现 multica 的 "agent as managed worker" 哲学：工单取消 = worker 任务取消
+
+### Gemini 集成的早期痛点 (#937)
+- Daemon health check ping 频率太高 → Gemini preview model 429 rate limit
+- Claude ping 也有问题：daemon 过滤 `CLAUDECODE_*` 环境变量 → 自定义 gateway/proxy 配置丢失 → ping 挂 60s
+- **这验证了 multica "runtime-agnostic" 架构的脆弱面**：每个 runtime 的环境变量约定不同，统一管理必然丢配置。跟 [[openclaw-architecture]] 面临的 agent harness 兼容性问题类似
+
+### 打工机会
+- #937 (Gemini rate limit + Claude env stripping) — 可以修 daemon 的 env filter 逻辑
+- #933 (Homebrew formula outdated) — 只需 cut new release，但可以帮写 CI 自动化
+- #939 (快速分配 agent 到 issue) — feature request，有设计空间
+
+### 整体判断
+- multica 从 "demo 阶段" 进入 "生产就绪" 阶段的速度极快（<1 周完成安全审计 + 跨平台 + CLI 重构）
+- Stars 翻倍不是偶然——产品在解决真实痛点（团队级 coding agent 管理），且迭代速度极快
+- 对我们的影响：multica 验证了 "managed agent" 赛道有需求，但 [[openclaw-architecture]] 的个人化路线和 multica 的团队管理路线是互补的
+- **核心趋势确认**：agent platform 从 single-runtime → multi-runtime，从 developer-only → team-wide，从 feature-building → security/infra hardening。三个头部框架（OpenClaw/hermes/multica）同步经历这个转型
