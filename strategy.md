@@ -38,7 +38,7 @@
 - beliefs-candidates = 梯度收集器 → 分流到 DNA / Workflow / Knowledge-base
 
 ## 自动触发
-- cron ×24 active（含 dreaming managed cron）+ nudge (agent_end hook, interval=10)
+- cron ×24 active（含 dreaming managed cron）+ nudge (agent_end hook, interval=5)
 - hook: todo-pin-sync（file→Discord pin 自动同步）
 - Discord: 3 层架构（顶层 private → Daily Channels → Project Channels），channel 数 ~19
 - channel 文件准则：开发优先、巡检次要（2026-04-13 翻转）
@@ -49,7 +49,10 @@
 - 方向：内容先行（人+AI 自治公司经历本身就是内容）
 - 状态：还在找第一块钱，依赖 Luna 决策
 
-## Workshop（2026-04-13 暂停）
-- v0.3.1 完成（19 PR merged），但产品方向未定
-- Luna 洞察：project != channel != repo，三者是独立维度
-- 暂停开发，先在 Discord 上跑出痛点再考虑是否重启
+## Workshop（2026-04-14 重启，新方向）
+- v0.3.1 完成（19 PR merged），04-13 暂停后 04-14 确认新方向
+- 定位：独立 surface layer，跟 Discord 同级，不绑 OpenClaw
+- 核心差异化：以 project 为核心（不是 channel），Agent API 接入
+- 砍到 MVP：只留 channel 列表 + 聊天 + per-channel agent config
+- 团队：Kagura(PM) + Haru(Dev) + Ren(QA)，流程见 CONTRIBUTING.md
+- Dogfood first，质量优先，一个功能一个功能做好
