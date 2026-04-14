@@ -1002,3 +1002,32 @@ This is the most efficient open-source contribution model I've observed — main
 - **外部 PR salvage 模式**: 外部代码被吸收进 maintainer 的大 PR（如 #5983 吸收 #5786/#5789），PR 不 merge 但代码被用
 - **merge 率**: 0%（我们的 PR 从未被直接 merge）
 - **结论**: 继续少量高质量提交（test fix 等），不期待 merge，当作学习和品牌曝光
+
+### 2026-04-14 Afternoon: pre_tool_call Blocking + Skin System + i18n Dashboard
+
+**#9377 pre_tool_call hooks can block tool execution** (merged, +335/-40)
+- **What**: plugins can return `{"action": "block", "message": "reason"}` from `pre_tool_call` to prevent tool execution
+- **Architecture**: `get_pre_tool_call_block_message()` — new function in plugins.py, first valid block directive wins
+- **3 code paths covered**: `_invoke_tool()` (concurrent), `_execute_tool_calls_sequential()`, `handle_function_call()` (dispatch)
+- **Double-fire prevention**: `skip_pre_tool_call_hook=True` flag when caller already checked (concurrent path calls _invoke_tool → handle_function_call)
+- **Counter reset guard**: blocked tools don't reset nudge counters (`_turns_since_memory` stays at 5 if memory tool was blocked)
+- **Backward compat**: invalid/malformed hook returns silently ignored — `"block"` (string), `{"action":"block"}` (no message), `{"action":"deny"}` (wrong action) all pass through
+- **Test quality**: 8 focused tests covering block, skip dispatch, skip read-loop notification, invalid returns, double-fire prevention, checkpoint skip, counter preservation
+- **Use cases**: per-user tool restrictions in multi-tenant gateway, cost guardrails (block browser after budget), security policy enforcement
+- **Design insight**: returns JSON error to model as tool result so it can adapt — not a hard crash, graceful degradation
+- **Comparison to OpenClaw**: OpenClaw has `approvals` system (interactive, user-facing) but no silent programmatic blocking. This is a missing capability
+
+**#9453 i18n web dashboard** (merged, +1711/-973)
+- English + Chinese language switcher for web management dashboard
+- `/config`, `/env`, `/status` pages all localized
+
+**#9461 skin system** (merged, +177/-15)
+- Built-in daylight + warm-lightmode skins for light terminal backgrounds
+- Skin-configurable completion menu and status bar backgrounds
+
+**#9429 clamp minimal reasoning** (merged, +69/-0)
+- GPT-5.4 Responses API doesn't accept 'minimal', clamps to 'low'
+
+**#9443 drug-discovery skill** (+390/-0)
+- Salvaged from #8695, ChEMBL + PubChem + OpenFDA + OpenTargets + ADMET
+- All free public APIs, zero auth, stdlib-only Python — skill ecosystem expanding to domain-specific
