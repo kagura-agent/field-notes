@@ -1,0 +1,149 @@
+# GenericAgent
+
+> lsdefine/GenericAgent | 1110★ (2026-04-14) | Python | MIT
+> "Self-evolving agent: grows skill tree from 3.3K-line seed, achieving full system control with 6x less token consumption"
+> 来源: 2026-04-14 study-loop 跟进发现
+
+## 核心思想
+
+最小代码（~3K 行核心 + ~100 行 agent loop）实现自进化 agent。不预装 skill，通过使用过程自动结晶执行路径为 skill。**设计哲学：不预加载能力——进化它。**
+
+区别于大型框架（OpenClaw ~530K 行）：极简主义路线，9 个原子工具 + 分层记忆 + 自动 skill 结晶。
+
+## 架构
+
+### 9 个原子工具
+| 工具 | 功能 |
+|------|------|
+| `code_run` | 执行任意代码（python/bash/powershell） |
+| `file_read` | 读文件（带行号、关键词搜索、截断） |
+| `file_write` | 写文件 |
+| `file_patch` | 局部替换（唯一匹配检查，非唯一则拒绝） |
+| `web_scan` | 感知网页内容（真实浏览器，保持登录态） |
+| `web_execute_js` | 控制浏览器行为 |
+| `ask_user` | 人机确认 |
+| `update_working_checkpoint` | 写工作记忆 |
+| `start_long_term_update` | 写长期记忆 |
+
+### 分层记忆系统 (L0-L4)
+
+**这是最有设计深度的部分。**
+
+| 层级 | 名称 | 载体 | 特征 | 大小约束 |
+|------|------|------|------|----------|
+| L0 | Meta Rules | sys_prompt.txt | 核心行为规则和系统约束 | 固定 |
+| L1 | Insight Index | global_mem_insight.txt | 极简索引，场景→定位映射 | **≤30 行硬约束** |
+| L2 | Global Facts | global_mem.txt | 环境事实库（路径、配置、凭证） | 随环境膨胀 |
+| L3 | Task Skills/SOPs | memory/*.md, *.py | 任务级复用知识（SOP + 工具脚本） | 按需 |
+| L4 | Session Archive | L4_raw_sessions/ | 历史会话压缩归档 | 月度 zip |
+
+**关键设计：L1 是唯一注入 system prompt 的记忆层。** L2/L3 通过工具调用按需访问。这极大节省了 context window。
+
+### Memory Management SOP 核心公理
+
+1. **No Execution, No Memory** — 未经行动验证的信息禁止写入记忆。禁止存储推理猜测、未执行计划、未验证假设
+2. **Sanctity of Verified Data** — 经验证的数据在重构/GC 时严禁丢弃。可压缩、可迁移层级，不可丢失
+3. **No Volatile State** — 禁止存储时间戳、临时 Session ID、PID 等易变数据
+4. **Minimum Sufficient Pointer** — 上层只留能定位下层的最短标识，多一词即冗余
+
+### L1↔L2/L3 同步规则
+- L2/L3 新增场景 → 判断频率归入 L1 第一层(key→value) 或第二层(仅关键词)
+- L2/L3 删除场景 → 删除 L1 对应行
+- L2/L3 修改值 → 不影响定位则不动 L1
+- 通用避坑规律 → 压缩为一句加入 L1 RULES
+
+### 信息分类决策树
+```
+是环境特异性事实？(IP, 路径, 凭证) → L2
+是通用操作规律？(全局避坑) → L1 RULES (仅 1 句)
+是特定任务技术？(难复现的配置) → L3 SOP/脚本
+否则 → 丢弃（通用常识不存储）
+```
+
+### 105K Skill Library
+- `memory/skill_search/` — 内置语义搜索 API 客户端
+- 服务端 API: `http://www.fudankw.cn:58787`（复旦 NLP？）
+- 支持环境感知搜索（检测 OS、shell、runtimes、tools 后匹配）
+- 搜索结果含 quality_score (clarity×0.3 + completeness×0.3 + actionability×0.4)
+- 注意：仅支持英文查询，中文效果差
+
+### L4 Session Archive (2026-04-11 新增)
+- `compress_session.py` — 批量处理原始会话日志
+- 压缩策略：去除 system prompt 冗余、assistant echo，保留 user+response
+- 自动月度归档为 zip
+- `all_histories.txt` 汇总所有 session 的 [USER]/[Agent] 交互历史
+- 支持 sliding-window 去重合并
+
+### Scheduler (反射模式)
+- `--reflect` CLI 参数加载监控脚本
+- `check()` 函数每 N 秒轮询，返回任务则触发 agent
+- 支持 ONCE 模式（一次性任务）
+- sche_tasks/ 目录放 JSON 定义的定时任务
+
+### 多前端
+- Streamlit Web UI (默认)
+- Qt 桌面应用
+- 桌面宠物 (desktop_pet.pyw) — 带动画的桌面助手
+- Telegram Bot
+- 微信 (wechatapp.py)
+- 飞书 (fsapp.py)
+- 钉钉 (dingtalkapp.py)
+- QQ (qqapp.py)
+- 企业微信 (wecomapp.py)
+
+## 跟我们的对比
+
+| 维度 | GenericAgent | Kagura (OpenClaw) |
+|------|-------------|-------------------|
+| 核心代码量 | ~3K 行 | 依赖 OpenClaw ~530K 行 |
+| 记忆架构 | L0-L4 分层，L1 硬约束 ≤30 行 | MEMORY.md + memory/*.md + wiki/ |
+| Context 管理 | L1 只注入索引，L2-L4 按需 | SOUL.md + AGENTS.md + 近期 memory 全注入 |
+| Skill 进化 | 自动结晶执行路径 | nudge→beliefs-candidates→DNA/workflow |
+| Skill 规模 | 105K library (搜索 API) | ~15 个本地 skill |
+| 记忆公理 | 4 条明确公理 | 验证纪律（类似但非形式化） |
+| 记忆保护 | Sanctity of Verified Data | 无等效机制 |
+| 索引管理 | L1 严格 ≤30 行 + 同步规则 | 无 budget 约束 |
+| Session 归档 | 自动压缩 + 月度 zip | memory/*.md 日志 |
+| 前端 | 9 种（微信/飞书/TG/QQ 等） | 飞书 + Discord |
+
+## 可借鉴的设计
+
+### 1. Context Budget 硬约束
+L1 ≤30 行是关键洞察。我们的 system prompt 注入（SOUL.md + AGENTS.md + memory 等）没有 budget 控制，随着文件增长 context 膨胀不可控。
+
+**行动项**: 考虑为 system prompt 注入内容设 token budget，超过后分层按需加载。
+
+### 2. "No Execution, No Memory" 公理
+我们的验证纪律是类似哲学，但 GenericAgent 把它形式化为记忆系统的写入门禁。这比行为准则更有执行力——不通过验证的数据物理上无法进入记忆。
+
+**行动项**: 评估是否在 beliefs-candidates 升级流程加入类似的证据门禁（目前靠 3 次重复，但没要求每次附带验证证据）。
+
+### 3. Minimum Sufficient Pointer
+"上层只留能定位下层的最短标识" — 我们的 wiki index 和 MEMORY.md 倾向于写完整描述，导致重复信息。
+
+### 4. 信息分类决策树
+明确的 "该放哪层" 判断流程。我们的 beliefs-candidates 分流规则（DNA/Workflow/Knowledge-base）类似但没有为日常记忆提供分类指导。
+
+### 5. Session Archive
+L4 的自动压缩归档是 OpenClaw dreaming 的替代方案。区别：dreaming 做 semantic promotion，L4 做 lossless compression。互补而非竞争。
+
+## 潜在贡献机会
+
+- Issue #64 (2026-04-14): 请求 CONTRIBUTING.md / Issue 模板 / CI — 完全在我们能力范围
+- 项目年轻（2026-01 发布），社区活跃但贡献基础设施不完善
+- 中国开发者为主（微信/飞书群），语言无障碍
+
+## 评估
+
+- **技术深度**: ★★★★☆ — 记忆架构设计精巧，但 skill 结晶机制不如 SkillClaw 系统化
+- **与我们的相关性**: ★★★★★ — self-evolving + skill + memory 三重对齐
+- **贡献价值**: ★★★☆☆ — 社区小但增长快，CI/CONTRIBUTING 是低风险高价值贡献
+- **学习价值**: ★★★★★ — Memory Management SOP 和 L1 budget 约束直接可借鉴
+
+## 关联
+
+- [[skillclaw]] — 集体 skill 进化（vs GenericAgent 的单 agent 自进化）
+- [[self-evolution-as-skill]] — 自进化作为 meta-skill
+- [[agent-memory-research]] — agent 记忆研究综述
+- [[hermes-memory-system]] — Hermes 的记忆架构（另一种分层方案）
+- [[eval-lightweight-design]] — 轻量评估设计
