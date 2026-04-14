@@ -8,8 +8,8 @@
 - **选题流程(2026-04-02 Luna directive)**:主力/辅助有 issue → 做;没有 → 去 GitHub 找新的对齐 repo(trending/搜索),不碰不对齐的 repo,不管多好做
 
 ## 分类(2026-03-26 更新)
-- **主力**: NemoClaw (NVIDIA), OpenClaw (TypeScript), Hermes (NousResearch, Python)
-- **辅助**: deer-flow (字节, 44k⭐), claude-hud
+- **主力**: NemoClaw (NVIDIA/NemoClaw), OpenClaw (openclaw/openclaw), Hermes (NousResearch/hermes-agent)
+- **辅助**: deer-flow (字节, 44k⭐), claude-hud (jarrodwatts/claude-hud)
 - **观察**: Acontext (memodb-io), MemOS (MemTensor, 8.2k⭐, skill generation), blockcell, OpenCLI (8.6k⭐, YAML adapter), DeepTutor (HKUDS, 14.7k⭐, agent-native 学习助手), qmd (tobi, 19.5k⭐, 本地知识库搜索), 🆕 obra/superpowers (143k⭐, agentic skills framework), 🆕 Archon (coleam00, 14k⭐, AI coding harness builder)
 - **维护中**: NemoClaw, ClawX, gitclaw(有 PR 等 merge)
 - **退出**: math-project (bot 刷 review), repo2skill, supermemory, hindsight (maintainer 要求停止), OpenKosmos (不活跃)
@@ -41,14 +41,15 @@
 **每 repo open PR 数**:
 | Repo | Count | Limit | Status |
 |------|-------|-------|--------|
-| openclaw | 8 | ≤3 | 🔴 严重超标 |
-| NemoClaw | 5 | ≤3 | 🔴 超标 |
+| hermes (NousResearch) | 7 | ≤3 | 🔴 严重超标 |
+| openclaw | 5 | ≤3 | 🔴 超标 |
+| NemoClaw (NVIDIA) | 5 | ≤3 | 🔴 超标 |
 | Archon | 4 | ≤3 | 🟡 超标 |
-| MemOS | 4 | ≤3 | 🟡 超标 |
-| claude-hud | 3 | ≤3 | 🟡 满额 |
 | stagehand | 3 | ≤3 | 🟡 满额 |
-| ClawX | 3 | ≤3 | 🟡 满额 |
-| hermes | 1 | ≤3 | ✅ 有余量 |
+| ClawX (ValueCell-ai) | 2 | ≤3 | ✅ 有余量 |
+| claude-hud (jarrodwatts) | 1 | ≤3 | ✅ 有余量 |
+| opc | 1 | ≤3 | ✅ 有余量 |
+| workshop (own) | 1 | — | — |
 
 **决策**: 本周不开新 PR。hermes #9270 (empty response placeholder leak) 记入 backlog。
 **Issue 评论等待**: openclaw #65774 (cron safety, 2d no response) + #34574 (resultSimilarity, 2 users confirmed, 0 maintainer response)
@@ -110,6 +111,26 @@
 - key_decision: 遵守 TODO "本周跟进不开新"，即使 ClawX/claude-hud/opc 有余量
 
 **工具状态**: gh CLI ✅, flowforge ✅, 无 bug
+
+## Repo Rename 发现 (2026-04-14 19:13)
+
+**重要：4 个 repo 已更名/迁移组织，旧路径返回 404：**
+| 旧路径 | 新路径 | 发现时间 |
+|--------|--------|----------|
+| hermes-ai/hermes-agent | NousResearch/hermes-agent | 2026-04-14 19:13 |
+| nicepkg/NemoClaw | NVIDIA/NemoClaw | 2026-04-14 19:13 |
+| nicepkg/ClawX | ValueCell-ai/ClawX | 2026-04-14 19:13 |
+| AgentDeskAI/claude-hud | jarrodwatts/claude-hud | 2026-04-14 19:13 |
+
+所有 open PR 仍可通过新路径访问（GitHub 重定向 PR）。gogetajob DB 和 TODO.md 需更新 repo 路径。
+
+## Workloop #233 反思 (2026-04-14 19:13)
+
+**发现**: 4 个主力/辅助 repo 已更名。gh CLI `pr list` 用旧路径返回空结果，API 返回 404。
+**影响**: TODO.md、gogetajob DB、wiki 项目笔记中的 repo 路径需全部更新。
+**行动**: 关闭 hermes #8151（DIRTY/CONFLICTING，持续 rebase 失败，upstream 太快）。29 open PRs。
+**PR 饱和**: 连续第 16+ 轮 skip find_work。hermes 7→7(closed #8151 but had 8), openclaw 5, NemoClaw 5, Archon 4, stagehand 3, ClawX 2, claude-hud 1, opc 1, workshop 1。
+**工具**: 无 bug。flowforge advance routing bug 已有 workaround（用 next）。
 
 ## Workloop #230 反思 (2026-04-14 18:08)
 
