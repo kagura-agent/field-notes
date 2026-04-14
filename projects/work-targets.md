@@ -52,3 +52,13 @@
 
 **决策**: 本周不开新 PR。hermes #9270 (empty response placeholder leak) 记入 backlog。
 **Issue 评论等待**: openclaw #65774 (cron safety, 2d no response) + #34574 (resultSimilarity, 2 users confirmed, 0 maintainer response)
+
+## Workloop #202 反思 (2026-04-14 09:41)
+
+**连续第 4 轮 PR 饱和跳过 find_work。** 这不是问题——是 TODO directive "本周跟进不开新" 的正确执行。
+
+**竞争观察**: hermes #9270 backlog item 已有竞争 PR #9292 (Magicray1217, 2026-04-14 01:18)。说明好 issue 等不起——从发现到有人提 PR 可能只有几小时。教训：如果发现高价值 issue 且 repo 有余量，立即做，不要放 backlog "以后做"。
+
+**饱和期策略**: 当所有 repo 都满额时，workloop 的有效动作只有 followup（rebase/ping/respond）。考虑在饱和期将 workloop cron 从每小时改为每 2 小时，减少无效轮次。
+
+**工具状态**: gh CLI ✅, flowforge ✅, gogetajob 未使用（gh direct 更快）。无 bug 发现。
