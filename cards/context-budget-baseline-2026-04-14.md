@@ -234,3 +234,19 @@
 - [[context-budget-constraint]] — 概念卡片，动机和设计选项
 - [[genericagent]] — L1 ≤30 行硬约束的参考
 - 后续: 实施 Tier A → 更新 baseline → 追踪 Tier B 效果
+
+---
+
+## 7. Tier C 进展: OpenClaw Feature Request
+
+**Issue**: [openclaw #66576](https://github.com/openclaw/openclaw/issues/66576) — Configurable workspace file inclusion/exclusion (bootstrapFiles)
+
+提交日期: 2026-04-14
+
+**源码验证**: `src/agents/workspace.ts` 中 `VALID_BOOTSTRAP_NAMES` 是硬编码 `ReadonlySet<string>`，`loadWorkspaceBootstrapFiles()` 无 config 过滤入口。`filterBootstrapFilesForSession()` 只针对 subagent/cron 做最小集过滤，不支持 agent 级别自定义。
+
+**实现估算**: ~20 行代码改动（config schema + load-time filter + validation），不影响现有安全机制（`readWorkspaceFileWithGuards` + `bootstrapMaxChars`）。
+
+**前置 issues**: #31883 (closed stale, had PR #31901 also closed), #20649 (closed stale), #51862 (open, per-channel scope). 说明需求真实但一直没被优先。
+
+**如果被采纳**: 可直接提 PR，代码改动量小且路径清晰。
