@@ -1,7 +1,7 @@
 # Claude Code Plugin 系统研究笔记
 
 > 源码版本：2026-04 读码分析
-> 最后更新：2026-04-01
+> 最后更新：2026-04-14
 
 ---
 
@@ -194,3 +194,27 @@ v2.1.101 是一个大版本，2026-04-10 发布。关键变化：
 - Claude Code 的 enterprise 方向越来越明显（MDM templates、managed settings、team onboarding）。OpenClaw 是 personal-first，这是差异化方向
 - `rm -rf /*` 事件说明即使有权限系统，agent coding 仍有灾难性风险。OpenClaw 的 sandbox 策略更保守但更安全
 - 一个 release 修了 30+ bugs，说明 Claude Code 迭代速度极快但质量压力也大
+
+## v2.1.105 重大更新 (2026-04-13)
+
+### 新功能
+1. **`monitors` manifest key** — 插件可声明 background monitors，session 启动或 skill invoke 时自动 arm。这是 event-driven background monitoring 的标准化——类似 [[gbrain]] 的 watch_patterns 和 [[hermes-agent]] 的 watch_patterns，但作为 plugin primitive 内建
+2. **PreCompact hook** — hooks 可以通过 exit code 2 或 `{"decision":"block"}` 阻止 compaction。**重要的 memory preservation primitive**——跟我们的 dreaming promote 理念相通（保留重要记忆不被压缩）
+3. **EnterWorktree `path` 参数** — 可直接切换到已有 worktree
+4. **`/proactive` = `/loop` alias** — proactive agent 概念继续推进
+5. **Skill description cap 250→1536 chars** — skill 可以有更丰富的描述（呼应 skill lazy-loading 讨论——更长描述 = 更精准的 skill 路由）
+
+### 改进
+- Stalled API stream 5 分钟超时 + non-streaming retry（跟我们遇到的 Copilot API 60s 超时是同类问题）
+- WebFetch 剥离 `<style>` 和 `<script>` 内容（CSS-heavy 页面不再吃完 content budget）
+- Stale agent worktree cleanup（squash-merged PR 的 worktree 不再永久保留）
+- `/doctor` layout 改进 + press `f` 让 Claude 自动修复
+
+### 与我们的关联
+- **monitors** 标准化了 background agent 监控——OpenClaw 的 cron/heartbeat/nudge 是更早的类似实现
+- **PreCompact hook** 是 memory management 的新 primitive。我们的 dreaming promote 在更高抽象层做类似的事（选择性保留记忆），但 PreCompact 是在 context window 级别操作
+- **Skill description 1536 chars** 直接影响我们的 skill lazy-loading PR（#65139）——更长描述意味着更好的路由精度，但也意味着更多 context 占用。验证了 lazy-loading 的价值
+
+### 趋势信号
+- Agent 从 "CLI tool" 走向 "always-on runtime"：monitors + worktree cleanup + PreCompact 都是长期运行 agent 需要的基础设施
+- Memory management 成为竞争维度：PreCompact hook 让插件控制 compaction = 开放 memory 管理给社区
