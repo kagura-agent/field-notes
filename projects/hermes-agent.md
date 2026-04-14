@@ -1031,3 +1031,17 @@ This is the most efficient open-source contribution model I've observed — main
 **#9443 drug-discovery skill** (+390/-0)
 - Salvaged from #8695, ChEMBL + PubChem + OpenFDA + OpenTargets + ADMET
 - All free public APIs, zero auth, stdlib-only Python — skill ecosystem expanding to domain-specific
+
+### 04-14 Evening Followup (19:45)
+
+**hermes 04-14 全天合并 15+ PRs，几个值得注意的：**
+- #9538: 防止 streaming cursor (▉) 作为独立 Telegram 消息发送（+102，UX 细节打磨）
+- #9530: Telegram ignored_threads config（+75，频道级消息过滤）
+- #9481: Tool registry thread safety（+341，RLock + coherent snapshots — 重大稳定性修复）
+- #9453: i18n web dashboard（+1711/-973，中英双语切换 — dashboard 走向国际化）
+- #9443: drug-discovery skill（+390，ChEMBL/PubChem/OpenFDA/ADMET — 垂直领域 skill 持续扩张）
+- #9424: 模型名自动纠正（+748，fuzzy match close model names — 降低用户配置出错率）
+
+**竞争力观察：** hermes 78k★ 的核心竞争力不是单一功能而是迭代速度 — 15+ PRs/day 的 merge 节奏说明社区贡献者生态健康。相比之下 OpenClaw 也有 15+ PRs/day 但主要是核心团队+安全审计贡献者。
+
+**我们的 6 个 hermes PRs 全部 OPEN + MERGEABLE**，CI 失败均为 upstream 问题（clear_session_context missing）。等 upstream CI 修复后应该能 review。

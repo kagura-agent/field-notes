@@ -668,3 +668,25 @@ GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval qu
 **范围评估**：~20 张卡片超过 70% 中文内容，但批量改造不必要——只有被实际英文查询命中的卡片才需要。先观察日常使用中哪些英文查询失败，再逐个修复。
 
 **详细分析**：`eval/memory-search-failure-analysis.md`
+
+### OpenClaw 04-14 Evening Followup (19:45)
+
+**#66452 — Memory Embedding Proxy Provider Prefix Preservation** (merged 04-14)
+- **问题**: 通过 proxy provider（如 LiteLLM、Spark）路由的 embedding model ref 会丢失 provider 前缀，被默默重写为 OpenAI ref
+- **根因**: `normalizeEmbeddingModelWithPrefixes()` 对所有前缀模式一视同仁地 strip，包括第三方 provider 前缀
+- **修复**: 改用 `parseStaticModelRef(trimmed, "openai")` — 只 strip `openai/` 前缀，保留 `spark/`, `litellm/` 等第三方前缀
+- **代码量**: 7 行代码变更 + 25 行测试（4 个测试 case: blank→default, openai/→strip, spark/→preserve, unprefixed→preserve）
+- **对我们的影响**: 如果升级到含此修复的版本，proxy-prefixed embedding 模型会更可靠。我们当前用默认 embedding，暂无直接影响，但了解此路径对未来 embedding 模型切换有价值
+
+**04-14 全天合并 PR 统计**:
+- OpenClaw: 15+ PRs merged（安全/media/gpt-5.4 compat/memory/telegram 修复）
+- hermes: 15+ PRs merged（CI fix ×2, streaming cursor, ignored_threads, i18n dashboard, drug-discovery skill, light-mode skins, file search UX, tool registry thread safety）
+- multica: 10+ PRs merged（hit PR #1000, macOS traffic lights, unread float, skeleton loading）
+- GBrain: quiet（v0.8.1 search quality commit 是最新）
+- SkillClaw: 527★, f3a23d4 commit 已在 study #228 深读
+
+**gpt-5.4-pro Forward Compat** (#66453):
+- OpenClaw 添加 gpt-5.4-pro 到模型注册表（前向兼容）
+- #66437: gpt-5.4 在 Copilot 上启用 xhigh（推理等级提升）
+- #66438: 规范化 gpt-5.4-codex 别名
+- 信号：OpenAI 新模型生态在快速展开，OpenClaw 在第一时间适配
