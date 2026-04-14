@@ -609,3 +609,46 @@ The grounded system was an attempt to verify recalled memories against evidence 
 - pgondhi987 系列: heartbeat security (#66031), browser SSRF (#66040), Teams SSE (#66033), config snapshot redaction (#66030)
 - mbelinky 系列: session routing poison (#66073), cron refire loop (#66083), browser CDP loopback (#66080)
 - 特别关注 #66024: 按发送者 authorization context 分组 collect-mode followup drains（安全+正确性双修）
+
+## Memory Search Eval Harness v0.1 (2026-04-14 Applied)
+
+### 动机
+GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval quality 评估是可行的（PGLite 内存，2 秒跑完，零 API 依赖）。我们的 [[dreaming]] 和 [[memory-search]] 缺乏质量度量——"感觉好"不等于"可证明好"。
+
+### 实现
+- 20 queries × 5 results，标准 IR 指标：P@k, R@k, MRR, nDCG@k, Hit Rate
+- Qrels 手工标注（grade 1-3），基于实际 wiki/cards + wiki/projects 内容
+- 调用 `openclaw memory search --json`，测实际检索质量
+- Path dedup 处理同文档多 chunk 问题
+- 文件：`eval/memory-search-eval.py` + `eval/results/`
+
+### Baseline 结果 (2026-04-14)
+| 指标 | 值 |
+|------|-----|
+| Hit Rate | 80% (16/20) |
+| P@5 | 0.622 |
+| R@5 | 0.667 |
+| MRR | 0.775 |
+| nDCG@5 | 0.854 |
+
+### 关键发现
+1. **主题型查询表现好**（MRR 0.775）— 文档标题匹配查询概念时可靠找到
+2. **时间型查询完全失败** — "what did I do yesterday" 返回 0 结果（无日期感知）
+3. **操作/统计型查询失败** — "PR merge rate" 是事实型非概念型
+4. **4/20 完全无结果** — 这些是 embedding 与查询语义距离过远的案例
+5. **同文档多 chunk 膨胀** — 原始 metrics 被同一文档的不同段落命中虚高
+
+### 与 GBrain 的差异
+- GBrain：合成数据（29 fictional pages），PGLite 内存，2 秒，测的是 search code
+- 我们：真实语料（136 cards + 140 projects），API 调用，220 秒，测的是端到端 retrieval quality
+- 我们测的是"系统是否好用"（用户体验层），GBrain 测的是"代码是否正确"（实现层）
+
+### 影响
+- 建立了 baseline：后续任何 search 改进（intent-aware, embedding model upgrade）可量化对比
+- 暴露了弱点：时间型/操作型查询需要不同策略（跟 [[intent-aware-retrieval]] 的发现一致）
+- 验证了方向：从 vibes-based → metrics-driven 是正确转型
+
+### 关联
+- [[intent-aware-retrieval]] — GBrain 的意图感知检索，我们的 eval 验证了同样的弱点
+- [[dreaming-vs-beliefs-candidates]] — dreaming promote eval 待数据积累后补充
+- [[thin-harness-fat-skills]] — eval 本身是 "fat skill" 思路的实践
