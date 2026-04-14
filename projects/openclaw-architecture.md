@@ -498,3 +498,47 @@ Streamlined Feishu channel setup: QR code scan-to-create flow for app registrati
 ## Session Status Runtime #65807 (2026-04-13)
 
 Extracted `buildStatusText` from `auto-reply/reply/commands-status.ts` into a neutral `src/status/` module. Fixes the `session_status` tool importing reply-layer runtime internals (import cycle risk). The tool now uses a local runtime shim.
+
+## Dreaming System Code Simplification (2026-04-14 跟进)
+
+### 版本差异: 2026.4.9-beta.1 → 2026.4.12 stable
+
+Between our running version (2026.4.9-beta.1) and latest (2026.4.12), OpenClaw did a **major simplification** of the dreaming system: -3084 lines across 19 files.
+
+### Key Removals
+1. **`rem-evidence.ts` (1077 lines) — fully deleted**: Complex REM evidence extraction with 12+ signal regexes (build_signal, incident_signal, logistics_signal, etc). Replaced by grounded backfill approach.
+2. **`groundedCount` / `claimHash` fields removed from ShortTermRecallEntry**: No more grounded verification tracking per entry. Entry key simplified to `source:path:start:end` (was `source:path:start:end:claimHash`)
+3. **`dreaming-narrative.ts` trimmed 191 lines**: Narrative generation simplified
+4. **`dreaming-narrative.test.ts` (113 lines) — fully deleted**: Tests for removed narrative features
+5. **`short-term-promotion.test.ts` trimmed 125 lines**: Tests for removed grounded features
+
+### What Was Grounded?
+The grounded system was an attempt to verify recalled memories against evidence — `claimHash` was SHA-1 of normalized snippet, used to match recall entries to their evidence sources. `groundedCount` tracked how many times an entry was corroborated.
+
+**Why removed**: Likely too complex for initial deployment. The signal was: recallCount + uniqueQueries + score is sufficient for promotion without separate evidence verification.
+
+### Schema Fix (Critical for Us)
+- **Bug**: `extensions/memory-core/openclaw.plugin.json` in the **dist** of 2026.4.9-beta.1 has `dreaming.properties: {}` (empty!)
+- **Effect**: AJV validation fails with "must NOT have additional properties" for ANY dreaming config property we set
+- **Fix**: In 2026.4.12, `configSchema` renamed from `config`, properties correctly populated (`enabled`, `frequency`, `timezone`, `verboseLogging`, `storage`, `phases`)
+- **Runtime not affected**: The `resolveMemoryDreamingConfig()` function reads config permissively (no schema validation in code path), so dreaming _runs_ despite schema error — but gateway logs warnings
+
+### Other Notable Changes
+- `lowercasePreservingWhitespace()` replaced `.toLowerCase()` for workspace key normalization (Windows path handling)
+- `includesSystemEventToken` imported for dreaming event text detection
+- Session ingestion `seedHistoricalDailyMemorySignals` removed (no longer seeding history)
+- Light/REM phase trigger detection simplified (removed per-phase type unions)
+
+### Upgrade Impact Assessment
+| Area | Impact |
+|------|--------|
+| Config validation | ✅ Schema error gone → clean logs |
+| Short-term recall store | ⚠️ Existing entries have `groundedCount`/`claimHash` → `normalizeStore()` should handle gracefully (it does — unknown fields ignored) |
+| Dreaming sweep | ✅ Simplified scoring (no grounded signal) → more predictable |
+| Memory writes | ✅ Same MEMORY.md append behavior |
+| Startup race | ✅ #65365 defers cron/heartbeat → no more "cron service unavailable" |
+
+### 关联
+- [[dreaming-vs-beliefs-candidates]] — existing comparison, still valid post-simplification
+- [[progressive-disclosure-memory]] — recall signals unchanged
+- 上次笔记: [[#Dreaming Runtime Verification + Upgrade Assessment]] (2026-04-13)
