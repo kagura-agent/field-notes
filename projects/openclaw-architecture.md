@@ -652,3 +652,19 @@ GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval qu
 - [[intent-aware-retrieval]] — GBrain 的意图感知检索，我们的 eval 验证了同样的弱点
 - [[dreaming-vs-beliefs-candidates]] — dreaming promote eval 待数据积累后补充
 - [[thin-harness-fat-skills]] — eval 本身是 "fat skill" 思路的实践
+
+### Zero-Result Root Cause Analysis (2026-04-14 16:45)
+深入调查 4 个零结果查询，发现三类根因：
+
+| 类别 | 查询 | 根因 | 可修复? |
+|------|------|------|--------|
+| CROSS_LINGUAL | "agent credential security pool" | 卡片主体为中文，英文查询匹配不上 | ✅ 已修 |
+| CROSS_LINGUAL | "agent memory taxonomy comparison" | 同上 | ✅ 已修 |
+| TEMPORAL | "what did kagura do yesterday" | embedding 无时间解析能力 | ❌ 基本限制 |
+| OPERATIONAL | "PR merge rate work statistics" | 计算型事实无文档语义表征 | ❌ 基本限制 |
+
+**修复措施**：给 2 张中文卡片加了英文摘要段落（commit e30400a）。待 re-indexing 后重跑 eval 验证效果。
+
+**范围评估**：~20 张卡片超过 70% 中文内容，但批量改造不必要——只有被实际英文查询命中的卡片才需要。先观察日常使用中哪些英文查询失败，再逐个修复。
+
+**详细分析**：`eval/memory-search-failure-analysis.md`
