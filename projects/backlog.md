@@ -1,4 +1,17 @@
 
+## 2026-04-14 Quick Scout #2 (13:45)
+- [ ] nashsu/llm_wiki (⭐1178): 文档→wiki 知识库（非 RAG），incremental wiki building — **和 memex 高度相关，值得深入**
+- [ ] crisandrews/ClawCode (⭐37): Claude Code persistent agent（SQLite+FTS5 memory, nightly dreaming, messaging plugins）— **和我们 dreaming 方向重合**
+- [ ] hardness1020/Leeway (⭐30): YAML workflow agent framework — **和 FlowForge 可对比**
+- [x] fireworks-tech-graph (⭐2126): Claude Code SVG skill — 已知，skill 生态爆发信号
+- [x] hermes-agent-orange-book (⭐2338): Hermes 橙皮书 — 生态爆发 + 内容变现验证（GTM 参考）
+- [x] obsidian-ai-orange-book (⭐567): Obsidian+Claude Code 橙皮书 — 同上，橙皮书系列 2 本 = 内容变现市场已验证
+- [ ] AaronWong1999/hermesclaw (⭐46): Hermes+OpenClaw 同一微信号 — 生态集成趋势
+- [ ] GAIA (HN, 117pts): 本地硬件 AI agent 框架 — local-first trend 持续
+- [ ] N-Day-Bench (HN, 53pts): LLM 找真实代码库漏洞 — 安全方向相关
+
+**判断：** llm_wiki 最值得深入（非 RAG 的 persistent wiki 和 memex 方向高度一致）。ClawCode 小但方向重合（dreaming + persistent memory）。橙皮书系列是 GTM 信号——内容先行路径有市场。
+
 ## 2026-04-14 Quick Scout (10:55)
 - [x] rasbt/mini-coding-agent (⭐615): 极简 Python coding agent 实现，用于教学 — 理解 agent loop 核心组件 ✅ 已深读 2026-04-14
 - [ ] kellyvv/PhoneClaw (⭐564): On-device AI Agent (Gemma 4) — on-device agent trend 持续升温
