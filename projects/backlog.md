@@ -1,4 +1,14 @@
 
+## 2026-04-14 Quick Scout (10:55)
+- [x] rasbt/mini-coding-agent (⭐615): 极简 Python coding agent 实现，用于教学 — 理解 agent loop 核心组件 ✅ 已深读 2026-04-14
+- [ ] kellyvv/PhoneClaw (⭐564): On-device AI Agent (Gemma 4) — on-device agent trend 持续升温
+- [ ] kzhrknt/awesome-design-md-jp (⭐457): 日语 DESIGN.md 集合给 AI agent — CJK 排版规范，对中文 agent 有参考
+- [ ] math-ai-org/mathcode (⭐440): 数学 coding agent — frontier agent 在数学领域的应用
+- [ ] Xiangyue-Zhang/auto-deep-researcher-24x7 (⭐397): 自动跑 DL 实验的 agent，Leader-Worker 架构 — 架构参考
+- [ ] GAIA (HN): 本地硬件跑 AI agent 的开源框架 — on-device/local-first trend
+
+**判断：** mini-coding-agent 最值得深入（教学级 agent loop 拆解），PhoneClaw 和 GAIA 是 local-first agent trend 的信号。
+
 ## 2026-04-13 Quick Scout #25 (20:22)
 - [ ] easy-agent (ConardLi, ⭐193): 从零重建 Claude Code — 理解 agent loop 架构
 - [ ] tui-use (onesuper, ⭐165): Agent 操控 TUI 程序 — 直接相关 agent tooling 能力扩展

@@ -1,4 +1,21 @@
 
+## 2026-04-14 11:00 Deep Read: mini-coding-agent
+
+**深读对象**: rasbt/mini-coding-agent (⭐615)
+**来源**: 2026-04-14 Quick Scout 筛选
+**产出**: `wiki/projects/mini-coding-agent.md`
+
+**关键发现**:
+- 单文件 1019 行，零依赖，6 个显式组件架构
+- XML tool format 对小模型(4B-7B)比 JSON 更可靠
+- 重复调用检测防死循环，双重循环边界(tool_steps vs attempts)
+- History 智能压缩(recent=900chars, older=180chars)
+- FakeModelClient 做 orchestration 测试
+
+**对 OpenClaw 启发**: 重复调用检测、history 压缩、FakeModelClient 测试模式可借鉴
+
+---
+
 ## 2026-04-12 09:15 Quick Scan
 
 **GitHub Trending (AI/agent, created after Apr 5):**
