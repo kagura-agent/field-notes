@@ -777,3 +777,11 @@ This is the most efficient open-source contribution model I've observed — main
 - #8151 (fix 24 broken tests): CI timeout on Node.js 20 deprecation warning, 1 day old
 - #4696 (cron memory writeback): rebased today, 10 days old
 - #2890 (CUDA STT): 19 days, CI fail is upstream, low priority
+
+### #9322 — Fix explicit api_key override for custom providers (PR, 04-14)
+- Issue #9315: When two custom_providers share same base_url with different api_keys, Hermes uses first match from credential pool, ignoring explicit model.api_key
+- Root cause: `_resolve_named_custom_runtime()` and `_resolve_openrouter_runtime()` both return pool result immediately without checking explicit_api_key
+- Fix: 13 lines — check `has_usable_secret(explicit_api_key)` after pool lookup, override pool_result["api_key"] if usable
+- 4 new tests covering both code paths (explicit override + pool fallback)
+- 70/71 tests pass (1 pre-existing upstream failure)
+- **Architecture insight**: credential_pool.py is the multi-credential failover system. Pool keyed by `custom:<normalized_name>`. Resolution chain: resolve_runtime_provider() → _resolve_openrouter_runtime() → _try_resolve_from_custom_pool() → get_custom_provider_pool_key(base_url) → first match wins. The "first match" is the bug — but fixing it at the pool level would break round-robin/failover, so the correct fix is at the caller level (override after pool lookup).
