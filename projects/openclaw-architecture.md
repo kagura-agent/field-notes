@@ -587,3 +587,25 @@ The grounded system was an attempt to verify recalled memories against evidence 
 ### Related
 - [[process-hang-watchdog]] — concept card with three-layer pattern
 - [[tool-execution-policy-enforcement]] — tool blocking patterns across frameworks
+
+## v2026.4.14-beta.1 — Dreaming + Cron Stability Sprint (2026-04-14)
+
+### Dreaming Fix #66139: Run Once Per Cron Schedule
+- **问题**: managed dreaming 在 heartbeat 上重复触发——cron event 被消费后，后续 heartbeat 仍然跑 sweep
+- **根因**: heartbeat hook 没有检查是否有 pending cron event
+- **修复**: `hasPendingManagedDreamingCronEvent()` 用 `peekSystemEventEntries()` 检查 session queue 中是否有真正的 `cron:*` dreaming event
+- **细节**: 处理了 `:heartbeat` isolated session 的 key 映射（heartbeat session 和 base session 是不同的 session key）
+- **影响**: 我们的 dreaming 04-15 03:30 sweep 行为将更精确——只在 cron 真正调度时执行，不会在后续 heartbeat 中重复
+
+### Cron Scheduler Fix #66083: Stop Unresolved Refire Loops
+- **问题**: `computeJobNextRunAtMs` 返回 undefined 被当作短重试，导致无意义的 refire loop
+- **修复**: undefined = 未解析的调度，不发明 synthetic retries。保持 maintenance wake 让 scheduler 不完全 idle
+- **附加 #66113**: 保持 error-backoff floor，防止 maintenance repair 让 errored job 过早恢复
+
+### Dreaming UI Fix #66140
+- Imported Insights 和 Memory Palace 在 memory-wiki 插件关闭时不再调用其 gateway methods
+
+### 安全持续
+- pgondhi987 系列: heartbeat security (#66031), browser SSRF (#66040), Teams SSE (#66033), config snapshot redaction (#66030)
+- mbelinky 系列: session routing poison (#66073), cron refire loop (#66083), browser CDP loopback (#66080)
+- 特别关注 #66024: 按发送者 authorization context 分组 collect-mode followup drains（安全+正确性双修）
