@@ -95,3 +95,18 @@
 **成功模式**: 饱和期 workloop 的正确行为是纯 followup（检查状态+标已读），不硬开新 PR。遵守 TODO directive。
 
 **工具状态**: gh CLI ✅, flowforge ✅, 无 bug
+
+## Workloop #223 反思 (2026-04-14 16:06)
+
+**连续第 12+ 轮 PR 饱和跳过 find_work。** 26 open PRs across 8 repos (down from 33 after yesterday's cleanup of 10 stale PRs).
+
+**PR 减少路径**: openclaw #53270/#54234/#55007 closed yesterday (old/low-value), claude-hud ×3 closed, MemOS ×4 closed. Total 33→26→now stabilizing.
+
+**hermes 5 PRs 是新高**: 昨天一天开了 4 个 hermes PR (#9477/#9322/#9353/#9498)。虽然每个都是针对真实 bug 的高质量 fix，但密集提交可能触发 maintainer fatigue。需要等这批消化。
+
+**成功分析**:
+- pattern: "PR saturation discipline" — 认识到饱和后遵守纪律不开新 PR，即使有余量的 repo 也不急。质量 > 数量
+- applies_when: 总 open PRs > 20 或单 repo > 3
+- key_decision: 遵守 TODO "本周跟进不开新"，即使 ClawX/claude-hud/opc 有余量
+
+**工具状态**: gh CLI ✅, flowforge ✅, 无 bug
