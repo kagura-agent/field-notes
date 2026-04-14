@@ -15,7 +15,24 @@
 
 ¹ 使用 ~3.5 chars/token（中英混合文本）。实际 tokenizer 结果可能偏差 ±20%。
 
-**对比参考**: GenericAgent 的 L1 硬约束是 ≤30 行。Kagura 当前注入量是其 17 倍。
+**对比参考**: GenericAgent 的 L1 硬约束是 ≤30 行。Kagura 当前注入量是其 13 倍。
+
+### Tier A+B 压缩后 (2026-04-14 21:17)
+
+| 文件 | 行数 | 字符数 | 估算 tokens¹ |
+|------|------|--------|-------------|
+| SOUL.md | 55 | 3,811 | ~1,089 |
+| AGENTS.md | 207 | 11,646 | ~3,328 |
+| IDENTITY.md | 8 | 336 | ~96 |
+| USER.md | 13 | 366 | ~105 |
+| TOOLS.md | 105 | 5,452 | ~1,558 |
+| **合计** | **388** | **21,611** | **~6,175** |
+
+**累计节省**: ~1,319 tokens (17.6% reduction)
+- Tier A (TOOLS.md dead weight): -212 tokens
+- Tier B (AGENTS.md Memory/Group Chats/Heartbeats compression): -1,107 tokens
+- 3 sections compressed: Memory 35→15, Group Chats 48→11, Heartbeats 51→12 lines
+- All rules verified present, zero semantic loss
 
 ---
 
