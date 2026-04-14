@@ -238,6 +238,22 @@ daily memory notes  → ingestDailyMemorySignals()         → (key, snippet, sc
 - **待验证**: 需要 gateway restart 生效；首次 sweep 预计明晨 3:30 AM
 - **对比分析**: 详见 wiki card [[dreaming-vs-beliefs-candidates]]
 
+### 2026.4.12 升级验证（2026-04-14）
+
+**问题**: 2026.4.9-beta.1 的 `dist/extensions/memory-core/openclaw.plugin.json` 中 `configSchema.properties.dreaming.properties` 为空 `{}`，导致 `additionalProperties: false` 拒绝所有 dreaming 配置属性。gateway 日志持续报 "must NOT have additional properties" 警告，dreaming sweep 虽然跑了（cron status=ok）但实际空跑。
+
+**根因**: dist 打包 bug。源码 `extensions/memory-core/openclaw.plugin.json` 也为空——说明 configSchema 在 4.9 源码中就不完整。4.12 修复了这个 schema（添加了 enabled/frequency/timezone/verboseLogging/storage/phases 完整属性定义）。
+
+**验证结果**:
+- 2026.4.12 于 08:49 安装（npm global），gateway 于 09:15 重启
+- 启动日志确认: `memory-core: updated managed dreaming cron job.`，无 schema 警告 ✅
+- `openclaw memory status --deep`: dreaming 参数正确加载（limit=5, minScore=0.8, minRecallCount=3, minUniqueQueries=2）✅
+- recall store: 49 entries，但 scores 全为 0.00、queries 全为空——这些是旧版本（4.9）记录的数据，缺少评分和查询关联
+- rem-harness preview: 正常返回 44 source entries + reflections ✅
+- **结论**: schema fix 生效，dreaming pipeline 恢复。新的 recall entries 会有正确的 score/query 数据。旧 entries 不会 promote（score=0），但随时间自然被新数据替代
+
+**下一步**: 观察 04-15 03:30 sweep 输出——是否有 promote events 写入 events.jsonl，以及 MEMORY.md 是否有自动追加
+
 ## GPT-5.4 Execution Contract（2026-04-13 跟进）
 
 ### 什么是 strict-agentic
