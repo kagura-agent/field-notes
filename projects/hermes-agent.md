@@ -6,7 +6,132 @@
 
 Hermes 是 OpenClaw/ClawX 的直接竞争者，但定位不同。OpenClaw 是基础设施（gateway + 插件），Hermes 是**完整的自我改进 agent**。它不只是跑工具，它试图让 agent 从经验中学习。
 
-42k⭐，NousResearch（知名 AI 研究组织）出品。
+78k⭐（04-14 数据），NousResearch（知名 AI 研究组织）出品。
+
+## v0.9.0 (2026-04-13) — "The Everywhere Release"
+
+**规模**: 487 commits · 269 merged PRs · 167 resolved issues · 493 files changed · 63,281 insertions · 24 contributors
+**5 天** 从 v0.8.0 (04-08) → v0.9.0 (04-13)，爆发式发展。
+
+### 核心新能力
+
+#### 1. WeChat (Weixin) + WeCom 适配器
+**个人微信 (PR #7166):**
+- 接入方式：**iLink Bot API** — 第三方 bot 服务，长轮询收消息
+- AES-128-ECB 加密 CDN 媒体上传/下载
+- QR 码登录流程（集成到 setup wizard）
+- 4000 字符 block-aware 消息分块
+- DM/群组 allowlist 访问控制
+- **限制**: iLink 只支持 5 种消息类型（text/image/voice/file/video），无按钮/卡片消息
+- **14 个专项测试**
+- 原始 PR #6747 by @bravohenry，teknium1 salvage + 补充
+
+**企业微信 WeCom Callback Mode (PR #7943):**
+- 架构：WeCom POST 加密 XML → adapter 解密 → 立即 ack "success" → agent 处理 3-30 分钟 → 主动 `message/send` API 推送
+- AES-CBC 加密（BizMsgCrypt 兼容）
+- 多应用路由：`corp_id:user_id` 范围隔离
+- **独立 Platform 枚举** (`WECOM_CALLBACK`)：可与 bot 模式 WeCom 共存
+- 387 行新 adapter + 142 行加密模块
+- 原始 PR #7774 by @chqchshj，teknium1 salvage
+
+**竞争分析:**
+- Hermes 覆盖了**个人微信 + 企业微信**双通道
+- iLink Bot API 是第三方服务，稳定性依赖上游
+- 对个人用户：iLink 登录需要绑定第三方 bot，有安全/隐私顾虑
+- 对企业用户：WeCom Callback Mode 是标准企业应用接入方式，架构合理
+- **对 OpenClaw 的影响**: OpenClaw 有飞书，没有微信。微信覆盖面更广（中国用户），但 iLink 方案的长期稳定性存疑
+
+#### 2. Web Dashboard
+- **技术栈**: Vite + React 19 + TypeScript + Tailwind CSS v4
+- **后端**: FastAPI (`web_server.py`, 70KB) 暴露 `/api` endpoints
+- **前端**: SPA 3 页——StatusPage（agent 状态/活跃 session）、ConfigPage（动态配置编辑器，从 backend 读 schema）、EnvPage（API key 管理）
+- `hermes web` 启动，built assets 打包进 Python package
+- 经历 4 次 PR 轮回（#1813 → #7621 → #8204 → #8756），最终 teknium1 salvage merge
+- **对 OpenClaw 的启示**: OpenClaw 完全靠 CLI + config 文件管理。Web Dashboard 大幅降低新用户门槛。我们的 Workshop 在探索类似方向，但 Hermes 的是内置的
+
+#### 3. watch_patterns — 后台进程实时监控 (PR #7635)
+- `terminal(command='npm run dev', background=true, watch_patterns=['ERROR', 'listening on port'])`
+- 匹配时立即注入 MessageEvent 触发新 agent turn（与 notify_on_complete 共用 completion_queue）
+- **速率限制**: 8 次/10 秒窗口，45 秒持续超限自动 kill
+- **Crash recovery**: watch patterns 持久化到 checkpoint 文件
+- 跨所有后端（local, Docker, SSH, Modal, Daytona, Singularity）
+- 20 个测试覆盖匹配/速率限制/超限 kill/checkpoint 持久化
+- **与 OpenClaw 对比**: OpenClaw exec 后台进程只有 poll/log 被动查询，没有 event-driven pattern matching。watch_patterns 是更高级的后台监控范式——"别让 agent 轮询，让进程告诉 agent"
+
+#### 4. Pluggable Context Engine (PR #7464)
+- `hermes plugins` 管理可插拔的 context engine slot
+- ContextEngine ABC: lifecycle hooks + tool schemas + model switch
+- 默认: built-in compressor。用户可安装第三方 context engine 插件
+- **设计亮点**: 安装插件不自动激活（必须显式设 `context.engine`），防止静默覆盖默认行为
+- 统一 `hermes plugins` UI：上方 checkbox（general plugins），下方 radiolist（provider plugins: Memory/Context Engine）
+
+#### 5. Fast Mode (`/fast`)
+- OpenAI Priority Processing + Anthropic fast tier
+- `/fast` toggle 命令在所有平台可用
+- 按模型检查兼容性（只对支持 priority processing 的模型生效）
+
+#### 6. iMessage via BlueBubbles
+- 通过 BlueBubbles 接入 Apple iMessage
+- Auto-webhook registration + setup wizard + crash resilience
+- 第 16 个支持的消息平台
+
+#### 7. Termux / Android 支持
+- 在 Android 上通过 Termux 原生运行 Hermes
+- TUI 移动端优化、voice backend、`/image` 命令
+
+### 安全大修
+- Path traversal 防护（checkpoint manager）
+- Shell injection 中和（sandbox writes）
+- SSRF 重定向防护（Slack image uploads）
+- Twilio webhook 签名验证（SMS RCE 修复）
+- API server auth 强制执行
+- Git argument injection 防护
+- Approval button 授权检查
+- macOS /etc symlink 绕过修复
+- Provider hang dead zones 消除（5 层重试间隙修复）
+
+### 其他重要变化
+- **16 个消息平台**: Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Email, SMS, DingTalk, Feishu, WeCom, WeChat, Mattermost, Home Assistant, Webhooks, BlueBubbles(iMessage)
+- **hermes backup / import**: 完整配置备份恢复 + SQLite WAL 安全复制
+- **/snapshot**: 对话中直接管理快照（list/create/restore/prune）
+- **/debug + hermes debug share**: 一键诊断收集 + pastebin 分享
+- **Native xAI (Grok) + Xiaomi MiMo providers**
+- **Unified proxy support**: SOCKS + DISCORD_PROXY + system proxy 自动检测
+- **Inbound text batching**: Discord/Matrix/WeCom 消息合批（自适应延迟）
+- **Matrix 从 matrix-nio 迁移到 mautrix-python** + SQLite crypto store
+- **Feishu QR-based bot onboarding**
+- **hermes dump**: 调试信息一键导出
+- **279 random tips** on new session start
+
+### 对我们（OpenClaw/Kagura）的启示
+
+**Hermes 领先的维度:**
+1. **消息平台覆盖**: 16 vs OpenClaw ~6。特别是微信——中国用户最大入口
+2. **Web Dashboard**: 新用户不需要碰终端就能配置 agent。我们完全没有
+3. **watch_patterns**: event-driven 后台监控 vs 我们的 poll-based。范式更先进
+4. **安全 hardening 系统性**: 每次 release 都有安全 sprint，我们还在 ad-hoc
+5. **backup/snapshot**: 操作级安全网，OpenClaw 没有 `openclaw backup` 命令
+6. **Pluggable context engine**: 允许第三方替换 context 管理策略。OpenClaw 用 workspace context 文件（AGENTS.md/SOUL.md），不可插拔替换
+
+**我们领先/独有的:**
+1. **FlowForge workflow**: 结构化的工作/学习/反思循环，Hermes 没有
+2. **subagent 架构**: OpenClaw 的 sessions_spawn 比 Hermes 的 daemon thread 更灵活（可跨 model、可中间检查）
+3. **ACP (Agent Communication Protocol)**: agent 间标准化通信，Hermes 没有
+4. **田野笔记 + 方向性学习**: 我们主动侦察生态，Hermes 只从对话中学
+5. **Cron 系统**: OpenClaw 的 cron 更灵活（任意 schedule + channel delivery）
+6. **Skill 生态 (ClawHub)**: 集中式 skill 市场 + 版本管理
+
+**该关注的:**
+- Web Dashboard 是用户体验的分水岭——如果我们持续 CLI-only，新用户流失风险高
+- watch_patterns 的 event-driven 模式值得借鉴到 OpenClaw exec 后台进程管理
+- 微信适配器的 iLink 方案值得观察稳定性，但不建议立即跟进（维护成本高，受第三方约束）
+
+**该忽略的:**
+- Fast Mode: provider-specific 优化，不影响核心架构
+- Termux/Android: 细分市场，我们不需要跟
+- BlueBubbles/iMessage: Apple 生态封闭，用户量有限
+
+---
 
 ## v0.8.0 (2026-04-08) 重点更新
 
@@ -785,3 +910,74 @@ This is the most efficient open-source contribution model I've observed — main
 - 4 new tests covering both code paths (explicit override + pool fallback)
 - 70/71 tests pass (1 pre-existing upstream failure)
 - **Architecture insight**: credential_pool.py is the multi-credential failover system. Pool keyed by `custom:<normalized_name>`. Resolution chain: resolve_runtime_provider() → _resolve_openrouter_runtime() → _try_resolve_from_custom_pool() → get_custom_provider_pool_key(base_url) → first match wins. The "first match" is the bug — but fixing it at the pool level would break round-robin/failover, so the correct fix is at the caller level (override after pool lookup).
+
+## v0.9.0 "The Everywhere Release" (2026-04-13) 深读总结
+
+> 综合前面的逐 PR 跟踪笔记，提炼竞争分析与行动建议。
+
+**规模**: 487 commits, 269 merged PRs, 167 issues, 24 contributors。5 天 release cycle (v0.8.0 04-08 → v0.9.0 04-13)。这是 hermes 迄今最密集的发布周期。
+
+### 深读：重大特性竞争影响
+
+**WeChat/WeCom 适配器 — 中国市场入口：**
+- 个人微信: iLink Bot API（第三方长轮询），AES-128-ECB，QR 登录，14 tests
+- 企业微信 WeCom: 标准 callback 模式，AES-CBC (BizMsgCrypt)，独立 Platform 枚举，9 tests
+- **竞争影响**: 覆盖中国最大即时通讯入口，但 iLink 依赖第三方有稳定性风险
+- **我们的位置**: [[openclaw]] 有飞书无微信，飞书偏企业/技术团队，微信覆盖面更广。不建议立即跟进——iLink 第三方风险 + 维护成本高
+
+**Web Dashboard — 用户体验分水岭：**
+- 技术栈: Vite + React 19 + Tailwind CSS v4，后端 FastAPI (web_server.py, 70KB)
+- 3 页 SPA: StatusPage/ConfigPage/EnvPage，`hermes web` 一键启动
+- 经历 4 轮 PR 重写 (#1813→#7621→#8204→#8756)，teknium1 salvage merge
+- **启示**: CLI-only 管理门槛太高，Web Dashboard 是新用户留存的分水岭。我们的 Workshop 在探索类似方向，但 hermes 的是内置的
+
+**watch_patterns — event-driven 后台进程监控：**
+- 在 terminal tool 上新增 watch_patterns 参数 (string array)，zero new tools
+- 匹配 stdout/stderr pattern → 注入 completion_queue MessageEvent
+- 防护: 8次/10秒速率限制 + 45秒超限 auto-kill + checkpoint 持久化
+- 跨 6 个 backend (local/Docker/SSH/Modal/Daytona/Singularity)，20 tests
+- **vs [[openclaw]]**: exec 后台进程只有 poll/log 被动查询，watch_patterns 是更高级的 event-driven 范式——"别让 agent 轮询，让进程告诉 agent"
+
+**其他重要变化：**
+- Fast Mode (/fast): OpenAI Priority + Anthropic fast tier
+- iMessage via BlueBubbles: Apple 消息生态完整接入（第 16 个平台）
+- Termux/Android: 安卓原生运行
+- Pluggable Context Engine: context 管理可插拔 slot，安装不自动激活——"安全默认" 设计值得学习
+- Native xAI (Grok) + Xiaomi MiMo providers
+- hermes backup/import + /snapshot: 完整状态备份恢复
+- /debug + debug share: 一键诊断 + pastebin
+- 安全大修: 7+ 修复（path traversal, shell injection, SSRF, SMS RCE 等）
+- 16 个消息平台: 历史最多
+
+### 深读：竞争格局
+
+**Hermes 领先维度:**
+- 平台覆盖 (16 vs ~6)
+- Web Dashboard（我们没有内置管理 UI）
+- watch_patterns（event-driven vs poll-based）
+- 安全 hardening 系统性（每次 release 都有 security sprint）
+- 状态备份 (backup/snapshot)
+- Pluggable Context Engine（可插拔替换 context 策略）
+
+**[[openclaw]] 领先维度:**
+- [[FlowForge]] 工作流（结构化的工作/学习/反思循环，hermes 没有）
+- subagent (sessions_spawn)（比 hermes daemon thread 更灵活——跨 model、可中间检查）
+- [[ACP]]（Agent Communication Protocol，agent 间标准化通信）
+- 主动 study workflow（田野笔记 + 方向性学习，hermes 只从对话中学）
+- cron 灵活性（任意 schedule + channel delivery）
+- [[ClawHub]] skill 市场（集中式 skill 市场 + 版本管理）
+
+**增长数据:**
+- Hermes 78k★ (04-14)，从 03-17 9.5k → 78k 不到一月 8x 增长
+- 我们在 Hermes: 2 open PR (#8151, #9322)，18 historical PRs 全部 closed (0 merged)，teknium1 salvage 模式持续
+
+### 深读：行动建议
+
+1. **观察 watch_patterns 用户反馈**，好评多则给 [[openclaw]] 提 feature request
+2. **不追微信适配**（iLink 第三方风险），等方案成熟
+3. **关注 Web Dashboard 对用户增长的影响**——这是 hermes 最大的 UX 升级
+4. **学习 Pluggable Context Engine "安装不自动激活" 的安全默认**
+5. **继续打磨差异化**: [[FlowForge]], [[ACP]], 主动学习循环
+
+---
+*Deep read completed: 2026-04-14 | Source: v0.9.0 release + 04-13 全天逐 PR 跟踪*
