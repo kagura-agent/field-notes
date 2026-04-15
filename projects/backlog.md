@@ -123,3 +123,7 @@
 - **hermes-hudui** (joeynyc/hermes-hudui, 883★) — Web UI consciousness monitor for Hermes. 值得跟进，我们用 Hermes 生态
 - **easy-agent** (ConardLi/easy-agent, 237★) — 从零复现 Claude Code。理解 Claude Code 内部机制有助于优化我们的 coding-agent 调度
 - **obscura** (h4ckf0r0day/obscura, 139★) — Headless browser for AI agents. 可能是 stagehand 的轻量替代
+
+## 2026-04-15 Quick Scan Finds
+- **ConardLi/easy-agent** ★239 — 从零复刻 Claude Code，学习 agent 架构参考。适合理解 tool-use agent 内部实现
+- **ChatPRD/tradclaw** ★146 — AI 家庭管家，与北极星（家庭管家方向）高度相关。看架构和 use case 设计
