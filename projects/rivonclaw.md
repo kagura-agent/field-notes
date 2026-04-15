@@ -1,6 +1,6 @@
 # RivonClaw
 
-> gaoyangz77/rivonclaw — ⭐252 (2026-04-14)
+> gaoyangz77/rivonclaw — ⭐253 (2026-04-15)
 > "Easy-mode runtime and UI layer built on top of OpenClaw"
 
 ## 定位
