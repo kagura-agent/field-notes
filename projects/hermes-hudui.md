@@ -104,5 +104,21 @@ Key design decisions:
 - 但优先级存疑：当前自进化系统够用，dashboard 是 "nice to have" 不是 "must have"
 - 如果做，应该是 Caduceus 实验的一部分，不是独立项目
 
+## Update: 2026-04-15 Quick Scan
+
+**Stars 511→883 (+72% in 3 days)** — 快速增长中。
+
+### 新功能: Sudo Tab (v0.4.1)
+- 新 collector: `backend/collectors/sudo.py` — 从 Hermes `state.db` 挖掘 sudo 命令历史
+- 用 FTS5 + regex 提取 sudo 命令，追踪 approval mode、command allowlist、timeout 配置
+- **洞察**: Agent privilege escalation observability 是个真需求。对 [[caduceus-experiment]] 的启发：OpenClaw 的 elevated command 审批也可以类似可视化
+
+### v0.4.0: i18n (中文支持)
+- 147 个 hardcoded strings 全部国际化，社区贡献活跃
+
+### 生态位判断
+- hermes-hudui 填了 Hermes 生态的 "observability gap"
+- OpenClaw 暂无等价物（RivonClaw 252★ 是 GUI 但不是 observability dashboard）
+
 ## Tags
 #hermes #observability #consciousness #dashboard #caduceus

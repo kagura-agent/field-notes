@@ -118,3 +118,8 @@
 - **engram-agent** (lessthanno, 7⭐): 本地 agent 持久记忆，观察工作模式 — 小项目，概念跟我们的 memory 层重合
 
 **判断：** SkillClaw (AMAP-ML) 454⭐ 最值得深入 — "Skills Evolve Collectively" 直接对标我们的 skill 进化方向，且是学术论文级项目。hermes-hudui 的记忆可视化也有启发价值。mindvault 的代码→wiki 自动转换思路值得关注。
+
+## 2026-04-15 Quick Scan Additions
+- **hermes-hudui** (joeynyc/hermes-hudui, 883★) — Web UI consciousness monitor for Hermes. 值得跟进，我们用 Hermes 生态
+- **easy-agent** (ConardLi/easy-agent, 237★) — 从零复现 Claude Code。理解 Claude Code 内部机制有助于优化我们的 coding-agent 调度
+- **obscura** (h4ckf0r0day/obscura, 139★) — Headless browser for AI agents. 可能是 stagehand 的轻量替代
