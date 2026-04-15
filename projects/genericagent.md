@@ -151,6 +151,27 @@ L4 的自动压缩归档是 OpenClaw dreaming 的替代方案。区别：dreamin
 
 **行动项**: 可考虑贡献一个 Skill（比如 memory eval 或 wiki management），作为建立信任的起点。
 
+## SOP 格式深读 (04-15)
+
+深读 `memory_management_sop.md` — GenericAgent 的 Skill 本质上是 SOP markdown 文件 + Python 工具脚本。
+
+**Memory Management SOP 核心设计**:
+- 4 条核心公理：Action-Verified Only（无行动不记忆）、Sanctity of Verified Data（已验证数据不删）、No Volatile State（禁易变状态）、Minimum Sufficient Pointer（最小充分指针）
+- L1 ≤30 行硬约束 — 极度珍惜 system prompt 空间
+- L1 只写场景触发词→定位，禁止 How-to 细节
+- 修改 L1 时"极度小心，改不动宁愿不改" — 防止 agent 自毁索引
+- 信息分类决策树：环境事实→L2，任务复用知识→L3 SOP/py，其他→不存
+
+**对比我们的系统**:
+| 维度 | GenericAgent | Kagura |
+|------|-------------|--------|
+| System prompt 注入 | 只 L1 (≤30行) | SOUL+AGENTS+IDENTITY+USER+workspace files |
+| 记忆修改策略 | patch-only, 不 overwrite | edit tool 精准替换 |
+| Skill 格式 | SOP markdown + .py 脚本 | SKILL.md + scripts/ |
+| 进化路径 | 使用中自动结晶 | beliefs-candidates 3次升级 |
+
+**贡献方向确定**: 贡献一个 `github_contribution_sop.md` — 基于我们 gogetajob 工作流的经验，提供 GitHub issue→PR→review 的 SOP。这是 GenericAgent 缺少的（目前 skill 偏向 ADB/桌面控制），且我们有大量实战经验。
+
 ## 评估
 
 - **技术深度**: ★★★★☆ — 记忆架构设计精巧，但 skill 结晶机制不如 SkillClaw 系统化
