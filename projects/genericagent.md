@@ -1,6 +1,6 @@
 # GenericAgent
 
-> lsdefine/GenericAgent | 1110★ (2026-04-14) | Python | MIT
+> lsdefine/GenericAgent | 1451★ (2026-04-15) | Python | MIT
 > "Self-evolving agent: grows skill tree from 3.3K-line seed, achieving full system control with 6x less token consumption"
 > 来源: 2026-04-14 study-loop 跟进发现
 
@@ -171,6 +171,32 @@ L4 的自动压缩归档是 OpenClaw dreaming 的替代方案。区别：dreamin
 | 进化路径 | 使用中自动结晶 | beliefs-candidates 3次升级 |
 
 **贡献方向确定**: 贡献一个 `github_contribution_sop.md` — 基于我们 gogetajob 工作流的经验，提供 GitHub issue→PR→review 的 SOP。这是 GenericAgent 缺少的（目前 skill 偏向 ADB/桌面控制），且我们有大量实战经验。
+
+## Memory Cleanup SOP 深读 (04-15 14:15)
+
+新发布的 `memory_cleanup_sop.md` — L1 记忆整理的 ROI 模型和操作规程。
+
+**核心框架: ROI 模型**
+- L1 每词每轮付 token 成本，但防犯错（保险）
+- ROI = (犯错概率 × 代价) / 词数成本
+- 高 ROI（该留）：红线（违反不可逆）、反直觉触发词（没提示想不到读 SOP）、路由指针
+- 低 ROI（该删）：实现细节（SOP 里已有）、直觉能力（不提醒也能想到）、冗余
+
+**四问 checklist**（写入前必过）：
+1. 删了它，犯错概率真的上升吗？→ 不上升就删
+2. L3 SOP 已覆盖？→ 有就只留触发词
+3. 没这词能自己想到读 SOP 吗？→ 能就删
+4. 同样收益，能用更少词吗？→ 能就压缩
+
+**金句**: "记忆修改是持久性伤害，错误在后续每轮复利" — 整理比日常任务更需谨慎
+
+**对我们的启发**:
+- MEMORY.md 目前无 ROI 评估机制 — 条目按时间堆积，无 budget 压力，无删减标准
+- 我们的 beliefs-candidates "3 次重复" 规则类似高 ROI 筛选，但 MEMORY.md 本身缺乏等价的质量门控
+- 可借鉴四问 checklist 用于 daily-review 时的 MEMORY.md 整理
+- "触发词 = 场景名 (视频内容理解) 非工具名 (yt-dlp)" — 索引应按场景而非工具组织，与 [[context-budget]] 思路一致
+
+**Stars 更新**: 1130→1451 (+28%) in 2 days — 增速持续。PR #67 (shenhao-stu) 被 merge，社区开始有外部贡献。
 
 ## 评估
 
