@@ -709,3 +709,22 @@ GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval qu
 - **做法**: 检测 history 末尾是否是 role='tool'（说明上次 agent 被中断），如果是就注入 system note 让 model 先完成中断的工作
 - **Caduceus 相关**: 如果 Caduceus 的 hermes 实例重启，现在能自动恢复中断的任务。减少人工干预需求
 - **设计**: 无 schema 变更，纯 heuristic（trailing tool message detection）。suspended sessions 不触发
+
+## Dreaming Operational Status (2026-04-15 10:50)
+
+### 根因：managed cron "skipped"
+- Dreaming cron `0df29bb1` 自注册以来从未成功自动运行（status: skipped, 0 runs）
+- Gateway 日志明确报错: `memory-core: managed dreaming cron could not be reconciled (cron service unavailable)`
+- **根因**: memory-core plugin 启动时尝试注册 managed cron，但 cron subsystem 尚未就绪（startup race）
+- 每次 gateway restart 都复现此 reconciliation 失败
+
+### 手动触发验证
+- `openclaw cron run 0df29bb1-...` 成功触发 dreaming
+- Light dreaming: 从 9 个 workspace 扫描，staged 99 candidates → recall store 从 69 跳到 973 entries
+- REM dreaming: 从 968 memory traces 生成反思，写入 dream diary（嵌入 memory/2026-04-15.md）
+- Deep promotion: 全部 973 entries scores=0，无 promoted（需 recallCount≥3 + uniqueQueries≥2，当前数据不足）
+
+### 行动项
+- 短期 workaround: 在 daily-review cron 中加 `openclaw cron run 0df29bb1-...` 手动触发
+- 长期: 等 OpenClaw 修复 managed cron startup race，或提 issue（与 #66399 process hang watchdog 同属基础设施稳定性）
+- 预计 2-3 周后 scores 开始 >0（需积累足够 recall 事件）
