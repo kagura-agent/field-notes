@@ -1,8 +1,13 @@
 # GBrain
 
-> garrytan/gbrain | 7,586⭐ (2026-04-14 15:45) | TypeScript | MIT
+> garrytan/gbrain | 7,889⭐ (2026-04-15 11:15) | TypeScript | MIT
 > "Garry's Opinionated OpenClaw/Hermes Agent Brain"
-> Created: 2026-04-05 | Last push: 2026-04-14
+> Created: 2026-04-05 | Last push: 2026-04-15
+
+### 更新 (04-15)
+- v0.9.3 (04-13): security wave 2 — 5 vulns fixed + typed health check DSL
+- v0.8.1 (04-14): search quality boost — compiled truth ranking + detail parameter
+- ★ +303 in 1 day (7586→7889), 仍在快速增长
 
 ## 概述
 
