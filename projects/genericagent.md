@@ -198,6 +198,16 @@ L4 的自动压缩归档是 OpenClaw dreaming 的替代方案。区别：dreamin
 
 **Stars 更新**: 1130→1451 (+28%) in 2 days — 增速持续。PR #67 (shenhao-stu) 被 merge，社区开始有外部贡献。
 
+## 04-15 Apply: GitHub Contribution SOP 提交
+
+**行动**: 将 gogetajob 27+ PR 实战经验提炼为 `github_contribution_sop.md`，提交 PR #69 到 upstream。
+
+**SOP 覆盖**: fork→branch→implement→test→PR→CI→review→followup 全生命周期，含避坑表和状态机。
+
+**格式对齐**: 参考 `plan_sop.md` / `memory_management_sop.md`，使用 `code_run` 示例、触发条件、检查项等 GenericAgent 惯例。
+
+**状态**: PR <https://github.com/lsdefine/GenericAgent/pull/69>，等 maintainer review。
+
 ## 评估
 
 - **技术深度**: ★★★★☆ — 记忆架构设计精巧，但 skill 结晶机制不如 SkillClaw 系统化
