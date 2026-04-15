@@ -1045,3 +1045,9 @@ This is the most efficient open-source contribution model I've observed — main
 **竞争力观察：** hermes 78k★ 的核心竞争力不是单一功能而是迭代速度 — 15+ PRs/day 的 merge 节奏说明社区贡献者生态健康。相比之下 OpenClaw 也有 15+ PRs/day 但主要是核心团队+安全审计贡献者。
 
 **我们的 6 个 hermes PRs 全部 OPEN + MERGEABLE**，CI 失败均为 upstream 问题（clear_session_context missing）。等 upstream CI 修复后应该能 review。
+
+## CI 状态 (2026-04-15)
+- **main branch Tests 持续 fail** — 不是我们的问题
+- **Docker Build 也 fail** — whatsapp-bridge git SSH dep
+- **所有 11 个 open PR 已标注** CI failure 是 upstream 的
+- **决策**: 不再提新 PR，等 upstream 修好 CI 再说
