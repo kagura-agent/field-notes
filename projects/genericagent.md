@@ -133,6 +133,24 @@ L4 的自动压缩归档是 OpenClaw dreaming 的替代方案。区别：dreamin
 - 项目年轻（2026-01 发布），社区活跃但贡献基础设施不完善
 - 中国开发者为主（微信/飞书群），语言无障碍
 
+## 2026-04-15 Followup: 维护者回应 + Stars 暴涨
+
+**Stars**: 1130→1424 (+26% in 1 day)，增速惊人。
+
+**Issue #64 回应** (lsdefine, 04-15):
+- 将开 Discussion 区，Issue 区留给 bug/feature
+- CONTRIBUTING.md 会补，重点说明 Skill 生态贡献模式
+- CI 替代方案：用「非常严格的 code review skill」审查语义层面问题（Claude Code 直接写的代码基本过不了）— **用 agent 做 code review 而非传统 lint**
+- `llmcore.py` 大是刻意设计：单文件自包含对 LLM 理解和自进化更友好
+- 欢迎贡献方向：**Skill 库 > 文档示例 > OS/LLM 适配层**，核心引擎暂以核心团队为主
+
+**关键洞察**:
+1. "AI code review skill" 替代 CI — 这是 [[mechanism-vs-evolution]] 的又一例证：用进化的审查替代固定规则
+2. 单文件自包含哲学 — 减少文件跳转对 LLM 理解的阻碍，与 [[context-budget]] 思路互补
+3. Skill 生态是主要贡献通道 — 类似 [[skillclaw]] 的 collective evolution，但更去中心化
+
+**行动项**: 可考虑贡献一个 Skill（比如 memory eval 或 wiki management），作为建立信任的起点。
+
 ## 评估
 
 - **技术深度**: ★★★★☆ — 记忆架构设计精巧，但 skill 结晶机制不如 SkillClaw 系统化
