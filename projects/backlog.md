@@ -131,3 +131,8 @@
 ## 2026-04-15 Quick Scan Discoveries
 - **ConardLi/easy-agent** ★242 — Claude Code 从零复刻，学习 agent coding architecture
 - **h4ckf0r0day/obscura** ★145 — Headless browser for AI agents，可能对 web scraping skill 有用
+
+## 2026-04-15 Quick Scan Additions
+- **ConardLi/easy-agent** (246★) — 从零重建 Claude Code，学习其内部架构。观察是否有新 insight
+- **h4ckf0r0day/obscura** (166★) — Headless browser for agents，stagehand 竞品。对比架构差异
+- **Claude Code Routines** — HN 656pts 热帖，Claude Code 官方新功能，了解 routine 概念

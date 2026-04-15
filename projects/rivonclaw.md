@@ -103,6 +103,16 @@ RivonClaw 的规则三分法已应用到 Kagura 的 AGENTS.md 红线规则：
 | 物化目标 | SQLite + plugin 注入 | YAML spec → OpenClaw plugin |
 | 缺失能力 | 冲突检测 | Session 级状态追踪（"push 前跑过测试吗"） |
 
+## SSRF Guard Bypass (v1.7.11, 2026-04-15)
+
+OpenClaw 有 browser SSRF guard 防止 agent 被诱导访问内网服务。RivonClaw 桌面模式下直接关掉：`ssrfPolicy: { dangerouslyAllowPrivateNetwork: true }`。
+
+**原因**: 用户的 proxy-manager 注入 HTTP_PROXY/HTTPS_PROXY env vars → OpenClaw browser 走代理 → SSRF guard 把 localhost proxy 连接当私网访问拦截 → 所有浏览器导航全挂。
+
+**设计决策**: 桌面端用户控制浏览器，SSRF 威胁模型（attacker tricks agent into hitting internal services）不适用。服务器端仍需保留 guard。
+
+**启示**: 安全特性必须适配部署模型。Server-first 安全假设直接搬到 desktop 会 break 正常功能。`dangerouslyAllowPrivateNetwork` 命名很好——带 "dangerously" 前缀让使用者知道在绕过什么。
+
 ## 下一步
 
 - [x] ~~考虑是否为 Kagura 的红线规则实现 guard spec 格式~~ → Done, see [[guard-spec-format]]
