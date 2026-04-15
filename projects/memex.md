@@ -5,7 +5,7 @@
 ## 基本信息
 - Repo: iamtouchskyer/memex
 - 语言: TypeScript (ESM, .js extensions in imports)
-- 测试: vitest, 283+ tests, CI 跑 3 平台 × 2 Node 版本
+- 测试: vitest, 461+ tests, CI 跑 3 平台 × 2 Node 版本 (Ubuntu/macOS/Windows × Node 20/22)
 - PR 提到 main branch
 - Commit 格式: feat/fix: description
 
@@ -95,3 +95,11 @@
 - **模式**: progressive disclosure 是 memex 核心产品理念的延伸 — 从卡片到搜索都走分层
 - **影响**: memex 总 merged PR 数达 6，我们是该项目的核心贡献者
 - **merge rate**: 6/7 = 86% — 所有项目中最高
+
+## 2026-04-15 PR #60 — fix(hooks): use CLAUDE_PLUGIN_ROOT (fixes #48)
+- 问题：SessionStart hook 用 `command -v memex` 依赖全局安装，不符合 Claude Code 插件规范
+- 修复：定义 `MEMEX_CLI` 变量指向 `${CLAUDE_PLUGIN_ROOT}/dist/cli.js`，替换所有 bare `memex` 调用
+- 改动极小：hooks/hooks.json + 1 个新测试
+- CI：Ubuntu/macOS 全绿，Windows 进行中
+- 经验：hooks.json 是单行 JSON 命令字符串，编辑时注意转义层（JSON 内的 shell 内的引号）
+- 选题理由：maintainer 在 issue 里明确表示想要 Option A（CLAUDE_PLUGIN_ROOT 方案），无竞争 PR
