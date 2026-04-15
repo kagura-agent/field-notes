@@ -728,3 +728,18 @@ GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval qu
 - 短期 workaround: 在 daily-review cron 中加 `openclaw cron run 0df29bb1-...` 手动触发
 - 长期: 等 OpenClaw 修复 managed cron startup race，或提 issue（与 #66399 process hang watchdog 同属基础设施稳定性）
 - 预计 2-3 周后 scores 开始 >0（需积累足够 recall 事件）
+
+### Dreaming Workaround 验证 (2026-04-15)
+
+**根因确认**: managed dreaming cron (03:30) 有两个问题：
+1. **Quiet hours 阻塞** — sessionTarget=main, 03:30 在 quiet hours (23:00-08:00) 范围内，被 skipped (error: "quiet-hours")
+2. **空跑** — 即使不在 quiet hours，systemEvent 只跑 3ms = no-op（04-13 记录）
+
+**运行历史** (0df29bb1):
+- 04-13 03:30: ok, 3ms (空跑)
+- 04-15 03:30: skipped, quiet-hours
+- 04-15 10:49: ok, 143s (手动触发，实际处理了 974 entries)
+
+**Workaround**: daily-review cron (03:15, isolated, 不受 quiet hours 限制) 加了步骤 3: `openclaw cron run 0df29bb1-...` 手动触发 dreaming
+
+**长期方案**: 提 OpenClaw issue — managed cron 的 sessionTarget 应考虑 quiet hours 兼容性，或 dreaming systemEvent 应走 isolated session

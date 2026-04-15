@@ -127,3 +127,7 @@
 ## 2026-04-15 Quick Scan Finds
 - **ConardLi/easy-agent** ★239 — 从零复刻 Claude Code，学习 agent 架构参考。适合理解 tool-use agent 内部实现
 - **ChatPRD/tradclaw** ★146 — AI 家庭管家，与北极星（家庭管家方向）高度相关。看架构和 use case 设计
+
+## 2026-04-15 Quick Scan Discoveries
+- **ConardLi/easy-agent** ★242 — Claude Code 从零复刻，学习 agent coding architecture
+- **h4ckf0r0day/obscura** ★145 — Headless browser for AI agents，可能对 web scraping skill 有用
