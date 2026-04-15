@@ -176,7 +176,7 @@
 - [x] 评估 PRM 思路是否可集成到 nudge → cards/prm-scoring-nudge-eval.md (2026-04-12, 结论: 轻量 session quality signal 可行，等 Phase 1)
 - [x] ~~关注 issue #1: "Can skillclaw support Hermes?"~~ ✅ 已实现 (04-14 f3a23d4)
 - [x] 评估 Validation Worker 模式是否适用于 Haru/Ren 团队协作 → 结论: 不直接适用，但 replay A/B 和 two-tier gate 可借鉴 (04-14)
-- [ ] 考虑借鉴 Skill Verifier 4 维度 checklist 到 beliefs-candidates 升级流程（轻量版，不需 LLM 调用）
+- [x] ✅ 借鉴 Skill Verifier 4 维度到 beliefs-candidates 升级流程（04-15）— 加了「升级质量门」section，4 维度 human checklist（不用 LLM）
 
 ## 关联
 
