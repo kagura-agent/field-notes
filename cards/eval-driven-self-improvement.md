@@ -12,9 +12,9 @@ AI agent 通过"修改→验证→保留/回滚"的循环自主变强。
 来源项目：[[autoresearch-karpathy]]、[[autoresearch-uditgoenka]]、[[autocontext]]、[[skill-forge]]
 
 关键模式：
-- [[git-as-memory]] — commit 保留，revert 放弃
-- [[atomic-changes]] — 每次只改一个东西
-- [[simplicity-criterion]] — 同效果更少代码也是进步
+- git-as-memory — commit 保留，revert 放弃
+- atomic-changes — 每次只改一个东西
+- simplicity-criterion — 同效果更少代码也是进步
 
 核心张力：指标越硬循环越有效，但真正重要的东西往往没有硬指标。
 

@@ -17,7 +17,7 @@
 - **安全成为 agent 核心能力**: 不再是附加功能，而是 agent 的主要价值场景
 - **信任问题加剧**: 能发现漏洞的 AI 也能利用漏洞。Glasswing 的回应是"透明+合作"
 - 跟 [[cyberclaw]] 的"透明架构"方向一致——全行为审计是必要的
-- 对 OpenClaw 的启示：agent 安全审计能力（[[healthcheck]] skill 的方向）会越来越重要
+- 对 OpenClaw 的启示：agent 安全审计能力（healthcheck skill 的方向）会越来越重要
 
 ## 趋势信号
 

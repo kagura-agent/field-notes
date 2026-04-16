@@ -40,6 +40,6 @@ Karpathy LLM Wiki pattern 的 Claude Code 实现。3 层架构：
 
 ## 关联
 
-- [[karpathy-llm-wiki-pattern]] — 底层思想
+- karpathy-llm-wiki-pattern — 底层思想
 - [[memex]] — 我们的类似工具
 - [[skill-evolution]] — SkillClaw 是另一个方向（skill 进化 vs knowledge 进化）

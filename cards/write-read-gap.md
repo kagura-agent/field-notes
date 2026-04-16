@@ -25,6 +25,6 @@ source: self-improving skill 体验 + Luna 对话
 - Retrieve 模块是关键瓶颈——encode 和 store 相对容易，retrieve 需要主动且上下文相关
 
 ## 相关
-- [[self-improving-agent]] — ClawHub 热门 skill，同样面临这个问题
+- self-improving-agent — ClawHub 热门 skill，同样面临这个问题
 - [[capability-evolver]] — 用 Gene 模板化读取路径，减少主动读取成本
 - [[memevolve]] — 学术界对同一问题的形式化研究

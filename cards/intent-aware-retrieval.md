@@ -41,7 +41,7 @@ GBrain 创建了 formal IR eval harness：
 
 ## 相关概念
 - [[thin-harness-fat-skills]] — GBrain 的整体架构哲学
-- [[hybrid-search]] — RRF fusion 基础
+- hybrid-search — RRF fusion 基础
 - [[dreaming]] — 我们的 memory promotion 系统
 
 ## Tags

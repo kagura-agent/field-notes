@@ -34,4 +34,4 @@ The agent did all execution. The human did all high-leverage decisions.
 
 This validates the "家庭管家" north star — the value isn't the software, it's the accumulated understanding. "坏了会急" is the PMF signal.
 
-Links: [[chat-first-product]], [[磨合成本锁定]], [[agent-trainer]]
+Links: [[chat-first-product]], 磨合成本锁定, agent-trainer

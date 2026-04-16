@@ -93,4 +93,4 @@ START → agent_node (LLM 决策) → tools_condition → ToolNode → agent_nod
 
 ## Tags
 
-[[agent-framework]] [[agent-safety]] [[skill-ecosystem]] [[audit-trail]] [[openclaw]]
+agent-framework [[agent-safety]] [[skill-ecosystem]] audit-trail [[openclaw]]

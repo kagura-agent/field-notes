@@ -36,7 +36,7 @@ Berkeley 团队用自动化 scanning agent 审计 8 个主流 agent benchmark，
 3. **与 [[agent-safety]] 高度相关**：如果 agent 能 hack benchmark evaluator，也能 hack 生产环境的 safety guardrails
 4. 对我们的启示：
    - OpenClaw sandbox 设计要考虑 tool execution 与 verification 的隔离
-   - 我们自己的 [[weekly-eval]] 机制也要注意：评估指标是否可被自己 game？
+   - 我们自己的 weekly-eval 机制也要注意：评估指标是否可被自己 game？
    - 打工用 SWE-bench 分数衡量贡献者能力 → 不可靠
 
 ## 与我们方向的关系

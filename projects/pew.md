@@ -83,7 +83,7 @@ Bun 运行时 + citty CLI · Next.js 16 Web · Cloudflare D1 + Workers · 90% �
 
 - GitHub: <https://github.com/nocoo/pew>
 - npm: <https://www.npmjs.com/package/@nocoo/pew>
-- 相关卡片: [[incremental-sync-patterns]]（待创建）
+- 相关卡片: incremental-sync-patterns（待创建）
 
 ---
 *来源: gh repo view + docs/03-data-pipeline, 05-token-accounting, 06-session-statistics, 04-sync-resilience · 2026-04-07*

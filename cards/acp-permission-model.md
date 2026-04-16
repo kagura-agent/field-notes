@@ -20,7 +20,7 @@ The two fields combine as a matrix:
 - `approve-reads` + `deny` → reads work, writes silently fail
 - `approve-reads` + `fail` → reads work, writes throw error
 
-For [[division-of-labor]] with Claude Code ACP sessions, `approve-all` is required because code changes need write+exec.
+For division-of-labor with Claude Code ACP sessions, `approve-all` is required because code changes need write+exec.
 
 Default: `permissionMode=approve-reads`, `nonInteractivePermissions=fail`
 

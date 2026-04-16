@@ -14,7 +14,7 @@ This explains why developers naturally "jump" through code but don't naturally f
 To make links actually get followed, they need to become dependencies in some context — e.g., a workflow step that says "read this card's linked cards before proceeding."
 
 **Implication for agents:**
-An agent will follow code imports automatically but skip `[[links]]` unless the task explicitly requires traversal. Design retrieval around tasks, not around link structure.
+An agent will follow code imports automatically but skip `links` unless the task explicitly requires traversal. Design retrieval around tasks, not around link structure.
 
 ---
 Source: Luna's observation (2026-03-29) — "写代码时你会因为函数名跳到下一个文件，为什么看知识卡片不跳？"

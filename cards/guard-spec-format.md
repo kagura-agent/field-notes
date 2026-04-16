@@ -226,4 +226,4 @@ before_tool_call → guard evaluator → block/confirm/allow
 - [[tool-execution-policy-enforcement]] — hook 拦截的技术参考
 - [[beliefs-upgrade-quality-gate]] — 规则升级的质量门控
 - [[agent-safety]] — 安全第二主线
-- [[exp-017-guard-spec-prototype]] — 此格式的实验追踪
+- exp-017-guard-spec-prototype — 此格式的实验追踪

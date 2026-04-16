@@ -44,7 +44,7 @@ Luna corrects → nudge triggers → write belief → ... → ???
 3. "Write it down" is necessary but insufficient. The question is always: "When and how does this get read back?"
 
 ## Related
-- [[exp-012-librarian-problem]] — agent-mediated retrieval as alternative to search
+- exp-012-librarian-problem — agent-mediated retrieval as alternative to search
 - [[exp-daily-review-quality]] — self-evaluation limits
 - [[autoresearch-karpathy]] — the gold standard of closed-loop improvement
 - [[self-evolving-agent-landscape]] — industry overview

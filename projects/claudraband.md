@@ -55,6 +55,6 @@ claudraband-cli (CLI wrapper)
 - 我们有 OpenClaw 做 orchestration，不需要另一层 Claude Code wrapper
 
 ## 关联
-- [[coding-agent]] skill — 我们当前的 Claude Code 集成方式
+- coding-agent skill — 我们当前的 Claude Code 集成方式
 - [[claude-code-plugins]] — Claude Code 的官方扩展机制
 - [[claude-mem]] — 另一个 Claude Code 生态工具

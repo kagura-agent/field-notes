@@ -21,12 +21,12 @@ ClawHub 下载量第一的 skill（35,581+），MIT license，EvoMap/evolver。
 **Capsule** — 成功修复打包
 - 修复成功后封装成 Capsule
 - 包含 confidence score、trigger signals、payload
-- 可被其他 agent 复用（通过 [[A2A 协议]]）
+- 可被其他 agent 复用（通过 A2A 协议）
 - 类比：我们的 [[self-improving]] domain 记忆，但可跨 agent 共享
 
 **Events** — append-only 进化日志
 - 每次进化记一个 event，通过 parent_id 形成进化树
-- 类比：我们的 [[evolution-log]]
+- 类比：我们的 evolution-log
 
 ### 进化循环
 

@@ -49,7 +49,7 @@
 
 互补关系：探索用 Browser-Use，稳定后写成 OpenCLI 适配器
 
-Links: [[cli-everything]], [[agent-as-router]]
+Links: cli-everything, [[agent-as-router]]
 
 ### PR #624 — Substack selector fix (2026-03-31)
 - Issue: #621 — Substack DOM redesign，`<article>` → `<div role="article">`

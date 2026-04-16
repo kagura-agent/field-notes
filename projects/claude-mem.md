@@ -55,7 +55,7 @@ Claude Code session
 |------|-----------|-------------------|
 | 数据源 | Claude Code tool usage observations | 全渠道（Discord/飞书/heartbeat/学习/打工） |
 | 记忆层级 | observations → summaries → corpora | daily memory → MEMORY.md → wiki cards/projects |
-| 检索 | SQLite FTS5 + Chroma hybrid + progressive disclosure | memex semantic search + wiki [[双链]] |
+| 检索 | SQLite FTS5 + Chroma hybrid + progressive disclosure | memex semantic search + wiki 双链 |
 | 进化 | 无（只记录不进化）| beliefs-candidates → DNA/Workflow/KB 管线 |
 | Skill 发现 | 无 | nudge hook [SKILL] 标签（刚落地） |
 | 可查询 | Knowledge Agents（corpus → AI session Q&A）| memex search（纯检索，无 Q&A） |

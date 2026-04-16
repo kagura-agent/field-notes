@@ -23,7 +23,7 @@ Model requests tool → pre_tool_call hook fires → plugin evaluates policy →
 |-----------|-----------|-------------|--------------|
 | [[hermes-agent]] | `pre_tool_call` hook → `{"action":"block","message":"reason"}` | No | Yes (04-14) |
 | [[openclaw]] | Approvals system | Yes (user approves) | No (no silent block) |
-| [[claude-code]] | `PreToolUse` hook | Yes (ask mode) | Partial (deny rules, but not plugin-driven) |
+| claude-code | `PreToolUse` hook | Yes (ask mode) | Partial (deny rules, but not plugin-driven) |
 
 ## Use Cases
 

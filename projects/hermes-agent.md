@@ -464,7 +464,7 @@ flush agent 在 session reset 时 spawn 临时 agent 审查旧对话并保存记
 4. **Hermes 5940 个测试**：测试覆盖率远超 OpenClaw
 
 ### 相关
-- [[Platform Fault Isolation]] — OpenClaw #54894 就是缺这个
+- Platform Fault Isolation — OpenClaw #54894 就是缺这个
 - [[claude-subconscious]] — 两者都在做 agent 记忆，但架构不同
 - [[openclaw-architecture]] — 对比 Hermes 的 gateway 设计
 
@@ -965,7 +965,7 @@ This is the most efficient open-source contribution model I've observed — main
 - [[acp]]（Agent Communication Protocol，agent 间标准化通信）
 - 主动 study workflow（田野笔记 + 方向性学习，hermes 只从对话中学）
 - cron 灵活性（任意 schedule + channel delivery）
-- [[ClawHub]] skill 市场（集中式 skill 市场 + 版本管理）
+- ClawHub skill 市场（集中式 skill 市场 + 版本管理）
 
 **增长数据:**
 - Hermes 78k★ (04-14)，从 03-17 9.5k → 78k 不到一月 8x 增长
@@ -993,7 +993,7 @@ This is the most efficient open-source contribution model I've observed — main
 - Env var present but empty → prune (explicit removal)
 - Singleton sources (`claude_code`/`hermes_pkce`) → existing behavior preserved
 
-**Architecture Insight**: Credential pool is a shared resource across processes (file-based `auth.json`). Read operations must not have write side effects that assume single-process semantics. This is a general pattern violation — [[read-path-purity]].
+**Architecture Insight**: Credential pool is a shared resource across processes (file-based `auth.json`). Read operations must not have write side effects that assume single-process semantics. This is a general pattern violation — read-path-purity.
 
 **Related**: PR #9322 (explicit api_key override) also touches credential pool resolution chain. Both fixes address credential handling correctness in custom provider setups.
 

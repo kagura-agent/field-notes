@@ -119,5 +119,5 @@ Rule = (prev, curr) → (effects, tickMs) → (effects', tickMs')
 
 ## 关联
 - [[archon]] — 也用 git worktree 隔离，deterministic structure + non-deterministic AI 分离
-- [[determinism-ladder]] — Pulse 的 Rule 是 L3（Verifiable），promote/migrate 是 L4（Testable）
+- determinism-ladder — Pulse 的 Rule 是 L3（Verifiable），promote/migrate 是 L4（Testable）
 - [[openclaw-architecture]] — 对比 OpenClaw 的 hook/cron/heartbeat 机制

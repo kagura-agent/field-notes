@@ -84,7 +84,7 @@ RivonClaw 的规则三分法已应用到 Kagura 的 AGENTS.md 红线规则：
 ### 产出物
 
 - [[guard-spec-format]] — Guard spec YAML schema + 5 条具体 guard 定义
-- [[exp-017-guard-spec-prototype]] — 实验追踪（假设: 结构化 guard 降低违反率）
+- exp-017-guard-spec-prototype — 实验追踪（假设: 结构化 guard 降低违反率）
 
 ### 关键发现
 

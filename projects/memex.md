@@ -41,7 +41,7 @@
 ## 跟我们的关联
 - memex 是我们每天用的工具（MEMEX_HOME 指向 knowledge-base）
 - 自己的痛点驱动贡献 > 纯外部打工
-- [[knowledge-base]] 是 memex 的 cards/ + projects/ 目录
+- knowledge-base 是 memex 的 cards/ + projects/ 目录
 
 ## Owner 画像：iamtouchskyer
 - 风格：极简但想清楚了。memex = 最小 Zettelkasten，OPC = 最小多 agent 编排

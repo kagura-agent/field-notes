@@ -16,6 +16,6 @@ Examples:
 - `~/.openclaw/workspace/.nudge-state.json` → `turnCount` tells you exactly where you are
 - `~/.openclaw/cron/jobs.json` → `lastStatus`, `delivered` fields
 
-This is a special case of [[数据纪律]]: dont guess when you can look.
+This is a special case of 数据纪律: dont guess when you can look.
 
 See also: [[acp-permission-model]]

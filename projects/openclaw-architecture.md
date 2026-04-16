@@ -698,12 +698,12 @@ GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval qu
 - **修复**: session transcript 跳过逻辑改用内部 dreaming run markers（前缀匹配）替代 prompt text 匹配；short-term promotion 在 normalization/recording/ranking/apply 四个阶段都拒绝 dreaming-shaped snippets
 - **影响我们**: 我们的 dreaming 已启用（v2026.4.14），这个 fix 自动保护我们免受 self-ingestion。旧的 49 条 scores=0 entries 不会被意外 promote
 - **设计洞察**: 没做 first-class provenance tracking（scope boundary 明确），而是用 marker-based heuristic。说明 [[openclaw]] 团队倾向 incremental hardening over architectural purity
-- **相关**: [[dreaming]], [[memory-evolution]]
+- **相关**: [[dreaming]], memory-evolution
 
 ### #66820 — fix: preserve runtime token budget in deferred context-engine maintenance (merged 04-14)
 - **问题**: deferred maintenance 重建 runtimeContext 时丢失了 tokenBudget，fallback 到 synthetic default
 - **影响我们**: 可能解释我们 context budget 分析中看到的一些 inconsistency。v2026.4.14 已包含此 fix
-- **相关**: [[context-budget-optimization]]
+- **相关**: context-budget-optimization
 
 ### Hermes #9934 — auto-continue interrupted agent work after gateway restart (merged 04-14)
 - **做法**: 检测 history 末尾是否是 role='tool'（说明上次 agent 被中断），如果是就注入 system note 让 model 先完成中断的工作

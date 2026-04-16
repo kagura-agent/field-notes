@@ -5,7 +5,7 @@
 - **Repo**: ChatPRD/tradclaw ★146
 - **Author**: @clairevo
 - **Created**: 2026-04-14
-- **Pattern**: scaffold（同 [[clawchief]]）— 面试驱动定制 + 可复制 workspace
+- **Pattern**: scaffold（同 clawchief）— 面试驱动定制 + 可复制 workspace
 
 ## 核心洞察
 
@@ -38,7 +38,7 @@
 ## 与 agent 生态关系
 
 - 上游依赖 [[openclaw]] workspace 体系
-- 同类 pattern: [[clawchief]]（工作场景 scaffold）
+- 同类 pattern: clawchief（工作场景 scaffold）
 - 互补：tradclaw 做家庭，clawchief 做工作，两者可共存同一个 OpenClaw 实例
 
 ## 下一步

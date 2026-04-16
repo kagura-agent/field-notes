@@ -66,7 +66,7 @@
 
 - [[claude-code-coordinator]]: Claude Code 的 coordinator/fork 两种模式是这个问题的工程实现
 - [[process-hang-watchdog]]: 进程级 failure detection 就是论文提到的 "failure detector gadget"
-- [[multi-agent-team-lead]]: 我们的 team-lead skill 是串行管线模式的流程文档
+- multi-agent-team-lead: 我们的 team-lead skill 是串行管线模式的流程文档
 
 ## 关键引用
 

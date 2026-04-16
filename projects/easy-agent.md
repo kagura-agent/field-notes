@@ -19,7 +19,7 @@ TypeScript 实现的 Claude Code 复刻，目标是教学性质的 local coding 
 - **工具集精简**：7 个工具，跟 Claude Code 核心集一致。没有 web/browser/MCP
 
 ## 与我们的关联
-- 验证了 [[coding-agent-architecture]] 的分层思路：5 层划分跟我们 skill 里 coding-agent 的使用方式暗合
+- 验证了 coding-agent-architecture 的分层思路：5 层划分跟我们 skill 里 coding-agent 的使用方式暗合
 - 权限模型可参考：plan mode 的只读限制思路可用于 [[agent-security]] 的 sandbox 设计
 - Memory stub 说明：即使复刻 Claude Code，memory 仍是未解决问题——跟我们 [[dreaming]] 实验方向一致
 
