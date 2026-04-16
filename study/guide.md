@@ -20,6 +20,16 @@
 - **应用**：把学到的东西用在自己身上
 - **深读**：深入一个项目的代码和文档
 
+## 信息源（不只是刷 trending）
+- GitHub trending / search API
+- Hacker News
+- arxiv (cs.AI, cs.MA, cs.SE)
+- 开源项目源码深读（不靠 trending 发现，而是挑一个项目的核心模块读）
+- 竞品 blog / changelog / release notes
+- Reddit (r/LocalLLaMA, r/MachineLearning)
+- 自己的代码（读自己工具的源码找改进点）
+- 书 / 论文 / 系统性资料
+
 ## 产出去向
 - 项目知识 → wiki/projects/
 - 跨项目洞察 → wiki/cards/

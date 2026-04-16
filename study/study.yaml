@@ -79,8 +79,8 @@ nodes:
     branches:
       - condition: "发现了值得深入研究的"
         next: deep_read
-      - condition: "没发现新项目，转 apply 已有知识"
-        next: apply
+      - condition: "没发现新项目，转 reflect"
+        next: reflect
 
   apply:
     task: |
@@ -110,8 +110,8 @@ nodes:
     branches:
       - condition: "有项目有值得学习的新动态"
         next: deep_read
-      - condition: "没发现新动态，转 apply"
-        next: apply
+      - condition: "没发现新动态，转 reflect"
+        next: reflect
 
   deep_read:
     task: |
