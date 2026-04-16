@@ -79,3 +79,13 @@
 - cv: strict on commit signing (GPG required), responsive, will close stale PRs (closed #944)
 - wscurran: thorough approver, positive feedback
 - Feature parity PRs ("X has it, add to Y") are ideal for NemoClaw — clear spec, existing patterns
+
+## PR #1723 — ARM64 gateway health (2026-04-16 update)
+- **Status**: PENDING, CI was failing → fixed
+- **CI issues found & fixed**:
+  1. commit-lint: title "fix: ARM64..." flagged as sentence-case → changed to "fix: arm64..."
+  2. dco-check: PR body Signed-off-by was present but still failed (may be position-sensitive)
+  3. Test expectation bug: `getGatewayReuseState` test expected "active-unnamed" for a case where status reports Connected + Gateway: nemoclaw → should be "healthy" (primary path in isGatewayHealthy). Fixed in c752c401.
+  4. Important: tests import from compiled `bin/lib/onboard` not src — must `npm run build:cli` before running tests locally
+- **Lesson**: NemoClaw commit-lint enforces lowercase after `fix:` prefix — "ARM64" treated as sentence-case. Use "arm64".
+- **Lesson**: Always rebuild before testing in NemoClaw — vitest runs against compiled dist, not src.
