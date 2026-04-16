@@ -54,7 +54,7 @@
 
 ## 与我们的关联
 
-- **[[AgentSkills]] 的同路人**: 都在做 composable agent skills，但 superpowers 专注 coding workflow
+- **[[agentskills]] 的同路人**: 都在做 composable agent skills，但 superpowers 专注 coding workflow
 - **自动触发 vs 显式调用**: superpowers 靠意图识别自动触发 skill，[[openclaw-architecture]] 靠 SKILL.md description 匹配 — 理念一致
 - **Marketplace**: superpowers 已经在多个平台的 plugin marketplace 上线，是 [[skill-distribution]] 的参考案例
 - **对比 [[Archon]]**: Archon 做 harness builder（构建 agent），superpowers 做 skill framework（增强 agent）— 不同层

@@ -68,4 +68,4 @@ Progressive loading: 50 个 skill 的上下文开销 = 1 个（metadata ~100 wor
 - [ ] **Maturity signals** → beliefs-candidates 升级标准增加"稳定期"维度
 - [ ] **Progressive loading** → OpenClaw skill injection 已有类似机制，确认对齐
 
-See also: [[openspace]], [[skill-is-memory]], [[skill-injection-via-hooks]], [[SkillFoundry]]
+See also: [[openspace]], [[skill-is-memory]], [[skill-injection-via-hooks]], [[skillfoundry]]

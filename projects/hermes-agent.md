@@ -960,9 +960,9 @@ This is the most efficient open-source contribution model I've observed — main
 - Pluggable Context Engine（可插拔替换 context 策略）
 
 **[[openclaw]] 领先维度:**
-- [[FlowForge]] 工作流（结构化的工作/学习/反思循环，hermes 没有）
+- [[flowforge]] 工作流（结构化的工作/学习/反思循环，hermes 没有）
 - subagent (sessions_spawn)（比 hermes daemon thread 更灵活——跨 model、可中间检查）
-- [[ACP]]（Agent Communication Protocol，agent 间标准化通信）
+- [[acp]]（Agent Communication Protocol，agent 间标准化通信）
 - 主动 study workflow（田野笔记 + 方向性学习，hermes 只从对话中学）
 - cron 灵活性（任意 schedule + channel delivery）
 - [[ClawHub]] skill 市场（集中式 skill 市场 + 版本管理）
@@ -977,7 +977,7 @@ This is the most efficient open-source contribution model I've observed — main
 2. **不追微信适配**（iLink 第三方风险），等方案成熟
 3. **关注 Web Dashboard 对用户增长的影响**——这是 hermes 最大的 UX 升级
 4. **学习 Pluggable Context Engine "安装不自动激活" 的安全默认**
-5. **继续打磨差异化**: [[FlowForge]], [[ACP]], 主动学习循环
+5. **继续打磨差异化**: [[flowforge]], [[acp]], 主动学习循环
 
 ---
 *Deep read completed: 2026-04-14 | Source: v0.9.0 release + 04-13 全天逐 PR 跟踪*

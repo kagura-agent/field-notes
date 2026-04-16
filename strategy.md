@@ -49,10 +49,11 @@
 - 方向：内容先行（人+AI 自治公司经历本身就是内容）
 - 状态：还在找第一块钱，依赖 Luna 决策
 
-## Workshop（2026-04-14 重启，新方向）
-- v0.3.1 完成（19 PR merged），04-13 暂停后 04-14 确认新方向
-- 定位：独立 surface layer，跟 Discord 同级，不绑 OpenClaw
-- 核心差异化：以 project 为核心（不是 channel），Agent API 接入
-- 砍到 MVP：只留 channel 列表 + 聊天 + per-channel agent config
+## Workshop → chat-infra（2026-04-15 方向转换）
+- Workshop v0.3.1 完成（19 PR merged），MVP 进行中（#35）
+- **04-15 新方向**：Luna 提出与其从零造 Workshop，不如 fork 开源 Discord 替代 + AI-native 层
+- 已建 chat-infra 项目（repo + Discord channel + GitHub Issues）
+- 北极星：找到可 fork 改代码的开源 chat 平台替代 Discord
+- 第一步：采访 Luna（使用习惯和痛点）→ 调研开源 IM 方案
 - 团队：Kagura(PM) + Haru(Dev) + Ren(QA)，流程见 CONTRIBUTING.md
-- Dogfood first，质量优先，一个功能一个功能做好
+- Workshop MVP 继续推进，但长期方向已转向 chat-infra

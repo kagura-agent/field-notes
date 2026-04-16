@@ -29,7 +29,7 @@ Agent loop: user_msg → prompt → model.complete() → parse → tool/retry/fi
 - **FakeModelClient**: 预设输出序列做 orchestration 测试，不依赖真实模型
 - **零依赖**: 只用 Python 标准库，连 requests 都不用
 
-## 与 [[OpenClaw]] 对比
+## 与 [[openclaw]] 对比
 
 | 维度 | mini-coding-agent | OpenClaw |
 |------|-------------------|----------|

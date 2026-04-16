@@ -5,7 +5,7 @@
 
 ## What It Does
 
-LLM Wiki is a cross-platform desktop app (Tauri v2 + React 19) that implements [[karpathy-llm-wiki|Karpathy's "LLM Wiki" pattern]] — instead of RAG (re-derive from raw documents on every query), it uses the LLM to **incrementally build and maintain a persistent wiki** from your sources. You drop documents in, the LLM analyzes them, creates structured interlinked markdown pages (entities, concepts, source summaries), and keeps cross-references and a global overview up to date. Knowledge is compiled once and compounded, not re-derived. Think of it as "the LLM is the wiki editor, you are the curator."
+LLM Wiki is a cross-platform desktop app (Tauri v2 + React 19) that implements [[karpathy-llm-wiki-pattern|Karpathy's "LLM Wiki" pattern]] — instead of RAG (re-derive from raw documents on every query), it uses the LLM to **incrementally build and maintain a persistent wiki** from your sources. You drop documents in, the LLM analyzes them, creates structured interlinked markdown pages (entities, concepts, source summaries), and keeps cross-references and a global overview up to date. Knowledge is compiled once and compounded, not re-derived. Think of it as "the LLM is the wiki editor, you are the curator."
 
 ## Architecture
 

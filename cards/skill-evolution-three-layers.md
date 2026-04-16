@@ -15,7 +15,7 @@ Agent skill 自进化生态正在分化为三层：
    - 职责：skill 流通、版本管理（fork 变体）、社区 review
    
 3. **知识挖掘层**（上游）：从异构资源自动生成 skill
-   - 代表：[[SkillFoundry]]（arXiv 2604.03964）
+   - 代表：[[skillfoundry]]（arXiv 2604.03964）
    - 职责：domain knowledge tree → 挖掘 → 编译为 skill package
 
 Kagura/OpenClaw 目前只有碎片化的手动版本。beliefs-candidates → DNA 升级 ≈ 简化版的层 2。nudge 反思 ≈ 简化版的层 1。wiki → skill 手动转化 ≈ 极简版的层 3。

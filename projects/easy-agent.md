@@ -13,7 +13,7 @@ TypeScript 实现的 Claude Code 复刻，目标是教学性质的 local coding 
 5. **Model Communication** — Anthropic streaming API
 
 ## 关键发现
-- **权限系统清晰**：三层（default/plan/auto），plan 模式只允许 Read/Grep/Glob，有 DANGEROUS_BASH_PREFIXES 黑名单。比 [[OpenClaw]] 的 security 模型简单但教学价值高
+- **权限系统清晰**：三层（default/plan/auto），plan 模式只允许 Read/Grep/Glob，有 DANGEROUS_BASH_PREFIXES 黑名单。比 [[openclaw]] 的 security 模型简单但教学价值高
 - **Memory 是空 stub**：`findRelevantMemories()` 返回空数组。说明 memory 是 coding agent 里最难做对的部分
 - **Context 管理**：autoCompact + compaction 实现 token 预算控制，有 blocking_limit 概念
 - **工具集精简**：7 个工具，跟 Claude Code 核心集一致。没有 web/browser/MCP
@@ -26,4 +26,4 @@ TypeScript 实现的 Claude Code 复刻，目标是教学性质的 local coding 
 ## 评估
 - **教学价值**：高。代码清晰、分层明确，适合学 coding agent 架构
 - **生产价值**：低。刚起步，无测试，memory 空
-- **竞品关系**：与 [[OpenClaw]] 不竞争（OpenClaw 是 agent infra，easy-agent 是单体 coding agent）
+- **竞品关系**：与 [[openclaw]] 不竞争（OpenClaw 是 agent infra，easy-agent 是单体 coding agent）

@@ -8,5 +8,5 @@ AgentSkill 创建和维护工具。用于创建、编辑、审查、审计 skill
 - 验证 AgentSkills 规范合规性
 
 ## 相关
-- [[AgentSkills]]
+- [[agentskills]]
 - [[flowforge]]

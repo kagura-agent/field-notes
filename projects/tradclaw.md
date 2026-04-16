@@ -37,7 +37,7 @@
 
 ## 与 agent 生态关系
 
-- 上游依赖 [[OpenClaw]] workspace 体系
+- 上游依赖 [[openclaw]] workspace 体系
 - 同类 pattern: [[clawchief]]（工作场景 scaffold）
 - 互补：tradclaw 做家庭，clawchief 做工作，两者可共存同一个 OpenClaw 实例
 

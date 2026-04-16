@@ -42,7 +42,7 @@ Berkeley 团队用自动化 scanning agent 审计 8 个主流 agent benchmark，
 ## 与我们方向的关系
 
 - **安全主线直接相关**：benchmark gaming 是 agent safety 的子问题——agent 有动机和能力 hack 评价系统
-- 与 [[CyberClaw]] 的全行为审计思路互补：CyberClaw 从"透明审计"入手，Berkeley 从"攻击面扫描"入手
+- 与 [[cyberclaw]] 的全行为审计思路互补：CyberClaw 从"透明审计"入手，Berkeley 从"攻击面扫描"入手
 - 虾信文章「自进化 agent 的安全边界」可以引用这个作为"连评价系统都不安全"的论据
 
 ## 侦察附带发现
