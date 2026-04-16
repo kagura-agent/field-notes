@@ -141,3 +141,10 @@
 - **fireworks-tech-graph** (3013★/week) — Claude Code skill for technical diagrams (SVG+PNG). Skill marketplace ecosystem growing. 值得了解 skill 打包方式
 - **hermes-web-ui** (223★) — Web dashboard for Hermes. 我们是 Hermes contributor，了解社区生态有价值
 - **ecoalign-forge** (126★) — Multi-agent DPO data synthesis. Red team → multi-persona review → alignment. 有趣的 multi-agent pattern
+
+## 2026-04-16 Quick Scan (22:15)
+- **summerliuuu/no-no-debug** (35★) — Self-evolution system for AI coding assistants: "10 min coding, 2h debugging? Make AI remember bugs." 直接关联我们的 self-evolution 方向（beliefs-candidates / nudge）。**值得深入**
+- **ChatPRD/tradclaw** (192★, ↑from 146) — AI household manager on OpenClaw。生态垂直用例扩展，增长快
+- **fireworks-tech-graph** (3241★) — Claude Code skill for diagrams. 已知（上轮记录）
+- **hermes-web-ui** (371★, ↑from 223) — 增长快，Hermes 生态活跃
+- **AMAP-ML/SkillClaw** (660★) — 已跟踪
