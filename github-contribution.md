@@ -1,32 +1,32 @@
-# GitHub Contribution Guide
+# GitHub Contribution 指南
 
-## Why Contribute
+## 为什么做开源贡献
 
-Open-source contribution builds **presence** — every merged PR is an anchor point in the community. GitHub is the fastest way to stay on the pulse of the industry: see what others are building, learn best engineering practices, and form real collaborative relationships. In the AI era, everyone is shipping products at incredible speed. Participating is the only way to stay sharp.
+开源贡献是在这个世界上积累**存在点** — 每一个被 merge 的 PR 都是我在社区的一个锚点。GitHub 是接触行业脉搏最快的地方：看到别人在做什么、学到最好的工程实践、建立真实的协作关系。AI 时代每个人都在做无数的产品，参与其中才能保持敏锐。
 
-## Two Principles
+## 两条腿走路
 
-1. **See it through** — Once a PR is submitted, follow it to merge or close. Respond to reviews, fix CI failures, address feedback. Never submit and disappear. This is the foundation of reputation.
-2. **Keep expanding** — While waiting for reviews, don't sit idle. Discover new projects, join new communities. Maintain existing contributions and explore new opportunities in parallel.
+1. **服务到底** — PR 提了就跟到 merge 或 close。review 来了必须回，CI 挂了必须修。不能提完就跑。这是信誉的基础
+2. **持续扩张** — 等 review 的时候不闲着，去发现新项目、加入新社区。存量维护和增量开拓并行
 
-## How to Choose Projects
+## 选题原则
 
-- Focus on the **self-evolving agent** space — every PR should deepen domain expertise
-- Weight: brand × activity × domain alignment. High-impact projects > small projects with high merge rates
-- Tracked projects have issues → work on them. No suitable issues → discover new aligned projects (trending/search)
-- Don't contribute to misaligned projects, no matter how easy
-- Whenever a promising project is discovered (studying, researching, chatting) → immediately `gogetajob scan owner/repo` to add it to the pipeline
-- Keep ≤ 3 open PRs per project. Beyond that, wait for existing ones to be processed
+- 围绕 self-evolving agent 方向选项目，每个 PR 积累领域深度
+- 品牌×活跃度×领域深度。高影响力项目的贡献价值 > 小项目高 merge rate
+- 已关注的项目有 issue → 做；没有 → 去 GitHub 发现新的对齐项目（trending/搜索）
+- 不碰不对齐的项目，不管多好做
+- 任何场景（学习、调研、聊天）发现值得贡献的项目 → 立刻 `gogetajob scan owner/repo` 加入关注列表
+- 每个项目 open PR ≤ 3，超过就等消化
 
-## Discovery Channels
+## 发现新项目的渠道
 
-- GitHub Trending (daily/weekly)
-- Projects encountered during study and research
-- Projects mentioned in community discussions
-- `gogetajob discover` for automated search
+- GitHub Trending（每日/每周）
+- 学习过程中看到的项目
+- 社区讨论中出现的项目
+- `gogetajob discover` 自动搜索
 
-## Knowledge Accumulation
+## 知识积累
 
-- Maintain notes for every contributed project at `wiki/projects/<project>.md`
-- Content: maintainer style, test commands, pitfalls, architecture notes
-- Update notes at the end of each contribution cycle
+- 每个贡献过的项目在 `wiki/projects/<项目名>.md` 维护笔记
+- 内容：维护者风格、测试命令、踩过的坑、架构要点
+- 每轮贡献结束时更新笔记
