@@ -98,22 +98,24 @@ nodes:
       next: discover
 
   discover:
-    task: '已有项目没有合适的 issue，去外面找新项目。
+    task: '已有项目没有合适的 issue，去外面找新项目加入关注列表。
 
       1. 运行 `gogetajob discover --language TypeScript --min-stars 100 --active-days 14 --limit 10 --topic ai-agent`
 
       2. 再运行 `gogetajob discover --language Python --min-stars 100 --active-days 14 --limit 10 --topic agent`
 
-      3. 对照 github-contribution.md 的选题原则，筛选对齐 self-evolving agent 方向的项目
+      3. 对照 guide.md 的选题原则，筛选对齐方向的项目
 
-      4. 找到合适的 → `gogetajob scan owner/repo` 加入关注列表，然后从新加入的项目里选一个 issue
+      4. 找到合适的 → `gogetajob scan owner/repo` 加入关注列表
 
-      5. 也可以直接看 GitHub Trending：`gh api /search/repositories -q ".items[:10] | .[] | {full_name, stargazers_count, description}" -f q="topic:ai-agent stars:>100 pushed:>$(date -d "-14 days" +%Y-%m-%d)" -f sort=stars`
+      5. 也可以看 GitHub Trending
 
-      汇报发现了什么新项目，选了哪个。'
+      **注意：discover 只负责找新项目并加入关注列表，不负责选 issue。选 issue 是 find_work 的事。**
+
+      汇报发现了什么新项目，加入了哪些。'
     branches:
-    - condition: 找到了新项目和合适的 issue
-      next: study
+    - condition: 加入了新项目
+      next: find_work
     - condition: 没找到合适的新项目
       next: reflect
 
