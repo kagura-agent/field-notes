@@ -55,4 +55,18 @@
 
 ---
 
+## 移植评估（2026-04-16）
+
+**结论：暂不实现被动错误捕获 hook。**
+
+分析了 OpenClaw `agent_end` hook（`messages[]`, `success`, `error`, `durationMs`），对比 no-no-debug 的 `PostToolUseFailure`：
+
+1. **粒度差距**：OpenClaw 是 session 级 hook，无 tool-level error hook。无法实时捕获单次工具失败
+2. **messages 解析成本高**：`unknown[]` 格式，检测 correction 模式需要 NLP/heuristics
+3. **nudge 已覆盖大部分场景**：每 5 轮 agent_end 触发 [[NUDGE.md]] 反思，延迟更高但范围更广
+4. **更好路径**：(a) 等 OpenClaw 加 `tool_error` hook；(b) 在 subagent Claude Code 调用中直接用 no-no-debug 的 CLAUDE.md error_log 模式
+
+**重评触发条件**：OpenClaw 支持 tool-level hooks 时
+
 *2026-04-16 首次记录 — scout 发现*
+*2026-04-16 移植评估 — todo_task*
