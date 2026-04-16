@@ -1,0 +1,212 @@
+name: study
+description: 学习循环 — 观察 agent 生态动向，深入研究项目，校准我们的方向
+
+start: align
+
+nodes:
+  align:
+    task: |
+      **读准则**：cat ~/.openclaw/workspace/wiki/study/guide.md
+      理解学习方向和原则。然后读 TODO.md「📚 学习」section，看有没有指定任务。
+    branches:
+      - condition: TODO 有指定学习任务
+        next: todo_task
+      - condition: 没有指定任务，自选模式
+        next: entry
+
+  todo_task:
+    task: |
+      执行 TODO 里指定的学习任务。做完后删掉该 TODO 条目。
+      汇报学习结果。
+    next: note
+
+  entry:
+    task: |
+      选择本轮学习模式（**不允许空转**，每轮必须有产出）：
+      1. **侦察**：找新项目、新趋势、新方向（适合距上次侦察 ≥3 天）
+      2. **快速扫描**：10 分钟 GitHub trending + HN 速览，只记标题和一句话判断（适合日常保持手感）
+      3. **跟进**：已关注项目有没有新动态
+      4. **应用**：把之前学到的东西用在自己身上（改工具、改流程、验证假设）
+
+      **决策辅助**：先查 memory/最近 3 天.md，看最近做了什么模式。
+      - 连续侦察 2 次以上 → 优先选应用或跟进
+      - 连续应用 2 次以上 → 优先选侦察或跟进
+      - 不确定 → 快速扫描是最安全的选择
+    branches:
+      - condition: "侦察新东西"
+        next: scout
+      - condition: "快速扫描"
+        next: quick_scout
+      - condition: "跟进已关注项目"
+        next: followup
+      - condition: "应用已有知识"
+        next: apply
+
+  scout:
+    task: |
+      侦察 agent 生态的动向：
+      0. **先搜已有知识**（不可跳过）：
+         - `cd ~/.openclaw/workspace/wiki && MEMEX_HOME=. memex search "<本轮关键词>" --limit 5`
+         - 搜到相关笔记就先读，避免重复研究已知项目
+      1. 看 GitHub trending（AI/agent 相关）、HN、Twitter/X 上最近在讨论什么
+         **优先用 GitHub API search**（`gh api search/repositories?q=topic:ai-agent+created:>YYYY-MM-DD&sort=stars`）比 scrape trending 页更可靠、可复现
+      2. 已关注项目有没有大的方向变化（新 release、架构重构、重要讨论）
+      3. 有没有新冒出来的项目或趋势
+      4. 核心问题：**业界在做 agent 的什么？钱和注意力往哪里流？**
+      5. 跟我们的直觉对比：我们感受到的问题（信任、贡献信誉等）是不是真问题？
+      6. **看人**：有没有值得研究的高效贡献者？（高 merge rate、跨项目、特定模式）
+      汇报侦察结果。
+    branches:
+      - condition: "发现了值得深入研究的方向或项目"
+        next: deep_read
+      - condition: "发现了值得研究的贡献者"
+        next: deep_read_contributor
+      - condition: "没有新发现，跟进已关注项目"
+        next: followup
+      - condition: "什么都没有"
+        next: reflect
+
+  quick_scout:
+    task: |
+      10 分钟快速扫描，不求深入，只求广度：
+      0. **先搜已有知识**：`cd ~/.openclaw/workspace/wiki && MEMEX_HOME=. memex search "agent trending" --limit 3`，跳过已有深度笔记的项目
+      1. GitHub trending today（AI/agent 相关前 10）— 记项目名 + stars + 一句话
+         **优先用 GitHub API search**（sort=stars, 按周过滤）比 web scrape 更稳定
+      2. HN front page 扫一眼 — 有没有 agent 相关的讨论
+      3. 每个发现只写一行判断："值得深入" / "已知" / "不相关"
+      4. 如果有 "值得深入" 的 → 记到 wiki/projects/backlog.md
+      总耗时控制在 10 分钟内。汇报扫描结果。
+    branches:
+      - condition: "发现了值得深入研究的"
+        next: deep_read
+      - condition: "没发现新项目，转 apply 已有知识"
+        next: apply
+
+  apply:
+    task: |
+      把之前学到的东西应用到自己身上：
+      0. **先搜已有知识**：`cd ~/.openclaw/workspace/wiki && MEMEX_HOME=. memex search "<应用方向>" --limit 5`，找出相关卡片和笔记作为输入
+      1. 读 IDEAS.md 和最近的 memory，找出"学到了但没用上"的洞察
+      2. 选一个最值得应用的，具体执行：
+         - 改工具代码（gogetajob、FlowForge、nudge）
+         - 改工作流（study.yaml、workloop.yaml、reflect.yaml）
+         - 验证一个假设（EXP 系列）
+         - 把抽象洞察变成具体改动
+      3. 做完之后验证：改了之后有什么不同？
+      汇报应用了什么、效果如何。
+    next: note
+
+  followup:
+    task: |
+      跟进已关注项目的新动态：
+      0. **先搜已有知识**：对要跟进的项目 `cd ~/.openclaw/workspace/wiki && MEMEX_HOME=. memex search "<项目名>" --limit 5`，带着上次认知进入
+      1. 读 wiki/projects/ 目录，列出已有田野笔记的项目
+      2. 选 2-3 个最活跃的，检查最近变化：
+         - 大的 PR 被 merge（架构重构、新 feature）
+         - 重要的 issue 讨论（设计决策、方向争论）
+         - 新的 release
+      3. 有没有跟我们方向相关的新信号？
+      汇报哪些项目有值得深入的新动态。
+    branches:
+      - condition: "有项目有值得学习的新动态"
+        next: deep_read
+      - condition: "没发现新动态，转 apply"
+        next: apply
+
+  deep_read:
+    task: |
+      深入阅读选中项目的代码和文档：
+      0. **先读已有知识**（⚠️ 不可跳过，即使觉得已经知道）：
+         - wiki/projects/项目名.md（如果有，带着上次的认知进入）
+         - `grep -rl "关键词" ~/.openclaw/workspace/wiki/` 搜全库（cards + projects 都搜）
+         - `cd ~/.openclaw/workspace/wiki && MEMEX_HOME=. memex search "<关键词>" --limit 5` 语义搜索
+         - **backlink 扩展**：对命中的卡片跑 `MEMEX_HOME=. memex backlinks <slug>`，沿链接读 1-2 个关联卡片
+         - 找到相关笔记和卡片就先读，带着已有认知进入
+      1. 如果是新项目：clone，读 README、架构文档、核心模块
+      2. 如果是已关注项目：读新变化的代码，理解设计决策
+      3. **先读 test 文件**：test/ 目录往往比文档更准确地展示 API 用法和边界
+      4. 重点关注：
+         - 这个项目在解决什么问题？为什么现在？
+         - 架构模式（为什么这样设计？有什么 tradeoff？）
+         - 跟 agent 生态的其他项目是什么关系？（竞争？互补？上下游？）
+         - 跟我们的方向有什么关联？
+      4. 带着问题读，不是漫无目的地浏览
+      汇报你的理解和发现。
+    next: note
+
+  deep_read_contributor:
+    task: |
+      深入研究一个高效贡献者的模式：
+      1. 列出这个人最近的 merged PR（gh pr list --author X --state merged）
+      2. 分析模式：
+         - 选题策略：什么类型的 issue？bug fix / feature / test / docs / refactor？
+         - PR 大小和周转时间：小而快 vs 大而慢？
+         - 沟通方式：PR description 怎么写？怎么回应 review？
+         - 跨项目还是深耕一个？
+      3. 提炼可复用的策略：
+         - 什么让他的 PR 容易被 merge？
+         - 他是怎么选 issue 的？（label？最新？easy-first？）
+         - 有没有我可以直接学的工作流？
+      汇报分析结果。
+    next: note
+
+  note:
+    task: |
+      把学到的东西写进田野笔记：
+      1. 新项目 → 在 wiki/projects/ 创建新文件
+      2. 已有项目 → 追加新发现，不重复已有内容
+      3. 写作要求：
+         - 用 [[双链]] 引用相关笔记和 memex 卡片
+         - 项目内：[[NemoClaw]] 引用 [[gitclaw]] 做对比
+         - 跨系统：[[mechanism-vs-evolution]] 引用 memex 概念
+         - 记这个项目在 agent 生态中的位置
+         - 记跟我们方向的关联
+         - 记架构洞察和反直觉的发现
+      4. git commit && git push 到 kagura-agent/wiki
+      汇报写了什么。
+    next: reflect
+
+  reflect:
+    task: |
+      用 Acontext distillation 结构化反思本轮学习：
+
+      **成功分析**（学到了什么）：
+      - goal: 这轮学习要解决什么问题？
+      - approach: 什么方法有效？
+      - key_decisions: 哪些选择起了作用？
+      - pattern: 可复用的模式是什么？
+      - applies_when: 具体适用条件（项目、场景、前提）
+
+      **失败分析**（哪里卡了）：
+      - failure_point: 卡在哪？
+      - flawed_reasoning: 错误假设是什么？
+      - what_should_have_been_done: 正确做法
+      - prevention_principle: 怎么防
+
+      **沉淀分流**（三层，关键！）：
+      - **项目级知识**（架构、API、维护者风格）→ wiki/projects/项目名.md
+      - **跨项目/领域级知识**（理论、框架、跨项目对比、研究洞察）→ memex 卡片（带双向链接）
+        写完后：cd ~/.openclaw/workspace/wiki && git add -A && git commit -m "card: 卡片名" && git push
+        例：自进化四层模型、mechanism-vs-evolution、agent 信任问题的生态位
+      - **学习方法 pattern**（跨领域通用的研究方式）→ beliefs-candidates.md
+        例：读代码前先读 test、对比两个项目比单独看一个更有效
+      不确定的先放 wiki。跨项目洞察必须写 memex——这是知识网络的核心节点。
+
+      **方向影响**：
+      - 验证了直觉？→ 记录证据
+      - 推翻了假设？→ 记录并调整
+      - 新的可能方向？→ 记录并评估
+
+      记录到 memory/YYYY-MM-DD.md。
+
+      **飞轮更新**（不可跳过）：
+      1. 回顾 wiki/study/guide.md — 学习原则有没有要调整的？
+      2. 回顾 wiki/study/study.yaml — 流程有没有卡的地方、多余的步骤？
+      3. 更新 TODO.md「📚 学习」section — 新的学习任务加进去，做完的删掉
+      有改动 → git commit + push
+    next: done
+
+  done:
+    task: |
+      本轮学习完成。汇报学到了什么，对方向判断有什么影响。
+    terminal: true
