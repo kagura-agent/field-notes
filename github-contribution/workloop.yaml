@@ -223,7 +223,11 @@ nodes:
       如果有 → 更新 guide.md\n\
       再回顾 workloop.yaml 本身：流程有没有卡的地方、多余的步骤、缺失的检查？\n\
       如果有 → 更新 wiki/github-contribution/workloop.yaml\n\
-      更新后 git commit + push。\n"
+      更新后 git commit + push。\n\n**第四步：更新 TODO**（改进点进入待办）\n\
+      读 TODO.md「🔨 GitHub Contribution（精进）」section：\n\
+      - 本轮发现工具/流程/策略改进点？→ 加入 TODO\n\
+      - 之前的待办已经顺手做完了？→ 删掉\n\
+      只放体系改进，不放 PR 状态。\n"
     next: done
 
   done:
