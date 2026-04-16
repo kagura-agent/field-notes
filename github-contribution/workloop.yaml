@@ -215,7 +215,15 @@ nodes:
       \ 流程有 Y 共性\n- **行为级 pattern**（跨项目通用的工作方式）→ beliefs-candidates.md（梯度收集，积累够了分流到\
       \ DNA/Workflow/KB）\n  例：选 issue 前查竞争 PR、被 review 先理解再改\n不确定的先放 wiki，重复出现再考虑升级。\n\
       \n**工具检查**：\n- gogetajob、gh、flowforge 等有没有问题？\n- 有 bug → 去工具 repo 提 issue 或自己修\n\
-      \n把反思结果记到 memory/YYYY-MM-DD.md。\n"
+      \n把反思结果记到 memory/YYYY-MM-DD.md。\n\n**第三步：更新贡献准则和工作流**（飞轮闭环）\n\
+      回顾 ~/.openclaw/workspace/wiki/github-contribution/guide.md：\n\
+      - 这轮贡献有没有新的选题认知？（比如某类项目 merge rate 特别低）\n\
+      - 发现了新的有效渠道？\n\
+      - \"服务到底\"或\"持续扩张\"有边界情况需要细化？\n\
+      如果有 → 更新 guide.md\n\
+      再回顾 workloop.yaml 本身：流程有没有卡的地方、多余的步骤、缺失的检查？\n\
+      如果有 → 更新 wiki/github-contribution/workloop.yaml\n\
+      更新后 git commit + push。\n"
     next: done
 
   done:
