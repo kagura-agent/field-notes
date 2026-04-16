@@ -67,6 +67,14 @@
 - **Status**: PENDING, CI pass
 - **CodeRabbit**: Return boolean from createTarball() — adopted
 
+## PR #1944 — Gemini expired key (2026-04-16)
+- **Status**: PENDING, CI pass, CodeRabbit clean
+- **Scope**: 3 files (validation.ts, validation.test.ts, validation-recovery.test.ts), 38 additions / 3 deletions
+- **Root cause**: classifyValidationFailure() checked HTTP 400 → model before credential message regex. Gemini returns HTTP 400 for expired keys
+- **Fix**: reorder checks (credential message regex before HTTP 400), add 'api key expired' pattern
+- **Tests**: 2 new validation tests + 1 recovery test, all 45 pass
+- **Lesson**: HTTP status codes are ambiguous across providers — message-based classification should precede status-based for credential errors
+
 ## Maintainer Insights (2026-04-11)
 - cv: strict on commit signing (GPG required), responsive, will close stale PRs (closed #944)
 - wscurran: thorough approver, positive feedback

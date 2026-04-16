@@ -136,3 +136,8 @@
 - **ConardLi/easy-agent** (246★) — 从零重建 Claude Code，学习其内部架构。观察是否有新 insight
 - **h4ckf0r0day/obscura** (166★) — Headless browser for agents，stagehand 竞品。对比架构差异
 - **Claude Code Routines** — HN 656pts 热帖，Claude Code 官方新功能，了解 routine 概念
+
+## 2026-04-16 Quick Scan
+- **fireworks-tech-graph** (3013★/week) — Claude Code skill for technical diagrams (SVG+PNG). Skill marketplace ecosystem growing. 值得了解 skill 打包方式
+- **hermes-web-ui** (223★) — Web dashboard for Hermes. 我们是 Hermes contributor，了解社区生态有价值
+- **ecoalign-forge** (126★) — Multi-agent DPO data synthesis. Red team → multi-persona review → alignment. 有趣的 multi-agent pattern
