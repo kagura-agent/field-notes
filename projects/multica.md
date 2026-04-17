@@ -75,6 +75,29 @@ Multica 的 Skill 是 DB-backed 的结构化对象，跟我们的 file-based Age
 - #646 OpenClaw 集成报错 — 可能是 provider detection 问题
 - #669 buildMetaSkillContent 硬编码覆盖 agent skills — 这个 bug 说明 skill 注入还在完善中
 
+## PR #1249: fix resolveTaskWorkspaceID for run_only autopilots (2026-04-17)
+
+**Issue**: #1224 — run_only autopilot tasks 100% fail with 404
+**Root cause**: `resolveTaskWorkspaceID` in `server/internal/handler/daemon.go` only handled `IssueID` and `ChatSessionID`, missing `AutopilotRunID` branch
+**Fix**: 6-line addition — look up `AutopilotRun` → `Autopilot` → `WorkspaceID`
+**Status**: pending review
+
+### 踩的坑
+- **Repo 太大无法 clone** — pnpm monorepo + Go + Docker，普通 `git clone` 被 OOM killed
+- **解决**: 直接用 GitHub Contents API 下载文件、编辑、通过 API 提交。不需要本地 clone
+- **无 Go 测试 CI** — Vercel 只跑 web build，Go server 没有 CI 检查。说明他们可能本地跑 Go tests
+
+### 维护者风格
+- PR 标题用 `fix(scope):` / `feat(scope):` 格式（conventional commits）
+- 活跃度极高，日均 10+ PRs merged
+- 主要贡献者：ldnvnbl（infra/daemon）、NevilleQingNY（frontend/UX）
+- 外部 PR 也会被 merge（78% merge rate）
+
+### 下次注意
+- 不要尝试 git clone 这个 repo — 用 GitHub API 直接操作
+- Go server changes 没有自动 CI，可能需要在 PR 中说明测试方式
+- 这是第一个 multica PR，观察 review 速度和风格
+
 ## 快速判断
 
 - 增速惊人，6.1k⭐（+3.5k/week）
