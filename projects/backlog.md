@@ -179,3 +179,6 @@
 - **Android CLI** — HN 268pts (↑from 255), agent+mobile 方向持续获关注
 - **hermes-web-ui** (EKKOLearnAI, 676★) — Hermes 生态 Web UI，已知生态不深入
 - **learn-hermes-agent** (longyunfeigu, 9★) — 27 章 Hermes 教程，生态健康信号
+- **Orb** (KarryViber, 43★) — 自进化 agent 框架，Claude Code + persistent memory + multi-profile。方向与我们高度重合，值得深入对比
+- **hermes-gbrain-bridge** (howardpen9, 22★) — Hermes/OpenClaw→gBrain 记忆桥，生态信号
+- **cyber-neo** (Hainrixz, 55★) — Claude Code 安全扫描 subagent，安全×agent 交叉
