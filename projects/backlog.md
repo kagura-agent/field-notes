@@ -149,6 +149,15 @@
 - **hermes-web-ui** (371★, ↑from 223) — 增长快，Hermes 生态活跃
 - **AMAP-ML/SkillClaw** (660★) — 已跟踪
 
+## 2026-04-17 Quick Scan (11:46)
+- **codejunkie99/agentic-stack** (171★) — Portable .agent/ folder (memory+skills+protocols) across harnesses (Claude Code, Cursor, Hermes, etc). Agent identity portability 方向，跟我们的 DNA/SOUL 模式相关。**值得关注**
+- **Orb** (38★, ↑from 27) — 持续增长，self-evolving agent
+- **hermes-web-ui** (523★, ↑from 470) — 增长快
+- **Claude Opus 4.7** — HN 1550pts, Anthropic 大更新
+- **Codex for almost everything** — HN 735pts, OpenAI Codex 扩展到通用任务
+- **Android CLI** — HN 151pts, Google 官方 agent 工具链
+- **tradclaw** (204★, ↑from 202) — 稳定增长
+
 ## 2026-04-17 Quick Scan (08:24)
 - **ReflexioAI/reflexio** (63★) — Agent self-improvement harness. 直接对标我们的 nudge/beliefs-candidates 自进化机制。**值得深入**
 - **memkraft** (69★) — Zero-dependency compound knowledge for agents. Memory 方向，跟 dreaming/memex 可对比
