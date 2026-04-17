@@ -50,10 +50,48 @@ Phase 2 核心逻辑：
 4. **独立评分** — 用子 agent 评分避免自己评自己，我们的 nudge 也是分离的（plugin 评）
 5. **效果 > 结构** — 实测表现 25 分 > 任何单项结构分，跟 SkillClaw 的 "session judge > static check" 一致
 
+## 源码深读笔记（2026-04-17）
+
+### 项目结构
+整个 repo 就是一个 SKILL.md + 模板文件，没有独立代码。"产品"就是 prompt 本身。
+
+### test-prompts.json 格式
+```json
+[{"id": 1, "prompt": "用户会说的话", "expected": "期望输出的简短描述"}]
+```
+极简，每 skill 2-3 个 prompt，覆盖 happy path + 一个歧义场景。
+
+### 棘轮实现
+- 纯 git 操作：改 SKILL.md → `git commit` → 子 agent 独立评分 → 新分 > 旧分保留，否则 `git revert HEAD`
+- 用 revert 而非 reset --hard（保留失败尝试记录）
+- results.tsv 记录每次尝试（含 revert 的），可追溯
+
+### 评分独立性
+- 效果维度（40分/25分实测）必须用子 agent 评，不能自己改完自己评
+- 如果跑不了子 agent，退化为 dry_run 标注
+- with_skill vs baseline 对比（带 skill 跑 vs 不带 skill 跑同一 prompt）
+
+### 探索性重写（Phase 2.5）
+- hill-climbing 连续 2 个 skill round 1 就 break → 提议重写（解决局部最优）
+- git stash 保存当前最优，从头重写，比较后选优
+
+### 成果卡片
+- HTML 模板 + Playwright 截图生成 PNG
+- 3 种主题随机选（Swiss/Terminal/Newspaper）
+- 纯视觉，不影响核心逻辑
+
+### 对 skill-creator 的启发
+1. **test-prompts.json 应成为标配** — 每个 skill 目录放 2-3 个测试 prompt，skill-creator 创建 skill 时自动生成
+2. **棘轮机制可引入** — skill-creator 的 improve 流程可以：改前 commit → 改后评分 → 不如前 revert
+3. **独立评分** — 改 skill 的 agent 和评 skill 的 agent 分离，避免自我偏差
+4. **with/without baseline 对比** — 量化 skill 的实际增益
+5. **results.tsv 追踪** — 给 skill 进化留下可审计的记录
+
 ## 行动项
 
-- [ ] 深读 darwin-skill 源码，看 test-prompts.json 格式和评分实现细节
+- [x] 深读 darwin-skill 源码 ✅ 2026-04-17
 - [ ] 考虑是否将棘轮机制引入 skill-creator workflow
+- [ ] 考虑让 skill-creator 自动生成 test-prompts.json
 
 ## 关联
 
