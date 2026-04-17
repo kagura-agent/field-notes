@@ -30,8 +30,17 @@
 - `gogetajob scan --all` 在这台机器上容易 OOM/SIGKILL
 - CodeRabbit 会检查 diff 外的相关文件 — 同一个 pattern 在多处出现时要全部修（#1209 WebSocket path）
 
+## PR 记录
+| PR | Issue | 状态 | 备注 |
+|---|---|---|---|
+| #1208 | #1205 | pending | command injection fix in updateAllPackages |
+| #1209 | #1206 | pending | security: dev auth bypass when NODE_ENV unset |
+| #1210 | #1204 | pending | fix broken elysia server provider tests (mock node:http) |
+
 ## 下次注意
 - 先 sparse checkout 需要的目录，不要全克隆
+- **build 依赖**：测试前需 `npx nx build @voltagent/server-core`，且需要 packages/shared 在 sparse checkout 里
 - 这个 repo 有很多未竞争的 bug issue，可以持续贡献
-- 修安全问题时 grep 全 repo 查同一 pattern 的其他出现点，不要只改 issue 指向的那一处
+- 修安全问题时 grep 全 repo 查同一 pattern 的其他出现点
 - Bot reviewers: CodeRabbit (chill), cubic-dev-ai, Joggr — CodeRabbit 质量最高，会查 diff 外相关代码
+- pnpm install 耗内存大，可能被 SIGKILL，耐心等
