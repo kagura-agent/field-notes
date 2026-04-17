@@ -148,3 +148,12 @@
 - **fireworks-tech-graph** (3241★) — Claude Code skill for diagrams. 已知（上轮记录）
 - **hermes-web-ui** (371★, ↑from 223) — 增长快，Hermes 生态活跃
 - **AMAP-ML/SkillClaw** (660★) — 已跟踪
+
+## 2026-04-17 Quick Scan (08:24)
+- **ReflexioAI/reflexio** (63★) — Agent self-improvement harness. 直接对标我们的 nudge/beliefs-candidates 自进化机制。**值得深入**
+- **memkraft** (69★) — Zero-dependency compound knowledge for agents. Memory 方向，跟 dreaming/memex 可对比
+- **KarryViber/Orb** (27★) — Self-evolving agent wrapping Claude Code + persistent memory. 跟我们的模式高度相似
+- **Qwen3.6-35B-A3B** — HN 876pts, 开源 MoE agentic coding 模型。本地部署可能性
+- **Cloudflare AI Platform** — HN 225pts, inference layer designed for agents. 基础设施信号
+- **tradclaw** (202★, ↑from 192) — OpenClaw household manager, 持续增长
+- **hermes-web-ui** (470★, ↑from 371) — Hermes dashboard, 增长快
