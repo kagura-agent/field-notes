@@ -173,7 +173,9 @@
 - **obscura** (218★) — headless browser for agents, 已知类型
 - **WorldSeed** (75★) — YAML 定义场景+AI agent 自主生活，世界模拟方向。值得观察
 - **memkraft** (74★, ↑from 69) — 缓慢增长，memory 方向
-- **Orb** (42★, ↑from 38) — 继续增长
+- **Orb** (43★, ↑from 42) — 继续增长，值得深读对比我们的架构
 - **Claude Opus 4.7** — HN 1799pts (↑from 1550)
 - **Codex for almost everything** — HN 906pts (↑from 735)
-- **Android CLI** — HN 255pts (↑from 151), agent+mobile 方向持续获关注
+- **Android CLI** — HN 268pts (↑from 255), agent+mobile 方向持续获关注
+- **hermes-web-ui** (EKKOLearnAI, 676★) — Hermes 生态 Web UI，已知生态不深入
+- **learn-hermes-agent** (longyunfeigu, 9★) — 27 章 Hermes 教程，生态健康信号
