@@ -1,0 +1,132 @@
+name: pr-patrol
+description: GitHub PR 巡检 — 每条通知必须读详情，每个 open PR 必须查 review 状态
+start: fetch_notifications
+nodes:
+  fetch_notifications:
+    task: |
+      获取 GitHub 通知：
+      1. 读 ~/.openclaw/workspace/.github-notifications-last-check 获取上次检查时间
+      2. `gh api "notifications?all=true&since=<上次时间>" --paginate` 获取所有通知
+      3. 过滤出与我们相关的（PR review、issue comment、mention）
+      4. 列出每条通知的 subject.title、subject.url、reason、updated_at
+      5. 更新 last-check 时间：`echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > ~/.openclaw/workspace/.github-notifications-last-check`
+
+      环境：proxy: export https_proxy=http://127.0.0.1:1083
+
+      汇报通知列表。没有通知也要说"0 条通知"。
+    branches:
+      - condition: 有通知需要处理
+        next: read_notification_details
+      - condition: 没有新通知
+        next: check_open_prs
+
+  read_notification_details:
+    task: |
+      **逐条读取每个通知的详情（不能只看标题！）：**
+
+      对每条通知：
+      1. 从 subject.url 提取 repo 和 PR/issue 号
+      2. 如果是 PR：`gh pr view <N> --repo <repo> --json reviews,comments,state,mergeable -q '{state: .state, reviews: [.reviews[] | {author: .author.login, state: .state, body: .body[:200]}], comments: [.comments[-3:] | .[] | {author: .author.login, body: .body[:200]}]}'`
+      3. 如果是 Issue：`gh issue view <N> --repo <repo> --json comments -q '.comments[-3:] | .[] | {author: .author.login, body: .body[:200]}'`
+
+      **判断每条通知是否 actionable：**
+      - APPROVED + 要求修改（sign-off/rebase/代码改动）→ actionable
+      - CHANGES_REQUESTED → actionable
+      - maintainer 评论提问/要求 → actionable
+      - bot comment（CodeRabbit nitpick）→ 低优先级但也要看
+      - PR merged → 记录，检查有无 post-merge feedback
+      - **PR closed（非作者关闭）→ 🚨 最高优先级！** 读关闭 comment，判断原因：
+        - bot/policy 关闭（如 barnacle >10 PRs）→ 声誉事件，立刻清理多余 PR + 汇报
+        - maintainer 手动关闭 → 读原因，学习，记 wiki
+        - superseded → 确认真的是被替代，不要猜
+      - 纯信息性通知（CI 状态等）→ 非 actionable
+
+      汇报每条通知的判断结果和需要的行动。
+    branches:
+      - condition: 有 actionable 通知需要处理
+        next: handle_actions
+      - condition: 所有通知都是信息性的
+        next: check_open_prs
+
+  handle_actions:
+    task: |
+      对每个 actionable 通知执行对应操作：
+
+      **APPROVED + 要求修改：**
+      - sign-off 请求 → `git rebase --signoff` + force push
+      - rebase 请求 → 检查依赖 PR 是否已 merge，已 merge 就 rebase + push
+      - 代码改动请求 → 记录到待办，下次 workloop 处理
+
+      **CHANGES_REQUESTED：**
+      - 读 review comments 理解具体要求
+      - 简单修改（sign-off、typo、格式）→ 立刻修
+      - 代码级修改 → 记录到待办
+
+      **maintainer 评论：**
+      - 提问 → 回复
+      - 建议 → 评估后回复
+      - 感谢/关闭 → 记录
+
+      **执行原则：**
+      - reviewer 要求 rebase/sign-off → 立刻执行，不记"等"
+      - 依赖其他 PR？→ 检查依赖状态，能做就做，不能做创建 TODO 并写明等什么
+      - 执行完在 PR 上回复 reviewer
+
+      汇报处理结果。
+    next: check_open_prs
+
+  check_open_prs:
+    task: |
+      **直接查所有 open PR 的 review 状态（不依赖通知）：**
+
+      1. `gh search prs --author=kagura-agent --state=open --json repository,number,title,updatedAt` 获取所有 open PR
+      2. 对每个 PR：`gh pr view <N> --repo <repo> --json reviews,state,mergeable -q '{mergeable: .mergeable, reviews: [.reviews[] | select(.state=="APPROVED" or .state=="CHANGES_REQUESTED") | {author: .author.login, state: .state, body: .body[:200]}]}'`
+      3. 检查：
+         - 有 APPROVED 但没 merge？→ 看 review body 是否要求修改
+         - 有 CHANGES_REQUESTED？→ 标记为 actionable
+         - mergeable 是 CONFLICTING？→ 需要 rebase
+         - 超过 7 天无更新？→ 评估是否 ping 或 close
+
+      **Stale 判断标准（按 repo 实际情况）：**
+      - 先读 wiki/projects/<repo>.md 的外部 PR review 模式
+      - 不 merge 外部 PR 的 repo（MemOS、claude-hud）→ 直接 close
+      - 活跃 repo（NemoClaw、Archon、stagehand）→ ping maintainer
+      - 14 天无任何回应 → close
+
+      汇报所有 open PR 状态和需要的行动。
+    branches:
+      - condition: 有 PR 需要处理（rebase/conflict/review 回应）
+        next: handle_pr_maintenance
+      - condition: 所有 PR 状态正常
+        next: summary
+
+  handle_pr_maintenance:
+    task: |
+      处理需要维护的 PR：
+
+      **Conflict：**
+      - `git fetch upstream && git rebase upstream/main`
+      - 解决冲突 → force push
+      - 在 PR comment 说明 rebased
+
+      **Stale ping：**
+      - 礼貌 ping maintainer，说明 PR 仍然有效
+      - 如果之前已 ping 过且仍无回应 → 考虑 close
+
+      **Close：**
+      - 留礼貌 comment，说明原因
+      - `gh pr close <N> --repo <repo>`
+
+      汇报处理结果。
+    next: summary
+
+  summary:
+    task: |
+      汇总本轮巡检结果：
+      - 处理了多少条通知
+      - 执行了什么行动（rebase/reply/close/ping）
+      - 当前 open PR 总数
+      - 下次需要关注的事项
+
+      记录到 memory/YYYY-MM-DD.md。
+    terminal: true
