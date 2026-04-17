@@ -53,6 +53,7 @@ Directly aligned with self-evolving agent direction. Phantom wraps the Claude Ag
 | # | Status | What | Issue |
 |---|--------|------|-------|
 | 78 | OPEN | Clear stale SDK session IDs on startup to prevent CLI deadlock | #25 |
+| 80 | OPEN | Webhook async polling: 202 + task_id on sync timeout, polling endpoint | #26 |
 
 ## Lessons & Notes
 
@@ -65,3 +66,12 @@ Directly aligned with self-evolving agent direction. Phantom wraps the Claude Ag
 ### Discovery Channel
 
 Found via `gh search repos "agent" --language TypeScript --stars "1000..10000"` — the description "Self-evolving, persistent memory" perfectly matches our direction.
+
+### 2026-04-17: PR #80 — Webhook async polling
+
+- **Issue #26**: Sync mode returns 504 on timeout, response lost. Fix: return 202 + task_id, add polling endpoint
+- **Signature verification bug found**: HMAC was computed over full body including signature field (impossible to verify). Fixed by excluding signature field before HMAC computation
+- **acpx timeout**: Claude Code via acpx timed out at 300s during TDD (was on test 2 of 4). Finished manually — lesson: for multi-test TDD, acpx 300s may not be enough. Consider splitting into smaller acpx calls or doing manual implementation
+- **No CI on fork PRs**: Confirmed — CI only runs after upstream merge. Tests must pass locally
+- **bun install required**: Fresh checkout needs `bun install` before lint works (biome is a devDep)
+- **Biome lint rules to watch**: `noConfusingVoidType` (use `undefined` not `void` in type params), `noDelete` (use destructuring instead of `delete`)
