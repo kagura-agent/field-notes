@@ -30,3 +30,8 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **但我们的没被选中**: 5 个 PR 最老 21 天，0 merge。说明 issue 选题或 PR 质量不够吸引
 - **结论**: repo 对外部贡献开放，问题在我们。不要再堆新 PR，先反思选题质量
 - **行动**: 关闭 3 个最老的（#53270/21d, #54234/20d, #55007/18d），保留较新的观察
+
+## Bot 限制 (2026-04-17 发现)
+- **openclaw-barnacle** bot 自动关闭超过 10 个 active PR 的作者的新 PR
+- 我们曾因堆了 >10 个 PR 被 bot 关了至少 5 个 PR（#68038/#68029/#68017/#67866/#67577）
+- **硬性上限**: ≤ 3 per repo (我们的规则) vs ≤ 10 (openclaw 的 bot 规则)
