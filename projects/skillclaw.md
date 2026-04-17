@@ -1,6 +1,6 @@
 # SkillClaw
 
-> AMAP-ML/SkillClaw | 515⭐ (2026-04-14) | Python | 2026-04-10
+> AMAP-ML/SkillClaw | 691⭐ (2026-04-17) | Python | 2026-04-10
 > "Let Skills Evolve Collectively with Agentic Evolver"
 > Paper: arxiv.org/abs/2604.08377 (2026-04-09)
 > Built on: MetaClaw, WildClawBench, OpenClaw-RL
@@ -177,6 +177,16 @@
 - [x] ~~关注 issue #1: "Can skillclaw support Hermes?"~~ ✅ 已实现 (04-14 f3a23d4)
 - [x] 评估 Validation Worker 模式是否适用于 Haru/Ren 团队协作 → 结论: 不直接适用，但 replay A/B 和 two-tier gate 可借鉴 (04-14)
 - [x] ✅ 借鉴 Skill Verifier 4 维度到 beliefs-candidates 升级流程（04-15）— 加了「升级质量门」section，4 维度 human checklist（不用 LLM）
+
+## 04-17 更新：QwenPaw 集成 + 增长追踪
+
+- **Stars**: 515 (04-14) → 691 (04-17)，3 天增 176★ (+34%)，增长势头强
+- **QwenPaw 替代 CoPaw** (04-16 commit): `claw_adapter.py` +147/-37 lines
+  - CoPaw adapter 被完全替换为 QwenPaw adapter
+  - 新增 `_load_json_mapping` / `_write_json_mapping_atomic` JSON config 读写工具函数（之前只有 YAML）
+  - QwenPaw 用 JSON config（vs Hermes 用 YAML），说明不同框架 config 格式不统一
+  - 现支持 10 个框架: OpenClaw, Hermes, QwenPaw, IronClaw, PicoClaw, ZeroClaw, NanoClaw, NemoClaw + none
+- **观察**: QwenPaw 是阿里通义系 agent 框架，AMAP-ML 也是阿里系，替换 CoPaw 说明在优先自家生态适配
 
 ## 关联
 
