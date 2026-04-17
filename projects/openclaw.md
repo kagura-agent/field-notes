@@ -35,3 +35,12 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **openclaw-barnacle** bot 自动关闭超过 10 个 active PR 的作者的新 PR
 - 我们曾因堆了 >10 个 PR 被 bot 关了至少 5 个 PR（#68038/#68029/#68017/#67866/#67577）
 - **硬性上限**: ≤ 3 per repo (我们的规则) vs ≤ 10 (openclaw 的 bot 规则)
+
+## Bedrock Mantle Extension (04-17)
+
+- Extension pattern: `extensions/amazon-bedrock-mantle/` — discovery + auth + provider resolution
+- **Optimistic-skip guard**: Pre-checks env vars before attempting AWS credential chain to avoid unnecessary IAM calls
+  - Key insight: AWS SDK credential chain is broad (env vars, IRSA, ECS task roles, IMDS) but env-var-based detection can only cover a subset
+  - EC2 instance roles (IMDS) have no env vars → can't be detected, need explicit `discovery.enabled = true`
+- Architecture: bearer token resolution → IAM token generation (cached) → model discovery (cached) → implicit provider
+- PR #67550: Added IRSA/ECS env var checks to the guard
