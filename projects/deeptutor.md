@@ -82,3 +82,15 @@
 ## 更新记录
 
 - 2026-04-10: 初次侦察 + 架构深读，v1.0.0-beta.4 发布当天
+
+## 贡献记录
+
+### PR #335 — fix(api): selective_access_log missing http_version (2026-04-17)
+- **Issue**: #334 (save to notebook not working in Docker)
+- **根因**: middleware 使用 `uvicorn.access` logger，其 AccessFormatter 期望 5 个 args，middleware 只传了 4 个（缺 http_version）
+- **状态**: PENDING (CI ✅ all green)
+- **注意**: issue #334 实际包含两个问题 — notebook UUID bug（已在 v1.1.0 修复）+ 这个 logging bug
+- **测试**: `python -m pytest tests/api/test_selective_access_log.py -v`（需 fastapi + uvicorn + starlette）
+- **CI**: Import Check (3.11/3.12) + Smoke Tests (3.11) + Test Summary，都很快
+- **贡献要求**: PR 必须 target `dev` 分支，pre-commit run --all-files
+- **环境**: Python 3.11/3.12, FastAPI, uvicorn
