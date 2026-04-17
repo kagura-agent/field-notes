@@ -166,3 +166,14 @@
 - **Cloudflare AI Platform** — HN 225pts, inference layer designed for agents. 基础设施信号
 - **tradclaw** (202★, ↑from 192) — OpenClaw household manager, 持续增长
 - **hermes-web-ui** (470★, ↑from 371) — Hermes dashboard, 增长快
+
+## 2026-04-17 Quick Scan (19:48)
+- **anything-analyzer** (1230★) — 协议分析+MCP server，已知模式，不相关
+- **hermes-web-ui** (640★, ↑from 523) — 继续增长
+- **obscura** (218★) — headless browser for agents, 已知类型
+- **WorldSeed** (75★) — YAML 定义场景+AI agent 自主生活，世界模拟方向。值得观察
+- **memkraft** (74★, ↑from 69) — 缓慢增长，memory 方向
+- **Orb** (42★, ↑from 38) — 继续增长
+- **Claude Opus 4.7** — HN 1799pts (↑from 1550)
+- **Codex for almost everything** — HN 906pts (↑from 735)
+- **Android CLI** — HN 255pts (↑from 151), agent+mobile 方向持续获关注
