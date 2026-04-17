@@ -22,28 +22,32 @@
 | 04-15 | 85% | 0.775 | — | +5% hit rate |
 | 04-16 | 75% | 0.725 | 0.755 | ⬇ regression |
 | 04-17 | 70% | 0.700 | 0.757 | ⬇ continued decline; 5 zero-result queries |
+| 04-17 PM | 75% | 0.750 | 0.764 | ↑ post-memex PR #61 fix; dreaming query now hits |
 
-### 04-17 Failed Queries (0 hits)
-1. "dreaming system how does it work" — **qrel staleness**: search returns dreaming.md + dreaming-observation.md which ARE relevant but not in qrels. Need to update qrels.
-2. "agent credential security pool" — file exists but not indexed/chunked by memory_search
-3. "chat first product design" — **query sensitivity**: "chat first product" (no "design") returns score 0.574. Single word addition kills retrieval.
-4. "what did kagura do yesterday" — temporal query, expected weakness (semantic search can't resolve relative time)
-5. "PR merge rate work statistics" — operational/computed fact, not a document topic
-6. "llm wiki karpathy document knowledge base" — cross-reference query, file exists but not indexed
+### 04-17 PM Failed Queries (5 remaining, 0 hits)
+1. ~~"dreaming system how does it work"~~ ✅ Fixed by memex PR #61 — now returns dreaming-observation.md (0.616) + dreaming.md (0.357)
+2. "agent credential security pool" — **query dilution**: "credential security" alone scores 0.573 → hit. Adding "pool" kills it. File IS indexed.
+3. "chat first product design" — **query dilution**: "chat first product" scores 0.573 → hit. Adding "design" → 0 results.
+4. "what did kagura do yesterday" — temporal query, expected weakness
+5. "PR merge rate work statistics" — operational/computed fact, expected weakness
+6. "llm wiki karpathy document knowledge base" — **query dilution**: "llm wiki karpathy" → hit. Adding "document knowledge base" → 0 results.
 
-### Analysis
-- 70% hit rate = 3rd consecutive decline (85→75→70). Two root causes:
-  1. **Qrel staleness** (query 1): wiki evolved but qrels didn't. dreaming.md card was created after eval set. Fix: update qrels.
-  2. **Indexing gaps**: 3 files exist in wiki but return zero results (agent-credential-security, chat-first-product with "design", llm-wiki). Suggests memory_search corpus doesn't cover all wiki files, or minScore threshold is filtering them out.
-  3. **Query sensitivity**: adding a single common word ("design") to a good query kills retrieval. Fragile.
-- Temporal and operational queries remain expected weaknesses
-- If we fix qrel staleness (query 1 → hit), adjusted hit rate would be 75% (matching 04-16)
+### Analysis (04-17 PM)
+- 75% hit rate = stabilized after memex PR #61 fix (dreaming query recovered)
+- **Root cause of remaining 3 semantic failures: query dilution** — adding generic/common words to a good query pushes the embedding away from the target, dropping below minScore. This is a fundamental embedding limitation, not an indexing gap.
+- Options to mitigate query dilution:
+  1. Lower minScore threshold (risk: more noise)
+  2. Query decomposition (split multi-concept queries into sub-queries)
+  3. Hybrid retrieval (keyword + semantic)
+- Temporal (query 4) and operational (query 5) queries remain expected weaknesses — semantic search can't resolve relative time or compute aggregates
 
 ## Action Items
-- [ ] Update eval qrels: add dreaming.md, dreaming-observation.md as relevant for query 1
-- [ ] Investigate why 3 wiki files return zero results — check if they're in the indexed corpus
+- [x] ~~Update eval qrels: add dreaming.md, dreaming-observation.md as relevant for query 1~~ ✅ Already in qrels; memex PR #61 fixed retrieval
+- [x] ~~Investigate why 3 wiki files return zero results~~ ✅ They ARE indexed. Root cause: query dilution (extra common words push embedding below minScore)
 - [ ] Consider query robustness test: same intent, slightly different wording
+- [ ] Evaluate minScore tuning or query decomposition to mitigate dilution
+- [ ] File issue on OpenClaw re: query dilution pattern (if not already reported)
 
 ## Next
-- 04-21: Re-run eval with updated qrels; investigate indexing gaps
+- 04-21: Re-run eval; run dreaming eval; Cured Tracking audit
 - 04-28: Final evaluation, decide whether to tune deep sleep thresholds
