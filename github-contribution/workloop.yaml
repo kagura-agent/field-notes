@@ -93,9 +93,33 @@ nodes:
       '
     branches:
     - condition: 找到了合适的 issue
-      next: study
+      next: pr_gate
     - condition: 没有合适的 issue 可做
       next: discover
+
+  pr_gate:
+    task: |
+      **硬性检查 — 不通过不准继续。**
+
+      对 find_work 选中的 repo，执行以下命令：
+      ```
+      gh pr list --repo <owner/repo> --author=kagura-agent --state=open --json number -q 'length'
+      ```
+
+      结果判断：
+      - **> 3** → 这个 repo 已经有太多 open PR，不能再提。汇报数量，回 find_work 重选。
+      - **≤ 3** → 通过，继续。
+
+      同时检查 wiki/projects/<repo>.md 里的「外部 PR Review 模式」：
+      - 如果写了「不 merge 外部 PR」→ 不通过，回 find_work。
+      - 如果没有 wiki 笔记 → 通过，但在 study 里补充。
+
+      汇报：repo 名、当前 open PR 数量、是否通过。
+    branches:
+    - condition: 通过（open PR ≤ 3 且 repo 接受外部 PR）
+      next: study
+    - condition: 不通过（open PR > 3 或 repo 不接受外部 PR）
+      next: find_work
 
   discover:
     task: '已有项目没有合适的 issue，去外面找新项目加入关注列表。
