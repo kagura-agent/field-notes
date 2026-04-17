@@ -103,3 +103,12 @@
 - CI：Ubuntu/macOS 全绿，Windows 进行中
 - 经验：hooks.json 是单行 JSON 命令字符串，编辑时注意转义层（JSON 内的 shell 内的引号）
 - 选题理由：maintainer 在 issue 里明确表示想要 Option A（CLAUDE_PLUGIN_ROOT 方案），无竞争 PR
+
+## 2026-04-17 PR #61 — fix: stdout drain truncation
+- **问题**: `process.exit()` 在 pipe 场景下不等 stdout flush，输出被截断在 8KB（pipe buffer boundary）
+- **症状**: `memex search '' | wc -l` → 116/148 cards；重定向到文件则正常（148）
+- **发现路径**: memory search eval Hit Rate 连续 3 次下降（85→75→70%），调查 "indexing gaps" 时发现根因不在索引而在 CLI 输出
+- **修复**: 加 `exit()` helper，检查 `writableLength` 并等 `drain` 事件再 `process.exit()`，所有 20 个调用点统一替换
+- **影响**: eval Hit Rate 回升到 75%（"dreaming" query 从 ❌→✅），是 [[memory-search]] 质量持续追踪的直接成果
+- **模式**: 经典 Node.js pipe 陷阱 — 生产中常见但不易发现，因为只在 pipe 时触发
+- **merge rate**: 等待 review
