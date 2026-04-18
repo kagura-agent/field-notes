@@ -187,3 +187,63 @@ L1 两类内容统一 ROI 评估：
 3. memory 写入时机约束 — 任务完成后才写，不是中途
 4. 失败升级模式（1→2→3 次）— 比我们的「3 次重复升级」更有操作性
 5. Plan mode 的并行准入条件 — FlowForge 可借鉴
+
+## Technical Report 深读 (2026-04-18)
+
+✅ PDF 下载成功（3.2MB, 23 页）。核心内容：
+
+### 核心论点：Context Information Density Maximization
+
+整篇论文围绕一个原则：**agent 性能不取决于 context 长度，而取决于有限 context 里决策相关信息的密度。**
+
+三角约束：
+- **Completeness**：当前决策所需信息必须全部在 context 里
+- **Conciseness**：无关/冗余信息必须剔除
+- **Naturalness**：次要约束，编码方式要让 LLM 能理解
+
+Completeness 和 Conciseness 之间的张力是结构性的，不只是 budget 问题。即使 context window 无限大，注意力稀释仍会降低推理质量。
+
+### 四大机制
+
+1. **Minimal Atomic Toolset** — 9 个原子工具覆盖所有能力。code_run 单独就是图灵完备的，其余 8 个存在是为了降低每任务决策成本。工具太多 = prompt 膨胀 + 决策空间模糊。
+2. **Hierarchical Memory (L1-L4)** — L1 只编码「存在性」，L2/L3 按需读取。L1 趋向知识集的 Kolmogorov 复杂度。
+3. **Self-Evolution** — 策略进化，工具不变。执行轨迹 → SOP → 可执行代码，三阶段自动转换。
+4. **Context Truncation & Compression** — 目标 <30k token（比 1M window 小一个数量级）。四级压缩：tool output truncation → tag-level compression → message eviction → working-memory anchor。
+
+### Benchmark 结果（vs OpenClaw / Claude Code / Codex）
+
+| Benchmark | GA Accuracy | GA Tokens | OpenClaw Accuracy | OpenClaw Tokens |
+|---|---|---|---|---|
+| SOP-Bench | 100% | 2.08M | 100% | 2.64M |
+| Lifelong AgentBench | 100% | 241k | 70% | 1.45M |
+| RealFin | 65% | 114k | 35% | 251k |
+
+**关键数据点：**
+- GA prompt 长度（20 skills 后）= **2,298 tokens**。OpenClaw = 43,321。差 19 倍。
+- 9 轮自进化后 token 从 222k 降到 23k（-89.6%），LLM calls 从 32 降到 5（-84.4%）
+- 跨任务 SOP 复用平均省 79.3% token，复杂任务省更多（83.5%）
+- 无 embedding/向量库的记忆检索在 LoCoMo 上超越 Mem0 和 A-MEM
+
+### 自进化三阶段
+
+1. **Natural-language execution** — 探索+试错，高 token
+2. **SOP distillation** — 压缩为文本 SOP，中等 token
+3. **Code-based execution** — 结晶为可执行代码，最低 token（~23k 稳定）
+
+转换是自动触发的，不需人工干预。
+
+### 对我们的新启发（补充之前的分析）
+
+1. ⭐⭐ **Context density > context length** — 我们的 workspace files 注入 43k+ token 是最大痛点。#66576 不只是省 token，是根本性的架构问题
+2. ⭐⭐ **工具数量要最小化** — GA 用 9 个工具 vs OpenClaw 18+ tool factories。每多一个工具 = prompt 膨胀 + 决策模糊
+3. ⭐ **<30k target** — GA 认为有效无幻觉 context 比标称 window 小一个数量级。我们应该以此为目标
+4. ⭐ **SOP→代码自动转换** — 我们的 workflow yaml 停在了 SOP 层，没有往代码层走
+5. **Working-memory anchor** — 每次 tool call 后注入 20 行 turn summary + checkpoint，比我们的 nudge 更持续
+6. **Cache-friendly compression** — 每 5 轮压缩一次（非每轮），保持 80% prompt cache hit rate
+
+### 局限性
+
+- 自主探索的 weight adaptation 还没足够数据验证
+- skill-tree 维护（合并/废弃/拓扑）仍是手动
+- 30 轮执行上限，复杂任务需跨 session 续接
+- CJK 内容的 α=3 char/token 比率会低估实际 token 用量，可能导致 context overflow
