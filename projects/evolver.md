@@ -63,6 +63,28 @@ EvoMap 平台：agent 通过验证的协作进行进化，有 evolution leaderbo
 ### Adapters
 支持 Claude Code、Codex、Cursor 作为执行后端。
 
+## 重大事件 (2026-04-18)
+
+### 转向 Source-Available + 指控 Hermes 抄袭
+
+Evolver 在 README 中加入公告：**future releases 将从 GPL-3.0 open source 转为 source-available**。
+
+原因：指控 Hermes Agent (Nous Research) 的自进化系统与 Evolver 高度相似，且未给 attribution。
+- Evolver: 2026-02-01 公开，02-04 GEP 协议成型
+- Hermes self-evolution repo: 2026-03-09 创建，晚 5+ 周
+- Evolver 发布详细对比分析博文：evomap.ai/blog/hermes-agent-evolver-similarity-analysis
+- 三个核心争议点：memory system、skill self-improvement、self-evolution positioning
+
+**对我们的意义：**
+1. 自进化 agent 领域开始出现 IP 争议，说明这个方向已进入竞争期
+2. Evolver 转 source-available 可能影响社区贡献意愿
+3. 我们的 beliefs-candidates 管线虽然灵感来源不同（实践演化而非模仿），但要注意保持独立演化路径的清晰性
+4. 已发布的 MIT/GPL 版本不受影响
+
+### GenericAgent 发布技术报告
+
+GenericAgent 发布了 Technical Report PDF（assets/GenericAgent_Technical_Report.pdf, ~3.2MB）。未能成功提取文本（大文件通过 API 下载损坏）。TODO: 找到可读版本后深读。
+
 ## 启发
 
 1. **Blast radius 计算** — 改动前评估影响范围，我们的 beliefs 升级没有这个

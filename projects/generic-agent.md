@@ -37,6 +37,9 @@
 ## 最新动态 (2026-04-18 更新)
 
 ### 近期提交 (04-15~18)
+- **Technical Report PDF** — 发布了完整技术报告（assets/GenericAgent_Technical_Report.pdf, ~3.2MB）。TODO: 找到可读版本后深读
+- **desktop pet 右键换皮肤** — PR #99 merged
+- **minimax timeout retry 修复** — PR #89 merged
 - **preserve history across llm switch** — 切换 LLM 时保留对话历史，不再丢失上下文
 - **publish memory_cleanup_sop** — 公开记忆清理 SOP（见下方详细分析）
 - **publish ocr_utils, vision_sop, ui_detect** — 公开视觉工具链：本地 OCR + YOLO UI 元素检测 + Vision API SOP
