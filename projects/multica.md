@@ -443,3 +443,11 @@ machine-scoped（#1263）确保 CLI + desktop 共享 identity。
 ### 经验
 - 同一个 root pattern（missing AutopilotRunID branch）可能出现在多个代码路径 — 修一个要 grep 所有类似路径
 - 已有3个 PR: #1249(merged), #1273(pending), #1294(pending) — 接近上限，下轮等消化
+
+## 跟进 2026-04-18: v0.2.5 → v0.2.6
+
+- **#1168 per-agent MCP config**: 解决 #592 strict-mcp-config 后 spawned agents 丢失 MCP access 的问题。新增 `agent.mcp_config` jsonb 列，通过 `--mcp-config <tempfile>` 传给 Claude，并阻止 custom_args 覆盖
+- **#1270 Copilot skills native discovery**: 修正 skill 注入路径，从 `.agent_context/skills/` 改到 `.github/skills/<name>/SKILL.md`，符合 Copilot CLI 原生发现规范
+- **#1309 open redirect fix**: 验证 `next=` redirect target，防止开放重定向
+- **#1313 Docker 安全**: 禁用 dev master code by default
+- **趋势**: 平台成熟期——安全加固 + 多 runtime 兼容性修复，不是大的架构变化

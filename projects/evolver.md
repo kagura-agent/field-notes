@@ -95,3 +95,13 @@ GenericAgent 发布了 Technical Report PDF（assets/GenericAgent_Technical_Repo
 - [[generic-agent]] — 另一个自进化 agent
 - [[skillclaw]] — skill 层面的集体进化
 - [[self-evolution-as-skill]]
+
+## 跟进 2026-04-18: License 争议 + Source-Available 转型
+
+- **v1.67.4** (04-18): 修了 Claude Code adapter `.claude/settings.json` schema 兼容
+- **重大事件**: README 添加 "Moving Toward Source-Available" 公告
+  - 指控 Hermes Agent (2026-03-09 创建 self-evolution repo) 抄袭 Evolver 设计（memory system, skill self-improvement, self-evolution 三个 headline）
+  - 发布详细对比分析博文: evomap.ai/blog/hermes-agent-evolver-similarity-analysis
+  - 已发布版本保持 MIT/GPL-3.0，未来版本转 source-available
+- **生态信号**: 自进化赛道开始出现 IP 纠纷，先行者保护意识增强。GPL-3.0 可能不够防抄，才要转 source-available
+- **对我们的影响**: 做 self-evolving agent 时需要：(1) 明确引用来源 (2) 设计差异化而非复制 (3) 注意 license 合规
