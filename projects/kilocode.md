@@ -47,3 +47,18 @@
 - **状态**: OPEN (2026-04-18)
 - **改动**: `textarea-keybindings.ts` 重排 keybinding 数组，config bindings 优先于 hardcoded fallback
 - **根因**: hardcoded `{ name: "return", action: "submit" }` 在 config bindings 之前，匹配所有 Return 变体
+
+### PR #9161 — fix(suggest): auto-dismiss after timeout to prevent stuck sessions
+- **Issue**: #9150 — Suggest tool can leave a session in false queued state
+- **状态**: OPEN (2026-04-18)
+- **改动**:
+  - `packages/opencode/src/kilocode/suggestion/index.ts`: 添加 server-side timeout（默认 5 分钟），`show()` 启动 setTimeout 与 promise 竞争，超时自动调用 `dismiss()`，accept/dismiss 前清 timer
+  - 新增 3 个测试：timeout auto-dismiss、accept 清 timer、dismiss 清 timer
+  - changeset: patch
+- **CI**: fork PR checks skip（正常），Kilo Code Review pending
+- **根因分析**: suggest tool 的 promise 永不 resolve 当用户关闭 VS Code 或忽略 suggestion → session 卡在 "queued" 状态
+- **方法**: server-side timeout 比 client-side recovery 更可靠（不依赖 VS Code 重连）
+
+## 踩坑记录
+- kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
+- gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
