@@ -37,3 +37,23 @@
 - [[wiki-maintenance]] — 我们自己的知识库维护
 - [[generic-agent]] — 也有知识系统
 - [[evolver]] — GEP 也包含知识层
+
+## 新动态 (2026-04-18 跟进)
+
+### PR #17: OpenClaw Integration (merged 04-17)
+- 新增 `openclaw-history-ingest` skill，可从 `~/.openclaw/` 挖掘知识到 Obsidian wiki
+- 数据源优先级：MEMORY.md > daily notes > session JSONL > sessions.json > DREAMS.md
+- 增量同步用 `.manifest.json` 追踪已处理文件
+- 5 步流程：Survey delta → Parse MEMORY.md → Daily notes → Session JSONL → Cluster by topic → Distill
+- 隐私处理：redact 敏感信息，不原文引用 transcript
+- 还增加了 `setup.sh` 安装到 `~/.openclaw/skills/`
+
+### PR #18: Security + Visibility Consistency (merged 04-17)
+- diacritic matching（重音字符匹配）
+- visibility consistency across skills
+
+### 与 Kagura 的关联
+- obsidian-wiki 的 history-ingest 模式与我们的 memex/wiki 知识管理互补
+- 他们的 **provenance markers** (`^[extracted]`/`^[inferred]`/`^[ambiguous]`) 值得借鉴
+- **topic clustering** 思路与我们的 wiki/cards 按主题组织一致
+- 可考虑：反向——从我们的 wiki 导出给 Obsidian 用户？
