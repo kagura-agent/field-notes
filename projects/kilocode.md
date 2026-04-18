@@ -39,3 +39,11 @@
 - 看 Kilo Code Review 的反馈模式
 - 如果需要本地测试，要 full clone（~大 repo）
 - gogetajob import 对新 PR 有延迟，等几分钟再试
+- 大 repo 用 GitHub API 直接提交改动效率最高
+- keybinding 相关 bug 需要理解 opentui 的匹配顺序（first-match）
+
+### PR #9156 — fix(cli): Shift+Enter newline
+- **Issue**: #9055 — Shift+Enter sends message
+- **状态**: OPEN (2026-04-18)
+- **改动**: `textarea-keybindings.ts` 重排 keybinding 数组，config bindings 优先于 hardcoded fallback
+- **根因**: hardcoded `{ name: "return", action: "submit" }` 在 config bindings 之前，匹配所有 Return 变体
