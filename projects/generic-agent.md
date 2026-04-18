@@ -123,3 +123,67 @@ L1 两类内容统一 ROI 评估：
 - `start_long_term_update` 只在任务完成后调用（不是中途）— 我们的 memory 写入时机也需要类似约束
 
 关联：[[context-budget-constraint]], [[dreaming-vs-beliefs-candidates]], [[agent-self-evolution-paradigms]]
+
+## 深读：SOP 体系 (2026-04-18)
+
+### plan_sop.md — 复杂任务规划
+核心模式：规划态 → 执行态分离，禁止边想边做。
+- 3步以上有依赖的任务 → 先建 `./plan_XXX/` 目录 + plan.md 骨架
+- 骨架用标记系统：`[ ]` 待做、`[✓]` 完成、`[P]` 并行、`[?]` 条件分支
+- **[P] 并行严格准入**：4 个条件全满足才可标（2+ 可同时、无数据依赖、产出不同文件、节省>20% 时间）
+- 执行态每步必须：执行 → 标记 → 读 plan 验证 → 更新 checkpoint
+- 每 3 步强制 checkpoint 验证（防标记遗漏）
+- **失败传播**：依赖项标 `[SKIP]`，不继续盲目执行
+
+**对我们的启发**：
+- FlowForge 的 branch 机制类似条件分支，但缺少并行（[P]）支持
+- 「禁止无条件杀 python（会杀自己）」— agent 自保意识，我们没有等价的
+- checkpoint 验证频率（每 3 步）比我们的 nudge（每 5 次）更密
+
+### subagent.md — 子 agent 协作
+核心模式：文件系统作为通信协议（非消息传递）。
+- 启动：`python agentmain.py --task {name} [--input "短文本"] [--bg]`
+- 通信：output.txt（append, `[ROUND END]` 分隔）→ reply.txt 继续
+- 干预文件：`_stop` / `_keyinfo` / `_intervene` — 运行时注入
+- `--verbose` 监察模式：output 包含工具原始结果，不只是摘要
+- **Map 模式**：N 个独立同构子任务并行。核心优势 = 独立上下文，防上下文交叉污染
+- **context.json**：subagent 必须从 JSON 读绝对路径，禁止猜路径
+
+**vs OpenClaw subagent**：
+| 维度 | GenericAgent | OpenClaw |
+|------|-------------|----------|
+| 通信 | 文件系统（output.txt/reply.txt）| sessions_spawn + sessions_history |
+| 干预 | _stop/_keyinfo/_intervene 文件 | subagents steer/kill |
+| 并行 | Map 模式原生 | 多 spawn 手动管理 |
+| 监察 | --verbose 审查原始数据 | sessions_history |
+| 路径 | context.json 绝对路径 | cwd 参数 |
+
+### insight_fixed_structure.txt — L1 模板
+关键设计：L1 = 场景→SOP 映射 + RULES 红线。RULES 分两类：
+1. **致命型红线**：违反导致进程终止（禁杀 python）
+2. **隐蔽型红线**：违反不报错但结果错误（搜索用 google 不用百度）
+
+**对我们的启发**：
+- AGENTS.md 的规则可以按这个分类审视：哪些是致命红线，哪些是隐蔽型
+- 「plan_sop」的存在性指针 → 我们的 FlowForge 也需要类似的 L1 触发词
+
+### sys_prompt.txt — 极简 system prompt
+只 4 行核心：角色定义 + thinking 推演要求 + 探测优先 + 失败升级（1→2→3 次）。
+没有长篇大论的行为规则——那些在记忆层（L1/L2/L3）动态管理。
+
+**关键洞察**：GenericAgent 把我们放在 AGENTS.md 的规则（验证纪律、讨好防范等）放在了记忆层而非 system prompt。好处是可以运行时进化，坏处是可能被遗忘。
+
+## 综合评估 (2026-04-18)
+
+**GenericAgent 最大的贡献不是代码，而是记忆管理范式。** 核心洞察：
+1. LLM 自身是压缩器，L1 只需存在性编码，不需要 how-to
+2. 记忆有成本（每轮每词），要用 ROI 模型管理
+3. 4 层分层让关注点分离：导航(L1) / 事实(L2) / 技术(L3) / 历史(L4)
+4. 「No Execution, No Memory」— 最好的防幻觉记忆原则
+
+**我们可以借鉴的**（按优先级）：
+1. ⭐ AGENTS.md 用存在性编码原则重构 — 规则指向 skill/workflow，不内联 how-to
+2. ⭐ MEMORY.md 加容量上限（参考 L1 ≤30 行），用四问检验法决定去留
+3. memory 写入时机约束 — 任务完成后才写，不是中途
+4. 失败升级模式（1→2→3 次）— 比我们的「3 次重复升级」更有操作性
+5. Plan mode 的并行准入条件 — FlowForge 可借鉴
