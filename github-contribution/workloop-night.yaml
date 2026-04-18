@@ -1,0 +1,51 @@
+name: workloop-night
+description: 下班时间轻量打工 — 只跟进手上的 PR，不开新的
+start: followup
+nodes:
+  followup:
+    task: |
+      **只跟进已有 PR，不找新 issue。**
+
+      用 gogetajob sync 检查所有已提交 PR 的状态。
+
+      对每个有新 review comment 或 CI 失败的 PR，列出详情。
+
+      重要：sync 结果出来后，每个标了需要处理的 PR 都要点进去看详情，
+      区分真人 review 和 bot review（如 coderabbitai）。
+      优先级：真人反馈 > CI 失败 > bot review（nitpick）。
+
+      **PR 维护检查**（每个 open PR 都要过）：
+      - 上次更新距今超过 1 周？→ 检查是否需要 rebase
+      - `gh pr view <N> --repo <repo> --json mergeable` 看有没有 conflict
+      - 有 conflict → rebase 并 force push
+      - 维护者已 approve 但没 merge？→ 礼貌 ping 一次
+
+      环境：proxy: export https_proxy=http://127.0.0.1:1083
+
+      汇报 sync 结果。
+    branches:
+      - condition: 有 PR 收到真人 review 需要代码修改
+        next: handle_feedback
+      - condition: 所有 PR 状态正常，没有待处理的
+        next: done
+
+  handle_feedback:
+    task: |
+      处理 PR 反馈：
+      1. 读 review 评论，理解要求
+      2. 用 Claude Code 修改代码：
+         `cd <repo> && /home/kagura/repo/openclaw/node_modules/.bin/acpx --approve-all claude exec "task"`
+      3. **本地测试**（不能跳过）：
+         a. 读 wiki 笔记里的测试命令
+         b. 跑测试，确认全过
+         c. `git diff --stat` 检查有没有遗漏的文件
+      4. 提交并 push
+      5. 在 PR 上回复 reviewer
+      处理完所有反馈后汇报结果。
+    terminal: true
+
+  done:
+    task: |
+      晚间跟进完成。所有 PR 状态正常，无需处理。
+      简要记录到 memory/当天日期.md。
+    terminal: true
