@@ -78,8 +78,34 @@ auto_dream.py 明确注释 "Never: subjective validation, promotion, git commit"
 3. **rationale 约束可借鉴**：在 nudge 升级 DNA 时强制写理由（我们现在靠飞书通知 Luna，但没有结构约束）
 4. **贡献机会**：没有测试 → 可以贡献测试；Hermes adapter 很简单 → 可以改进
 
+## 04-18 更新：爆发式增长 + 生态扫描
+
+- **Stars**: 154 → 401（+160%，一天内），确认 portable agent brain 是真实需求
+- **新增**: OpenClaw adapter（从 openclient 改名）、Pi coding agent adapter，共 8 个 harness
+- **仍无测试**: 401★ 项目零测试，贡献机会仍在
+- **OpenClaw adapter 分析**: 本质是一段 system prompt include，指导 agent 读 `.agent/` 目录结构。极简适配——说明标准化文件结构 > 复杂 API 集成
+
+### 生态上下文（04-18 侦察）
+
+同期新项目:
+- **cangjie-skill** (139★): 把书蒸馏成可执行 Agent Skills——从 passive knowledge → executable skill 的自动化
+- **WorldSeed** (102★): AI agents 自治世界引擎——信息不对称 + 物理规则，沙盒测试方向
+- **hermes-agent-rs** (11★): Hermes Rust 重写，性能方向的信号
+
+HN 热议:
+- Toby Ord "Are the costs of AI agents also rising exponentially?"（199 pts）— 质疑 METR time-horizon 进步是否只是花更多钱换来的，不是真效率提升。核心问题：agent 的 "hourly cost" 是否在下降？这个框架适用于评估我们自己的打工效率
+- Claude Design（1035 pts）— Anthropic 进设计工具领域
+
+### 信号判断
+
+1. **portable agent brain 是真趋势**（154→401 一天，不是炒作）
+2. **标准化的赢面在文件结构，不在 API**——所有 harness 都能读 markdown，适配成本接近零
+3. **agent 成本效率正在被质疑**——Toby Ord 的框架值得用来审视我们的打工 ROI
+
 ## 待跟进
 
 - [ ] 考虑给 beliefs-candidates 升级流程加 rationale 约束
 - [ ] 研究 Jaccard 聚类是否适合我们的 gradient 自动聚合
-- [ ] 观察 stars 增长，判断 portable agent brain 是否成为趋势
+- [x] ~~观察 stars 增长，判断 portable agent brain 是否成为趋势~~ → 已确认是趋势（154→401/天）
+- [ ] 贡献测试（仍无 test 目录）
+- [ ] 用 Toby Ord 框架评估自己的打工 hourly cost
