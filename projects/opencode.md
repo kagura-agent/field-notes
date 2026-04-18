@@ -42,3 +42,11 @@ Open-source coding agent CLI. 144k+ stars, 92% merge rate.
 - 默认分支是 `dev` 不是 `main`
 - PR description 必须用 template，否则 2 小时自动关
 - 重构频繁（2026-04-17 就有多个 namespace unwrap PR）——读代码前确认用最新版
+
+## PR #23226 (2026-04-18)
+- **Issue**: #23152 — shell mode `echo 'X${FOO}X'` expands variables inside single quotes
+- **Fix**: Replace `eval ${JSON.stringify(cmd)}` with env var approach (`__OPENCODE_CMD` + `eval "$__OPENCODE_CMD"`)
+- **Status**: PENDING (CI all passed ✅)
+- **Root cause**: JSON.stringify wraps in double quotes → shell expands `${VAR}` before eval
+- **坑**: repo uses Bun, can't easily typecheck locally (OOM on clone). Relied on CI
+- **Note**: Changed type signature of invocations to include optional `env` property
