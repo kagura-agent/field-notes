@@ -1,13 +1,18 @@
-name: pr-patrol
-description: GitHub PR 巡检 — 每条通知必须读详情，每个 open PR 必须查 review 状态
+name: github-patrol
+description: GitHub 收件箱巡检 — 通知、PR review、issue、mention、社区互动，全部覆盖
 start: fetch_notifications
 nodes:
   fetch_notifications:
     task: |
-      获取 GitHub 通知：
+      获取 GitHub 通知（我的收件箱）：
       1. 读 ~/.openclaw/workspace/.github-notifications-last-check 获取上次检查时间
       2. `gh api "notifications?all=true&since=<上次时间>" --paginate` 获取所有通知
-      3. 过滤出与我们相关的（PR review、issue comment、mention）
+      3. 分类每条通知：
+         - PR review（打工 PR 被 review）
+         - Issue comment（我的 repo 收到的 issue、或我参与的 issue）
+         - Mention（被 @ 到）
+         - Discussion（讨论区）
+         - Release/CI（信息性）
       4. 列出每条通知的 subject.title、subject.url、reason、updated_at
       5. 更新 last-check 时间：`echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > ~/.openclaw/workspace/.github-notifications-last-check`
 
@@ -28,17 +33,30 @@ nodes:
       1. 从 subject.url 提取 repo 和 PR/issue 号
       2. 如果是 PR：`gh pr view <N> --repo <repo> --json reviews,comments,state,mergeable -q '{state: .state, reviews: [.reviews[] | {author: .author.login, state: .state, body: .body[:200]}], comments: [.comments[-3:] | .[] | {author: .author.login, body: .body[:200]}]}'`
       3. 如果是 Issue：`gh issue view <N> --repo <repo> --json comments -q '.comments[-3:] | .[] | {author: .author.login, body: .body[:200]}'`
+      4. 如果是 Mention/Discussion：读上下文，理解在说什么
 
       **判断每条通知是否 actionable：**
+
+      **PR 相关：**
       - APPROVED + 要求修改（sign-off/rebase/代码改动）→ actionable
       - CHANGES_REQUESTED → actionable
-      - maintainer 评论提问/要求 → actionable
-      - bot comment（CodeRabbit nitpick）→ 低优先级但也要看
       - PR merged → 记录，检查有无 post-merge feedback
       - **PR closed（非作者关闭）→ 🚨 最高优先级！** 读关闭 comment，判断原因：
         - bot/policy 关闭（如 barnacle >10 PRs）→ 声誉事件，立刻清理多余 PR + 汇报
         - maintainer 手动关闭 → 读原因，学习，记 wiki
         - superseded → 确认真的是被替代，不要猜
+
+      **Issue 相关（我的 repo）：**
+      - 新 issue → 阅读，判断是否需要回应或修复
+      - issue comment → 有人在问问题？需要回复？
+
+      **Mention 相关：**
+      - 被 @ 到 → 必须回应，读上下文后回复
+      - 社区讨论（lobster-post、Uncaged、pew 等）→ 看是否需要参与
+
+      **其他：**
+      - maintainer 评论提问/要求 → actionable
+      - bot comment（CodeRabbit nitpick）→ 低优先级但也要看
       - 纯信息性通知（CI 状态等）→ 非 actionable
 
       汇报每条通知的判断结果和需要的行动。
@@ -52,15 +70,20 @@ nodes:
     task: |
       对每个 actionable 通知执行对应操作：
 
-      **APPROVED + 要求修改：**
+      **PR review 回应：**
       - sign-off 请求 → `git rebase --signoff` + force push
       - rebase 请求 → 检查依赖 PR 是否已 merge，已 merge 就 rebase + push
-      - 代码改动请求 → 记录到待办，下次 workloop 处理
-
-      **CHANGES_REQUESTED：**
-      - 读 review comments 理解具体要求
       - 简单修改（sign-off、typo、格式）→ 立刻修
-      - 代码级修改 → 记录到待办
+      - 代码级修改 → workloop followup 会自动检测到并处理，这里只需确认已知晓
+
+      **Issue 回应（我的 repo）：**
+      - bug report → 确认问题，标 label，回复用户
+      - feature request → 回复感谢，评估优先级
+      - 提问 → 回答
+
+      **Mention 回应：**
+      - 被 @ 到的讨论 → 读上下文，回复
+      - 社区互动 → 参与，但不 dominate
 
       **maintainer 评论：**
       - 提问 → 回复
@@ -69,8 +92,9 @@ nodes:
 
       **执行原则：**
       - reviewer 要求 rebase/sign-off → 立刻执行，不记"等"
-      - 依赖其他 PR？→ 检查依赖状态，能做就做，不能做创建 TODO 并写明等什么
-      - 执行完在 PR 上回复 reviewer
+      - 代码级修改 → 不在巡检中做，workloop followup 会处理
+      - 执行完在 PR/issue 上回复
+      - 被 @ 必须回应，不能已读不回
 
       汇报处理结果。
     next: check_open_prs
@@ -83,7 +107,7 @@ nodes:
       2. 对每个 PR：`gh pr view <N> --repo <repo> --json reviews,state,mergeable -q '{mergeable: .mergeable, reviews: [.reviews[] | select(.state=="APPROVED" or .state=="CHANGES_REQUESTED") | {author: .author.login, state: .state, body: .body[:200]}]}'`
       3. 检查：
          - 有 APPROVED 但没 merge？→ 看 review body 是否要求修改
-         - 有 CHANGES_REQUESTED？→ 标记为 actionable
+         - 有 CHANGES_REQUESTED？→ 标记为需 workloop 处理
          - mergeable 是 CONFLICTING？→ 需要 rebase
          - 超过 7 天无更新？→ 评估是否 ping 或 close
 
@@ -123,8 +147,8 @@ nodes:
   summary:
     task: |
       汇总本轮巡检结果：
-      - 处理了多少条通知
-      - 执行了什么行动（rebase/reply/close/ping）
+      - 通知：处理了多少条，分别是什么类型
+      - 行动：rebase/reply/close/ping/回复 issue/回复 mention
       - 当前 open PR 总数
       - 下次需要关注的事项
 
