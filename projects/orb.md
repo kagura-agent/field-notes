@@ -62,6 +62,21 @@
 - **互补**: SkillAnything（可以为 Orb 生成 skills）
 - **风险**: 深度依赖 Claude Code CLI 的接口稳定性
 
+## 2026-04-18 Deep Read Update
+
+### mem0/graphiti refactor (04-17 landed)
+- **Tombstone 实现**: `store.py` L334 `tombstone_fact()` — soft-delete with `invalid_at` + `superseded_by` foreign key chain. Partial index `idx_facts_valid WHERE invalid_at IS NULL` 让 live-only query 零额外成本
+- **三层 confidence**: confirmed (0.9, frozen, 用户明确指令/偏好), default (0.5, 普通知识), speculative (0.2, regex entities). Write-time 设定不衰减
+- **Fact extraction** (`extract.py`): 纯 regex，不调 LLM。category detection 用关键词匹配 (instruction/preference/decision/entity/event/knowledge)。优点：快且零成本。缺点：中文覆盖弱（INSTRUCTION_PATTERNS 主要是中文，但 entity patterns 偏日文公司名）
+- **Error distillation** (`distill.py`): 双层 — 先 `claude --print` Haiku 调用（15s timeout），fail 时 regex fallback (8 种常见错误 pattern)。Correction capture 有独立 prompt，专门提取用户偏好修正
+- **FTS5 trigram tokenizer**: 从默认 tokenizer 迁移到 trigram（`migrate-fts-trigram.py`），对中文/日文更友好
+- **Memory lint** (`memory-lint.py`): 日常清理 — 检测孤立 fact（无 entity link）和重复
+
+### 架构观察
+- Python subprocess bridge 模式意外地干净：JS 主进程 → `spawn('python3', ['extract.py'])` → JSON stdin/stdout。无 gRPC、无 REST、零 overhead
+- 2,598 行 Python 实现完整 memory store + retrieval + extraction + distillation，代码密度高
+- **没有 eval**: 没有 benchmark、没有 regression test for retrieval quality。跟我们观察一致 ([[evolution-needs-eval]])
+
 ## 可借鉴
 
 - [ ] Write-time memory arbitration — 我们能不能在 dreaming/memory write 时加 conflict resolution？
