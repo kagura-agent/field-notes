@@ -1,5 +1,9 @@
 name: workloop
-description: 打工循环 — 每轮先跟进已有工作，再找新活
+description: |
+  打工循环 — 每轮先跟进已有工作，再找新活。
+  **核心原则：一轮 = 一个 issue = 一个 PR。**
+  find_work 选定一个 issue 后，后续所有节点（study、implement、submit、verify、reflect）都围绕这一个 issue。
+  不允许在任何节点顺手修其他 bug、提其他 PR、做其他 issue。
 start: align
 nodes:
   align:
