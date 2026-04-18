@@ -1,5 +1,5 @@
 name: github-patrol
-description: GitHub 收件箱巡检 — 通知、PR review、issue、mention、社区互动，全部覆盖
+description: GitHub 收件箱巡检 — 处理 GitHub 通知 API 返回的所有互动（PR review、issue comment、mention）
 start: fetch_notifications
 nodes:
   fetch_notifications:
@@ -7,12 +7,7 @@ nodes:
       获取 GitHub 通知（我的收件箱）：
       1. 读 ~/.openclaw/workspace/.github-notifications-last-check 获取上次检查时间
       2. `gh api "notifications?all=true&since=<上次时间>" --paginate` 获取所有通知
-      3. 分类每条通知：
-         - PR review（打工 PR 被 review）
-         - Issue comment（我的 repo 收到的 issue、或我参与的 issue）
-         - Mention（被 @ 到）
-         - Discussion（讨论区）
-         - Release/CI（信息性）
+      3. 按 GitHub 通知类型分类（PR review、issue comment、mention、CI 等）
       4. 列出每条通知的 subject.title、subject.url、reason、updated_at
       5. 更新 last-check 时间：`echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > ~/.openclaw/workspace/.github-notifications-last-check`
 
@@ -46,13 +41,9 @@ nodes:
         - maintainer 手动关闭 → 读原因，学习，记 wiki
         - superseded → 确认真的是被替代，不要猜
 
-      **Issue 相关（我的 repo）：**
-      - 新 issue → 阅读，判断是否需要回应或修复
-      - issue comment → 有人在问问题？需要回复？
-
-      **Mention 相关：**
-      - 被 @ 到 → 必须回应，读上下文后回复
-      - 社区讨论（lobster-post、Uncaged、pew 等）→ 看是否需要参与
+      **Issue/Mention 相关：**
+      - issue comment / mention → 读上下文，判断是否需要回应
+      - 被 @ 必须回应
 
       **其他：**
       - maintainer 评论提问/要求 → actionable
@@ -76,14 +67,9 @@ nodes:
       - 简单修改（sign-off、typo、格式）→ 立刻修
       - 代码级修改 → workloop followup 会自动检测到并处理，这里只需确认已知晓
 
-      **Issue 回应（我的 repo）：**
-      - bug report → 确认问题，标 label，回复用户
-      - feature request → 回复感谢，评估优先级
-      - 提问 → 回答
-
-      **Mention 回应：**
-      - 被 @ 到的讨论 → 读上下文，回复
-      - 社区互动 → 参与，但不 dominate
+      **Issue/Mention 回应：**
+      - 读上下文，回复提问或讨论
+      - 被 @ 必须回应，不能已读不回
 
       **maintainer 评论：**
       - 提问 → 回复
@@ -94,7 +80,6 @@ nodes:
       - reviewer 要求 rebase/sign-off → 立刻执行，不记"等"
       - 代码级修改 → 不在巡检中做，workloop followup 会处理
       - 执行完在 PR/issue 上回复
-      - 被 @ 必须回应，不能已读不回
 
       汇报处理结果。
     next: check_open_prs
@@ -147,8 +132,8 @@ nodes:
   summary:
     task: |
       汇总本轮巡检结果：
-      - 通知：处理了多少条，分别是什么类型
-      - 行动：rebase/reply/close/ping/回复 issue/回复 mention
+      - 通知：处理了多少条
+      - 行动：rebase/reply/close/ping
       - 当前 open PR 总数
       - 下次需要关注的事项
 
