@@ -70,7 +70,7 @@ nodes:
       **前置过滤（每个候选 repo 必须先过，不过的直接跳过，不进 study）：**
 
       - 检查我们在该 repo 的 open PR 数量：`gh pr list --repo owner/repo --author=kagura-agent
-      --state=open`，≤ 3 才考虑
+      --state=open`，≤ 8 才考虑
 
       - 检查 issue 有无竞争 PR：`gh pr list --repo owner/repo --search "issue号 OR 关键词"`
 
@@ -107,8 +107,8 @@ nodes:
       ```
 
       结果判断：
-      - **≥ 3** → 这个 repo 已经有太多 open PR（提完就超 3 了），不能再提。汇报数量，回 find_work 重选。
-      - **< 3** → 通过，继续。
+      - **≥ 8** → 这个 repo 已经有太多 open PR（提完就超 8 了），不能再提。汇报数量，回 find_work 重选。
+      - **< 8** → 通过，继续。
 
       同时检查 wiki/projects/<repo>.md 里的「外部 PR Review 模式」：
       - 如果写了「不 merge 外部 PR」→ 不通过，回 find_work。
@@ -116,9 +116,9 @@ nodes:
 
       汇报：repo 名、当前 open PR 数量、是否通过。
     branches:
-    - condition: 通过（open PR < 3 且 repo 接受外部 PR）
+    - condition: 通过（open PR < 8 且 repo 接受外部 PR）
       next: study
-    - condition: 不通过（open PR ≥ 3 或 repo 不接受外部 PR）
+    - condition: 不通过（open PR ≥ 8 或 repo 不接受外部 PR）
       next: find_work
 
   discover:
@@ -166,7 +166,7 @@ nodes:
       \ find_work\n7. 确认没有人在做同一个 issue（检查 issue 下的关联 PR 和评论）\n8. 评估是否真的能在这个 repo 修（不是上游问题）\n\
       9. **提 PR 前 5 问**（全过才提）：\n   a. 这个 PR 只解决一个问题吗？\n   b. 上游没有已有修复或竞争 PR 吗？\n \
       \  c. 我读了 CONTRIBUTING.md 和最近的 merge 模式吗？\n   d. 我能验证这个修复吗？\n   e. 这个 repo 我的\
-      \ open PR ≤ 3 吗？（超过就停，等已有 PR 被消化）\n汇报你的理解和实现计划，包含从笔记和维护者 PR 中学到的关键信息。\n"
+      \ open PR ≤ 8 吗？（超过就停，等已有 PR 被消化）\n汇报你的理解和实现计划，包含从笔记和维护者 PR 中学到的关键信息。\n"
     branches:
     - condition: issue 可做，计划明确
       next: implement
