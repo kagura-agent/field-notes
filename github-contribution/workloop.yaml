@@ -178,7 +178,11 @@ nodes:
       \     `cd <repo> && /home/kagura/repo/openclaw/node_modules/.bin/acpx --approve-all\
       \ claude exec \"task\"`\n   - task 必须包含 Claude Code 看不到的上下文：\n     a. 相关的 issue\
       \ 讨论和 reviewer 反馈\n     b. 类似 bug 的已有修复（可作为参考模式）\n     c. 项目架构和代码位置的关键信息\n \
-      \    d. maintainer 偏好（从 wiki 读）\n   - **task 末尾必须加验证指令**：\n     \"Before committing:\
+      \    d. maintainer 偏好（从 wiki 读）\n   - **task 开头必须加 surgical constraints**：\n\
+      \     CONSTRAINTS: 1) Surgical changes only — every changed line must trace\
+      \ to the issue. Do not improve adjacent code/comments/formatting. 2) Match existing\
+      \ style. 3) No speculative features, no while-I-am-here refactors. 4) Clean up\
+      \ only orphans YOUR changes created.\n   - **task 末尾必须加验证指令**：\n     \"Before committing:\
       \ 1) grep for all test files that import/mock the interfaces you changed, update\
       \ their mocks. 2) Run the project's test/lint commands. 3) git diff --stat to\
       \ confirm no files were missed.\"\n   - 一行级别的简单修复可以自己做，不需要调 Claude Code\n  \
