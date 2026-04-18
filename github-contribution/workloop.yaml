@@ -211,15 +211,19 @@ nodes:
     next: verify
 
   verify:
-    task: '等 3-5 分钟，然后检查 PR 状态：
+    task: '**只检查本轮刚提交的那一个 PR，不做任何其他事。**
+
+      等 3-5 分钟，然后：
 
       1. CI 是否通过？
 
       2. 有没有自动化 review（CodeRabbit 等）？
 
-      3. 如果有反馈，立即处理
+      3. 如果 review 有简单修复建议 → 修改并 push 到同一个 PR
 
-      这一步不能跳过。做完所有检查后汇报结果。
+      **禁止事项：不创建新 PR，不修复其他 issue，不做本轮 PR 以外的任何工作。**
+
+      汇报本轮 PR 的 CI 和 review 状态。
 
       '
     branches:
