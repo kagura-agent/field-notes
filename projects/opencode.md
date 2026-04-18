@@ -50,3 +50,15 @@ Open-source coding agent CLI. 144k+ stars, 92% merge rate.
 - **Root cause**: JSON.stringify wraps in double quotes → shell expands `${VAR}` before eval
 - **坑**: repo uses Bun, can't easily typecheck locally (OOM on clone). Relied on CI
 - **Note**: Changed type signature of invocations to include optional `env` property
+
+## PR History
+
+### #23271 — fix(tui): defer --model validation until providers load (2026-04-18)
+- **Status**: PENDING (CI all green, awaiting maintainer review)
+- **Issue**: #23270 — TUI model validation race condition
+- **Root cause**: `onMount` in `app.tsx` runs `model.set()` before `sync.data.provider` loads → `isModelValid()` always false. Also agent config overwrites CLI selection.
+- **Fix**: Reactive `cliOverride` signal in `local.tsx` + removed eager `onMount` validation from `app.tsx`
+- **Key learning**: SolidJS reactivity — `onMount` is not guaranteed to fire after async context providers resolve. Use `createEffect` for reactive timing.
+- **Approach**: GitHub API for code reading + direct file commits (repo too large to clone locally)
+- **CI**: check-duplicates, check-standards, check, add-contributor-label, check-compliance — all passed
+- **Note**: Must use PR template or compliance bot flags the PR within minutes
