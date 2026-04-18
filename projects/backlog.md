@@ -182,3 +182,11 @@
 - **Orb** (KarryViber, 43★) — 自进化 agent 框架，Claude Code + persistent memory + multi-profile。方向与我们高度重合，值得深入对比
 - **hermes-gbrain-bridge** (howardpen9, 22★) — Hermes/OpenClaw→gBrain 记忆桥，生态信号
 - **cyber-neo** (Hainrixz, 55★) — Claude Code 安全扫描 subagent，安全×agent 交叉
+
+## 2026-04-18 Quick Scan (13:47)
+- **Orb** (44★, ↑from 43) — 微涨，self-evolving agent wrapping Claude Code。已连续 2 次出现，**值得深读**
+- **OpenCLI** (jackwener, 16k★) — "Make Any Website Your CLI" for agents, AGENT.md 集成。CLI-as-interface-for-agents 方向。值得观察
+- **hermes-agent-rs** (Lumio-Research, 11★) — Hermes Rust rewrite, 性能路线。生态信号
+- **agent-browser-mcp** (76★) — Chrome MCP control, niche
+- HN: "Are the costs of AI agents also rising exponentially?" (165pts) — agent 成本讨论
+- HN: "Measuring Claude 4.7's tokenizer costs" (573pts) — 成本分析
