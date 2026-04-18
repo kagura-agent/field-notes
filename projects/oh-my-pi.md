@@ -31,7 +31,8 @@
 - `getConfigRootDir()` / `getAgentDir()` 是纯路径计算，不读文件系统
 
 ## 我们的 PR
-（暂无）
+- PR #740: fix(cli): support --flag=value equals syntax for all CLI flags (Fixes #739) — PENDING
+  - 2026-04-18: 通过 GitHub API 直接提交（本地无法 clone，OOM）
 
 ## 踩过的坑
 - 2026-04-16: 尝试修 #709 (.env crash with fence sandbox)
@@ -39,6 +40,11 @@
   - omp 自己的 `parseEnvFile` 也有 try-catch
   - 真实 crash 原因可能是 fence 直接 SIGKILL 进程而非返回 EPERM
   - 教训: 远程无法复现的 sandbox 相关 bug 不要轻易接
+- 2026-04-18: git clone OOM (SIGKILL)
+  - 仓库太大，即使 --filter=blob:none --depth 1 也会 OOM
+  - sparse checkout 同样 OOM（fetch 本身就超内存）
+  - 解决：改用 GitHub API 直接读写文件，不 clone
+  - 教训：超大 repo 必须用 API 方式工作，不要尝试 clone
 
 ## 下次注意
 - clone 用 `git clone --filter=blob:none --depth 1` + sparse checkout
