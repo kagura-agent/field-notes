@@ -107,8 +107,8 @@ nodes:
       ```
 
       结果判断：
-      - **> 3** → 这个 repo 已经有太多 open PR，不能再提。汇报数量，回 find_work 重选。
-      - **≤ 3** → 通过，继续。
+      - **≥ 3** → 这个 repo 已经有太多 open PR（提完就超 3 了），不能再提。汇报数量，回 find_work 重选。
+      - **< 3** → 通过，继续。
 
       同时检查 wiki/projects/<repo>.md 里的「外部 PR Review 模式」：
       - 如果写了「不 merge 外部 PR」→ 不通过，回 find_work。
@@ -116,9 +116,9 @@ nodes:
 
       汇报：repo 名、当前 open PR 数量、是否通过。
     branches:
-    - condition: 通过（open PR ≤ 3 且 repo 接受外部 PR）
+    - condition: 通过（open PR < 3 且 repo 接受外部 PR）
       next: study
-    - condition: 不通过（open PR > 3 或 repo 不接受外部 PR）
+    - condition: 不通过（open PR ≥ 3 或 repo 不接受外部 PR）
       next: find_work
 
   discover:
