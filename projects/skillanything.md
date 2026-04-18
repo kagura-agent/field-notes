@@ -43,6 +43,12 @@
 - 项目只有 70 星但结构非常完整（有 promo/ 目录准备了 Product Hunt pitch、Twitter thread、中文社媒文案），说明作者有系统推广计划，可能快速增长
 - `obfuscate.py` 脚本——可以混淆生成的 skill？用途不明，可能是防止 skill 被直接抄走
 
+## 更新 (2026-04-18)
+
+- Stars: 70 → 176（12 天 2.5x），但**零代码更新**自 v1.0.0 (04-06)
+- 增长全靠 README + promo/ 材料，验证了之前"有系统推广计划"的判断
+- 同期新竞品: [[orb]] (44★), asgard-ai-platform/skills (116★, 263 skills 打包)
+
 ## 待验证
 
 - [ ] 实际跑一次 pipeline 看生成质量
