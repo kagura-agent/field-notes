@@ -65,8 +65,7 @@ nodes:
       - sign-off 请求 → `git rebase --signoff` + force push
       - rebase 请求 → 检查依赖 PR 是否已 merge，已 merge 就 rebase + push
       - 简单修改（sign-off、typo、格式）→ 立刻修
-      - 代码级修改（打工 PR）→ workloop followup 会自动检测到并处理
-      - 代码级修改（自己的 repo）→ 写入 TODO.md，由对应 project channel 处理
+      - 代码级修改 → 写入 TODO.md
 
       **Issue/Mention 回应：**
       - 读上下文，回复提问或讨论
