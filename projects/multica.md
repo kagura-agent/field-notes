@@ -411,3 +411,19 @@ machine-scoped（#1263）确保 CLI + desktop 共享 identity。
 1. **autopilot 是 "agent infra" 的自然演进** — 从 "人给 agent 分活" 到 "agent 自己安排活"
 2. **agent self-scheduling 的安全问题** multica 主动提出但未解决 — 这是整个行业的共同挑战
 3. multica 增长说明 **managed agent platform** 需求强烈，但与 OpenClaw "personal assistant" 定位不直接冲突
+
+## PR #1294: fix ClaimTaskByRuntime for autopilot run_only tasks (2026-04-18)
+
+**Issue**: #1276 — run_only autopilot fails with "execenv: workspace ID is required"
+**Root cause**: `ClaimTaskByRuntime` in daemon.go populates `resp.WorkspaceID` from `issue.WorkspaceID` or `cs.WorkspaceID`, but has no `AutopilotRunID` branch. For `run_only` autopilot tasks (no issue, no chat session), workspace_id stays empty → daemon's `execenv.Prepare()` rejects the task.
+**Fix**: Add `AutopilotRunID` branch after `ChatSessionID` block, resolving workspace via `autopilot_run → autopilot → workspace_id`. Also populates `resp.Repos` for worktree setup.
+**Test**: Added `TestClaimTask_AutopilotRunOnly_PopulatesWorkspaceID`
+**Status**: pending review, CI all green
+**Related**: Direct follow-up to my PR #1249 (merged) which fixed the auth check path but not the response population path
+
+### 踩的坑
+- 无新坑。GitHub API 提交方式已成熟，第三次使用
+
+### 经验
+- 同一个 root pattern（missing AutopilotRunID branch）可能出现在多个代码路径 — 修一个要 grep 所有类似路径
+- 已有3个 PR: #1249(merged), #1273(pending), #1294(pending) — 接近上限，下轮等消化
