@@ -174,7 +174,7 @@ nodes:
       next: find_work
 
   implement:
-    task: "按照 study 阶段的计划实现：\n0. **分工决策**：\n   - 代码实现用 acpx exec 同步调 Claude Code：\n\
+    task: "**只实现 study 阶段选定的那一个 issue，不做任何其他事。禁止顺手修其他 bug、提其他 PR、改其他文件。**\n\n按照 study 阶段的计划实现：\n0. **分工决策**：\n   - 代码实现用 acpx exec 同步调 Claude Code：\n\
       \     `cd <repo> && /home/kagura/repo/openclaw/node_modules/.bin/acpx --approve-all\
       \ claude exec \"task\"`\n   - task 必须包含 Claude Code 看不到的上下文：\n     a. 相关的 issue\
       \ 讨论和 reviewer 反馈\n     b. 类似 bug 的已有修复（可作为参考模式）\n     c. 项目架构和代码位置的关键信息\n \
