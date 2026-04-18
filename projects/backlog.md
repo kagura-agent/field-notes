@@ -190,3 +190,12 @@
 - **agent-browser-mcp** (76★) — Chrome MCP control, niche
 - HN: "Are the costs of AI agents also rising exponentially?" (165pts) — agent 成本讨论
 - HN: "Measuring Claude 4.7's tokenizer costs" (573pts) — 成本分析
+
+## 2026-04-18 Quick Scan #2 (16:32)
+- **GainSec/AutoProber** (223★) — 硬件探针自动化 agent，不相关
+- **AIScientists-Dev/WorldSeed** (100★) — AI agent 世界模拟引擎，不相关
+- **awesome-claude-code-skills** (73★) — Claude Code skills 精选合集，生态信号
+- **asynkor/asynkor** (32★) — 多 agent 文件锁 MCP server，有趣的协作原语。值得观察
+- **Orb** (44★) — 持续出现第 3 次，确认值得深读
+- **hermes-agent-rs** (11★) — Hermes Rust 重写持续，生态健康信号
+- HN 不可达（网络问题）
