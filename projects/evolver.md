@@ -1,6 +1,6 @@
 # Evolver (EvoMap)
 
-> EvoMap/evolver | 3,484⭐ (2026-04-17) | JavaScript/Node.js | MIT
+> EvoMap/evolver | 4,243⭐ (2026-04-18, +759/天) | JavaScript/Node.js | MIT
 > "The GEP-Powered Self-Evolution Engine for AI Agents. Genome Evolution Protocol."
 > Site: evomap.ai
 
@@ -36,6 +36,32 @@ EvoMap 平台：agent 通过验证的协作进行进化，有 evolution leaderbo
 | 审计 | git-based rollback + blast radius | beliefs-candidates 升级记录 |
 | 协议 | GEP（formal protocol） | DNA 文件（informal） |
 | 网络 | EvoMap 多 agent 共享 | 单 agent 本地 |
+
+## 代码深读 (2026-04-18)
+
+### 核心代码混淆
+`src/evolve.js` 被混淆，说明这是商业化产品。周边模块（tests、adapters、scripts）开源。
+
+### GEP Gene 结构（genes.json）
+每个 Gene 包含：
+- `signals_match`: 触发词列表（error/protocol/user_feature_request 等）
+- `preconditions`: 前置条件
+- `strategy`: 执行策略（6 步标准流程）
+- `constraints`: max_files + forbidden_paths
+- `validation`: 验证命令列表
+
+### Solidify 学习机制
+- `classifyFailureMode()`: soft（validation 失败，可重试）vs hard（约束违反，不可重试）
+- `adaptGeneFromLearning()`: 成功时把 learning signals 加入 signals_match，失败时记录 anti-pattern 但不扩展匹配
+- Gene 自我进化：成功增加触发词，失败收缩
+
+### Blast Radius 计算（policyCheck.js）
+- HARD_CAP_FILES/LINES 硬上限
+- isCriticalProtectedPath: MEMORY.md、.env、package.json 受保护
+- excludePrefixes/includeExtensions 精细控制计数范围
+
+### Adapters
+支持 Claude Code、Codex、Cursor 作为执行后端。
 
 ## 启发
 

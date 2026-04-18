@@ -1,6 +1,6 @@
 # GenericAgent
 
-> lsdefine/GenericAgent | 3,167⭐ (2026-04-17) | Python | 2026-01
+> lsdefine/GenericAgent | 3,623⭐ (2026-04-18, +456/天) | Python | 2026-01
 > "Self-evolving agent: grows skill tree from 3.3K-line seed, achieving full system control with 6x less token consumption"
 
 ## 核心思想
@@ -33,6 +33,24 @@
 | 记忆 | 4 层分层（L0-L4） | MEMORY.md + daily logs + wiki |
 | 进化触发 | 每次任务自动 | nudge → beliefs-candidates 手动管线 |
 | Token 效率 | 6x 省（skill 复用避免重复探索） | 未量化 |
+
+## 代码深读 (2026-04-18)
+
+### agent_loop.py (121 行)
+极简 agent runner：system prompt + user input → LLM chat → tool dispatch（`do_` 方法映射）→ 循环。每 10 轮重置工具描述防上下文膨胀，每 7/35 轮强制干预防无限循环。
+
+### ga.py (558 行)
+9 个原子工具的实现：code_run（Python/bash 执行器）、web_scan/web_execute_js（浏览器控制）、file_read/file_patch/file_write（文件系统）、ask_user（人类干预）、update_working_checkpoint（工作记忆）、start_long_term_update（记忆结算）。
+
+### 记忆管理 SOP 核心公理
+1. **No Execution, No Memory** — 未经工具验证的信息不写入
+2. **神圣不可删改性** — 验证过的数据重构时不可丢弃
+3. **禁止存储易变状态** — 无 PID、无时间戳
+4. **最小充分指针** — 上层只留最短定位标识
+L1 硬约束 ≤30 行，这是非常好的膨胀防护。
+
+### scheduler.py (131 行)
+JSON 任务 → cron 触发 → 冷却期防重复。L4 归档每 12h 自动压缩。
 
 ## 启发
 
