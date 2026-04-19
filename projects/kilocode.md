@@ -59,6 +59,17 @@
 - **根因分析**: suggest tool 的 promise 永不 resolve 当用户关闭 VS Code 或忽略 suggestion → session 卡在 "queued" 状态
 - **方法**: server-side timeout 比 client-side recovery 更可靠（不依赖 VS Code 重连）
 
+### PR #9178 — fix(session): clamp output token count to prevent negative values
+- **Issue**: #9168 — Negative output token count when reasoning > outputTokens
+- **状态**: OPEN (2026-04-19)
+- **改动**:
+  - `packages/opencode/src/session/index.ts`: `Math.max(0, outputTokens - reasoningTokens)` 防止负值
+  - 添加 warning log 当 `reasoningTokens > outputTokens`
+  - changeset: patch (`@kilocode/cli`)
+- **根因**: Moonshot kimi-k2.5 via Kilo gateway 报告 reasoningTokens > outputTokens，违反 AI SDK v6 约定
+- **影响**: TUI/extension/export 显示负数，stats 聚合偏低
+- **方法**: 防御性 clamp + 日志监测频率
+
 ## 踩坑记录
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
