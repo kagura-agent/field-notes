@@ -53,6 +53,14 @@ Open-source coding agent CLI. 144k+ stars, 92% merge rate.
 
 ## PR History
 
+### #23412 — fix(ripgrep): use non-scoped temp directory to prevent premature cleanup (2026-04-19)
+- **Status**: PENDING (CI all green ✅, compliance bot satisfied ✅)
+- **Issue**: #23411 — ripgrep broken after upgrading to 1.14.18
+- **Root cause**: `extract` function wraps `makeTempDirectoryScoped` with `Effect.scoped` → temp dir deleted when `extract` returns → caller can't find extracted binary
+- **Fix**: Switch to `makeTempDirectory` (non-scoped), return `{executable, tempDir}`, manual cleanup in caller
+- **Key learning**: Effect.scoped on `Effect.fnUntraced` closes the scope when the function returns — any scoped resources inside are finalized immediately
+- **Approach**: GitHub API for code reading + direct file commits
+
 ### #23271 — fix(tui): defer --model validation until providers load (2026-04-18)
 - **Status**: PENDING (CI all green, awaiting maintainer review)
 - **Issue**: #23270 — TUI model validation race condition
