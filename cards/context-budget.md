@@ -14,7 +14,8 @@ Strategy for reducing token consumption in OpenClaw workspace files injected int
 - **Tier C**: Workspace files selective injection — pending OpenClaw #66576
 
 ## Tracking
-- Baseline measured 04-14
-- Next re-measure: 04-21
+- Baseline measured 04-14: ~7,494 tokens (original), ~6,175 tokens (post Tier A+B)
+- Re-measured 04-19: ~5,861 tokens (381 lines / 20,514 chars). Total savings: ~1,633 tokens (21.8%)
+- Next re-measure: 05-03
 
 Related: [[openclaw-architecture]]
