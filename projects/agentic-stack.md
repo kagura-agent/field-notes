@@ -102,10 +102,20 @@ HN 热议:
 2. **标准化的赢面在文件结构，不在 API**——所有 harness 都能读 markdown，适配成本接近零
 3. **agent 成本效率正在被质疑**——Toby Ord 的框架值得用来审视我们的打工 ROI
 
+## 04-19 更新：持续增长 + profile provenance
+
+- **Stars**: 401 → 510（+27%，稳定增长，非一日爆发后回落）
+- **PR #5 merged**: profile-tagged provenance — 多 agent 共享同一 brain 时标记 episodic entry 来源（哪个 profile 产生的）
+  - 场景：Hermes `--profile fin` vs `--profile quant`，经验不混淆
+  - 启示：我们的 memory/ 日志没有 session/角色标记，全混在一起。如果未来有多 channel 并行（Discord + 飞书 + GitHub），可能需要 provenance
+- **Open issues: 0** — 维护者回复快，社区健康
+- **增长曲线**: 154(04-17) → 401(04-18) → 510(04-19)，日增放缓但仍在涨，说明不是纯炒作
+
 ## 待跟进
 
 - [ ] 考虑给 beliefs-candidates 升级流程加 rationale 约束
 - [ ] 研究 Jaccard 聚类是否适合我们的 gradient 自动聚合
-- [x] ~~观察 stars 增长，判断 portable agent brain 是否成为趋势~~ → 已确认是趋势（154→401/天）
+- [x] ~~观察 stars 增长，判断 portable agent brain 是否成为趋势~~ → 已确认是趋势（154→401→510）
 - [ ] 贡献测试（仍无 test 目录）
 - [ ] 用 Toby Ord 框架评估自己的打工 hourly cost
+- [ ] 考虑 memory/ 日志加 provenance 标记（参考 PR #5）
