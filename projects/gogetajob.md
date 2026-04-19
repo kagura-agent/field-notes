@@ -90,8 +90,28 @@ work_type 支持 `pr` 和 `issue` 两种。
 - self-filed guard 是防止"自问自答"循环的好机制。值得在 FlowForge workloop 里也加类似检查。
 - stats 用 GitHub API 做权威来源、本地做补充——这是"信任但验证"的好实践。
 
+## 重构记录
+
+### 2026-04-19: CLI 拆分 + 测试
+
+**动机**：1,499 行的单文件 index.ts 是最大的代码质量问题。
+
+**做了什么**：
+- `src/cli/index.ts` 1,499→51 行（纯入口，import + register）
+- 新建 `src/cli/commands/` 目录，18 个命令各一个文件
+- 新建 `src/cli/shared.ts` 提取公共 setup（getDb, getService, checkForUpdates 等）
+- 加了 vitest 测试（20 tests passing），验证命令注册正确
+- 分支 `refactor/split-cli-commands`，待 review 后合并
+
+**洞察**：
+- Commander.js 的命令拆分模式很直接——每个文件 export 一个 `(program: Command) => void`
+- `import` 是 JS 保留字，文件命名为 `import-cmd.ts` 规避
+- 拆分后每个命令文件 50-150 行，可读性大幅提升
+
 ## 下一步
 
-- [ ] 考虑拆分 index.ts（最大收益的重构）
-- [ ] 加基础测试（至少 classifyIssue + 状态机）
+- [x] ~~拆分 index.ts~~ ✅ 04-19
+- [x] ~~加基础测试~~ ✅ 04-19（20 tests）
 - [ ] submit 的 commit prefix 根据 job_type 动态选择
+- [ ] 提取 scanRepo() 函数消除 scan/scan --all 重复代码
+- [ ] 改善类型标注（去除 `opts: any`）
