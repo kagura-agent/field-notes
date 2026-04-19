@@ -73,3 +73,12 @@
 - **外部 PR**: 有被 merge 的迹象，repo 活跃
 - **注意**: PR base branch 可能是 dev 不是 main（#1084 教训）
 - **结论**: 值得继续投入，正常等待 review
+
+### PR #1294 — fix(orchestrator): clear stale session ID on error_during_execution (2026-04-19)
+- **Status**: PENDING (CI passed, CodeRabbit clean — "No actionable comments")
+- **Issue**: #1280 — stale Claude session ID causes infinite failure loop after container restart
+- **Root cause**: `handleStreamMode` and `handleBatchMode` persisted session ID from error results → next message hits same stale session → infinite loop
+- **Fix**: On `error_during_execution`, set `assistant_session_id = NULL` → next message starts fresh session with full context from DB
+- **Scope**: 2 files, 18 insertions, 6 deletions. Surgical — only the error path changed
+- **Tests**: All 89 orchestrator + 28 sessions tests pass, tsc clean, lint-staged clean
+- **Pattern**: Same "dishonest persistence" family as #1034 (ghost worktree) and #1084 (silent error drop) — Archon has a pattern of not checking error states before persisting
