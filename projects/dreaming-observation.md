@@ -25,6 +25,7 @@
 | 04-17 PM | 75% | 0.750 | 0.764 | ↑ post-memex PR #61 fix; dreaming query now hits |
 | 04-18 | 75% | 0.750 | 0.678 | Stable; same 5 failures (2 expected + 3 query dilution) |
 | 04-19 | 75% | 0.750 | 0.590 | nDCG bug fixed (dedup multi-chunk); same 5 failures |
+| 04-19 PM | 75% | 0.750 | 0.590 | ✅ Verified: same 5 query-dilution/temporal failures, stable |
 
 ### 04-17 PM Failed Queries (5 remaining, 0 hits)
 1. ~~"dreaming system how does it work"~~ ✅ Fixed by memex PR #61 — now returns dreaming-observation.md (0.616) + dreaming.md (0.357)
