@@ -1,28 +1,63 @@
+# FlowForge 架构深读
 
-## 架构深读 (2026-04-19)
+> 深读日期: 2026-04-19 | 版本: 1.1.2 | 670 行 TS, 4 文件
 
-**概况**: 4 个源文件，~350 行 TS，极简但完备的 workflow state machine。
+## 架构
 
-**架构**:
-- `workflow.ts` — YAML 解析 + 校验（name/start/nodes，节点必须有 next|branches|terminal）
-- `db.ts` — SQLite (better-sqlite3, WAL mode)，3 表：workflows / instances / history
-- `engine.ts` — 核心状态机：define/start/status/next/reset + getAction/advanceWithResult
-- `index.ts` — Commander CLI，auto-load `workflows/` 和 `~/.flowforge/workflows/`
+YAML 定义的有限状态机，SQLite 持久化，CLI 驱动。
 
-**设计亮点**:
-1. `start()` 自动关闭同名旧 instance（幂等，cron 安全）
-2. `advanceWithResult()` 从结果文本中正则提取 branch 号（`/branch:?\s*(\d+)/i`）— 适合 subagent 返回
-3. History 表记录每个节点的 enter/exit 时间 + branch taken — 完整审计轨迹
-4. `executor: 'subagent'` 标记在 `getAction()` 中区分 spawn vs prompt — 但目前实际未被 CLI 命令使用
+```
+index.ts (CLI, commander) → engine.ts (状态机逻辑) → db.ts (SQLite)
+                                                    → workflow.ts (YAML 解析)
+```
 
-**潜在改进方向**:
-- `run` 和 `advance` 命令存在但 CLI 中我从不用（总是手动 start/next）— 可以考虑在 skill 里推荐使用
-- 无 timeout/TTL 机制 — 僵尸 instance 只能手动 reset
-- 无并发保护 — 两个 session 同时 next 可能 race（实际不太会发生因为 cron 不重叠）
-- DB 路径硬编码 `~/.flowforge/flowforge.db`，但 repo 里也有一份 `flowforge.db` — 实际用哪个取决于 CWD
+### 核心概念
+- **Workflow**: name + start node + nodes map（YAML 定义）
+- **Instance**: workflow 的一次运行，跟踪 current_node + status
+- **History**: 每个 instance 经过的节点记录（entered_at/exited_at/branch_taken）
+- **Node**: task 描述 + next/branches/terminal 三选一
 
-## workloop.yaml 改进：followup 增加通知检查 (2026-04-09)
-- **来源**: beliefs-candidates 巡检盲区 pattern (3/30 ×2)
-- **改动**: followup node 从只查 PR 状态 → 增加 `gh api notifications` 检查
-- **原因**: Acontext #506 和 memex #29 的 post-merge review 都因为只查 open PR 而漏掉
-- **验证**: 下次 workloop 执行时自动生效
+### 执行模式
+- `executor: 'inline'`（默认）→ 主 agent 自己执行，CLI 输出 task 文本
+- `executor: 'subagent'` → `run`/`advance` 命令返回 `type: 'spawn'` JSON，供调度器 spawn subagent
+
+### 数据流
+1. `flowforge start <yaml>` → 加载 YAML → define → createInstance → addHistory
+2. `flowforge next [--branch N]` → 读当前节点 → 计算下一节点 → closeHistory + updateNode + addHistory
+3. `flowforge run/advance` → JSON API 模式，供程序化调用
+
+### 设计特点
+- **防跳步**: agent 必须通过 `next` 推进，不能直接跳到任意节点
+- **自动清理**: start 时如果有同名 active instance，自动关闭旧的
+- **auto-load**: 启动时扫描 `./workflows/` 和 `~/.flowforge/workflows/`
+- **分支决策**: branches 数组 + --branch N 索引选择
+- **advance 解析**: 从结果文本中正则匹配 `branch: N` 自动选择分支
+
+## 改进想法
+
+1. **无测试**: 0 个测试文件。核心逻辑（engine.ts 的分支/terminal/advance）应该有单元测试
+2. **advance 正则脆弱**: `/\bbranch:?\s*(\d+)\b/i` 可能误匹配结果文本中的 "branch" 一词
+3. **无超时/重试**: 节点没有 timeout 概念，subagent 挂了 workflow 就卡住
+4. **无条件执行**: branches 靠人选，没有自动条件求值（比如检查文件是否存在）
+5. **History 只记节点名**: 不记录节点的实际输出/结果，回溯时丢信息
+6. **engines.node >= 22 但 target=node18**: esbuild target 和 engines 不一致
+
+## 与其他系统对比
+
+对比 [[skvm]]、[[genericagent]]、[[evolver]] 等自进化系统：
+
+| 维度 | FlowForge | SkVM | GenericAgent |
+|------|-----------|------|--------------|
+| 粒度 | workflow 节点 | skill 编译 | 执行路径结晶 |
+| 持久化 | SQLite | 文件 | memory |
+| 自进化 | 无 | 静态 | 每次任务后自动 |
+| 复杂度 | 670 行 | ~2K 行 | ~3K 行 |
+
+## 关联
+- 与 [[gogetajob]] 配合：打工循环通过 FlowForge workloop 驱动
+- [[openclaw]] 的 cron 触发 flowforge start
+- 设计思路接近 [[mechanism-vs-evolution]] 中的 mechanism 端——显式约束而非自动进化
+
+## 行动项
+- [ ] 给 FlowForge 加基本测试（engine.test.ts）
+- [ ] 考虑 advance 正则改为显式 `BRANCH:N` 前缀避免误匹配
