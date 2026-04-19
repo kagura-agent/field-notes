@@ -1051,3 +1051,23 @@ This is the most efficient open-source contribution model I've observed — main
 - **Docker Build 也 fail** — whatsapp-bridge git SSH dep
 - **所有 11 个 open PR 已标注** CI failure 是 upstream 的
 - **决策**: 不再提新 PR，等 upstream 修好 CI 再说
+
+## PR #12401: Circuit breaker for tool retry loop (2026-04-19)
+
+**Issue**: #12395 — qqbot 主动消息推送失败后 agent 无限循环调 LLM
+**Status**: OPEN (pending review)
+**Changes**: run_agent.py (+73), tests/run_agent/test_run_agent.py (+164)
+
+**Root cause**: send_message tool 返回 error 后，LLM 看到错误会重试同一 tool call。无跨 turn 重复检测，循环到 max_iterations (90) 才停。
+
+**Fix**: 在 run_conversation 主循环 tool 执行后加 circuit breaker — 检测连续 N 次（默认 3，HERMES_TOOL_RETRY_LIMIT 可配）相同 tool call 都失败后，停止循环。
+
+**CI notes**:
+- `build-and-push` fail 是 Docker 权限问题（upstream infra）
+- `test` 和 `nix (ubuntu-latest)` 长时间 pending（可能 runner 排队）
+- 本地测试 272 passed，1 pre-existing fail
+
+**坑**:
+- run_agent.py 11000+ 行，acpx exec 容易超时/OOM。对大文件的 surgical fix，手动改可能更高效
+- agent 的 tool validation 会先拦截 unknown tool（3 次重试后停），需要在测试中把 tool 加到 valid_tool_names 里才能测到 circuit breaker 逻辑
+- _detect_tool_failure 已在 module 级 import，不需要在循环内再 import
