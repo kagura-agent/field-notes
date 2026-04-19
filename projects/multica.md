@@ -471,3 +471,26 @@ machine-scoped（#1263）确保 CLI + desktop 共享 identity。
 - **#1309 open redirect fix**: 验证 `next=` redirect target，防止开放重定向
 - **#1313 Docker 安全**: 禁用 dev master code by default
 - **趋势**: 平台成熟期——安全加固 + 多 runtime 兼容性修复，不是大的架构变化
+
+## PR #1333: fix(openclaw): remove unsupported --model and --system-prompt flags (2026-04-19)
+
+**Issue**: #1332 — Two bugs in OpenClaw provider: unsupported flags crash tasks + AgentInstructions discarded
+**Root cause**: 
+- Bug 1: `openclaw.go` forwards `--model` and `--system-prompt` but `openclaw agent` doesn't accept them → exit 1 in ~700ms
+- Bug 2: `InjectRuntimeConfig` writes AGENTS.md to task workdir but OpenClaw loads from its own workspace dir → instructions silently lost
+**Fix**:
+- Remove `--model` and `--system-prompt` from arg construction
+- Prepend `opts.SystemPrompt` to `--message` body (OpenClaw receives instructions inline)
+- Add both flags to `openclawBlockedArgs` to prevent custom_args bypass
+**Status**: pending review, CI all green (backend + frontend)
+**Scope**: 1 file, +15/-10
+
+### 经验
+- GitHub API 提交方式继续稳定（第6个 multica PR）
+- Issue 质量极高（详细 repro + root cause + suggested fix）— 理想的打工目标
+- Bug 2 的 fix 选了最简单方案（prepend to message）而非最完整方案（write to workspace dir），因为后者需要 OpenClaw workspace path discovery 逻辑
+- `openclawBlockedArgs` 是 defense-in-depth 好模式：即使修了直接调用，也防 custom_args 泄漏
+
+### 下次注意
+- 现在有6个 PR (1249 merged, 1273/1294/1307/1328/1333 pending) — 超过上限了，下轮必须等消化
+- 考虑在 PR 评论中 @ 维护者（如 ldnvnbl）加速 review
