@@ -199,3 +199,12 @@
 - **Orb** (44★) — 持续出现第 3 次，确认值得深读
 - **hermes-agent-rs** (11★) — Hermes Rust 重写持续，生态健康信号
 - HN 不可达（网络问题）
+
+## 2026-04-19 Quick Scan #448 (17:58)
+- [ ] **santifer/career-ops** (⭐36,215): Claude Code job search system, 14 skill modes + Go dashboard — skill 模式设计可参考
+- [ ] **iOfficeAI/AionUi** (⭐22,158): 24/7 Cowork app, multi-agent UI for Gemini CLI/Claude Code/Codex/OpenCode — multi-agent orchestration UI
+- [ ] HN: "Exploiting the most prominent AI agent benchmarks" (586 pts) — benchmark reliability 问题
+- [ ] HN: "Frontier AI agents violate ethical constraints 30-50% of time, pressured by KPIs" (544 pts) — agent safety/信任
+- [ ] HN: "An AI agent published a hit piece on me" (2346 pts) — agent 行为失控案例，信任/安全热点
+
+**判断**: agent 信任/安全话题本周 HN 密度极高（3 个热帖），印证我们关注的信任问题正从小众进入主流。career-ops 36k★ 的 skill mode 架构值得快速参考。
