@@ -52,6 +52,64 @@
 | 生态 | 成长中 3.6k⭐ | 成熟 | 小众 208⭐ |
 | AI 集成 | Arrow native | 需适配 | 自动驾驶专用 |
 
+## Agent 集成模式（深读 04-19）
+
+### `examples/dynamic-agent-tools` — LLM function-calling pattern
+
+**架构**：Timer(1Hz) → Agent → tool-request(fan-out) → [Echo Tool, Calc Tool, ...] → response(fan-in) → Agent
+
+**关键代码模式**：
+```python
+from dora import Node
+import pyarrow as pa, json
+
+node = Node()
+for event in node:
+    if event["type"] == "INPUT":
+        if event["id"] == "tick":
+            node.send_output("tool-request", pa.array([json.dumps({"tool": "echo", "message": "hi"})]))
+        elif event["id"] == "tool-response":
+            result = event["value"].to_pylist()  # fan-in from all tools
+```
+
+**动态扩展**（不重启 dataflow）：
+```bash
+dora node add --from-yaml calc-tool-node.yml --dataflow agent-demo
+dora node connect --dataflow agent-demo agent/tool-request calc-tool/request
+dora node connect --dataflow agent-demo calc-tool/response agent/tool-response
+dora node remove agent-demo calc-tool  # graceful removal
+```
+
+**设计洞察**：
+1. **Fan-out + filter** — 所有 tool 订阅同一个 `tool-request` topic，各自过滤自己的 tool field
+2. **Fan-in** — 多个 tool 的 response 映射到 agent 同一个 input，按到达顺序交错
+3. **声明式 + 命令式混合** — 初始拓扑用 YAML，运行时用 CLI 增删连接
+4. **与 LLM 的映射** — Agent 节点 = LLM inference，Tool 节点 = function implementations，动态添加 = 按对话上下文加载能力
+
+### 与 OpenClaw 的对照
+
+| dora 概念 | OpenClaw 对应 |
+|---|---|
+| Node (tool) | AgentSkill |
+| dataflow.yaml | HEARTBEAT.md / workflow yaml |
+| dora node add 动态扩展 | skill 热加载（目前不支持） |
+| fan-out tool-request | agent → tool dispatch |
+| Arrow 零拷贝 | N/A（文本协议） |
+
+**启发**：
+- OpenClaw skill 系统可借鉴 dora 的动态拓扑——运行时加载/卸载 skill 而非重启
+- 如果 OpenClaw 要连接物理设备（摄像头、传感器），dora 是天然的中间层
+- record/replay (.drec) 可用于 agent 行为回放测试
+
+### 评估：是否值得动手试？
+
+**结论：暂不动手，但保持关注。**
+- ✅ 架构设计优雅，agent 模式清晰
+- ✅ Python API 简单（pip install dora-rs pyarrow）
+- ❌ 当前场景无物理设备需求，OpenClaw 的 tool dispatch 已够用
+- ❌ 需要 Rust 编译 dora daemon（较重）
+- 📌 触发条件：当 OpenClaw 需要连接摄像头/传感器/机器人时，dora 是首选中间件
+
 ## 状态
-- 🔍 初次侦察完成，标记为深读候选
-- 下一步：找 agent + dora 集成的具体 example，评估是否值得动手试
+- ✅ 深读完成（04-19）：agent 集成模式已理解，设计洞察已提炼
+- 📌 关注：下一个版本是否支持 LLM streaming node（目前 agent 是 polling 模式）
