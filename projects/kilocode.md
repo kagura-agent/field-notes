@@ -73,3 +73,14 @@
 ## 踩坑记录
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
+
+### PR #9181 — fix(provider): use 'low' instead of 'minimal' reasoning effort for GitHub Copilot
+- **Issue**: #9143 — Enhance Prompt/Title Generation fails for GPT-5-Mini with "reasoning_effort 'minimal' not supported"
+- **状态**: OPEN (2026-04-19)
+- **改动**:
+  - `packages/opencode/src/provider/transform.ts`: `smallOptions()` 分离 `@ai-sdk/github-copilot`，GPT-5 用 `"low"` 而非 `"minimal"`
+  - `packages/opencode/test/provider/transform.test.ts`: 3 个新测试覆盖 Copilot smallOptions 行为
+- **根因**: `smallOptions()` 把 OpenAI 和 Copilot 混在一起，但 Copilot API 不支持 `"minimal"`。`variants()` 已正确处理（用 WIDELY_SUPPORTED_EFFORTS）
+- **Kilo Code Review**: No Issues Found, Recommendation: Merge
+- **方法**: 最小改动 — 只分离 Copilot 分支，不改其他 provider 逻辑
+- **教训**: `smallOptions()` 和 `variants()` 对同一 provider 的 effort 列表应保持一致。检查时对比两个函数的 case 分支
