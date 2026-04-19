@@ -494,3 +494,30 @@ v0.10.3 (#188) 是 GBrain 目前最大的单次 PR：304 files, +13,436 lines。
 - v0.2.5 重点：**autopilot CLI commands** + persistent daemon UUID identity + desktop Canary brand
 - v0.2.6 重点：per-agent MCP config 恢复 + open redirect 修复 + fresh session_id clear
 - 趋势：multica 在快速产品化（desktop app, docs site, CLI project commands），跟 OpenClaw 的竞争面持续扩大
+
+### 04-19 跟进：v0.12.1 稳定化 + 星标 9,237
+
+- **Stars**: 9,237 (+191 since 04-18)，增长持续但放缓（从日均 +400 降到 +200）
+- **v0.12.1** (04-18~19): 3 个 bugfix PR — JSONB double-encode + splitBody wiki + parseEmbedding (#196), N+1 hang + migration timeout (#198), KG layer 已 landed
+- **Evolver v1.68.0-beta.1**: 内部重构（daemon loop 简化），source-available 过渡公告已发布，无大 feature 变化
+- **multica 16,377★**: v0.2.6 稳定化修复（infinite re-render, selfhost docs）
+- **GenericAgent 4,335★** (+1,135 since first check): 活跃开发中 — memory_cleanup_sop 重大改进（存在性编码 4 原则），start_long_term_update 只在任务完成时调用
+
+### GenericAgent 存在性编码 memory SOP 更新 (04-18)
+
+跟我们的 [[context-budget]] 优化直接相关的洞察：
+
+**核心理念**: L1（顶层记忆）只编码"什么场景下有什么知识可用"——存在性指针，不是知识本身。
+
+**压缩四原则**:
+1. 命名自解释 > 加描述（改名的 ROI 常高于改 L1）
+2. 存在性集合最小描述（多个相近条目用集合名覆盖）
+3. 条目 = 场景↔方案存在性（括号内只放反直觉触发词）
+4. 分层归位（高 ROI 规则上方，纯指针归 L2/L3）
+
+**ROI 公式**: (不放这几个词的犯错概率 × 代价) / 每轮词数成本
+
+**跟我们的关联**: 
+- 我们的 AGENTS.md 压缩（232→198 行）用了类似思路但没有这么系统化
+- "L1 只能 patch 词级别修改，禁 overwrite" — 记忆修改是持久性伤害，错误每轮复利。与我们的 DNA 更新谨慎原则一致
+- 可以考虑用这个框架重审我们的 MEMORY.md 和 AGENTS.md 结构
