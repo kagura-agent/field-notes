@@ -74,7 +74,7 @@ nodes:
       **前置过滤（每个候选 repo 必须先过，不过的直接跳过，不进 study）：**
 
       - 检查我们在该 repo 的 open PR 数量：`gh pr list --repo owner/repo --author=kagura-agent
-      --state=open`，≤ 8 才考虑
+      --state=open`，≤ 4 才考虑（提完不超过 5）
 
       - 检查 issue 有无竞争 PR：`gh pr list --repo owner/repo --search "issue号 OR 关键词"`
 
@@ -103,26 +103,35 @@ nodes:
 
   pr_gate:
     task: |
-      **硬性检查 — 不通过不准继续。**
+      **硬性检查 — 不通过不准继续。必须真的跑命令、真的数数。**
 
-      对 find_work 选中的 repo，执行以下命令：
+      **第一步：执行命令**（必须执行，不能跳过）
       ```
       gh pr list --repo <owner/repo> --author=kagura-agent --state=open --json number -q 'length'
       ```
 
-      结果判断：
-      - **≥ 8** → 这个 repo 已经有太多 open PR（提完就超 8 了），不能再提。汇报数量，回 find_work 重选。
-      - **< 8** → 通过，继续。
+      **第二步：输出结果**（必须明确写出）
+      ```
+      REPO: <owner/repo>
+      OPEN_PR_COUNT: <数字>
+      LIMIT: 5
+      PASS: <YES/NO>
+      ```
 
-      同时检查 wiki/projects/<repo>.md 里的「外部 PR Review 模式」：
+      **第三步：判断**
+      - OPEN_PR_COUNT **≥ 5** → 不通过。这个 repo 已有太多 open PR，回 find_work 重选。
+      - OPEN_PR_COUNT **< 5** → 继续下一项检查。
+
+      **第四步：wiki 检查**
+      检查 wiki/projects/<repo>.md 里的「外部 PR Review 模式」：
       - 如果写了「不 merge 外部 PR」→ 不通过，回 find_work。
       - 如果没有 wiki 笔记 → 通过，但在 study 里补充。
 
-      汇报：repo 名、当前 open PR 数量、是否通过。
+      **⚠️ 如果你没有执行 gh 命令就说通过，这是严重违规。**
     branches:
-    - condition: 通过（open PR < 8 且 repo 接受外部 PR）
+    - condition: 通过（OPEN_PR_COUNT < 5 且 repo 接受外部 PR）
       next: study
-    - condition: 不通过（open PR ≥ 8 或 repo 不接受外部 PR）
+    - condition: 不通过（OPEN_PR_COUNT ≥ 5 或 repo 不接受外部 PR）
       next: find_work
 
   discover:
@@ -199,20 +208,26 @@ nodes:
     next: submit
 
   submit:
-    task: '提交 PR：
+    task: |
+      **提交前再次检查 PR 数量**（硬性，不能跳过）：
+      ```
+      gh pr list --repo <owner/repo> --author=kagura-agent --state=open --json number -q 'length'
+      ```
+      如果结果 **≥ 5** → **停止，不提交 PR**。汇报"PR 数量已达上限，放弃本轮"。
 
+      确认 < 5 后再继续：
       1. push 分支到 fork
-
       2. 创建 PR，标题清晰，描述写明改了什么、为什么、怎么测的
-
       3. 关联 issue（Closes #XX）
 
       用 gogetajob import 记录这个 PR。
 
       汇报 PR 链接。
-
-      '
-    next: verify
+    branches:
+    - condition: PR 已成功提交
+      next: verify
+    - condition: PR 数量已达上限，放弃本轮
+      next: reflect
 
   verify:
     task: '**只检查本轮刚提交的那一个 PR，不做任何其他事。**
