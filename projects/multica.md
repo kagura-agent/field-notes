@@ -98,6 +98,26 @@ Multica 的 Skill 是 DB-backed 的结构化对象，跟我们的 file-based Age
 - Go server changes 没有自动 CI，可能需要在 PR 中说明测试方式
 - 这是第一个 multica PR，观察 review 速度和风格
 
+## PR #1328: fix(daemon): adopt agents from offline runtimes on register (2026-04-19)
+
+**Issue**: #1326 — Agents keep stale runtime_id after daemon restart, tasks never claimed
+**Root cause**: When daemon restarts with a different daemon_id (pre-#1220, daemon.id file loss, cross-machine), agents remain bound to the old offline runtime UUID. No server-side safety net to auto-migrate.
+**Fix**: Server-side adoption in `DaemonRegister` — after upserting runtime and merging legacy IDs, also reassign agents and pending tasks from any offline runtime of the same (workspace_id, provider) to the newly-online runtime.
+**Key design**: Only adopts from **offline** runtimes (never steals from online ones), only pending tasks (completed tasks keep original runtime_id for audit).
+**Files**: runtime.sql (2 new queries), runtime.sql.go (regenerated), daemon.go (+adoptOrphanedAgents method), daemon_test.go (+2 integration tests)
+**Status**: pending review, CI all green (backend + frontend)
+**Scope**: ~120 lines across 4 files
+
+### 经验
+- GitHub API 提交方式继续顺畅，这是第5个 multica PR
+- 需要手写 sqlc generated code（无法本地运行 sqlc generate）— 按现有 :execrows 模式写
+- 两个测试：positive case (adoption) + negative case (non-stealing from online) — 覆盖核心安全约束
+- 理解了 runtime registration 的完整流程：upsert → mergeLegacy → adoptOrphaned → response
+
+### 下次注意
+- 继续用 GitHub API 提交
+- 现在有5个 PR (1249 merged, 1273/1294/1307/1328 pending) — 接近上限，下轮等消化
+
 ## 快速判断
 
 - 增速惊人，6.1k⭐（+3.5k/week）
