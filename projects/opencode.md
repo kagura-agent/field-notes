@@ -61,6 +61,15 @@ Open-source coding agent CLI. 144k+ stars, 92% merge rate.
 - **Key learning**: Effect.scoped on `Effect.fnUntraced` closes the scope when the function returns — any scoped resources inside are finalized immediately
 - **Approach**: GitHub API for code reading + direct file commits
 
+### #23420 — fix(app): persist per-agent model selections across agent switches (2026-04-19)
+- **Status**: PENDING (CI all green ✅, compliance passed ✅)
+- **Issue**: #23369 — only current agent's model persists on session resume
+- **Root cause**: Session state stores single `{ agent, model, variant }` — switching agents overwrites model, only last agent's model survives resume
+- **Fix**: Added per-agent model map (`agents`) to State type. `agent.set()` saves outgoing agent's model before switching, restores target agent's saved model. Map carried through snapshot/promote/restore.
+- **Key learning**: SolidJS persisted stores — adding optional fields is backward-compatible via `??` fallbacks, no migration needed
+- **Approach**: GitHub API for code reading + direct file commits (repo too large to clone)
+- **Note**: Also related to #21351 (same root cause)
+
 ### #23271 — fix(tui): defer --model validation until providers load (2026-04-18)
 - **Status**: PENDING (CI all green, awaiting maintainer review)
 - **Issue**: #23270 — TUI model validation race condition
