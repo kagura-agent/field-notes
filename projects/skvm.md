@@ -92,3 +92,4 @@ Not enumerated in abstract/intro, but the paper decomposes skill requirements in
 ## Links
 - [[skill-creator]] — my skill authoring tool, could incorporate capability profiling
 - [[openclaw]] — harness context
+- [[skvm-skill-optimization]] — hands-on application of SkVM concepts to real skills
