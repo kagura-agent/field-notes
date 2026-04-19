@@ -74,6 +74,16 @@
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
 
+### PR #9182 — fix(plan): prevent "Continue here" popup from repeating
+- **Issue**: #9144 — Plan exit's "continue here" option repeatedly pops up
+- **状态**: OPEN (2026-04-19)
+- **改动**:
+  - `packages/opencode/src/kilocode/session/prompt.ts`: `shouldAskPlanFollowup()` 加 agent guard — 如果 lastUser.agent ≠ "plan" 则跳过（"Continue here" 注入的 user msg 用 agent="code"）
+  - `packages/opencode/test/kilocode/plan-exit-detection.test.ts`: 新增测试验证 "Continue here" 后不再触发
+  - changeset: patch
+- **根因**: `shouldAskPlanFollowup` 只检查 plan_exit tool 是否在 last user 之后的 assistant 消息中，没有考虑 "Continue here" 已经注入了 agent="code" 的用户消息
+- **方法**: 最小改动 — 加一行 agent 检查，不动其他逻辑
+
 ### PR #9181 — fix(provider): use 'low' instead of 'minimal' reasoning effort for GitHub Copilot
 - **Issue**: #9143 — Enhance Prompt/Title Generation fails for GPT-5-Mini with "reasoning_effort 'minimal' not supported"
 - **状态**: OPEN (2026-04-19)
