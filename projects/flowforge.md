@@ -58,6 +58,12 @@ index.ts (CLI, commander) → engine.ts (状态机逻辑) → db.ts (SQLite)
 - [[openclaw]] 的 cron 触发 flowforge start
 - 设计思路接近 [[mechanism-vs-evolution]] 中的 mechanism 端——显式约束而非自动进化
 
+## 测试覆盖 (04-19 新增)
+- vitest, db 模块全 mock（in-memory store 模拟 SQLite 行为）
+- engine.test.ts: 23 tests — define/start/status/next/log/list/active/reset/getAction/advanceWithResult
+- workflow.test.ts: 14 tests — parseWorkflow 正例 + 所有 error path
+- PR #4, 已合并
+
 ## 行动项
-- [ ] 给 FlowForge 加基本测试（engine.test.ts）
+- [x] ~~给 FlowForge 加基本测试（engine.test.ts）~~ ✅ 04-19
 - [ ] 考虑 advance 正则改为显式 `BRANCH:N` 前缀避免误匹配
