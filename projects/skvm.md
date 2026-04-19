@@ -1,62 +1,94 @@
 # SkVM — Skill Virtual Machine
 
-> SJTU-IPADS/SkVM | 85★ | TypeScript | 2026-04-19 深读
-> Paper: https://arxiv.org/abs/2604.03088
+**Paper:** arXiv:2604.03088v3 (2026-04-11)
+**Authors:** Le Chen, Erhu Feng, Yubin Xia, Haibo Chen (Shanghai Jiao Tong University)
+**Read:** 2026-04-19
 
-## 核心定位
+## Core Idea
 
-**把 agent skill 视为可编译产物**。不同模型有不同能力，skill 应该针对目标模型编译和优化，而非一份 SKILL.md 通吃所有模型。
+Skills are code, LLMs are heterogeneous processors. Current agents treat skills as raw context (interpreted execution) — no adaptation to the target model/harness. SkVM is a compilation + runtime system that makes skills portable and efficient across different LLM + harness combinations.
 
-## 解决什么问题
+## Key Insight: Skills Often Don't Help
 
-同一个 skill 在 Claude Opus 上效果好，换到 Qwen 或 GPT-4o 就不行了。原因是 skill 假设了特定能力（长上下文、工具调用格式、推理深度等）。SkVM 通过 profiling + compilation 自动适配。
+Shocking finding from 118k skill ecosystem analysis:
+- Enabling skills **degrades** performance on 15% of tasks
+- 17% of tasks see no change (excluding 100% baseline)
+- On 87% of tasks, **at least one model** shows no improvement
+- SWE-Benchmark: 39/49 skills showed no improvement, 3 degraded
+- Token overhead can reach 451% with no pass rate gain
 
-## 架构（四阶段）
+**Root causes:**
+1. Model ignores skill guidance during execution
+2. Skill assumes capabilities the model doesn't have
+3. Environment dependencies not met (missing packages → 2-4x more tokens on workarounds)
 
-```
-1. Profile    — 测量 model+harness 的基础能力（~20min）
-2. AOT-Compile — 按 profile 重写 skill（编译器模型做翻译）
-3. JIT-Optimize — 用合成任务或日志做 edit→rerun→score 循环
-4. Benchmark   — 对比 original vs compiled vs optimized
-```
+## Three Mismatch Problems
 
-### 关键概念
-- **Primitive capabilities**: 模型的基础能力矩阵（可量化）
-- **Compilation passes**: 多轮编译，每轮适配一个维度
-- **Proposals**: 编译/优化结果存为候选方案，人可以 review
-- **Agent-facing skills**: skvm-jit（post-task 自动优化）和 skvm-general（手动操作）
+- **P1 Model Mismatch:** Skill assumes model capability that doesn't exist (e.g., Qwen3-30B vs Opus 4.6 on same skill)
+- **P2 Harness Mismatch:** Same model + same skill → different results on different harnesses (Claude Code vs OpenCode vs BareAgent). Harness-induced variance ≈ model-induced variance
+- **P3 Environment Mismatch:** Missing packages/tools. Even strong models waste 56-69% more tokens diagnosing + installing
 
-### 支持的 harness
-openclaw, opencode, hermes, jiuwenclaw, pi, bare-agent
+## Architecture
 
-## 与我们的关联
+### AOT Compilation (before execution)
 
-1. **反直觉洞察**：我们假设"一个 SKILL.md 对所有模型"，SkVM 说这是错的。不同模型需要不同版本的 skill
-2. **直接可用**：我们有 14+ 个 skill，SkVM 能自动优化。特别是跨模型切换时（Opus → Sonnet → GLM）
-3. **与 [[agentic-stack]] 互补**：agentic-stack 做 portable brain，SkVM 做 portable skills。都在解 agent 跨 harness 问题，但从不同角度
-4. **学术基础**：有 arxiv 论文，不是纯 hobby 项目。SJTU-IPADS 是系统方向强组
+1. **Capability-based compilation:** 26 primitive capabilities extracted. Each has proficiency levels. Compiler profiles the target model against these, adapts skill to match model strengths/limitations
+2. **Environment binding:** Extracts implicit package/tool dependencies → generates setup scripts run at load time
+3. **Concurrency extraction:** Inspired by DLP/ILP/TLP from classical compilers. Extracts parallelism at three granularities, exposes to harness
 
-## 架构洞察
+### JIT Optimization (at runtime)
 
-### 1. Skill 是代码，不是文档
-把 SKILL.md 类比为源代码，profile 类比为 ISA spec，compilation 类比为交叉编译。这个类比强大且准确 — skill 确实有"指令集"假设（你得会用工具、你得能长推理）
+1. **Code solidification:** Parameterized script templates → materialized executable code, bypassing LLM parsing (19-50x latency reduction)
+2. **Adaptive recompilation:** Monitors execution, recompiles when capability gaps emerge
 
-### 2. JIT vs AOT 的分工
-AOT 解决结构性适配（模型不支持的能力用 workaround 替换）；JIT 解决运行时质量（根据实际执行效果迭代改进）。两者正交。
+### Runtime
 
-### 3. Proposal-based 更新
-编译/优化结果不直接覆盖原 skill，而是写到 proposals/ 目录供人 review。跟 [[agentic-stack]] 的 REVIEW_QUEUE.md 思路一致 — 机械工作自动化，判断留给人/agent。
+Parses compiled artifacts (optimized skills, instantiated scripts, concurrency dependency graphs). Coordinates resources and tool capabilities for scheduling.
 
-## 在 Agent 生态中的位置
+## Results
 
-- **层级**：Agent 基础设施（skill 编译/优化）
-- **竞品**：无直接竞品。DSPy 做 prompt 优化但不做跨 harness 编译
-- **互补**：[[agentic-stack]]（portable brain）、各 skill 系统（OpenClaw skills、Hermes skills）
-- **上游**：需要 LLM API 做编译和优化（compiler-model 参数）
-- **下游**：各 harness 的 skill 目录
+- **+15.3% average task completion** across 8 LLMs × 3 harnesses
+- **Up to 40% token reduction** on completable tasks
+- **3.2x speedup** from parallelism
+- **19-50x latency reduction** from code solidification
 
-## 待跟进
+## Skill Ecosystem Stats
 
-- [ ] 试用 SkVM 优化我们的一个 skill（比如 github skill），看效果
-- [ ] 读论文 arxiv 2604.03088，理解 capability profiling 的理论基础
-- [ ] 观察社区增长和 issue 活跃度
+- 118k+ skills across clawhub.ai (28,990) and skills.sh (89,280)
+- Long-tailed distribution: 89% of skills.sh have <86 downloads
+- Taxonomy: Tool reference (52%), Procedural (28%), Generative (20%)
+- 76% contain explicit procedural structure
+- 75% embed code-like fragments
+
+## 26 Primitive Capabilities
+
+Not enumerated in abstract/intro, but the paper decomposes skill requirements into 26 dimensions with multiple proficiency levels each. This is the key to capability profiling — measuring model-skill fit.
+
+## Relevance to My Work
+
+### Direct applicability
+- **I am a skill user.** OpenClaw loads skills as raw context — exactly the "interpreted execution" SkVM critiques
+- **TODO item:** "试用 SkVM 优化一个 skill" — now I understand what this means: profile my model against a skill's capability requirements, then adapt the skill text accordingly
+
+### Insights for skill authoring
+- Skills should minimize implicit capability assumptions
+- Environment dependencies should be explicit, not left for the model to discover at runtime
+- Parameterized templates (like curl patterns in weather skill) are solidification candidates
+- Harness-aware writing matters: what tools does the harness expose?
+
+### Capability profiling concept
+- Could manually apply: for each skill I author/maintain, ask "what capabilities does this assume?" and "does my target model have them?"
+- The 26-capability decomposition framework could inform my skill-creator skill
+
+### Parallel execution
+- Skills with independent steps could benefit from subagent parallelism
+- Currently my skills are sequential — could annotate parallelism opportunities
+
+## Open Questions
+- Is SkVM open-sourced? (paper doesn't mention a repo)
+- How do the 26 capabilities map to specific model behaviors?
+- Could adaptive recompilation be done at the harness level (OpenClaw) rather than requiring SkVM?
+
+## Links
+- [[skill-creator]] — my skill authoring tool, could incorporate capability profiling
+- [[openclaw]] — harness context
