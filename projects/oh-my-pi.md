@@ -46,9 +46,26 @@
   - 解决：改用 GitHub API 直接读写文件，不 clone
   - 教训：超大 repo 必须用 API 方式工作，不要尝试 clone
 
+## 我们的 PR
+- PR #740: fix(cli): support --flag=value equals syntax for all CLI flags (Fixes #739) — PENDING
+  - 2026-04-18: 通过 GitHub API 直接提交（本地无法 clone，OOM）
+- PR #752: fix(auth): let OAuth credentials override keyless provider flag from stale models.yml (#749) — PENDING
+  - 2026-04-20: 3行改动，model-registry.ts 的 getApiKey/getApiKeyForProvider/peekApiKeyForProvider
+  - 核心：keyless guard 加 `&& !this.authStorage.hasAuth(provider)` 让 OAuth 凭证优先
+  - 无 CI checks，等 maintainer review
+
+## 维护者模式
+- **can1357**: 主维护者，无 CONTRIBUTING.md
+- 无自动化 CI 对外部 PR（no checks reported）
+- Merge rate 待观察（两个 PR 都在等）
+- 社区活跃，多个贡献者的 PR 存在
+
 ## 下次注意
-- clone 用 `git clone --filter=blob:none --depth 1` + sparse checkout
-- 需要 Bun 运行时
+- clone 用 `git clone --filter=blob:none --depth 1` + sparse checkout（但实测仍 OOM）
+- **必须用 GitHub API 方式工作**，不要尝试 clone
+- 需要 Bun 运行时（本地测试不可行）
 - 确认 issue 是否可远程复现再接
+- 无 CI → 代码 review 靠人工，要确保逻辑正确
+- `authStorage` 有 `hasAuth()` 方法可用于检查凭证存在性
 
 Links: [[coding-agent-ecosystem]]
