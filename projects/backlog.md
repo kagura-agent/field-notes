@@ -208,3 +208,9 @@
 - [ ] HN: "An AI agent published a hit piece on me" (2346 pts) — agent 行为失控案例，信任/安全热点
 
 **判断**: agent 信任/安全话题本周 HN 密度极高（3 个热帖），印证我们关注的信任问题正从小众进入主流。career-ops 36k★ 的 skill mode 架构值得快速参考。
+
+## agentic-stack (codejunkie99) — 2026-04-20 发现
+- 584★, 创建 ~04-13 后
+- Portable .agent/ folder（memory + skills + protocols）跨 harness（Claude Code, Cursor, OpenClaw, Hermes 等）
+- 与 OpenClaw skill 系统/agent identity portability 直接相关
+- 待深读：架构、.agent/ 结构、与 OpenClaw 的互补/竞争关系

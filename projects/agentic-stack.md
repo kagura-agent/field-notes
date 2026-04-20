@@ -111,6 +111,47 @@ HN 热议:
 - **Open issues: 0** — 维护者回复快，社区健康
 - **增长曲线**: 154(04-17) → 401(04-18) → 510(04-19)，日增放缓但仍在涨，说明不是纯炒作
 
+## 04-20 更新：v0.7.0 — learn/recall/show 三件套 + Apache 2.0
+
+- **Stars**: 510 → 584（+14%，增长趋稳但持续）
+- **License**: MIT → Apache 2.0（v0.7.1 relicense，更利于企业采用）
+- **重大新增**: 三个 CLI 工具，完成了 dream cycle 的闭环
+
+### learn.py — 一键教训注入
+- `python3 .agent/tools/learn.py "Always serialize timestamps in UTC" --rationale "prior bugs"`
+- 跳过 stage→review→graduate 仪式，直接注入。适合人类/host agent 已确认的知识
+- 用 `pattern_id(claim, conditions)` 做幂等——相同 claim+conditions 重复调用安全
+- `--stage-only` 可以只 stage 不 graduate，保留审查流程
+- `--provisional` 标记为试用期规则
+- **设计亮点**: claim 太短（<20 chars）直接拒绝，防垃圾注入
+- **与我们对比**: 我们的 beliefs-candidates.md 是纯文本，没有 CLI 工具辅助注入/毕业流程。learn.py 的 rationale 强制要求值得借鉴
+
+### recall.py — 意图驱动的 lesson 检索
+- `python3 .agent/tools/recall.py "add a created_at column to orders"`
+- 纯词法匹配（Jaccard word overlap），不用 embedding，零 API 依赖
+- conditions 权重 2x（触发词匹配比 claim 词匹配更强的信号）
+- 每次 recall 自动写入 episodic memory（审计追踪 + dream cycle 可见）
+- 合并 lessons.jsonl + LESSONS.md 两个来源，去重
+- **设计亮点**: 明确标注 "lexical overlap, NOT semantic relevance"——诚实的局限声明
+- **与我们对比**: 我们的 memory_search 用 embedding（语义更强但需 API），agentic-stack 选择零依赖但精度低。tradeoff 合理——lesson 数量少（数十条），词法够用
+
+### show.py — 终端仪表盘
+- ANSI 彩色 boxed dashboard：MEMORY / LESSONS / CANDIDATES / SKILLS 四个面板
+- 14 天 sparkline 活动图 + 失败统计 + dream cycle 状态
+- `--json` 输出用于程序化消费
+- **设计亮点**: `_visible_len()` 正确处理 ANSI 转义码的可见宽度，细节到位
+- **启发**: 我们可以给 flowforge 加类似的 brain-state dashboard
+
+### 架构洞察
+
+1. **learn/recall/show 形成完整操作闭环**: learn（写入）→ recall（读取）→ show（观测）。dream cycle 做自动提取，learn 做手动注入，recall 做使用时检索。三个工具 + dream cycle = 完整知识管理
+2. **recall 的审计追踪是巧妙设计**: 每次 recall 写 episodic entry，dream cycle 可以发现 "哪些 lesson 实际被使用了"。未被 recall 的 lesson 可能是死知识。我们没有这个可观测性
+3. **Apache 2.0 转型信号**: 从 MIT 到 Apache 2.0，说明项目预期企业用户。portable agent brain 正从个人工具走向团队/组织工具
+
+### 与 [[reflexio]] 的生态位差异
+
+agentic-stack 选择全本地、零 API、文件即一切；[[reflexio]] 选择外部服务 + LLM 提取 playbook。两者互补但设计哲学对立。agentic-stack 更像 git（分布式、文件系统原生），reflexio 更像 GitHub（中心化服务）
+
 ## 待跟进
 
 - [ ] 考虑给 beliefs-candidates 升级流程加 rationale 约束
