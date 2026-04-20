@@ -494,3 +494,36 @@ machine-scoped（#1263）确保 CLI + desktop 共享 identity。
 ### 下次注意
 - 现在有6个 PR (1249 merged, 1273/1294/1307/1328/1333 pending) — 超过上限了，下轮必须等消化
 - 考虑在 PR 评论中 @ 维护者（如 ldnvnbl）加速 review
+
+## PR #1333: CLOSED — superseded by maintainer's #1362 (2026-04-20)
+
+**Issue**: #1332 — openclaw provider passing unsupported flags
+**Our fix**: Drop unsupported flags + prepend instructions into `--message`
+**Why closed**: Our `if opts.SystemPrompt != ""` branch never fires in production because `daemon.go` never populates `opts.SystemPrompt`. Maintainer's #1362 fixed this properly by:
+1. Populating `opts.SystemPrompt = instructions` for openclaw provider in `daemon.go` (scoped to avoid double-injection for claude/codex/pi)
+2. Extracting `buildOpenclawArgs` helper for testability
+3. Adding unit tests
+
+**Lesson**: Always trace the data flow end-to-end. We fixed the consumer but didn't check whether the producer actually sent data. `grep` for the field across the codebase before assuming it's populated.
+
+## PR #1328: Review response (2026-04-20)
+
+Addressed Bohan-J's review:
+- Added `owner_id` scoping to both adoption queries (must-fix)
+- Zero OwnerID guard: skip adoption for daemon-token auth
+- Added `agents_adopted` to task failure log
+- Isolated test provider name (`claude-adopt-test`)
+Awaiting re-review.
+
+## PR #1377: Board card description fix (2026-04-20)
+
+**Issue**: #1375 — Board cards don't show description even when Description property is enabled
+**Root cause**: `ListIssues` and `ListOpenIssues` SQL queries omitted `description` column. API response always had null description → client never rendered it.
+**Fix**: Added `description` to both SQL queries, generated Go structs/Scan calls, and response mapping functions. 10 insertions, 4 deletions across 3 files.
+**CI**: Backend + frontend passed. No review feedback yet.
+**Status**: PENDING
+
+### Notes
+- sqlc-generated code (`issue.sql.go`) can be manually edited — just follow the exact pattern (struct field + Scan order + SQL column position)
+- Go 1.26.1 required — our local Go is 1.24.4, can't build locally. Rely on CI.
+- Bohan-J does thorough reviews with must-fix/nice-to-have tiers. PR template is informal (no mandatory sections).

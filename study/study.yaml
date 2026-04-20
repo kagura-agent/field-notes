@@ -95,6 +95,7 @@ nodes:
       3. 做完之后验证：改了之后有什么不同？
 
       **⚠️ 如果应用过程中想给外部 repo 提 PR 或 issue：**
+      - **黑名单 repo（绝对不碰）：NousResearch/hermes-agent**
       - **先检查**：`gh pr list --repo <repo> --author=kagura-agent --state=open --json number -q 'length'`
       - **≥ 5 → 不提**，把想法记到 TODO.md「🔨 GitHub Contribution」section
       - **< 5 → 可以提**，但要走正常的分支+测试流程
