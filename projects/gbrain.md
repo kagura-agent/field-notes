@@ -1,8 +1,8 @@
 # GBrain
 
-> garrytan/gbrain | 9,046⭐ (2026-04-18 18:30) | TypeScript | MIT
+> garrytan/gbrain | 9,403⭐ (2026-04-20) | TypeScript | MIT
 > "Garry's Opinionated OpenClaw/Hermes Agent Brain"
-> Created: 2026-04-05 | Last push: 2026-04-18
+> Created: 2026-04-05 | Last push: 2026-04-20
 
 ### 更新 (04-15)
 - v0.9.3 (04-13): security wave 2 — 5 vulns fixed + typed health check DSL
@@ -602,3 +602,47 @@ YAML frontmatter 字段自动投射为 typed graph edges：
 - 我们 = 行为进化系统（beliefs, patterns → DNA/workflow → self-modify）
 - GBrain 的 Knowledge Runtime 让知识可查可修可验证；我们需要的是 Behavior Runtime 让行为可观测可调整可回滚
 - GBrain 演进路径：存储 → 图谱 → 运行时。3 周内 v0.8→v0.13，单人+AI 产出惊人
+
+## 2026-04-20 Followup: v0.13.0 Shell Jobs + Reliability Wave
+
+> ⭐ 9,403 (+357 since 04-18) | v0.13.0 | 4 PRs in 2 days
+
+### Shell Job Type (#217)
+
+GBrain 的 OpenClaw gateway 被 32 个 cron job 压满 CPU（每个 cron 都启动 Opus session），其中 ~14 个是纯 API-fetch-and-write 脚本不需要 LLM。Shell job type 让这些确定性 cron 直接在 [[Minions]] worker 上用 `/bin/sh -c` 执行，**~60% gateway 负载降低，零 LLM token 消耗**。
+
+**安全设计（值得学习）：**
+- `PROTECTED_JOB_NAMES = {'shell'}` — 不可被用户 override
+- MCP 提交被拒绝（`submit_job` rejects shell over MCP）— 只允许 local CLI 提交 shell job
+- Env allowlist: 只传 PATH/HOME/USER/LANG/TZ/NODE_ENV，不泄露其他环境变量
+- Whitespace bypass 防护：trimmed name check（`" shell "` ≠ `"shell"`）
+- SIGTERM → 5s grace → SIGKILL abort 语义
+- JSONL audit trail: `~/.gbrain/audit/shell-jobs-YYYY-Www.jsonl`
+- UTF-8 安全的 64KB/16KB output tail（StringDecoder）
+
+**Worker abort-path 修复：** 之前 timeout/cancel/lock-loss/shutdown 时 worker 静默返回（任务"消失"）。修复后所有异常路径都 `failJob()` 并记录 `aborted: <reason>`。
+
+**跟我们的关联：** 我们的 cron 也有类似问题 — 每个 cron fire 都启动完整 agent session（含 LLM reasoning），但有些 cron 只是跑 API 调用。如果 OpenClaw 支持 shell job type，能显著降低 gateway 负载。
+
+### Reliability Wave (#216)
+
+社区贡献的稳定性修复：
+1. **Sync deadlock** — PGLite 非可重入 mutex，outer transaction + per-file transaction 死锁。移除 outer wrap
+2. **`statement_timeout` pool 泄露** — `SET statement_timeout='8s'` 在 postgres.js pool 连接间泄露。改用 `SET LOCAL` 限制事务内
+3. **Obsidian `[[WikiLinks]]` 支持** — `extractEntityRefs` 现在匹配 `[[people/slug|Name]]` 格式。2,100 页 brain 从 0 auto-links 变成 1,377 typed edges
+4. **`gbrain orphans`** — 发现无 inbound links 的孤立页面，闭环 v0.12 知识图谱故事
+
+**洞察：** WikiLinks 支持是个好例子 — 用户已有的标注格式（Obsidian style）被自动识别，零迁移成本。我们的 memex 如果能识别更多标注格式（不只是 `[[]]`），backlink 覆盖率会大增。
+
+### 演进总结
+
+| 版本 | 主题 | 日期 |
+|------|------|------|
+| v0.8 | Search quality | 04-14 |
+| v0.9 | Security | 04-13~15 |
+| v0.10 | Platform/mod | 04-16~17 |
+| v0.11 | Minions + skillify | 04-17~18 |
+| v0.12 | Knowledge graph | 04-18~19 |
+| v0.13 | Knowledge runtime + shell jobs | 04-19~20 |
+
+2.5 周内 6 个 major 版本。速度惊人但节奏可持续性存疑 — 每个版本都有 reliability follow-up 说明快速迭代带来的稳定性债务。
