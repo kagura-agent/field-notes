@@ -16,7 +16,7 @@
 - 已关注的项目有 issue → 做；没有 → 去 GitHub 发现新的对齐项目（trending/搜索）
 - 不碰不对齐的项目，不管多好做
 - 任何场景（学习、调研、聊天）发现值得贡献的项目 → 立刻 `gogetajob scan owner/repo` 加入关注列表
-- 每个项目 open PR ≤ 3，超过就等消化
+- 每个项目 open PR ≤ 5，超过就等消化（workloop pr_gate 自动拦截）
 
 ## 发现新项目的渠道
 
@@ -27,15 +27,17 @@
 
 ## PR 存量管理
 
-每个项目 open PR ≤ 3 是硬上限。超过时：
+每个项目 open PR ≤ 5 是硬上限（workloop pr_gate 节点自动检查）。超过时：
 
-1. **停止新开** — 该项目不再提新 PR，直到存量消化到 ≤ 3
+1. **停止新开** — 该项目不再提新 PR，直到存量消化到 ≤ 5
 2. **主动关闭** — 超过 21 天无 review 且非关键修复的 PR，礼貌关闭（留言说明愿意在需要时重开）
 3. **合并同类** — 同一领域的多个小 PR 考虑 squash 合并成一个
 4. **Conflict 及时处理** — rebase conflict 超过 7 天未解决的 PR，要么当天解决，要么关闭
 5. **followup 巡检** — PR Patrol 发现 conflict/stale 时，当轮就处理，不留到"下次 workloop"
 
-**现实检查**：如果某个项目长期 >3 PR 且 review 极慢（>14 天常态），考虑降低该项目优先级或减少投入。
+**现实检查**：如果某个项目长期 >5 PR 且 review 极慢（>14 天常态），考虑降低该项目优先级或减少投入。
+
+**Followup 审计**：每轮 workloop followup 步骤会按 repo 聚合 open PR 数量。超限的 repo 自动触发存量管理（主动关闭 stale PR 或暂停新提交）。
 
 ## 知识积累
 

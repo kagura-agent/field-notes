@@ -40,7 +40,12 @@ nodes:
       - 维护者已 approve 但没 merge？→ 礼貌 ping 一次
 
 
-      **Step 2: GitHub 通知检查**（不能跳过）
+      **Step 2: Per-repo PR 存量审计**（不能跳过）
+      运行 `gh pr list --author=kagura-agent --state=open --json headRepository --jq '[.[].headRepository.name] | group_by(.) | map({repo: .[0], count: length}) | sort_by(-.count) | .[] | "\(.repo): \(.count)"'`
+      列出每个 repo 的 open PR 数量。
+      - 超过 5 个的 repo → 标记为「存量超限」，按 PR 存量管理规则处理（主动关闭 >21天无 review 的 PR）
+
+      **Step 3: GitHub 通知检查**（不能跳过）
 
       运行 `gh api notifications --paginate --jq ".[].subject | {title, url, type}"` 查看未读通知（必须 --paginate 拿全量）。
 
