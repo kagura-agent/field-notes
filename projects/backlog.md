@@ -1,4 +1,14 @@
 
+## 2026-04-20 Quick Scout (18:51)
+- [ ] **cangjie-skill** (kangarooking/cangjie-skill, ⭐361): 把一本书蒸馏成可执行 Agent Skills — **值得深入**（skill 设计方法论，和 skill-creator 可交叉）
+- [ ] **agents-md** (TheRealSeanDonahoe/agents-md, ⭐206): Drop-in AGENTS.md 最佳实践，综合 Karpathy 四原则 + Boris Cherny workflow — **值得深入**（直接可借鉴改进自己的 AGENTS.md）
+- cc-design ⭐382 — agent HTML 设计 skill，不太相关
+- tradclaw ⭐276 — OpenClaw 家庭管理，有趣但不相关
+- WorldSeed ⭐154 — AI agent 世界引擎，有趣但优先级低
+- HN: Vercel 安全事件 (760pts)，GitHub fake star 经济 (131pts)
+
+**判断：** cangjie-skill 和 agents-md 都是 skill/agent 设计方法论，直接可借鉴。cangjie-skill 更新颖（书→skill 蒸馏），优先。
+
 ## 2026-04-14 Quick Scout #3 (19:20)
 - [ ] **RivonClaw** (gaoyangz77/rivonclaw, ⭐252): OpenClaw 之上的自然语言规则+反馈进化层，"personal digital butler"。直接对标 Kagura 的 skill 进化 + 北极星"人类伴侣"方向 — **值得深入**
 - [ ] **oh-my-pi** (can1357/oh-my-pi, ⭐2987): terminal coding agent, hash-anchored edits + subagent 架构 — 竞品分析，值得关注
