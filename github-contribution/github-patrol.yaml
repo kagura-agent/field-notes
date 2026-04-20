@@ -14,6 +14,16 @@ nodes:
       环境：proxy: export https_proxy=http://127.0.0.1:1083
 
       汇报通知列表。没有通知也要说"0 条通知"。
+      **汇报必须如实：** 即使判定某条通知为非 actionable，也要列出来并说明判断理由。不能把"我觉得不需要处理"等同于"没有通知"。"0 条通知"只能在 API 真的返回空数组时说。
+
+      **已读标记：** 对每条已处理的通知（无论 actionable 还是 informational），巡检完成后标记已读：
+      `gh api -X PATCH "notifications/threads/<thread_id>"`
+      这样 GitHub 上不会挂着没人管的未读通知。
+
+      **补充扫描（notifications API 可能漏掉已读通知）：**
+      6. 查我参与的 issue 最近评论：
+         `gh api "search/issues?q=involves:kagura-agent+is:open+updated:>$(date -u -d '4 hours ago' +%Y-%m-%dT%H:%M:%SZ)&sort=updated&per_page=20" --jq '.items[] | {repo: .repository_url, number: .number, title: .title, updated: .updated_at}'`
+      7. 对比通知列表，如果有 issue/PR 在补充扫描中出现但不在通知列表中 → 也加入待处理
     branches:
       - condition: 有通知需要处理
         next: read_notification_details
@@ -44,6 +54,7 @@ nodes:
       **Issue/Mention 相关：**
       - issue comment / mention → 读上下文，判断是否需要回应
       - 被 @ 必须回应
+      - **"我已回复" ≠ "已处理"：** 如果对方报了 bug、提了需求、问了问题，即使 kagura-agent 已经回复了，也要判断：回复是否解决了问题？是否需要后续行动（写代码修、排进 workloop、更新 wiki）？只有纯感谢/确认类回复才算真正处理完
 
       **其他：**
       - maintainer 评论提问/要求 → actionable

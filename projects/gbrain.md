@@ -521,3 +521,84 @@ v0.10.3 (#188) 是 GBrain 目前最大的单次 PR：304 files, +13,436 lines。
 - 我们的 AGENTS.md 压缩（232→198 行）用了类似思路但没有这么系统化
 - "L1 只能 patch 词级别修改，禁 overwrite" — 记忆修改是持久性伤害，错误每轮复利。与我们的 DNA 更新谨慎原则一致
 - 可以考虑用这个框架重审我们的 MEMORY.md 和 AGENTS.md 结构
+
+---
+
+## 更新 (04-20): v0.13.0 — Knowledge Runtime
+
+> ⭐ 9,403 (04-20) | v0.13.0 | 从 knowledge graph 进化到 knowledge runtime
+
+### 核心变化：知识库→运行时
+
+v0.13 是 GBrain 从"存储层"到"运行时层"的跃迁。不再只是存和查，而是让知识库成为其他 agent 可以 adopt 的 typed runtime。五个模块：
+
+**1. Resolver SDK** (`src/core/resolvers/interface.ts`)
+- 通用 `Resolver<I,O>` 接口 — typed input/output + confidence score + cost tracking
+- 每个结果必须带 confidence (0-1) 和 source attribution
+- LLM-backed resolver 约定 confidence < 1.0；deterministic backend 返回 1.0
+- 内置 2 个 reference resolver: `url_reachable`（带 SSRF 防护）、`x_handle_to_tweet`（X API v2）
+- ResolverContext 继承 trust boundary（`remote=true` → 收紧行为）
+- **架构洞察**: Resolver 是纯异步、无副作用的查询层。预留了 plugin contract 扩展点
+
+**2. BrainWriter** (`src/core/output/writer.ts`)
+- `BrainWriter.transaction(fn, ctx)` — 事务性写入 + pre-commit 验证器链
+- 4 个 deterministic validators: citation / link / back-link / triple-hr
+- `Scaffolder` 从 API ID 构建 citations（never from LLM text）
+- `SlugRegistry` 检测 slug 冲突
+- **关键设计**: v0.13 migration 对已有页面 grandfather `validate: false`，新页面强制验证
+- Post-write lint hook（默认关闭，可 gate 切换）— observability for strict-mode rollout
+
+**3. `gbrain integrity`** — 自修复命令
+- 三桶置信度分流：≥0.8 自动修复 → 0.5-0.8 人工 review queue → <0.5 skip+log
+- 进度文件可恢复（kill 后重跑不重复处理）
+- `--dry-run` 不污染 progress state（adversarial review 发现的 P0，已修）
+- 主要目标：bare tweet references（1,424/3,115 people pages 有 "tweeted about X" 但没链接）和 dead URLs
+
+**4. BudgetLedger** (`src/core/enrichment/budget.ts`)
+- 每日 spend cap，per {scope, resolver_id, local_date} 粒度
+- Reserve → commit/rollback 三阶段，FOR UPDATE 防并发 double-spend
+- TTL 自动回收（进程崩溃后 reservation 过期自动释放）
+- IANA timezone midnight rollover（Intl.DateTimeFormat 取本地日期，无 rollover thread）
+- **P0 fix**: commit() 重新检查 cap headroom，防 reserve(0.01)+commit(100) 绕过 cap
+- **反直觉**: 负数 actual 被拒绝 — refund 必须走专门 API，不能用 commit(-x) 做侧通道
+
+**5. CompletenessScorer** — 替代 Wintermute 的 length heuristic
+- 7 个 entity-type-specific rubrics + default
+- 维度举例：timeline entries, citations, source URLs, frontmatter fields, backlink hint, recency
+- 每维度 0-1 + 权重加和 → 页面质量分数
+- `non_redundancy` + `recency_score` 杀死了"越长越好"的 pathology
+
+**6. Scheduler polish**
+- Claim-time quiet-hours gate（IANA tz, wrap-around windows）
+- 确定性 FNV hash stagger offset — 避免所有 cron job 同时开跑
+- **P0 fix**: quiet_hours 原本是 dead code（schema 有列但 MinionJobInput 不接受），adversarial review 发现
+
+### Frontmatter → Typed Graph Edges (#231)
+
+YAML frontmatter 字段自动投射为 typed graph edges：
+- 10 个 canonical 字段映射（company, investors, attendees, key_people, partner, lead, founded, sources, source, related, see_also）
+- 方向尊重 subject-of-verb 语义（person → meeting, 不反过来）
+- 4 步 fallback resolver chain（batch mode 不调 searchKeyword，保持确定性迁移）
+- Reconciliation 在 transaction 内执行，双向 backlink 感知
+- **效果**: hub entity 的 `gbrain graph --depth 2` 从 ~7 nodes 变成 50+ nodes，零 skill 编辑
+
+### 工程质量观察
+
+- **Adversarial review 发现 4 个 P0 bug** — 包括 dead code (quiet-hours)、state 污染 (dry-run)、cap 绕过 (commit)、parent job stranding (cancel)。全在 merge 前修复
+- **AI-assessed coverage 72%** — 1626 tests (+104 new)
+- **隐私 scrub**: PR body 和 CLAUDE.md 都加了 privacy rule — public docs 必须用 generic placeholders。跟我们的脱敏规范一致
+
+### 跟我们的关联
+
+**直接可借鉴的：**
+1. **BudgetLedger 模式** — 如果我们的 dreaming/memory_search 需要付费 API（如 reranker），这个 reserve-commit-rollback 模式比简单计数器更安全。参考 [[eval-driven-self-improvement]]
+2. **Integrity 三桶置信度分流** — 我们的 beliefs-candidates.md 升级也有类似需求：高置信度自动升级 DNA、中等人工 review、低置信度 skip。目前我们用"重复 3 次"作为阈值，可以更细化
+3. **CompletenessScorer rubrics** — 替代 length heuristic 评估 wiki 页面质量。我们的 wiki health check 可以借鉴
+4. **Frontmatter as graph edges** — 我们的 memex 双链是手动的，GBrain 证明从 frontmatter 自动提取 typed edges 效果巨大（7→50+ nodes）
+5. **Adversarial review as P0 catcher** — 每次 PR 用一个独立 subagent 做对抗性 review，GBrain 4/4 P0 都是这样发现的
+
+**差异与定位：**
+- GBrain = 个人知识管理运行时（facts, people, events → graph → query → repair）
+- 我们 = 行为进化系统（beliefs, patterns → DNA/workflow → self-modify）
+- GBrain 的 Knowledge Runtime 让知识可查可修可验证；我们需要的是 Behavior Runtime 让行为可观测可调整可回滚
+- GBrain 演进路径：存储 → 图谱 → 运行时。3 周内 v0.8→v0.13，单人+AI 产出惊人
