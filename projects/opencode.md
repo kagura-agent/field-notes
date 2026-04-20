@@ -87,3 +87,35 @@ Open-source coding agent CLI. 144k+ stars, 92% merge rate.
 - **Fix**: Inline paths directly into command string with single-quote escaping (`'` → `''`)
 - **Approach**: GitHub API (repo too large to clone)
 - **Note**: 2-line change, very surgical. Same file as #23412 (ripgrep.ts — active area of refactoring)
+
+## Session Compaction (v1.14.19, 2026-04-20)
+
+opencode 的 session compaction 架构分三层：
+
+### 1. Overflow Detection (`overflow.ts`)
+- `usable()`: 计算可用 token = input_limit - reserved (默认 20k buffer)
+- 当 total tokens ≥ usable 时触发 compaction
+
+### 2. Tail Preservation (`compaction.ts`)
+- **核心创新**: 压缩时保留最近 N 个 turn 的原始内容（默认 2 turns）
+- `preserve_recent_tokens`: 预算 = min(8k, max(2k, usable * 0.25))，可配置
+- 如果最后一个 turn 就超预算 → fallback 到全量摘要
+- 逐 turn 从后往前累加，直到超预算为止
+
+### 3. Pruning（独立于 compaction）
+- 从后往前保护 40k tokens 的 tool call output
+- 超过保护范围的旧 tool output 被清除（标记 `time.compacted`）
+- "skill" 工具永远不被 prune
+- 最少清 20k tokens 才执行（避免频繁小清理）
+
+### 4. Compaction Prompt
+- 模板化摘要：Goal / Instructions / Discoveries / Accomplished / Relevant files
+- Plugin hook `experimental.session.compacting` 允许注入额外 context 或替换 prompt
+- Overflow 时会 replay 最近的用户消息（让新 turn 在压缩后继续）
+
+### 对我们的启发
+- **preserve_recent_tokens 策略**值得借鉴：25% context 给最近对话保持连贯性 → 参考 [[context-budget-constraint]]
+- **pruning vs compaction 分离**：轻量级清理（prune tool output）+ 重量级压缩（LLM 摘要）分开处理
+- **compaction agent**: 用独立的 agent（可配不同模型）做摘要
+- 跟 [[claude-code-plugins]] 的 PreCompact hook 互补：opencode 内建 tail preservation + plugin 级 context 注入；Claude Code 让外部 plugin 阻止压缩
+- [[tokenjuice]] 解决的是 output 压缩，opencode compaction 解决的是 context 压缩——上下游互补
