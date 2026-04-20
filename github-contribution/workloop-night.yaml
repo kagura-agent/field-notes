@@ -10,6 +10,12 @@ nodes:
 
       对每个有新 review comment 或 CI 失败的 PR，列出详情。
 
+      **球在谁手里？**（每个 PR 必须先判断）
+      `gh pr view <N> --repo <repo> --json comments --jq '.comments[-1].author.login'`
+      - 最后一条 comment 是 kagura-agent → 球在对方手里，**不操作，等对方回复**
+      - 最后一条 comment 是对方 → 球在我手里，需要处理
+      - 没有 comment 但有 CHANGES_REQUESTED review → 检查 review 时间 vs 我最后 push 时间，push 在后面说明已处理过，等对方再看
+
       重要：sync 结果出来后，每个标了需要处理的 PR 都要点进去看详情，
       区分真人 review 和 bot review（如 coderabbitai）。
       优先级：真人反馈 > CI 失败 > bot review（nitpick）。

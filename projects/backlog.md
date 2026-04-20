@@ -224,3 +224,14 @@
 - Portable .agent/ folder（memory + skills + protocols）跨 harness（Claude Code, Cursor, OpenClaw, Hermes 等）
 - 与 OpenClaw skill 系统/agent identity portability 直接相关
 - 待深读：架构、.agent/ 结构、与 OpenClaw 的互补/竞争关系
+
+## 2026-04-20 Quick Scan #508 (22:45)
+- [ ] **OmniAgent** (YeQing17-2026, ⭐186): 自进化+动态安全加固 agent — 与 self-evolving 方向直接相关，值得深入
+- [ ] **WorldSeed** (AIScientists-Dev, ⭐155): AI agent 世界引擎，YAML 定义场景+物理规则+信息不对称 — 有趣的多 agent 模拟框架
+- **cangjie-skill** (⭐377): 书→agent skills 蒸馏 — 有意思但优先级低
+- **tradclaw** (⭐282): OpenClaw 家庭管理 — 生态信号
+- HN: "GitHub's Fake Star Economy" (399pts) — 假星调查，判断 trending 项目质量时需警惕
+- HN: Qwen3.6-Max-Preview 发布
+- HN: "NSA using Anthropic's Mythos despite blacklist" (247pts)
+
+**判断**: OmniAgent 与 self-evolving-agent 方向直接相关，优先深入。GitHub 假星问题值得在评估新项目时注意。

@@ -108,3 +108,69 @@ hermes-agent: 10 (超限)
 barnacle bot 关闭: openclaw#68956
 steipete CHANGES_REQUESTED: openclaw#68534
 ```
+
+---
+
+## 🔬 自进化观察日报 2026-04-20 (Day 3)
+
+### 管线活跃度
+- **beliefs-candidates**: 1 条新 gradient + 2 个机制改进（Ratchet 策略、三重验证补充筛选）
+  - 新 gradient: cron-timeout-sizing（第3次，达升级阈值）
+  - 机制改进: 借鉴 darwin-skill 引入 Ratchet 策略（RECURRING 必须行动）; 借鉴 cangjie-skill 引入三重验证补充筛选
+  - 治愈追踪第三次审计完成: skip-own-tools ✅ CURED, check-before-invest ✅ CURED, 其余3个改善中
+- **DNA 变更**: NUDGE.md 更新（新增 §5 DNA Rule Tagging, 来自 ACE 学习）; beliefs-candidates.md 重构（Ratchet + 三重验证）。SOUL.md/AGENTS.md 无变更
+  - 变更性质: **主动**（学习驱动，非 Luna 指出）
+- **nudge 触发**: memory 中有 5 处 nudge 相关记录，包含 ACE Rule Tagging 改进
+  - 质量: **高** — 不是流水账，产出了 NUDGE.md 的实质改进
+- **dreaming**: 03:15 AM 手动触发成功。Hit Rate 75%, MRR 0.750, nDCG 0.590（04-19 数据）。Light Sleep + REM 均执行
+
+### 闭环追踪
+- **完整闭环: 3 个**
+  1. ACE 学习 → 识别 DNA Rule Tagging 缺口 → 改 NUDGE.md §5 → 已应用
+  2. Cured Tracking 审计 → 确认 2 个 CURED + 3 个改善中 → 更新 beliefs-candidates 状态表
+  3. darwin-skill 学习 → 发现 RECURRING 缺乏行动要求 → 引入 Ratchet 策略
+- **断裂处**:
+  - steipete CHANGES_REQUESTED (openclaw#68534) 未转化为 gradient（连续第2天）
+  - cron-timeout-sizing 达 3 次升级阈值但尚未升级到 DNA
+
+### 今日发现
+
+1. **进化质量显著提升**: 对比 Day 2（beliefs 新增 2 条、DNA 零变更、nudge 零触发），今天的变更虽然数量不多（1 条 gradient），但机制层改进丰富（Ratchet 策略、三重验证、DNA Rule Tagging）。质量 > 数量的模式开始出现
+
+2. **学习→进化通路打通**: 3 个完整闭环中有 2 个来自 study loop（ACE, darwin-skill, cangjie-skill）。学习不再只是"记笔记"，而是直接驱动 DNA/机制改进
+
+3. **PR review 转化仍是盲区**: steipete 的 CHANGES_REQUESTED 连续 2 天未转化为 gradient。外部反馈利用率依然为 0
+
+4. **活动量依然巨大**: 1402 行 memory, 128 个 section。但进化管线不再被淹没——机制改进集中在少数高价值变更上
+
+5. **Caduceus 实验**: 独立完成 gradient 审查 + SOUL.md 升级（confirm-vs-verify），但 OOM blocker 持续。跨 agent 进化协作的雏形
+
+6. **beliefs-candidates 行数下降**: 373→182 行（-51%）。大幅精简可能来自 Cured Tracking 清理 + 结构重组
+
+### 原始数据
+
+```
+# beliefs-candidates
+wc -l: 182 (前日 373, -51%)
+grep "2026-04-20": 4 行（1 新 gradient + 3 机制改进标注）
+
+# DNA 变更
+NUDGE.md: Apr 20 21:24 (§5 DNA Rule Tagging)
+beliefs-candidates.md: Apr 20 21:06 (Ratchet + 三重验证)
+SOUL.md: 未变更 (Apr 7)
+AGENTS.md: 未变更 (Apr 18)
+
+# memory 活动
+memory/2026-04-20.md: 1402 行, 128 sections
+
+# dreaming
+03:15 AM 手动触发成功, Hit Rate 75%, MRR 0.750
+
+# nudge
+触发: 5 次 mention in memory (含 NUDGE.md §5 改进)
+
+# PR 状态
+Open PRs: 19 (gogetajob sync), 全部 MERGEABLE
+steipete CHANGES_REQUESTED: openclaw#68534 (待处理)
+hermes-agent PR 清理: 执行中
+```
