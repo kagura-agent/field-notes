@@ -49,7 +49,8 @@ nodes:
       - **PR closed（非作者关闭）→ 🚨 最高优先级！** 读关闭 comment，判断原因：
         - bot/policy 关闭（如 barnacle >10 PRs）→ 声誉事件，立刻清理多余 PR + 汇报
         - maintainer 手动关闭 → 读原因，学习，记 wiki
-        - superseded → 确认真的是被替代，不要猜
+        - superseded → **必须读替代 PR 的代码，对比差异，记录到 wiki/cards/pr-superseded-lessons.md。不能只标记“已关闭”就跳过！**
+          具体：1) gh pr view <替代PR> 读代码 2) 对比我的方案 vs 他们的方案 3) 提炼 pattern 4) 记录到 wiki/projects/<项目名>.md（maintainer 风格、具体教训）和 wiki/cards/pr-superseded-lessons.md（跨项目通用 pattern）
 
       **Issue/Mention 相关：**
       - issue comment / mention → 读上下文，判断是否需要回应

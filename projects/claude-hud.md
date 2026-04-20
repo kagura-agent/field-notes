@@ -99,3 +99,21 @@ source: GitHub jarrodwatts/claude-hud
 - **最近外部 merge**: 2026-04-05 @Yimaha #381，极少
 - **结论**: 外部 PR review 率极低，不值得继续投入
 - **行动**: 关闭 #396 和 #402，保留 #410 短期观察后也关
+
+## PR 被 Supersede 复盘 (2026-04-20)
+
+### #462 被 #427 替代
+- **我的方案**: 把 `UNKNOWN_TERMINAL_WIDTH` 从 40 改成 220（换一个“更安全”的默认值）
+- **maintainer 的方案**: 区分“知道终端宽度”和“不知道宽度”两种状态，不知道时跳过 width-dependent layout 逻辑 (+90/-48)
+- **差距**: 我改值，他改控制流。他的方案在任何宽度下都正确，我的 220 还是个“猴子补丁”
+
+### #469 被 #470 替代
+- **我的方案**: 所有情况下都给 progress label 加 padding
+- **maintainer 的方案**: 只在 usage+context 真正 stack 成两行时才加 padding，默认 combined 布局不加 (+74/-15)
+- **差距**: 我无差别应用，他精确限定条件
+
+### 教训（针对这个项目）
+- jarrodwatts 偏好“改控制流”而不是“改默认值”
+- 他的 PR 通常代码量更多但边界条件更明确
+- render 相关的 bug：先问“这个分支是不是应该被跳过”而不是“改什么值能让输出好看”
+- **下次在这个 repo 提 PR 前**：先读 maintainer 最近 3 个 PR 的代码，学习他的处理方式

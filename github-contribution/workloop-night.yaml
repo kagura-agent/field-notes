@@ -26,6 +26,8 @@ nodes:
     branches:
       - condition: 有 PR 收到真人 review 需要代码修改
         next: handle_feedback
+      - condition: 有 PR 被关闭/supersede/拒绝（非自己关的），但无需代码修改
+        next: reflect
       - condition: 所有 PR 状态正常，没有待处理的
         next: done
 
@@ -42,6 +44,27 @@ nodes:
       4. 提交并 push
       5. 在 PR 上回复 reviewer
       处理完所有反馈后汇报结果。
+    branches:
+      - condition: 还有其他 PR 需要处理
+        next: handle_feedback
+      - condition: 全部处理完
+        next: reflect
+
+  reflect:
+    task: |
+      反思本轮跟进并更新项目笔记（不能跳过）：
+
+      对每个处理过的 PR：
+      1. 维护者的 review 风格和偏好（新发现的）
+      2. 踩过的坑
+      3. 学到的东西（代码技巧、测试方法、沟通方式）
+
+      **如果有 PR 被关闭/supersede：**
+      - 被 supersede → `gh pr view <替代PR>` 读代码，对比我的方案 vs 替代方案，分析差在哪
+      - 被 maintainer 直接关闭 → 记录原因，判断是否该继续投入这个 repo
+      - 记录到 wiki/projects/<项目名>.md + wiki/cards/pr-superseded-lessons.md（如果有跨项目通用 pattern）
+
+      简要记录到 memory/当天日期.md。
     terminal: true
 
   done:
