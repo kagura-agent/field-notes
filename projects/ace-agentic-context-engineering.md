@@ -46,7 +46,7 @@ source: GitHub ace-agent/ace + arxiv 2510.04618
 
 ## 可借鉴
 - helpful/harmful 双维度加入 beliefs-candidates
-- nudge 标记"这次遵守/违反了哪条 DNA 规则"
+- ✅ nudge 标记"这次遵守/违反了哪条 DNA 规则" → **已应用 (2026-04-20)**: NUDGE.md §5 DNA Rule Tagging
 - 增量更新思路：改 DNA 时只改变化的部分，不重写
 
 [[self-evolving-agent-landscape]] [[beliefs-upgrade-mechanism]] [[mechanism-vs-evolution]]
