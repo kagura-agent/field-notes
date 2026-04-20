@@ -188,6 +188,45 @@
   - 现支持 10 个框架: OpenClaw, Hermes, QwenPaw, IronClaw, PicoClaw, ZeroClaw, NanoClaw, NemoClaw + none
 - **观察**: QwenPaw 是阿里通义系 agent 框架，AMAP-ML 也是阿里系，替换 CoPaw 说明在优先自家生态适配
 
+## 04-20 更新：PR #8 — Skill Tracking + Hermes 深度集成 + 诊断工具
+
+> Stars: 691 (04-17) → 待确认 | PR #8 merged 04-17
+
+### SKILL.md 文件级追踪 (api_server.py)
+- 新增 tool call 拦截逻辑：从每个 assistant tool call 中提取 SKILL.md 路径
+- 覆盖 read/write/edit/shell/patch 等 20+ 种 tool 名称变体
+- 核心方法 `_extract_skill_paths_from_tool_call()`：解析 function arguments，匹配 path/file/target/destination 等字段
+- shell 命令中用正则 `_SHELL_SKILL_PATH_RE` 提取 SKILL.md 路径
+- Hermes 原生工具（`skill_view` / `skill_manage`）走独立提取路径
+- 每个 turn 记录 `modified_skills` 字段 → evolve server 可精确知道哪些 skill 被 agent 触碰
+- **洞察**：这解决了 skill 归因问题——之前只能从 session prompt 推测用了哪些 skill，现在有 tool-level ground truth
+
+### Hermes 分类层级 (skill_hub.py)
+- `~/.hermes/skills/` 下支持 `category/skill_name/SKILL.md` 两级结构
+- `_is_hermes_skill_root()` 检测是否为 Hermes 技能目录
+- `push_skills` 改用 `glob(..., recursive=True)` 递归发现
+- manifest 自动记录 category（从路径解析）
+- **意义**：Hermes 的 10 个 category（coding, research, agentic 等）现在是 SkillClaw 的一等公民
+
+### 诊断 CLI
+- `skillclaw doctor hermes` — 检查 config 路径、model 路由、base_url、skills 目录、备份状态
+- `skillclaw restore hermes` — 从备份恢复 `~/.hermes/config.yaml`
+- 输出结构化 report（ordered keys + issues/notes/next_steps lists）
+- **设计模式**：doctor 命令是好实践——集成越多框架，诊断工具越重要
+
+### README 营销重构
+- 从 "collective evolution" 叙事转向 "single user value first"：
+  - Loop 1: 单用户 Hermes + SkillClaw 两循环（task-time + post-task evolution）
+  - Loop 2: 同一用户多 agent 统一 skill library（multiplier effect）
+  - Loop 3: 同一用户多设备 skill 跨环境同步
+  - Loop 4: 才到集体进化（团队共享）
+- **营销洞察**：先卖单人价值再扩展到团队，降低入门门槛。比之前直接上 "N users collective" 更容易 land
+
+### 对我们的意义
+1. **Skill 归因追踪**：tool call 级别的 SKILL.md 修改追踪是我们缺失的。nudge 只知道 session 结果，不知道具体哪些 skill 文件被改了。如果做 skill-trajectory-tracking Phase 1，可以参考这个 extraction 逻辑
+2. **Doctor 命令模式**：我们的 skill 系统也可以有 `openclaw doctor skills`——检查 SKILL.md 格式、触发词覆盖率、引用路径有效性
+3. **渐进式 value prop**：单人→多 agent→多设备→团队，这个叙事结构适用于任何需要说服用户采用的工具
+
 ## 关联
 
 - [[skill-trajectory-tracking]] — 我们的 skill 进化追踪设计，直接受 SkillClaw 启发
