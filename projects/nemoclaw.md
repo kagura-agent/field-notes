@@ -75,6 +75,13 @@
 - **Tests**: 2 new validation tests + 1 recovery test, all 45 pass
 - **Lesson**: HTTP status codes are ambiguous across providers — message-based classification should precede status-based for credential errors
 
+## PR #2080 — Connect hint instructions (2026-04-20)
+- **Status**: PENDING, CI pass, CodeRabbit feedback adopted
+- **Scope**: 2 files (nemoclaw.ts, install.sh)
+- **Fix**: Show agent-specific TUI command (`hermes` for hermes, `openclaw tui` for openclaw, agent name for others) and corrected exit hint (`/exit` then `exit`)
+- **CodeRabbit feedback**: Generalize for non-hermes/openclaw agents — adopted with `case` in shell and ternary in TS
+- **Lesson**: Simple UX text fixes are good entry points; CodeRabbit suggestions for generalization are often worth adopting
+
 ## Maintainer Insights (2026-04-11)
 - cv: strict on commit signing (GPG required), responsive, will close stale PRs (closed #944)
 - wscurran: thorough approver, positive feedback
