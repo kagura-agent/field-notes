@@ -94,3 +94,12 @@
 - **CI**: Import Check (3.11/3.12) + Smoke Tests (3.11) + Test Summary，都很快
 - **贡献要求**: PR 必须 target `dev` 分支，pre-commit run --all-files
 - **环境**: Python 3.11/3.12, FastAPI, uvicorn
+
+### PR #347 — fix(rag): guard against None embeddings in LlamaIndex pipeline (2026-04-20)
+- **Issue**: #346 (RAG query crashes with TypeError: NoneType * float)
+- **根因**: `_extract_embeddings_from_response` 用 `item.get("embedding", [])` — `dict.get()` 只在 key 缺失时返回 default，key 存在但值为 None 时返回 None。None 存入 vector store → `np.dot` 崩溃
+- **修复**: 两层防御 — adapter 层 `or []` 拦截 None，pipeline 层 `_get_text_embeddings` 校验 + zero vector 替换
+- **状态**: PENDING (CI 9 fail = pre-existing loguru 缺失，174 pass)
+- **测试**: `test_extract_embeddings.py` 加了 None embedding 场景
+- **CI 注意**: Smoke Tests 的 loguru ModuleNotFoundError 是上游问题（requirements 缺 loguru），不影响我们的 PR
+- **本地测试**: `.venv/bin/python -m pytest tests/services/embedding/ tests/services/rag/ -q`（45 pass，10 pre-existing fail）
