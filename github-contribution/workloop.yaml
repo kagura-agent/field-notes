@@ -72,7 +72,7 @@ nodes:
       确认没有竞争 PR：`gh pr list --repo owner/repo --search "关键词"` 检查。
 
       **黑名单 repo（绝对不碰）：**
-      - NousResearch/hermes-agent — PR 超限严重，暂停贡献直到存量消化
+      （当前无黑名单 repo）
 
       **前置过滤（每个候选 repo 必须先过，不过的直接跳过，不进 study）：**
 
