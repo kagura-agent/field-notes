@@ -79,3 +79,11 @@ Open-source coding agent CLI. 144k+ stars, 92% merge rate.
 - **Approach**: GitHub API for code reading + direct file commits (repo too large to clone locally)
 - **CI**: check-duplicates, check-standards, check, add-contributor-label, check-compliance — all passed
 - **Note**: Must use PR template or compliance bot flags the PR within minutes
+
+### #23470 — fix(ripgrep): inline paths in PowerShell Expand-Archive command (2026-04-20)
+- **Status**: PENDING (CI all green ✅)
+- **Issue**: #23457 — Expand-Archive error on Windows PowerShell when loading skills
+- **Root cause**: `$args[0]`/`$args[1]` in PowerShell `-Command` not reliably populated from trailing args (Windows PowerShell 5.x)
+- **Fix**: Inline paths directly into command string with single-quote escaping (`'` → `''`)
+- **Approach**: GitHub API (repo too large to clone)
+- **Note**: 2-line change, very surgical. Same file as #23412 (ripgrep.ts — active area of refactoring)
