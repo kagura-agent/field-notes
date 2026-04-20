@@ -527,3 +527,12 @@ Awaiting re-review.
 - sqlc-generated code (`issue.sql.go`) can be manually edited — just follow the exact pattern (struct field + Scan order + SQL column position)
 - Go 1.26.1 required — our local Go is 1.24.4, can't build locally. Rely on CI.
 - Bohan-J does thorough reviews with must-fix/nice-to-have tiers. PR template is informal (no mandatory sections).
+
+## v0.2.7 Release (2026-04-20)
+
+> ★17,309 (04-20) | +2,237 since first check (15,072 on 04-19)
+
+增量发布，无架构变化：
+- `feat`: configurable pgxpool size（默认 sane defaults），multi-select autopilot weekly triggers，hourly desktop update poll，create sub-issue from selected text，ALLOW_SIGNUP + email allowlist for selfhost
+- `fix`: OpenClaw AgentInstructions delivery，session resume pointer，cookie Secure flag from scheme，infinite re-render loops，stale --parent UUID reuse
+- 观察：selfhost 功能快速完善（auth gating + .env.example 文档化），与 [[openclaw]] 在自托管方向竞争加剧
