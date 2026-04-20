@@ -28,6 +28,13 @@
 ## 注意事项
 - eslint 禁止 unused vars，catch 里不用的 error 要命名为 `_err`
 - `packages/core/src/db/connection.ts` 是 mock 重点 — 测试通过 `mock.module('./connection', ...)` 注入
+- CodeRabbit 自动 review，有 pre-merge checks 模板（Description check 会 warn 缺少 template sections 但不 block）
+- Shell 脚本改动：CodeRabbit 会检查 find 性能（如 -prune），值得关注
+
+## PR 记录更新 (2026-04-20)
+| PR | Issue | 状态 | 备注 |
+|---|---|---|---|
+| #1307 | #1279 | pending | docker-entrypoint.sh safe.directory bind-mount fix |
 - SQLite 返回 TEXT string，PostgreSQL 返回 JSONB object — 两种 path 都要测
 - `trySpawn` 返回 true 只要 child.pid 存在 — 不代表子进程真的成功了（Windows 尤其如此）
 - Windows terminal spawning 必须 quote 路径（spaces 问题 #1035）
