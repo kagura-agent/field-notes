@@ -94,3 +94,18 @@
 - **Kilo Code Review**: No Issues Found, Recommendation: Merge
 - **方法**: 最小改动 — 只分离 Copilot 分支，不改其他 provider 逻辑
 - **教训**: `smallOptions()` 和 `variants()` 对同一 provider 的 effort 列表应保持一致。检查时对比两个函数的 case 分支
+
+### PR #9232 — fix(ignore): match unrooted .kilocodeignore patterns at any tree depth
+- **Issue**: #9228 — .kilocodeignore does not work for single files
+- **状态**: OPEN (2026-04-20)
+- **改动**:
+  - `packages/opencode/src/kilocode/ignore-migrator.ts`: 新增 `isUnrooted()` 判断 gitignore 模式是否应匹配任意深度；`buildPermissionRules()` 对 unrooted 模式同时生成 root 级和 `*/` 前缀两条规则
+  - `packages/opencode/test/kilocode/ignore-migrator.test.ts`: 8 个新测试覆盖 isUnrooted 分类和 buildPermissionRules 子目录变体
+  - changeset: patch (`@kilocode/cli`)
+- **根因**: `convertToGlob("secret.txt")` 返回 `"secret.txt"`，`Wildcard.match` 用 `^secret\.txt$` 正则只匹配 root 路径。gitignore spec 规定无 `/` 分隔符的模式应匹配任意深度
+- **方法**: 对每个 unrooted 模式额外生成 `*/pattern` 规则
+
+## 踩坑记录
+- kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
+- gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
+- **大 repo 用 git cat-file 恢复缺失包源码时，会覆盖已修改的文件。应先 commit 改动，再恢复依赖**
