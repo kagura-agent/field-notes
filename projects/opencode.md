@@ -113,6 +113,15 @@ opencode 的 session compaction 架构分三层：
 - Plugin hook `experimental.session.compacting` 允许注入额外 context 或替换 prompt
 - Overflow 时会 replay 最近的用户消息（让新 turn 在压缩后继续）
 
+### #23630 — fix(grep): handle non-UTF-8 ripgrep output (2026-04-21)
+- **Status**: PENDING (CI all green ✅, compliance passed)
+- **Issue**: #23629 — Grep tool fails with non-UTF-8 (GBK) files
+- **Root cause**: `Match` zod schema only accepts `lines.text`, but ripgrep emits `lines.bytes` (base64) for non-UTF-8 content → parse failure breaks all grep
+- **Fix**: Added `TextOrBytes` zod schema that accepts either `text` or `bytes`, base64-decodes bytes variant. Applied to `lines` and `submatches[].match`
+- **Approach**: GitHub API (repo too large to clone)
+- **Test added**: Creates file with GBK bytes, verifies search doesn't throw
+- **Lesson**: ripgrep JSON format has text/bytes duality for all string fields — always handle both
+
 ### 对我们的启发
 - **preserve_recent_tokens 策略**值得借鉴：25% context 给最近对话保持连贯性 → 参考 [[context-budget-constraint]]
 - **pruning vs compaction 分离**：轻量级清理（prune tool output）+ 重量级压缩（LLM 摘要）分开处理
