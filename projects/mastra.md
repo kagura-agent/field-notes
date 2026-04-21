@@ -36,6 +36,14 @@
   - `populateUsageCount()` — First-write-wins usage (sets if undefined)
   - Usage reconstruction in finish handler rebuilds from `#usageCount`
 
+### PR #15575 — fix(memory): surrogate-safe truncation (2026-04-21)
+- **Issue**: #15573 — Observational memory truncation splits UTF-16 surrogate pairs → Anthropic rejects as invalid JSON
+- **Status**: PENDING (submitted, CodeRabbit passed ✅, CI pending secrets)
+- **Fix**: Added `surrogateSafeSlice()` helper to 3 truncation sites in memory package
+- **Tests**: 4 new tests, all passing
+- **Note**: Also identified same bug in `packages/core/src/processors/processors/token-limiter.ts` (line 407) — could be a follow-up PR
+- **Changeset**: included (learned from PR #15511 closure)
+
 ## Caveats
 
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
