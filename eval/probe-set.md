@@ -50,6 +50,7 @@
 
 ## 执行计划
 
+- **自动化脚本**: `wiki/eval/scripts/probe-measure.sh` — P3/P4/P5 全自动，P1/P2 半自动
 - **频率**：每周一次（周日 daily-review 时附带执行）
 - **记录**：结果追加到 `wiki/eval/history.md` 的新表
 - **触发**：手动（暂不加 cron，先验证价值）
