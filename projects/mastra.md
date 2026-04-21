@@ -44,6 +44,13 @@
 - **Note**: Also identified same bug in `packages/core/src/processors/processors/token-limiter.ts` (line 407) — could be a follow-up PR
 - **Changeset**: included (learned from PR #15511 closure)
 
+### PR #15577 — fix(client-js): collect all tool invocations from streamed tool-calls step (2026-04-21)
+- **Issue**: #15576 — `processStreamResponse` only picks one tool-invocation per step via `reverse().find()`
+- **Status**: PENDING (submitted, CI passing except Vercel fork auth, CodeRabbit review addressed)
+- **Fix**: Replaced `reverse().find()` with `filter()` to collect ALL pending tool-invocations (state === 'call'), dedup by toolCallId, execute all, patch all results into one message clone, make one recursive call. Fixed both v2 and legacy streaming paths.
+- **CodeRabbit feedback**: Pointed out missing null guard on `lastMessage` in legacy path — fixed in follow-up commit
+- **Changeset**: included
+
 ## Caveats
 
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
