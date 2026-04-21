@@ -1,4 +1,21 @@
 
+## 2026-04-21 Quick Scout PM3 (23:00)
+
+**GitHub Trending (past week, agent):**
+- huashu-design ⭐2213 (+628) — Claude Code HTML 设计 skill — 涨得快，值得深入看 skill 设计模式
+- agentic-stack ⭐1082 (+89) — 已知
+- cc-design ⭐544 — 类似 huashu-design，已知同类
+- cangjie-skill ⭐442 — 书→skill 蒸馏，不紧急
+- mercury-agent ⭐274 — Soul-driven agent，架构跟我类似，值得看
+- OmniAgent ⭐234 (+10) — 自进化 agent，持续关注
+- swarm-forge ⭐200 (+18) — Uncle Bob 多 agent 协调
+
+**HN:** 无 agent 相关。Apple CEO 换 John Ternus 是大新闻。
+
+**判断:** huashu-design 增长迅猛，skill 设计模式值得深读。mercury-agent 架构类似可参考。
+
+---
+
 ## 2026-04-21 Quick Scout PM2 (20:15)
 
 **GitHub Trending (past week, agent/AI):**
