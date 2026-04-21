@@ -68,6 +68,8 @@ nodes:
       next: handle_feedback
     - condition: 所有 PR 状态正常，没有待处理的
       next: find_work
+    - condition: gogetajob/gh 命令失败（网络、认证、API 限流）
+      next: fallback_offline
 
   handle_feedback:
     task: "处理上一步发现的 PR 反馈：\n1. 读 review 评论，理解要求\n2. 修改代码\n3. **本地测试**（不能跳过）：\n   a.\
@@ -115,6 +117,8 @@ nodes:
       next: pr_gate
     - condition: 没有合适的 issue 可做
       next: discover
+    - condition: gogetajob/gh 命令失败（网络、API 限流）
+      next: fallback_offline
 
   pr_gate:
     task: |
@@ -178,6 +182,8 @@ nodes:
       next: find_work
     - condition: 没找到合适的新项目
       next: reflect
+    - condition: 网络/API 故障，无法搜索
+      next: fallback_offline
 
   study:
     task: "深入研究选中的项目和 issue：\n1. **必须先读笔记**（不能跳过）：\n   a. cat ~/.openclaw/workspace/wiki/projects/<项目名>.md\
@@ -208,6 +214,8 @@ nodes:
       next: implement
     - condition: issue 不合适（上游问题/竞争PR/太复杂），需要重选
       next: find_work
+    - condition: clone 失败/网络不可用/repo 访问受限
+      next: fallback_offline
 
   implement:
     task: "**只实现 study 阶段选定的那一个 issue，不做任何其他事。禁止顺手修其他 bug、提其他 PR、改其他文件。**\n\n按照 study 阶段的计划实现：\n0. **分工决策**：\n   - 代码实现用 acpx exec 同步调 Claude Code：\n\
@@ -228,6 +236,22 @@ nodes:
       \ 前自检**（不能跳过）：\n   a. `git diff --stat` 看全局影响\n   b. 改了接口/类型？→ grep 所有 import\
       \ 这个接口的文件，确认 mock/stub 同步了\n   c. 项目有测试命令？→ 跑。没有本地环境？→ 至少 grep 验证 mock 完整性\n\
       汇报实现结果和测试状态。\n"
+    branches:
+    - condition: 实现完成，测试通过
+      next: submit
+    - condition: acpx exec 超时/崩溃，需要手动接手
+      next: implement_manual
+    - condition: 测试失败，无法修复
+      next: reflect
+
+  implement_manual:
+    task: |
+      acpx exec 失败了，手动完成实现：
+      1. 检查 acpx 已经做了什么（git diff / git log）
+      2. 如果部分完成 → 手动补完剩余部分
+      3. 如果完全失败 → 从头手动实现（参照 study 阶段的计划）
+      4. 跑测试确认通过
+      汇报实现结果。
     next: submit
 
   submit:
@@ -305,6 +329,16 @@ nodes:
       - 之前的待办已经顺手做完了？→ 删掉\n\
       只放体系改进，不放 PR 状态。\n"
     next: done
+
+  fallback_offline:
+    task: |
+      网络/API 不可用，无法正常打工。转为离线有效工作：
+      1. **整理已有 PR**：读本地 git log，检查有没有未 push 的 commit
+      2. **更新 wiki 笔记**：读 wiki/projects/ 下的笔记，补充遗漏的维护者模式、测试命令等
+      3. **读代码**：选一个常打的 repo，深读一个模块，写笔记
+      4. **整理 beliefs-candidates**：有没有重复 3 次以上但还没升级的 gradient？执行升级
+      产出必须有：至少一个文件被修改并 commit。
+    next: reflect
 
   done:
     task: '这一轮工作完成。记录今天的工作到 memory 文件。
