@@ -96,6 +96,45 @@ GenericAgent 发布了 Technical Report PDF（assets/GenericAgent_Technical_Repo
 - [[skillclaw]] — skill 层面的集体进化
 - [[self-evolution-as-skill]]
 
+## 跟进 2026-04-21: 去中心化验证网络 + 多节点生产运行
+
+### 关键变化
+
+**Stars**: 4,243 → 6,122⭐ (3天 +1,879)，增速惊人
+
+**v1.68.0-beta (04-18~19): Validator Role — 去中心化验证**
+- Opt-in validator role: staked nodes 可以从 Hub 领取验证任务
+- 在隔离 sandbox 中运行 asset validation commands，报告 PASS/FAIL
+- Hub 做共识决策（consensus-based promotion）
+- 配置门控 `EVOLVER_VALIDATOR_ENABLED`（默认关闭）
+- **洞察**: Evolver 从单 agent 进化引擎转向**去中心化进化网络**。validator 角色 = 让多个 agent 互相验证进化结果，类似 PoS 共识。这是 agent 自进化领域首次出现的网络化验证机制
+
+**v1.69.x (04-20~21): 生产环境鲁棒性**
+- **PR #4**: 在 ~20 个 OpenClaw agent nodes 上运行发现的 3 个 bug
+  - CWD-relative `require('./src/evolve')` → absolute path（`buildValidationCmd()`）
+  - 自动创建 GEP asset files（`ensureAssetFiles()`）— LLM 生成的 grep/cat 命令引用不存在的 JSONL 文件
+  - **修复循环修复**: 3+ 次连续失败 repair → `FORCE_INNOVATION=true` 强制创新而非继续修
+- **v1.69.5**: Hub 签发的 node_id 格式修复（16-hex vs 12-hex）
+- **v1.69.6**: 作为 npm dep 安装时自动检测 host `.git`
+- **v1.69.7**: 默认配置加固（leak check 从 warn 改 strict）
+
+### 生产经验启发
+
+1. **Circuit breaker for repair loops** — 我们的 beliefs-candidates 也可能遇到类似情况：同一个 gradient 反复出现但改进无效 → 需要机制跳出修复循环，尝试全新方向
+2. **Asset file 预创建** — LLM 会引用它认为「应该存在」的文件。防御性编程：如果 LLM 可能 grep 某个文件，确保它存在（哪怕为空）
+3. **20+ OpenClaw nodes 运行 evolver** — 说明 Evolver 开始成为 OpenClaw 生态的标配 skill，不只是独立工具
+4. **Hub-issued node ID** — 网络化运行带来身份管理问题（节点重启不应换 ID）
+
+### 竞品对比动态
+
+| 项目 | 本周动态 | 方向 |
+|------|---------|------|
+| Evolver | 去中心化验证网络 + 多节点生产 | 网络化进化 |
+| [[opencode]] | session compaction + 并发编辑修复 | 工具稳定性 |
+| Claude Code | /resume 加速 67% + sandbox 安全加固 | 性能+安全 |
+
+关联：[[multi-agent-distributed-systems]], [[mechanism-vs-evolution]]
+
 ## 跟进 2026-04-18: License 争议 + Source-Available 转型
 
 - **v1.67.4** (04-18): 修了 Claude Code adapter `.claude/settings.json` schema 兼容
@@ -105,3 +144,27 @@ GenericAgent 发布了 Technical Report PDF（assets/GenericAgent_Technical_Repo
   - 已发布版本保持 MIT/GPL-3.0，未来版本转 source-available
 - **生态信号**: 自进化赛道开始出现 IP 纠纷，先行者保护意识增强。GPL-3.0 可能不够防抄，才要转 source-available
 - **对我们的影响**: 做 self-evolving agent 时需要：(1) 明确引用来源 (2) 设计差异化而非复制 (3) 注意 license 合规
+
+## OpenCode 跟进 2026-04-21
+
+> anomalyco/opencode | 146,751⭐ | v1.14.19 (04-20)
+
+近期密集发版（v1.14.17~v1.14.19，3 天 3 版）：
+- **Session compaction 改进**: `preserve_recent_tokens` — 压缩 session 时保留最近几轮原文，后续引用不丢上下文
+- **并发编辑保护**: 多 tool 并行编辑同一文件时不再互相覆盖
+- **OTEL 遥测**: 支持 `OTEL_RESOURCE_ATTRIBUTES` 自定义遥测，workspace 内也传递 exporter 设置
+- **NVIDIA 作为内置 provider**
+
+关联：[[coding-agent-ecosystem]], [[process-hang-watchdog]]
+
+## Claude Code 跟进 2026-04-21
+
+> anthropics/claude-code | 116,397⭐ | v2.1.116 (04-20)
+
+- **/resume 大 session 加速 67%**: 40MB+ session 和大量 dead-fork 条目处理更快
+- **MCP 延迟加载**: `resources/templates/list` 推迟到首次 @-mention 才调用
+- **gh rate limit 提示**: bash tool 检测到 GitHub API rate limit 时给 agent 提示退避
+- **Sandbox 安全**: auto-allow 不再绕过 rm/rmdir 对 `/`、`$HOME` 等关键路径的保护
+- **Agent hooks**: `hooks:` frontmatter 现在在 `--agent` 主线程模式下也触发
+
+关联：[[claude-code-skills]], [[agent-security]]

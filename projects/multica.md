@@ -54,3 +54,8 @@ Moonshot AI 的 [Kimi Code CLI](https://github.com/MoonshotAI/kimi-cli) 通过 A
 
 ### 趋势
 multica 正在快速扩展 agent 生态宽度（更多 runtime）和深度（更细粒度配置）。这对 OpenClaw 的竞争压力值得关注。
+
+### Lesson: PR #1415 superseded by #1426 (2026-04-21)
+- Issue #1395: usage stats showing wrong model
+- My approach: different path. Maintainer Bohan-J's fix (#1426): read `meta.agentMeta.model` from OpenClaw's `--json` output in `server/pkg/agent/openclaw.go`
+- Takeaway: OpenClaw agent's JSON blob has the real model in `meta.agentMeta.model`, not the agent name passed via `--agent`. The daemon should extract from there.
