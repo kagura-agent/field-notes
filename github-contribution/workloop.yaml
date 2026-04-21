@@ -41,14 +41,14 @@ nodes:
 
       **去重规则（必做）：**
       处理任何 review/comment 前，先查“球在谁手里”：
-      `gh pr view <N> --repo <repo> --json comments --jq '.comments[-1].author.login'`
+      `gh pr view <N> --repo <repo> --json comments --jq ''.comments[-1].author.login''`
       - 最后一条 comment 是 kagura-agent → 球在对方手里，**不操作，等对方回复**
       - 最后一条 comment 是对方 → 球在我手里，需要处理
       - 没有 comment 但有 CHANGES_REQUESTED review → 检查 review 时间 vs 我最后 push 时间，push 在后面说明已处理过，等对方再看
       - 一次 review → 最多一次回复。回复后等对方，不追发
 
       **Step 2: Per-repo PR 存量审计**（不能跳过）
-      运行 `gh pr list --author=kagura-agent --state=open --json headRepository --jq '[.[].headRepository.name] | group_by(.) | map({repo: .[0], count: length}) | sort_by(-.count) | .[] | "\(.repo): \(.count)"'`
+      运行 `gh pr list --author=kagura-agent --state=open --json headRepository --jq ''[.[].headRepository.name] | group_by(.) | map({repo: .[0], count: length}) | sort_by(-.count) | .[] | "\(.repo): \(.count)"''`
       列出每个 repo 的 open PR 数量。
       - 超过 5 个的 repo → 标记为「存量超限」，按 PR 存量管理规则处理（主动关闭 >21天无 review 的 PR）
 

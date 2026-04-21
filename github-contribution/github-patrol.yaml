@@ -88,12 +88,17 @@ nodes:
       - 建议 → 评估后回复
       - 感谢/关闭 → 记录
 
+      **去重规则（必做）：**
+      处理任何 review/comment 前，先查 PR 的 comment 历史：
+      - kagura-agent 是否已经回复过这条 review？
+      - 回复后 reviewer 有没有新回应？
+      - 如果已回复且 reviewer 没新回应 → 跳过，不重复回复
+      - 一次 review → 最多一次回复。回复后等对方，不追发。
+
       **执行原则：**
-      - **去重检查（必做）：** 行动前先查 PR/issue 的 comment 历史，看 kagura-agent 是否已经回复过这条 review/comment。如果已经回复过且内容相同（修了同样的东西、说了同样的话）→ 跳过，不要重复回复。reviewer 没有新回复 = 还没看，不需要催。
       - reviewer 要求 rebase/sign-off → 立刻执行，不记"等"
       - 代码级修改 → 不在巡检中做，workloop followup 会处理
       - 执行完在 PR/issue 上回复（**仅当还没回复过时**）
-      - **一次 review → 最多一次回复。** 回复后等 reviewer 再次回应，不追发。
 
       汇报处理结果。
     next: check_open_prs

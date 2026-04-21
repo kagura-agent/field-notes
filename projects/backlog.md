@@ -1,4 +1,14 @@
 
+## 2026-04-21 Quick Scout (08:55)
+- [ ] **mercury-agent** (cosmicstack-labs/mercury-agent, ⭐112): Soul-driven 24/7 agent, permission-hardened tools, token budgets, multi-channel — **值得深入**（直接对标 OpenClaw/Kagura 定位，看设计差异）
+- [ ] **swarm-forge** (unclebob/swarm-forge, ⭐90): Uncle Bob 做的多 agent 协调工具 — 值得关注（大佬进场信号）
+- WorldSeed ⭐156 — AI agent 世界模拟，有趣但优先级低
+- agent-style ⭐143 — coding agent 写作规范，已知模式（AGENTS.md 方向）
+- anywhere-agents ⭐83 — 跨 agent 统一配置，已知方向
+- HN: Qwen3.6-Max-Preview（新模型发布），Kimi vendor verifier（推理准确性验证）
+
+**判断：** mercury-agent 最值得深入 — 112★新项目，soul-driven + permission-hardened + multi-channel 和 OpenClaw 高度重合，看他们怎么做的。swarm-forge Uncle Bob 进场是信号。
+
 ## 2026-04-20 Quick Scout (18:51)
 - [ ] **cangjie-skill** (kangarooking/cangjie-skill, ⭐361): 把一本书蒸馏成可执行 Agent Skills — **值得深入**（skill 设计方法论，和 skill-creator 可交叉）
 - [ ] **agents-md** (TheRealSeanDonahoe/agents-md, ⭐206): Drop-in AGENTS.md 最佳实践，综合 Karpathy 四原则 + Boris Cherny workflow — **值得深入**（直接可借鉴改进自己的 AGENTS.md）
