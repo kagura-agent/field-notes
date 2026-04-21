@@ -74,3 +74,16 @@ Agent → tool call (git status, pnpm test, etc.)
 3. **Domain-specific git status rewriting** — strips help text, normalizes status codes (`M:`, `A:`, `D:`)
 4. **Tiny output passthrough** — outputs ≤240 chars skip reduction (not worth it)
 5. **Dedupe adjacent lines** — catches repeated build warnings/errors
+
+## Applied (2026-04-21)
+
+Installed v0.5.1 globally and configured hooks for both Claude Code and Codex:
+- `tokenjuice install claude-code` → PostToolUse hook in `~/.claude/settings.json`
+- `tokenjuice install codex` → hooks.json + `codex_hooks` feature flag in `~/.codex/config.toml`
+- `tokenjuice doctor hooks` → all ok
+
+**Quick validation**: `git status` output reduced ~50% (220→109 chars). Repeated `npm warn deprecated` lines correctly deduped.
+
+**Integration layer**: Hooks sit at coding agent level (Claude Code/Codex), not at OpenClaw gateway. This means tool output compaction happens when subagents use coding agents — the main context budget win for our heaviest token consumers.
+
+**Next**: Monitor `tokenjuice stats` after a few coding sessions to measure real-world reduction. Compare with [[context-budget-baseline-2026-04-14]] numbers.
