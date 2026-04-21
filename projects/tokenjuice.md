@@ -87,3 +87,12 @@ Installed v0.5.1 globally and configured hooks for both Claude Code and Codex:
 **Integration layer**: Hooks sit at coding agent level (Claude Code/Codex), not at OpenClaw gateway. This means tool output compaction happens when subagents use coding agents — the main context budget win for our heaviest token consumers.
 
 **Next**: Monitor `tokenjuice stats` after a few coding sessions to measure real-world reduction. Compare with [[context-budget-baseline-2026-04-14]] numbers.
+
+### Stats Check 04-21
+
+First `tokenjuice stats` run — only 3 entries recorded:
+- Total raw: 710 chars → reduced: 425 chars (savings 40%)
+- Top reducer: `git/status` (2 calls, saved 224 chars, avg ratio 49%)
+- `generic/fallback` (1 call, saved 61 chars, ratio 77%)
+
+Too few data points for conclusions. Hooks are working but coding sessions have been sparse since install. Next check: 04-28.

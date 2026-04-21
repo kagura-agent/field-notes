@@ -1,4 +1,19 @@
 
+## 2026-04-21 Quick Scout PM2 (20:15)
+
+**GitHub Trending (past week, agent/AI):**
+- huashu-design ⭐1585 — Claude Code HTML 设计 skill — 值得关注（agent skill 设计参考）
+- agentic-stack ⭐993 (+166) — 已知（有笔记）
+- cangjie-skill ⭐436 — 把书蒸馏成 Agent Skills — 有趣概念，优先级低
+- OmniAgent ⭐224 — 自进化+安全硬化 agent — 值得关注
+- swarm-forge ⭐182 (+33) — Uncle Bob 多 agent 协调 — 已知
+
+**HN Front Page:**
+- Anthropic 重新允许 OpenClaw 式 CLI 用法 (261p) — 直接相关，利好
+- 其余无 agent 相关
+
+**判断：** 无爆发性新发现。huashu-design 的 skill 设计思路可参考，但不紧急。
+
 ## 2026-04-21 Quick Scout PM (14:40)
 
 **GitHub Trending (past week, agent/AI):**
