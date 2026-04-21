@@ -145,6 +145,26 @@ GenericAgent 发布了 Technical Report PDF（assets/GenericAgent_Technical_Repo
 - **生态信号**: 自进化赛道开始出现 IP 纠纷，先行者保护意识增强。GPL-3.0 可能不够防抄，才要转 source-available
 - **对我们的影响**: 做 self-evolving agent 时需要：(1) 明确引用来源 (2) 设计差异化而非复制 (3) 注意 license 合规
 
+## 跟进 2026-04-21 晚: v1.69.5-8 生产加固冲刺
+
+**Stars**: 6,146⭐ (+24 since earlier today)
+
+今天密集发了 4 个版本（v1.69.5-8），全部是生产环境修复，无架构变化：
+
+| 版本 | 变化 | 根因 |
+|------|------|------|
+| v1.69.5 | node_id 格式验证放宽 12→12-32 hex | Hub 签发 16-hex ID，客户端拒绝后每次重启换 ID |
+| v1.69.6 | 作为 npm dep 时自动检测 host `.git` | hollow_commit: git diff 看不到 Hand Agent 的编辑 |
+| v1.69.7 | leak check 默认 warn→strict，hub URL 简化 | 作为依赖安装时默认值不够安全 |
+| v1.69.8 | publish script 自动发布 | — |
+
+**观察**:
+- 4 小时 4 版本的发布节奏说明有大量用户在生产中跑 evolver，bug 报告→修复→发版极快
+- v1.69.6 的 hollow_commit 修复特别有意思：evolver 作为 npm dep 安装在别人项目里时，`git diff` 默认看自己的包目录而不是宿主项目，导致所有进化循环空转。这是工具从"独立运行"到"嵌入式 skill"转型时的典型陷阱
+- v1.69.7 的 leak check strict 默认 = Evolver 开始认真对待 supply chain 安全（作为别人项目的依赖，不能泄露宿主的敏感信息）
+
+关联：[[agent-security]], [[coding-agent-ecosystem]]
+
 ## OpenCode 跟进 2026-04-21
 
 > anomalyco/opencode | 146,751⭐ | v1.14.19 (04-20)
