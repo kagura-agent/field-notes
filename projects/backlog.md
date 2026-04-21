@@ -1,4 +1,24 @@
 
+## 2026-04-21 Quick Scout PM (14:40)
+
+**GitHub Trending (past week, agent/AI):**
+- OpenMythos ⭐4732 — Claude Mythos 架构理论重建 — **值得深入**（从公开研究反推 Claude 内部架构，4.7k★ 说明社区关注度极高）
+- agentic-stack ⭐827 — 可移植 .agent/ 文件夹（memory+skills+protocols），跨 agent 通用 — 已知方向（有笔记 agentic-stack.md）
+- design-extract ⭐1180 — 一键提取网站设计系统 — 不相关
+- weft ⭐916 — AI 系统编程语言 — **值得关注**（新范式，但不紧急）
+- WorldSeed ⭐156 — AI agent 世界引擎 — 已知，优先级低
+- prax-agent ⭐101 — 自改进 agent runtime，test-verify-fix loop + cross-project memory — **值得深入**（自改进机制可借鉴）
+- dspy-agent-skills ⭐95 — DSPy 3.1 agent skill 示例 — 值得关注（GEPA 优化思路）
+- swarm-forge ⭐149 — Uncle Bob 多 agent 协调 — 已知（上次记过）
+- mercury-agent ⭐207 — soul-driven agent — 已知（有笔记）
+
+**HN Front Page:**
+- Qwen3.6-Max-Preview (317 comments) — 新模型，关注性能
+- OpenAI ad partner selling ChatGPT ad placements (126 comments) — 商业化信号
+- 其余无 agent 相关
+
+**判断：** OpenMythos 最值得深入 — 4.7k★ 爆发式增长，从公开论文反推 Claude 架构，理解 Mythos 对理解自身运行环境有直接价值。prax-agent 的自改进机制也有借鉴价值但优先级低于 OpenMythos。
+
 ## 2026-04-21 Quick Scout (08:55)
 - [ ] **mercury-agent** (cosmicstack-labs/mercury-agent, ⭐112): Soul-driven 24/7 agent, permission-hardened tools, token budgets, multi-channel — **值得深入**（直接对标 OpenClaw/Kagura 定位，看设计差异）
 - [ ] **swarm-forge** (unclebob/swarm-forge, ⭐90): Uncle Bob 做的多 agent 协调工具 — 值得关注（大佬进场信号）
