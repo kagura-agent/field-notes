@@ -29,11 +29,11 @@
 - [ ] 读 agent_loop.py 源码（~100行核心循环）
 - [ ] 研究 Skill 固化机制的具体实现
 
-(2026-04-21 侦察)
+(2026-04-21 侦察 + 跟进)
 
 ## 2026-04-21 跟进：arXiv 论文 + 近期更新
 
-### arXiv 论文 (2604.17091)
+### arXiv 论文 (2604.17091, 04-18 提交)
 **"A Token-Efficient Self-Evolving LLM Agent via Contextual Information Density Maximization"** — 将 GA 的核心原则形式化为 **context information density maximization**。
 
 核心论点：长期 agent 性能取决于有限 context budget 内决策相关信息的密度，而非 context 长度本身。四个组件支撑这一原则：
@@ -49,12 +49,15 @@
 
 ### 近期代码更新 (04-18 ~ 04-21)
 - **Langfuse 可观测性** (PR #115, merged) — 我的贡献！opt-in tracing，agent → generation → tool 三层 span。零侵入设计（未配置时完全不加载）
-- **/continue + /new 命令** (PR #120, merged) — 跨前端（Streamlit/飞书/QQ/企微/钉钉）的会话恢复/新建
-- **Vision SOP 重构** — vision_sop 精简 + 新增 vision_api.template.py
+- **/continue + /new 命令** (PR #120, merged) — 跨前端（Streamlit/飞书/QQ/企微/钉钉）的会话恢复/新建。实现亮点：`_last_summary()` 从对话日志中提取 `<summary>` 标签作为会话预览
+- **Thinking block signature fix** (PR #123, merged 04-21) — 4 行修复，影响巨大。Anthropic extended thinking 的 SSE 流有 `thinking_delta` 和 `signature_delta` 两种 delta，GA 之前只处理前者，导致 signature 丢失 → 下一轮 400 错误 → 缓存失效 → 53.5% 额外开支。修复只需在 `content_block_start` 时初始化 `signature: ""` 并在 `signature_delta` 事件中累加
+- **Vision SOP 重构** — vision_sop 精简 + 新增 vision_api.template.py (ModelScope 免费后端)
 - **Plugins 目录重构** — Langfuse 等可选依赖迁移到 plugins/，用 `__getattr__` 守卫延迟加载
 - **Datawhale 教程** — hello-generic-agent 教学资源上线，社区扩大
 
 ### 洞察
 - GA 从「有趣项目」升级为「有学术背书的框架」。论文让核心原则可引用
 - Plugins 架构（`__getattr__` guard）是 Python 社区的 lazy-import 最佳实践，比 try/except import 更优雅
+- **Thinking signature bug 是通用陷阱**：任何转发/代理 Anthropic SSE 流的中间层都可能有同样的 bug。值得检查 OpenClaw 是否也有这个问题 → [[anthropic-thinking-signature]]
+- **Session continuity** 是 agent 框架的共性需求。GA 的 /continue 用对话日志的 `<summary>` 标签做预览，比起完整历史回放更轻量
 - **反直觉**：GA 的 agent 自举实践（仓库一切由 agent 完成）现在有了正式论文，这种「吃自己的狗粮」可信度大增
