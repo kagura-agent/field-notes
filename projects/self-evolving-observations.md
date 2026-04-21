@@ -221,3 +221,39 @@ eval: metrics stable
 Open PRs: 20 (gh search)
 Review needed: none detected
 ```
+
+---
+
+## 🔬 自进化观察日报 2026-04-21
+
+### 管线活跃度
+- beliefs-candidates: **2 条新增**（symptom-vs-root-cause 第1次, pr-comment-spam 第1次）/ 0 条待升级（无 pattern 达 3 次阈值）
+- DNA 变更: **有（主动）** — 93e6812 restructure: DNA 文件直接在 workspace root 追踪，不再 cp-based sync。结构性改动，非内容变更
+- nudge 触发: **2 次**提及，质量**中**（dreaming light sleep 中引用了 nudge 内容，但无独立的 nudge 反思产出记录）
+- dreaming: **运行**（light sleep 模式），多条 candidate staged，含跨日历史 reflection
+
+### 闭环追踪
+- 完整闭环: **1 个** — e2b-dev/E2B#1276 maintainer 要求改动 → 处理并回复 ✅
+- 断裂处:
+  - opencode#23457 识别为 actionable（需调查 v1.14.17→v1.14.18 变更）但今日未启动调查
+  - kilocode#9182 被 #9245 supersede，识别了但未关闭 PR
+  - 2 条新 gradient 写入 beliefs-candidates ✅（记录完成），但后续行为验证要等复发观察
+
+### 今日发现
+1. **gradient 质量提升**: 今日 2 条新 gradient 都有具体 case（claude-hud 被 supersede、openclaw review 追发），不是空泛总结。比早期质量更高
+2. **DNA 结构性改进**: 将 DNA 文件直接 track 在 workspace root，消除了 cp-based sync 的 drift 风险。这是基础设施层面的进化
+3. **dreaming 在运行但产出模糊**: light sleep staged 了多条 candidate，但 confidence 偏低（0.62），且多为事实复述而非 insight 提炼。dreaming 质量是潜在改进点
+4. **打工产出活跃**: 10 个 PR（chat-infra 6 merged + 外部 4 open），但 beliefs-candidates 只提炼了 2 条 gradient — 提炼率偏低（2/10 = 20%）。大量 chat-infra PR 是文档型，gradient 提炼空间确实有限
+5. **nudge 存在感低**: memory 中 nudge 只被引用 2 次，未见独立的 nudge 触发反思段落。可能是触发条件未满足，也可能是触发了但没产出有价值内容
+
+### Cured Tracking 状态
+- skip-own-tools: CURED ✅
+- check-before-invest: CURED ✅
+- 验证纪律 / 数据纪律 / observation-without-action: 改善中 📈（下次审计 04-28）
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 1 commit (93e6812, restructure)
+- `beliefs-candidates.md`: 3 条 active gradient（最新 2 条 04-21，1 条 04-20）
+- `memory/2026-04-21.md`: nudge 2 mentions, dreaming 7 mentions
+- PR activity: 10 PRs created today（6 merged chat-infra, 4 open external）
+- Open issues on self-evolving-agent: #1-#4

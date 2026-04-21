@@ -35,6 +35,14 @@
 - agents map 按 slug（文件名）做 key，`name` 字段可以不同
 - fork PR 的 CI checks 大部分 skip，不影响 review
 
+### PR #9329 — fix(log): use relative history path to prevent double-concatenation
+- **Issue**: #9321 — Log stream error: double-concatenated absolute path
+- **状态**: OPEN (2026-04-21)
+- **改动**: `packages/opencode/src/util/log.ts`: `history: path.join(dir, ".log-history")` → `history: ".log-history"`
+- **根因**: `rotating-file-stream` 库在 `index.ts:162` 用字符串拼接 `path + history`，如果 history 是绝对路径就会双拼
+- **changeset**: patch
+- **CI**: fork PR checks skip（正常）
+
 ## 下次打工注意
 - 看 Kilo Code Review 的反馈模式
 - 如果需要本地测试，要 full clone（~大 repo）
