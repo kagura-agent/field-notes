@@ -51,6 +51,14 @@
 
 Links: cli-everything, [[agent-as-router]]
 
+### PR #1109 — YouTube channel empty videos fallback (2026-04-21)
+- Issue: #1108 — `youtube channel` returns empty `recent_videos` for some channels
+- Root cause: Code only checks Home tab for videos; some channels have no video shelves on Home
+- Fix: Fall back to Videos tab via second InnerTube browse request (+29 lines)
+- CI: all green (adapter-test, unit-test, build x3, bun-test, docs, audit)
+- Status: pending review
+- 无新测试（改的是运行时浏览器内逻辑，现有测试框架不覆盖）
+
 ### PR #624 — Substack selector fix (2026-03-31)
 - Issue: #621 — Substack DOM redesign，`<article>` → `<div role="article">`
 - Fix: 2 行选择器更新（`a[href*="/p/"]` for feed, `[role="article"]` for archive）
