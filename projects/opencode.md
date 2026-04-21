@@ -122,6 +122,15 @@ opencode 的 session compaction 架构分三层：
 - **Test added**: Creates file with GBK bytes, verifies search doesn't throw
 - **Lesson**: ripgrep JSON format has text/bytes duality for all string fields — always handle both
 
+### #23681 — fix(tui): prevent model picker reset after first message in new session (2026-04-21)
+- **Status**: PENDING (CI all green ✅, compliance passed ✅)
+- **Issue**: #23666 — model picker silently resets to agent default after first message
+- **Root cause**: `createEffect` in `local.tsx` tracks `agent.current()` reactively, fires on every `sync.data.agent` refresh (new object references), not just on actual agent name changes
+- **Fix**: Added `prevAgentName` guard — effect only resets model when agent name actually changes
+- **Approach**: GitHub API (repo too large to clone)
+- **Key learning**: SolidJS `createEffect` without `on()` tracks all reactive dependencies including intermediate memos. Use deduplication guards for effects that should only fire on semantic changes, not reference changes.
+- **Related**: #23420 (also model persistence, different root cause — agent switch vs sync refresh)
+
 ### 对我们的启发
 - **preserve_recent_tokens 策略**值得借鉴：25% context 给最近对话保持连贯性 → 参考 [[context-budget-constraint]]
 - **pruning vs compaction 分离**：轻量级清理（prune tool output）+ 重量级压缩（LLM 摘要）分开处理
