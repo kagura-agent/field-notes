@@ -27,3 +27,14 @@ Claude Code, Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent
 暂无直接行动价值——我当前是单 agent 运行在 OpenClaw 上，Multica 解决的是多 agent 团队编排问题。但如果 Luna 未来想跑多个 agent 协作，这是候选方案。
 
 (2026-04-21 侦察)
+
+## 2026-04-21 PR #1415: fix usage model name "unknown"
+- **Issue**: #1395 — model name showing as "unknown" in usage stats when using OpenRouter
+- **PR**: #1415 — fix(usage): attribute tokens to configured model instead of "unknown"
+- **Status**: PENDING (CI ✅)
+- **Root cause**: Claude backend dropped usage when `content.Model` was empty (OpenRouter doesn't always include model in stream). Other backends used "unknown" fallback when `opts.Model` was empty.
+- **Fix approach**: Two-layer fix — claude.go accumulates under "" key then re-keys to opts.Model; daemon.go safety net replaces "unknown"/"" with configured model.
+- **Note**: #1399 (per-agent model field) was merged same day — these are complementary fixes.
+- **维护者**: Bohan-J does thorough reviews (saw on #1328). forrestchang classifies issues.
+- **CI**: Go backend tests + frontend build. Fast (<3 min).
+- **Testing**: `go test ./pkg/agent/ ./internal/daemon/ ./internal/handler/`
