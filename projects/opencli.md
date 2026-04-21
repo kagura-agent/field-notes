@@ -66,3 +66,13 @@ Links: cli-everything, [[agent-as-router]]
 - 关键洞察：evaluate() 的数据提取代码本来就不依赖 article 标签，wait() 只是 readiness gate
 - 401 tests 全过，无需加新测试（改的是 wait selector 不是 scraping 逻辑）
 - opencli merge rate 极高（91%），maintainer jackwener 响应快
+
+### PR #1117 — fix concurrent workspace collision (2026-04-21)
+- Issue: #1114 — concurrent commands for same site fail with "Detached while handling command"
+- Root cause: workspace key `site:${cmd.site}` shared across concurrent commands → one closes the other's window
+- Fix: append `crypto.randomUUID()` to workspace key for per-execution isolation
+- 1-line change in `src/execution.ts`, 1767 tests pass, tsc clean
+- CI: all core checks pass (adapter-test, unit-test x2, build x3, bun-test, audit, docs)
+- e2e-headed tests pending (queued)
+- Status: pending review
+- 无新测试（workspace key 传到浏览器扩展，单元测试不覆盖）

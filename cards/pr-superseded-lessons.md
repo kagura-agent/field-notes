@@ -50,3 +50,10 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 ## 相关
 - [[kagura-work-patterns]] - 工作模式总集(暂未合并)
 - [[memevolve]] - 经验提取的学术框架
+
+### multica #1415 → #1426 (2026-04-21)
+**问题**: openclaw backend 把 token 归因到 "unknown" model
+**我的方案**: 在 `content.Model` 空时 fallback 到 opts.Model
+**maintainer 方案**: 从 `meta.agentMeta.model` 提取真实 LLM 标识符（如 deepseek-chat），作为首选源；opts.Model 降为第二 fallback
+**教训**: 数据溯源优先用最近、最精确的源头（runtime 自报），而非上游配置层 fallback。我的方案方向对但不够深——没有去挖 agentMeta 里已有的 model 字段
+**通用 pattern**: 修 bug 前先完整读目标结构体所有字段，避免"只看到用了什么"而忽略"还有什么可用"
