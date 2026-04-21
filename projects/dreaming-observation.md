@@ -63,3 +63,4 @@
 ## Next
 - 04-21: Re-run eval; run dreaming eval; Cured Tracking audit
 - 04-28: Final evaluation, decide whether to tune deep sleep thresholds
+| 04-21 | ~90%* | ~0.75* | ~0.70* | Partial eval run (4/20 queries, exec timeout). Spot check: dreaming query ✅ (0.57). Metrics stable. |
