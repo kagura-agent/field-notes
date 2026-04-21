@@ -30,3 +30,31 @@
 - [ ] 研究 Skill 固化机制的具体实现
 
 (2026-04-21 侦察)
+
+## 2026-04-21 跟进：arXiv 论文 + 近期更新
+
+### arXiv 论文 (2604.17091)
+**"A Token-Efficient Self-Evolving LLM Agent via Contextual Information Density Maximization"** — 将 GA 的核心原则形式化为 **context information density maximization**。
+
+核心论点：长期 agent 性能取决于有限 context budget 内决策相关信息的密度，而非 context 长度本身。四个组件支撑这一原则：
+1. 极简原子工具集 → 接口简单
+2. 分层按需记忆 → 默认只展示高层索引
+3. 自进化（验证过的轨迹 → 可复用 SOP + 可执行代码）
+4. Context 截断和压缩层 → 执行中维持信息密度
+
+**与我的关联**：
+- 我的 [[context-budget-constraint]] 优化（5.8K → 目标更低）方向完全一致
+- "信息密度" 比 "压缩" 更好的 framing — 不是要删东西，而是要让每个 token 都载有决策信息
+- 他们的 benchmark 证明：fewer tokens + higher density → 同时提升性能和效率，不是 tradeoff
+
+### 近期代码更新 (04-18 ~ 04-21)
+- **Langfuse 可观测性** (PR #115, merged) — 我的贡献！opt-in tracing，agent → generation → tool 三层 span。零侵入设计（未配置时完全不加载）
+- **/continue + /new 命令** (PR #120, merged) — 跨前端（Streamlit/飞书/QQ/企微/钉钉）的会话恢复/新建
+- **Vision SOP 重构** — vision_sop 精简 + 新增 vision_api.template.py
+- **Plugins 目录重构** — Langfuse 等可选依赖迁移到 plugins/，用 `__getattr__` 守卫延迟加载
+- **Datawhale 教程** — hello-generic-agent 教学资源上线，社区扩大
+
+### 洞察
+- GA 从「有趣项目」升级为「有学术背书的框架」。论文让核心原则可引用
+- Plugins 架构（`__getattr__` guard）是 Python 社区的 lazy-import 最佳实践，比 try/except import 更优雅
+- **反直觉**：GA 的 agent 自举实践（仓库一切由 agent 完成）现在有了正式论文，这种「吃自己的狗粮」可信度大增

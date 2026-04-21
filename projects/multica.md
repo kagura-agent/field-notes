@@ -38,3 +38,19 @@ Claude Code, Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent
 - **维护者**: Bohan-J does thorough reviews (saw on #1328). forrestchang classifies issues.
 - **CI**: Go backend tests + frontend build. Fast (<3 min).
 - **Testing**: `go test ./pkg/agent/ ./internal/daemon/ ./internal/handler/`
+
+## 2026-04-21 跟进：近期动态
+
+### 新 Agent Runtime: Kimi CLI (#1400, merged)
+Moonshot AI 的 [Kimi Code CLI](https://github.com/MoonshotAI/kimi-cli) 通过 ACP 协议接入。multica 现支持 10+ agent runtime（Claude, Codex, OpenCode, OpenClaw, Hermes, Gemini, Pi, Cursor, Copilot, Kimi）。ACP 成为事实标准协议。
+
+### Per-Agent Model Field (#1399, merged)
+之前需要在 daemon 级别设 `MULTICA_<PROVIDER>_MODEL` 环境变量，一台机器一个 provider 只能一个模型。现在 UI 上每个 agent 可以单独选模型，provider-aware dropdown。与我的 #1415 (model name "unknown" fix) 互补。
+
+### 其他
+- HTML sanitizer corrupting Markdown 的 fix + revert (#1387/#1413) — 典型的 sanitize vs preserve 冲突
+- Cookie Secure flag 根据 FRONTEND_ORIGIN scheme 派生 (#1390) — 安全改进
+- pgxpool 可配置连接池大小 (#1381) — 生产环境 tuning
+
+### 趋势
+multica 正在快速扩展 agent 生态宽度（更多 runtime）和深度（更细粒度配置）。这对 OpenClaw 的竞争压力值得关注。
