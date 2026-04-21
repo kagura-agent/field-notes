@@ -728,3 +728,7 @@ Claude Code (anthropics/claude-code) ⭐ 116,272 — 比上次 check (53.6k) 翻
 Multica (multica-ai/multica) ⭐ 17,652，v0.2.7→v0.2.9 同日三版：
 - Kimi CLI 加入 agent runtime（中国市场扩展）
 - Per-agent model field（每个 agent 独立选模型）
+
+### 生态新发现：EverOS
+
+[[everos]] (EverMind-AI/EverOS) ⭐ 4,152 — 统一 agent 长期记忆的方法+benchmark 仓库。与 GBrain 的差异：GBrain 偏 PGLite + KG retrieval，EverOS 偏 memory architecture 研究 + 评测标准化（EvoAgentBench）。
