@@ -115,3 +115,14 @@ work_type 支持 `pr` 和 `issue` 两种。
 - [ ] submit 的 commit prefix 根据 job_type 动态选择
 - [ ] 提取 scanRepo() 函数消除 scan/scan --all 重复代码
 - [ ] 改善类型标注（去除 `opts: any`）
+
+## OOM 问题修复 (2026-04-21)
+
+`scan --all` 扫描 22 个 repo 时被 SIGKILL（OOM）。根因：并发 3 + 每 repo 50 条 issue（含 body）在内存中积累。
+
+**修复**：
+- 默认并发 3→1（--all 时顺序扫描避免内存峰值）
+- 每个 repo 扫完后清空 issues 引用（`issues.length = 0`）让 GC 回收
+- heap > 200MB 时主动 `global.gc?.()`
+
+**Pattern**: 批量操作工具要默认保守（低并发 + 主动释放），用户需要快可以手动调高。这跟 [[GBrain]] 的 conservative-default 思路一致。
