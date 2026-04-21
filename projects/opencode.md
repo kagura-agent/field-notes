@@ -128,3 +128,13 @@ opencode 的 session compaction 架构分三层：
 - **compaction agent**: 用独立的 agent（可配不同模型）做摘要
 - 跟 [[claude-code-plugins]] 的 PreCompact hook 互补：opencode 内建 tail preservation + plugin 级 context 注入；Claude Code 让外部 plugin 阻止压缩
 - [[tokenjuice]] 解决的是 output 压缩，opencode compaction 解决的是 context 压缩——上下游互补
+
+### #23641 — fix(shell): blacklist csh/tcsh to prevent bash-style syntax errors (2026-04-21)
+- **Status**: PENDING (CI all green ✅, compliance fixed ✅)
+- **Issue**: #23637 — Agent uses bash-style `2>&1` in csh/tcsh shell
+- **Root cause**: BLACKLIST in `shell.ts` only had fish/nu, csh/tcsh not caught → used as-is → bash syntax fails
+- **Fix**: Added `"csh"` and `"tcsh"` to BLACKLIST set (1-line change)
+- **Test**: Added test verifying `Shell.acceptable()` rejects csh/tcsh paths
+- **Approach**: GitHub API (repo too large to clone)
+- **Note**: Related PR #15610 addresses sh/dash/ash (different issue — brace expansion), complementary not duplicate
+- **Lesson**: check-duplicates bot uses LLM — may flag false positives, need to explain in PR description
