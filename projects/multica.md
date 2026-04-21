@@ -536,3 +536,22 @@ Awaiting re-review.
 - `feat`: configurable pgxpool size（默认 sane defaults），multi-select autopilot weekly triggers，hourly desktop update poll，create sub-issue from selected text，ALLOW_SIGNUP + email allowlist for selfhost
 - `fix`: OpenClaw AgentInstructions delivery，session resume pointer，cookie Secure flag from scheme，infinite re-render loops，stale --parent UUID reuse
 - 观察：selfhost 功能快速完善（auth gating + .env.example 文档化），与 [[openclaw]] 在自托管方向竞争加剧
+
+## PR #1412: fix CompleteTask/FailTask race for parallel agents (2026-04-21)
+
+**Issue**: #1408 — Tasks fail with "no rows in result set" when running 6 parallel agents
+**Root cause**: `CompleteAgentTask` SQL `WHERE status = 'running'` returns no rows when task already finalized by another concurrent path (cancel/watchdog/duplicate)
+**Fix**: Add `pgx.ErrNoRows` check in both `CompleteTask` and `FailTask`, matching existing `CancelTask` idempotent pattern. Return existing task row as success instead of erroring.
+**Status**: PENDING, CI all green (backend + frontend)
+**Scope**: 1 file, ~22 insertions
+
+### 经验
+- Race condition bugs in concurrent task systems → check all terminal-state transitions for idempotency
+- multica already had the correct pattern in `CancelTask` — consistency across methods is the fix
+- GitHub API submission continues to work smoothly for this repo
+- No coderabbit/bot review on multica PRs — fully human review
+- Now at 4 open PRs (#1273, #1294, #1328, #1377, #1412) — wait for some to merge before next
+
+### 下次注意
+- 4 open PRs now — at limit, next round should focus on followup not new PRs
+- Check `FailTask` too when fixing `CompleteTask` — parallel patterns need parallel fixes
