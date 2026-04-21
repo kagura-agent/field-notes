@@ -67,3 +67,15 @@
 
 *创建: 2026-04-21, 应用 EvoAgentBench Δ gain + ReasoningBank 失败学习思路*
 *关联: [[evoagentbench-deep-read]], [[reasoningbank]]*
+
+## 2026-04-21 应用笔记
+
+**应用来源**: beliefs-candidates "Eval Baseline 数字无法复现" gradient + [[evoagentbench-deep-read]] Δ gain 思路
+**改动**: 新建 `scripts/probe-measure.sh`，P3/P4/P5 全自动化，P1/P2 半自动化
+**验证结果**: 首次自动化运行成功，数字与手动 baseline 对比：
+- P3: 409 files (vs 手动 407) — 差异来自新增文件，一致 ✅
+- P4: 44 FlowForge mentions / 0 violations — 与"high"定性评估一致 ✅
+- P5: 43 rejection mentions / 12 beliefs — 比之前"2/10"更完整的度量 ✅
+
+**反直觉发现**: P2（承诺闭环）最难自动化 — "我来做" 的 grep 噪声极大（64 条命中，大部分是 false positive）。需要结构化承诺记录格式才能真正度量。
+**关联**: [[data-fabrication-in-review]], [[self-evolution-as-skill]]
