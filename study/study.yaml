@@ -65,6 +65,8 @@ nodes:
         next: followup
       - condition: "什么都没有"
         next: reflect
+      - condition: "网络/API 故障（GitHub API 限流、web_fetch 超时等）"
+        next: fallback_offline
 
   quick_scout:
     task: |
@@ -81,6 +83,8 @@ nodes:
         next: deep_read
       - condition: "没发现新项目，转 reflect"
         next: reflect
+      - condition: "网络/API 故障，无法扫描"
+        next: fallback_offline
 
   apply:
     task: |
@@ -103,6 +107,11 @@ nodes:
       - 学习的主要产出是知识（wiki 笔记），不是 PR 数量
 
       汇报应用了什么、效果如何。
+
+      **异常 fallback：**
+      - 改代码后测试失败 → git stash，记录失败原因到 memory，转 reflect 分析为什么
+      - 找不到值得应用的洞察 → 转 fallback_offline（整理已有知识也是产出）
+      - 外部 repo PR 限额已满 → 记到 TODO，不强行提
     next: note
 
   followup:
@@ -141,6 +150,11 @@ nodes:
          - 跟我们的方向有什么关联？
       4. 带着问题读，不是漫无目的地浏览
       汇报你的理解和发现。
+
+      **异常 fallback：**
+      - clone 失败（网络/权限/repo 太大）→ 只读 GitHub web 界面（README + 关键文件）
+      - 项目已删除/私有化 → 记录状态变化到 wiki，转 note
+      - 读不懂/太复杂 → 先写一段"我不理解的部分"，带着问题转 note
     next: note
 
   deep_read_contributor:
@@ -173,6 +187,10 @@ nodes:
          - 记架构洞察和反直觉的发现
       4. git commit && git push 到 kagura-agent/wiki
       汇报写了什么。
+
+      **异常 fallback：**
+      - git push 失败（conflict）→ `git pull --rebase` 再 push；仍失败 → 本地保存，记录 conflict 到 memory
+      - 不确定放哪个文件 → 先写 wiki/projects/_inbox.md，reflect 时整理
     next: reflect
 
   reflect:
@@ -214,6 +232,16 @@ nodes:
       3. 更新 TODO.md「📚 学习」section — 新的学习任务加进去，做完的删掉
       有改动 → git commit + push
     next: done
+
+  fallback_offline:
+    task: |
+      网络/API 不可用时的离线学习模式：
+      1. **读自己的代码**：选一个自己的工具（gogetajob、flowforge、nudge、wiki）的源码，找改进点
+      2. **整理已有知识**：读 wiki/projects/ 和 wiki/cards/，找缺少双链的孤立笔记，补上链接
+      3. **回顾 beliefs-candidates**：有没有重复 3 次以上但还没升级的 gradient？执行升级
+      4. **读书/论文**：如果本地有缓存的 PDF/文档，深读
+      产出必须有：至少一个文件被修改并 commit。
+    next: reflect
 
   done:
     task: |
