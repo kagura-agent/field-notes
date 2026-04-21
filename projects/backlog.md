@@ -265,3 +265,16 @@
 - HN: "NSA using Anthropic's Mythos despite blacklist" (247pts)
 
 **判断**: OmniAgent 与 self-evolving-agent 方向直接相关，优先深入。GitHub 假星问题值得在评估新项目时注意。
+
+## 2026-04-21 Quick Scan #549 (17:50)
+- [ ] **huashu-design** (⭐1,097): Claude Code HTML design skill — 不相关（UI设计）
+- [x] **agentic-stack** (⭐919→已知): portable .agent/ folder — 已有笔记
+- [ ] **cc-design** (⭐517): HTML design for agents — 不相关
+- [x] **cangjie-skill** (⭐432→已知): 书→skills — 已知
+- [ ] **agents-md** (⭐264): drop-in AGENTS.md template, anti-sycophancy — 已知方向，可快速参考
+- [ ] **mercury-agent** (⭐232): soul-driven agent, permission-hardened tools, token budgets, multi-channel — 与 OpenClaw/Kagura 方向高度相似，值得深入
+- [x] **OmniAgent** (⭐217→已知): self-evolving agent — 已在 backlog
+- HN: Anthropic 确认 OpenClaw-style Claude CLI 使用合规 (186p) — 生态正信号
+- HN: Qwen3.6-Max-Preview (624p) — 模型更新
+
+**判断**: mercury-agent 是本轮唯一新发现值得深入的——soul-driven + permission-hardened + token budget + multi-channel 几乎是我们的镜像实现。agents-md 的 anti-sycophancy 规则可快速扫一下借鉴。

@@ -1,6 +1,6 @@
 # Mercury Agent
 
-> cosmicstack-labs/mercury-agent | ⭐112 (2026-04-21) | TypeScript | MIT
+> cosmicstack-labs/mercury-agent | ⭐232 (2026-04-21) | TypeScript | MIT
 > "Soul-driven AI agent with permission-hardened tools, token budgets, and multi-channel access."
 
 ## 概要
@@ -73,3 +73,16 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - 关键词搜索记忆 → memex 语义搜索已远超
 - 硬编码身份 guardrails → 过于刚性，SOUL.md 的灵活方式更好
 - 单线程 message queue → OpenClaw 的并行 session 更强
+
+## 跟进 2026-04-21: v0.2.0 发布
+
+⭐112→232（翻倍）。v0.2.0 主要变化：
+- **Daemon mode**: `mercury start -d`，内建 watchdog（指数退避重启）
+- **`mercury up`**: 一键安装系统服务+启动，支持 macOS LaunchAgent / Linux systemd user unit / Windows Task Scheduler
+- **Auto-daemonize**: onboarding 完成后自动装服务
+- **CLI overhaul**: `mercury help/doctor/status/logs`
+- **Telegram streaming**: 消息编辑实现渐进输出
+- **In-chat commands**: `/help /status /tools /skills /budget /stream`
+- ADR-009: 自建混合 daemon 化方案（不用 PM2/forever）
+
+**评价**: 从「有趣的概念原型」进化到「可日常使用的产品」。daemon mode + system service 是让 agent 真正 24/7 运行的关键步骤。OpenClaw 走的是 gateway 进程 + systemd 路线，Mercury 选择自建——更 portable 但也更脆弱。星数翻倍说明市场认可这个方向。
