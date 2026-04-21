@@ -106,3 +106,16 @@ Session → nudge (agent_end)
 ## 决策
 
 先做 Phase 0（手动试跑 1 周），下周 W16 daily-review 评估数据价值。
+
+## Phase 1 Decision (04-21)
+
+**SKIP / Deprioritize.** Phase 0 产出 2 天手动数据后自然停止。
+
+理由：
+1. 2 天数据确认了直觉（flowforge 主力、agent-memes 坏了），但未产生新行动
+2. SkillClaw 的真正价值在设计 pattern，不在 tracking 数据——已全部吸收
+3. Nudge 集成投入大，收益边际——我们只有 ~15 个 skill
+4. Lazy-loading PR #65139 已关闭，tier 数据无消费端
+5. 手动记录 2 天就停 = 数据价值不足以驱动持续投入
+
+如果未来 skill 数量显著增长或 lazy-loading 重启，可重新评估。
