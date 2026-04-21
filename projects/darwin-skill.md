@@ -59,6 +59,11 @@
 3. **独立评分**: beliefs-candidates 升级可用独立子 agent 评估，减少自评偏差
 4. **审计轨迹**: results.tsv 的设计（含 revert 记录 + eval_mode）比我当前的纯日志更结构化
 
+### 已应用 (2026-04-21)
+- ✅ **异常 fallback 表** → study.yaml 各节点添加显式错误处理分支（scout/deep_read/note/apply）+ 新建 fallback_offline 离线学习节点
+- ⬜ **棘轮机制 for DNA**: 待应用（需代理指标设计）
+- ⬜ **独立评分**: 待应用（beliefs-candidates 升级流程改造）
+
 ## 不适用
 
 - 我的 DNA 文件不是标准 SKILL.md，darwin-skill 直接用不上
