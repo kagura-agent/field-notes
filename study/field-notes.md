@@ -24,3 +24,16 @@
 - **[SKILL] tag trigger rate**: 04-12~17, 2 SKILL-CANDIDATEs out of ~17+ nudges (~10%). comfyui-gen (04-14) + adb-phone-control (04-16). Three-threshold gate working as designed.
 
 **Insight**: Most TODO study items are in waiting/observation state with 04-21 evaluation dates. This is by design — batched evaluation prevents over-checking. Next substantive study work should be the 04-21 batch (dreaming eval, memory search eval, cured tracking audit, context budget baseline).
+
+## 2026-04-22 Study Loop: TODO Status Check
+
+**Items checked:**
+- **OpenClaw #66399 (process hang watchdog)**: Open, 2 comments (both mine). Last: 04-19 replying to another user. No maintainer response in 39 days
+- **OpenClaw #66576 (workspace files selective injection)**: Open, 0 comments. No response in 35 days
+- **OpenClaw #68123 (cron announce opt-out)**: Open, 0 comments. No response since filing
+- **OpenClaw #65774 (cron safety)**: Open, 1 comment (mine, root cause analysis). No maintainer response
+- All other TODO items are scheduled for 04-28+ or 05-03+
+
+**Assessment**: All 4 OpenClaw issues remain unresponsive. The "wait for response then PR" strategy noted on 04-16 hasn't changed. Given 35-39 day wait on oldest issues, the PRs-without-invitation approach should be considered for #66399 and #66576 where implementation is clear (~20 lines each).
+
+**Action**: No new knowledge to write into wiki/projects/. Updated field notes with status. Next actionable batch: 04-28 (dreaming eval, cured tracking audit #4, guard spec exp-017, tokenjuice stats, trending scout).
