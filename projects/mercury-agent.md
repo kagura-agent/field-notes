@@ -86,3 +86,14 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - ADR-009: 自建混合 daemon 化方案（不用 PM2/forever）
 
 **评价**: 从「有趣的概念原型」进化到「可日常使用的产品」。daemon mode + system service 是让 agent 真正 24/7 运行的关键步骤。OpenClaw 走的是 gateway 进程 + systemd 路线，Mercury 选择自建——更 portable 但也更脆弱。星数翻倍说明市场认可这个方向。
+
+## 跟进 2026-04-22: Social Media + Ollama
+
+⭐348 (+116)。PR #3 合并：
+- **Ollama provider**: 支持本地 LLM（`src/providers/ollama.ts`）——从纯 API 转向支持 self-hosted
+- **Provider registry**: 重构 provider 系统为可插拔 registry（类似 OpenClaw 的 channel 架构）
+- **Capabilities restructure**: 从 tools → capabilities，send-message 作为第一个 capability
+- **Telegram fix**: 修复频道消息处理 bug
+- GitHub onboarding 简化（v0.3.2~v0.3.4）
+
+**信号**: Mercury 在快速追赶——Ollama 支持意味着可以脱离付费 API 运行，provider registry 暗示未来多模型切换。增速依然强劲（每天 +50-60⭐）。

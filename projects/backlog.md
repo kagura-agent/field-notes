@@ -1,4 +1,19 @@
 
+## 2026-04-22 Quick Scout PM2 (14:16)
+
+**GitHub Trending (past week, agent):**
+- OpenMythos ⭐7.6k — Claude architecture 理论重建 — 不相关
+- browser-harness ⭐4.6k — browser-use 的 self-healing harness — 值得关注（browser-use 生态扩展）
+- huashu-design ⭐3.7k (+1.5k) — 涨势猛，skill 设计模式已知
+- mercury-agent ⭐348 (+74) — 类 OpenClaw，持续关注
+- OmniAgent ⭐270 (+36) — 自进化 agent，持续关注
+
+**HN:** 无 agent 相关。SpaceX 收购 Cursor $60B（待验证真实性）。
+
+**判断:** browser-harness 值得深入（4.6k⭐ 一周，browser-use 团队新品）。mercury-agent/OmniAgent 持续观察。
+
+---
+
 ## 2026-04-21 Quick Scout PM3 (23:00)
 
 **GitHub Trending (past week, agent):**
