@@ -37,11 +37,9 @@
 
 ### PR #9329 — fix(log): use relative history path to prevent double-concatenation
 - **Issue**: #9321 — Log stream error: double-concatenated absolute path
-- **状态**: OPEN (2026-04-21)
+- **状态**: ❌ CLOSED (2026-04-21) — maintainer @johnnyeric 关闭，"changes already present in main"
+- **教训**: 修复已被内部先行合入，提 PR 前应先 check main 是否已修复
 - **改动**: `packages/opencode/src/util/log.ts`: `history: path.join(dir, ".log-history")` → `history: ".log-history"`
-- **根因**: `rotating-file-stream` 库在 `index.ts:162` 用字符串拼接 `path + history`，如果 history 是绝对路径就会双拼
-- **changeset**: patch
-- **CI**: fork PR checks skip（正常）
 
 ## 下次打工注意
 - 看 Kilo Code Review 的反馈模式

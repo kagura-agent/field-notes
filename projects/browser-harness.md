@@ -1,7 +1,7 @@
 # browser-harness
 
 - **Repo**: browser-use/browser-harness
-- **Stars**: ~2.6k (2026-04-20)
+- **Stars**: ~4.4k (2026-04-22, +1.8k in 2 days)
 - **语言**: Python
 - **一句话**: 最薄的 CDP 浏览器自动化 harness——agent 直接操控 Chrome，缺什么自己写
 

@@ -12,6 +12,7 @@
 - PR 标题格式：`fix(core): description` / `feat(core): description`
 - Bot reviewers: CodeRabbit (chill profile), cubic-dev-ai, Joggr
 - Merge rate ~90%，外部 PR 友好
+- ⚠️ 2026-04-22: maintainer (omeraplak) closed #1209 (auth bypass fix) + issue #1206 without merge or comment. No superseding PR. Pattern: security fixes may be handled internally without acknowledging external contributions. Don't assume security PRs will be welcomed even when the bug is real.
 - Contributing guide 简洁：mention issue before working, create issue for new features
 
 ## CI/测试

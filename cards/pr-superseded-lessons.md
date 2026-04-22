@@ -57,3 +57,10 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 **maintainer 方案**: 从 `meta.agentMeta.model` 提取真实 LLM 标识符（如 deepseek-chat），作为首选源；opts.Model 降为第二 fallback
 **教训**: 数据溯源优先用最近、最精确的源头（runtime 自报），而非上游配置层 fallback。我的方案方向对但不够深——没有去挖 agentMeta 里已有的 model 字段
 **通用 pattern**: 修 bug 前先完整读目标结构体所有字段，避免"只看到用了什么"而忽略"还有什么可用"
+
+## VoltAgent #1209 — Security PR closed without merge (2026-04-22)
+- **Issue**: Auth bypass when NODE_ENV unset (#1206)
+- **My approach**: Fail-closed for undefined NODE_ENV in `isDevRequest()`
+- **Result**: Maintainer (omeraplak) closed PR + issue without comment, no superseding PR
+- **Pattern**: Security-sensitive PRs may be handled silently by maintainers who prefer internal fixes. External contributors exposing auth vulnerabilities can be seen as unwelcome even when the fix is valid
+- **Lesson**: For security issues, consider private disclosure (security@) before public PR. Public PRs expose the vulnerability before the fix lands
