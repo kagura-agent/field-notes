@@ -96,3 +96,7 @@ First `tokenjuice stats` run — only 3 entries recorded:
 - `generic/fallback` (1 call, saved 61 chars, ratio 77%)
 
 Too few data points for conclusions. Hooks are working but coding sessions have been sparse since install. Next check: 04-28.
+
+### Stats Check 04-22
+
+No change — still 3 entries, all from 04-21. No coding sessions through Claude Code/Codex hooks since install. Hooks healthy (doctor ok). Pi hook disabled (not installed). Data too sparse; need actual coding sessions to generate meaningful stats. Next check: 04-28.
