@@ -99,4 +99,16 @@ Too few data points for conclusions. Hooks are working but coding sessions have 
 
 ### Stats Check 04-22
 
-No change — still 3 entries, all from 04-21. No coding sessions through Claude Code/Codex hooks since install. Hooks healthy (doctor ok). Pi hook disabled (not installed). Data too sparse; need actual coding sessions to generate meaningful stats. Next check: 04-28.
+No change — still 3 entries, all from 04-21. No coding sessions through Claude Code/Codex hooks since install. Hooks healthy (doctor ok). Pi hook disabled (not installed). Data too sparse; need actual coding sessions to generate meaningful stats.
+
+### Stats Check 04-22 (evening)
+
+Significant jump: 3 → 23 entries. Actual coding sessions generating data.
+- **Total**: 13.9k raw → 6.6k reduced, **53% savings**
+- **Top reducer**: `git/diff` — 3 calls, saved 6.8k chars, avg ratio 21% (= 79% savings). This is the killer use case.
+- `git/status`: 5 calls, 80% ratio (modest savings on small outputs)
+- `tests/npm-test`: 1 call, 43% ratio (57% savings — test output compaction works)
+- **Daily breakdown**: 04-21 3 calls / 285 saved; 04-22 20 calls / 7k saved
+- **Insight**: git diff dominates savings — makes sense since diff output is verbose and highly compressible via structural rules
+- **vs [[context-budget-baseline-2026-04-14]]**: tokenjuice operates on tool output, complementary to workspace file injection reduction ([[OpenClaw]] #66576). Together they'd hit both injection and output sides.
+- Next trend check: 04-28.
