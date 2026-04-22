@@ -780,3 +780,55 @@ Multica (multica-ai/multica) ⭐ 17,652，v0.2.7→v0.2.9 同日三版：
 ### 生态新发现：EverOS
 
 [[everos]] (EverMind-AI/EverOS) ⭐ 4,152 — 统一 agent 长期记忆的方法+benchmark 仓库。与 GBrain 的差异：GBrain 偏 PGLite + KG retrieval，EverOS 偏 memory architecture 研究 + 评测标准化（EvoAgentBench）。
+
+## 更新 (04-22): v0.15.0 → v0.16.3 (2 天 4 个版本)
+
+Stars: 10,101 (+698 since 04-20). 仍在快速增长。
+
+### v0.15.0 — AGENTS.md + llms.txt
+- 三个新文件让非 Claude 的 agent（Codex, Cursor, OpenClaw, Aider）能发现文档
+- `AGENTS.md`（59 行手写）— 非 Claude agent 操作协议
+- `llms.txt` / `llms-full.txt` — llmstxt.org 标准，228KB 单 fetch 全量 context
+- Generator 驱动（`scripts/build-llms.ts`），确定性生成，CI 检查 drift
+- **可借鉴**: AGENTS.md 多 harness 兼容是正确方向（我们的 AGENTS.md 也服务 OpenClaw）
+
+### v0.15.2 — Bulk Progress Streaming
+- 问题: `gbrain doctor` 52K 页面时 10 分钟沉默被 agent timeout 杀
+- 方案: 全局 `progress.ts` reporter，14 个命令 stderr 流式进度
+- 关键设计: TTY-aware（TTY 用 `\r` 覆盖，pipe 用单行，可选 JSONL），rate-gated
+- Minion handlers 用 `job.updateProgress` DB 持久化进度
+- **可借鉴**: 长时间操作的 heartbeat/progress 模式，避免 timeout 杀死有效工作
+
+### v0.16.0 — Durable Agent Runtime ⭐⭐⭐
+最重要的架构升级。从知识库变成了 agent 执行引擎。
+
+**核心组件:**
+1. **`gbrain agent run` CLI** — 提交持久化 LLM 循环（单任务或 fan-out）
+2. **Subagent Handler** — crash-resumable replay:
+   - 每个 turn 持久化到 `subagent_messages` 表
+   - 每个 tool call 是 two-phase ledger（`pending` → `complete | failed`）
+   - worker 被 kill 后从最后提交的 turn 恢复
+3. **Subagent Aggregator** — N 个子任务达到任意终态后汇总（mixed-outcome summary）
+4. **Plugin Loader** — `GBRAIN_PLUGIN_PATH` 让宿主 repo 提供自定义 subagent 定义
+5. **Rate Leases** — 替代计数器，owner-tagged rows + `expires_at` 自动清理，crashed worker 不会占死配额
+6. **Anthropic Prompt Caching** — system + tool defs 块缓存，最优 10x 降本
+
+**3 张新表**: subagent_messages, subagent_tool_executions, subagent_rate_leases
+
+**架构洞察**:
+- Two-phase ledger 是 crash-safety 的关键 — 不是简单的"保存对话"，而是每个 tool call 有明确的状态转换
+- Rate leases > counters — 分布式系统中 lease 比计数器更安全（worker crash 不会永久占用配额）
+- 170+ 新测试，1860 总测试通过
+- **CEO + Codex + Eng 三层 review 流程** — 值得借鉴的 PR 质量保证
+
+### v0.16.3 — SDK 绑定修复 + tsc CI
+- v0.16.0 的 headline feature 发布即 broken（Anthropic SDK 绑定一行 cast 错误）
+- 根因: CI 没跑 tsc，类型错误没被捕获
+- 修: 加 `tsc --noEmit` 到 CI，清理 104 个历史类型错误
+- **教训**: 新 feature 发布 = 必须有对应的 CI 类型检查。"跑了测试"不等于"类型安全"
+
+### 与我们的关系（更新）
+- GBrain 从 knowledge base 向 agent runtime 进化，方向与 OpenClaw 更加趋同
+- Two-phase tool ledger 是我们 subagent crash recovery 可以参考的模式
+- Rate leases 比简单计数器更适合 multi-worker 场景
+- 但 GBrain 仍然是单用户系统（Garry 的个人 brain），我们面向多用户/社区
