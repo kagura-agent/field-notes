@@ -1,4 +1,24 @@
 
+## 2026-04-22 Quick Scout PM3 (18:47)
+
+**GitHub Trending (past week, agent):**
+- huashu-design ⭐4.0k (+300 since PM2) — 已知，持续涨
+- cc-design ⭐585 — huashu 跟风品，不相关
+- cangjie-skill ⭐472 — 书→agent skill 蒸馏，有趣但小众 — 已知模式
+- agents-md ⭐431 — 通用 AGENTS.md 模板 — 已知（我们自己有）
+- swarm-forge ⭐264 — Uncle Bob 的多 agent 协调 — 值得深入（名人效应+简约设计哲学）
+- mercury-agent ⭐360 (+12) — 持续观察
+- OmniAgent ⭐285 (+15) — 持续观察
+
+**HN:**
+- "All your agents are going async" 33p — 已在 #610 深读过（async-agent-transport）
+- "Context Is Software, Weights Are Hardware" 13p — 值得读，mental model 相关
+- ChatGPT Images 2.0 843p, Laws of Software Engineering 1027p — 热门但非 agent
+
+**判断:** swarm-forge (Uncle Bob) 值得一看。其余已知或不相关。
+
+---
+
 ## 2026-04-22 Quick Scout PM2 (14:16)
 
 **GitHub Trending (past week, agent):**

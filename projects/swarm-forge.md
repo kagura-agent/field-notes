@@ -1,7 +1,7 @@
 # SwarmForge
 
 - **Repo**: unclebob/swarm-forge
-- **Stars**: 245⭐ (04-22)
+- **Stars**: 264⭐ (04-22 PM3, was 245 AM)
 - **Created**: 2026-04-15
 - **Author**: Uncle Bob (Robert C. Martin) / Justin Martin
 - **Language**: Zsh (466 lines core script)
