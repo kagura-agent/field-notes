@@ -104,3 +104,15 @@
   4. Important: tests import from compiled `bin/lib/onboard` not src — must `npm run build:cli` before running tests locally
 - **Lesson**: NemoClaw commit-lint enforces lowercase after `fix:` prefix — "ARM64" treated as sentence-case. Use "arm64".
 - **Lesson**: Always rebuild before testing in NemoClaw — vitest runs against compiled dist, not src.
+
+## PR #2256 — E2E test-token-rotation hard exit fix (2026-04-22)
+- **Status**: PENDING, CI pass, CodeRabbit feedback addressed
+- **Issue**: #2247 — test-token-rotation.sh exits hard on environmental failures
+- **Scope**: 1 file (test/e2e/test-token-rotation.sh), ~110 insertions / 74 deletions
+- **Fix**: Replace `exit 1` after install/onboard failures with skip-and-continue pattern
+  - Added SKIP counter and skip() helper
+  - PHASE0_OK and PHASE2_OK flags gate dependent phases
+  - is_environmental_failure() detects network/preflight issues → SKIP instead of FAIL
+  - Summary always prints
+- **CodeRabbit**: 2 suggestions adopted (environmental→SKIP, Phase 3 gate on Phase 2)
+- **GPG**: Commit signed ✅
