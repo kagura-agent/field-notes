@@ -60,6 +60,39 @@ multica 正在快速扩展 agent 生态宽度（更多 runtime）和深度（更
 - My approach: different path. Maintainer Bohan-J's fix (#1426): read `meta.agentMeta.model` from OpenClaw's `--json` output in `server/pkg/agent/openclaw.go`
 - Takeaway: OpenClaw agent's JSON blob has the real model in `meta.agentMeta.model`, not the agent name passed via `--agent`. The daemon should extract from there.
 
+## 2026-04-22 Self-Host Goes Public: GHCR Deployment (#1493, merged)
+
+Multica 从 "clone + build" 转向正式的容器镜像分发：
+
+- **GHCR 镜像**：backend (Go binary) + web (Next.js) 发布到 ghcr.io/multica-ai，标签策略 `latest` / exact release / `sha-*`
+- **一键安装**：`curl ... install.sh | bash -s -- --with-server` → 拉镜像 + 起 compose + 配置 CLI
+- **Runtime Config**：signup 开关和 Google OAuth 从构建时变量移到 `/api/config` 运行时接口，改 .env 重启即可，不用重建 web 镜像
+- **Build Override**：`make selfhost-build` 保留本地构建路径，dev 标签不覆盖 GHCR 拉的 `:latest`
+- **21 files, +478/-72**
+
+**架构启示**：
+- 「Runtime config via API」是正确的 pattern — 避免把 env-specific 配置烘焙进镜像。[[OpenClaw]] 可以参考
+- 自托管从 "developer builds from source" 到 "operator pulls images" 是一个重要的 maturity milestone
+- 对比 [[OpenClaw]]：OpenClaw 当前是 npm 全局安装，没有容器化方案。Multica 走在前面
+
+## 2026-04-22 Autopilots UX Overhaul (#1501, merged)
+
+- 合并 Create/Edit 对话框为统一的 `<AutopilotDialog mode="create"|"edit">`
+- 新增 Priority + Execution Mode 在创建时暴露（之前硬编码）
+- Schedule 编辑内嵌到 Edit dialog（Popover + TriggerConfigSection）
+- 10 files, +731/-377
+
+**Autopilot = Multica 的定时任务系统**，类似 [[OpenClaw]] 的 cron + [[flowforge]] workflow，但面向非技术用户（UI 驱动而非 YAML 驱动）。
+
+## 2026-04-22 其他合并
+- LaTeX rendering support
+- Analytics instrumentation (onboarding funnel, client_type)
+- Skills UX 统一 (surface every local skill with file count)
+- Notification bubbling (sub-issue → parent subscribers)
+- Changelog surface in sidebar
+
+**趋势**：Multica 进入 "企业化" 阶段 — 自托管、分析、onboarding funnel、changelog。从 dev-tool 向 platform 转型。Stars 18.9k → 快速增长中。
+
 ## 2026-04-22 PR #1474: suppress agent terminal windows on Windows
 - **Issue**: #1471 — Windows daemon spawns visible cmd windows for each agent
 - **PR**: #1474 — fix(daemon): suppress agent terminal windows on Windows
