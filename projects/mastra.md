@@ -51,6 +51,28 @@
 - **CodeRabbit feedback**: Pointed out missing null guard on `lastMessage` in legacy path — fixed in follow-up commit
 - **Changeset**: included
 
+### PR #15571 — fix(core): preserve tool execution errors through history reload (2026-04-21)
+- **Issue**: #15570 — Tool errors lost on reload, agent loops forever retrying
+- **Status**: PENDING
+
+### PR #15622 — fix(core): deduplicate all OpenAI itemIds (2026-04-22)
+- **Issue**: #15617 — "Duplicate item found with id rs_..." with Observational Memory buffering
+- **Status**: PENDING (CI pending secrets, CodeRabbit processing)
+- **Root cause**: `mergeTextPartsWithDuplicateItemIds()` only handled text parts. Reasoning parts (`rs_*` itemIds) passed through unchanged. When OM buffering causes same response parts to appear multiple times, AI SDK generates duplicate `item_reference` entries → OpenAI rejects.
+- **Fix**: Renamed function → `deduplicatePartsWithOpenAIItemIds()`. Extended to handle ALL part types. Added cross-message dedup via `globalSeenItemIds` in `sanitizeV5UIMessages`. Text parts still merge by concatenation; non-text parts keep first occurrence only.
+- **Tests**: 5 new tests covering within-message and cross-message dedup for both text and reasoning parts
+- **Changeset**: included
+- **Key insight**: The bug spans TWO layers — within-message AND cross-message dedup needed. Memory can load non-merged assistant messages with identical `rs_*` IDs.
+
+## Architecture Notes (extended)
+
+### OpenAI itemId deduplication flow
+- `output-converter.ts` → `sanitizeV5UIMessages()` is the single dedup gate
+- Per-message: `deduplicatePartsWithOpenAIItemIds()` merges text, drops non-text dupes
+- Cross-message: `globalSeenItemIds` Set tracks all seen itemIds across entire message array
+- AI SDK (`vercel/ai`): `convert-to-openai-responses-input.ts` creates `item_reference` for each part with `store: true` — duplicates there cause the OpenAI error
+- Buffering coordinator in OM can cause async re-insertion of same parts
+
 ## Caveats
 
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
