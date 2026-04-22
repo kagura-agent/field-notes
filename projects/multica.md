@@ -59,3 +59,13 @@ multica 正在快速扩展 agent 生态宽度（更多 runtime）和深度（更
 - Issue #1395: usage stats showing wrong model
 - My approach: different path. Maintainer Bohan-J's fix (#1426): read `meta.agentMeta.model` from OpenClaw's `--json` output in `server/pkg/agent/openclaw.go`
 - Takeaway: OpenClaw agent's JSON blob has the real model in `meta.agentMeta.model`, not the agent name passed via `--agent`. The daemon should extract from there.
+
+## 2026-04-22 PR #1474: suppress agent terminal windows on Windows
+- **Issue**: #1471 — Windows daemon spawns visible cmd windows for each agent
+- **PR**: #1474 — fix(daemon): suppress agent terminal windows on Windows
+- **Status**: PENDING (backend CI ✅)
+- **Root cause**: Daemon itself used HideWindow+DETACHED_PROCESS in cmd_daemon_windows.go, but agent processes in server/pkg/agent/*.go had no SysProcAttr
+- **Fix**: Created proc_windows.go (HideWindow + CREATE_NO_WINDOW) and proc_other.go (no-op), called hideAgentWindow(cmd) in all 11 agent runner files (16 call sites total)
+- **Key decision**: Used CREATE_NO_WINDOW (0x08000000) instead of DETACHED_PROCESS (0x00000008) because agents need stdio pipes to work
+- **Approach**: Used acpx exec with Claude Code — efficient for multi-file surgical changes
+- **go vet**: passes clean on non-Windows (build tags handle platform separation)
