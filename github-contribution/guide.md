@@ -39,6 +39,15 @@
 
 **Followup 审计**：每轮 workloop followup 步骤会按 repo 聚合 open PR 数量。超限的 repo 自动触发存量管理（主动关闭 stale PR 或暂停新提交）。
 
+## Review 分诊：Bot vs 人类
+
+大量项目使用 AI review bot（CodeRabbit、cubic-dev-ai、chatgpt-codex-connector、claude 等）。这些 bot 的 review 和人类 maintainer 的 review 需要区别对待：
+
+- **Bot review ≠ actionable review** — bot 标记的 🔴 CHANGES_REQUESTED 不等于需要改代码。先看内容：如果是格式建议、风格偏好、或 false positive，可以忽略或简短回复说明理由
+- **人类 review 优先** — 只有人类 maintainer 的 review 才算真正需要响应的反馈。workloop followup 时优先处理人类 review，bot review 降级
+- **Bot review 有价值的情况** — changeset 包名错误、明显的 bug 指出、CI 配置问题等客观错误仍需修复（如 kilocode #9329 包名错误）
+- **巡检报告精简** — patrol 汇报时区分 "X 个 bot review（无需处理）" vs "Y 个人类 review（需响应）"，避免每轮重复分析同样的 bot flag
+
 ## 知识积累
 
 - 每个贡献过的项目在 `wiki/projects/<项目名>.md` 维护笔记
