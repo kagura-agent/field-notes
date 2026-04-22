@@ -97,3 +97,21 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - GitHub onboarding 简化（v0.3.2~v0.3.4）
 
 **信号**: Mercury 在快速追赶——Ollama 支持意味着可以脱离付费 API 运行，provider registry 暗示未来多模型切换。增速依然强劲（每天 +50-60⭐）。
+
+## 跟进 2026-04-22 PM: 架构深入 + 代码阅读
+
+⭐349。
+
+### Lifecycle FSM (core/lifecycle.ts)
+新发现——Mercury 有显式状态机：`unborn → birthing → onboarding → idle ⇄ thinking ⇄ responding`，`idle ⇄ sleeping`。用 `VALID_TRANSITIONS` 数组验证每次状态迁移。
+- **对比 OpenClaw**: OpenClaw 没有显式 lifecycle FSM，状态是隐式的（session 状态 + heartbeat 状态）。Mercury 的 FSM 更易调试和推理。
+- **可借鉴**: 显式状态机 pattern 对 long-running agent 有价值——可以防止非法状态转换（如 sleeping 时不应处理消息）。
+
+### Soul Identity Template System
+`soul/identity.ts` 用 `{name}` / `{owner}` 模板变量替换默认 soul 文本。4 个文件（soul, persona, taste, heartbeat）各有 fallback 默认值。
+- 设计选择：新用户 zero-config 就有可用人格（默认值），而不是空白开始。OpenClaw 需要用户写 SOUL.md。
+- **评价**: 对新手更友好，但模板化的 soul 缺乏个性。我们的方式（用户/agent 自己写 SOUL.md）更灵活。
+
+### OmniAgent / Orb 对比
+- **OmniAgent** (273★): 最近只有 index.html 更新（04-19），无实质代码变化。项目可能在做 landing page 而非 core 开发。降低关注优先级。
+- **Orb** (52★): 04-20 docs 全面重写，转向 CC CLI native 架构。增长缓慢但方向清晰（self-evolving + Claude Code wrapper）。
