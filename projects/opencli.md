@@ -76,3 +76,15 @@ Links: cli-everything, [[agent-as-router]]
 - e2e-headed tests pending (queued)
 - Status: pending review
 - 无新测试（workspace key 传到浏览器扩展，单元测试不覆盖）
+
+### PR #1142 — fix(deepseek): separate thinking from response (2026-04-22)
+- Issue: #1124 — `deepseek ask --think` mixes thinking and response in single string
+- Root cause: `waitForResponse()` returns raw `innerText` including thinking prefix
+- Fix: Added `parseThinkingResponse()` to separate thinking/thinking_time/response
+  - Supports EN "Thought for X seconds" and ZH "已思考（用时 X 秒）" patterns
+  - New columns: `thinking`, `thinking_time` (null when --think off)
+  - 4 files changed, 180+ lines added
+- CI: 需要 `npm run build` 重新生成 `cli-manifest.json`（columns 变化触发）
+- 注意：`columns` 必须是静态数组，不能是函数——serialization/manifest 系统依赖 `.join()` 等数组方法
+- 1889 tests pass, tsc clean, all CI checks green
+- Status: pending review
