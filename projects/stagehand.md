@@ -83,3 +83,13 @@ Browser-Use (85k⭐)  →  Stagehand (22k⭐)  →  Playwright MCP (30k⭐)
 - **活跃 merge**: 外部贡献者 sameelarif, tkattkat 等被 merge
 - **claim 模式**: pirate 会 claim 外部 PR 到内部 branch（如 #1918 → #1989）
 - **结论**: 值得继续投入，代码会被采纳（即使 PR 被 claim）
+
+### PR #2026 — fix: unwrap Anthropic $PARAMETER_NAME wrapper in tool responses (fixes #1986)
+- **日期**: 2026-04-22
+- **问题**: 同 #1990（之前自行关闭减少 PR 量），重新提交
+- **修复**: 复用 #1990 方案 — `unwrapToolResponse()` helper，AnthropicClient 和 aisdk 两条路径都做防御性解包
+- **文件**: `unwrapToolResponse.ts` (新), `aisdk.ts`, `AnthropicClient.ts`, test (新)
+- **CI**: manage-external-pr pass，changeset 已加
+- **教训**: 
+  - 关闭后重提很顺畅，之前的实现笔记节省了大量时间
+  - wiki 笔记的复利效果明显——第一次花了很多时间理解代码，第二次直接复用
