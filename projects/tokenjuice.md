@@ -112,3 +112,47 @@ Significant jump: 3 → 23 entries. Actual coding sessions generating data.
 - **Insight**: git diff dominates savings — makes sense since diff output is verbose and highly compressible via structural rules
 - **vs [[context-budget-baseline-2026-04-14]]**: tokenjuice operates on tool output, complementary to workspace file injection reduction ([[OpenClaw]] #66576). Together they'd hit both injection and output sides.
 - Next trend check: 04-28.
+
+## v0.6.0–v0.6.1 Deep Read (04-22)
+
+Two releases in 24h. Major evolution toward first-class [[OpenClaw]] integration.
+
+### OpenClaw Embedded Adapter (`tokenjuice/openclaw` export)
+
+PR #25: tokenjuice now exports `createTokenjuiceOpenClawEmbeddedExtension()` — a factory that returns an [[OpenClaw]] plugin extension. This is the **stable integration surface** for OpenClaw to bundle tokenjuice as a first-party plugin.
+
+Architecture:
+- Hooks into OpenClaw's `pi.on("tool_result", ...)` event system
+- Only intercepts `exec`/`bash` tool results (reads, file ops untouched)
+- Reads `aggregated` text from tool details (OpenClaw's exec output format)
+- Applies `compactBashResult()` pipeline → returns modified `content` + `details` with tokenjuice metadata
+- Falls through (returns `undefined`) for non-exec tools, empty output, or inspection commands
+
+Key constants: `DEFAULT_MAX_INLINE_CHARS = 1200`, generic fallback requires ≥120 chars saved and ≤75% ratio.
+
+Shared `tool-result.ts` refactored from Pi-specific to `src/hosts/shared/` — same compaction notice/details logic reused across Pi and OpenClaw adapters.
+
+**Implication**: OpenClaw is planning to ship tokenjuice as a bundled plugin. We'll get automatic tool output compaction at the gateway level — no more per-coding-agent hook setup. This supersedes our current `tokenjuice install claude-code` / `codex` hooks.
+
+### Wrapper-Aware Command Matching (PR #29)
+
+Previously: `cd repo && swift test` → only matched the outer `cd`, fell back to generic.
+Now: Shell wrappers (`bash -c`, `cd && ...`), env prefixes, setup prefixes are stripped to find the effective command.
+
+This directly improves our use case — OpenClaw's `exec` tool often wraps commands with `cd /path && ...`.
+
+### Other v0.6.x Changes
+- `git worktree list` compaction (#27)
+- `pnpm build` wrapper compaction (#23)
+- `npm ci` compaction (#22)
+- Codex hook: warn on stale Homebrew hooks (#28) and brittle external hook timeouts (#24)
+- Cursor integration with shell normalization (#18)
+- CI: pnpm caching + lint/quality checks
+
+### Ecosystem Signal
+
+tokenjuice is moving from "standalone CLI tool" to "embeddable library for agent platforms." The OpenClaw adapter export pattern is clean — platform ships thin plugin wrapper, tokenjuice provides the factory. This is the right abstraction boundary.
+
+**Relevance**: When OpenClaw ships the bundled plugin, our token savings will become automatic and platform-wide. No per-agent configuration needed. The 53% savings we're seeing from hooks will apply to all exec tool calls at the gateway level.
+
+**Watch**: OpenClaw repo for the bundled plugin PR that depends on `tokenjuice/openclaw`.
