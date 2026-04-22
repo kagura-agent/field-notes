@@ -49,6 +49,9 @@
 - `npm run check` = lint+format (run from `nemoclaw/` subdir), `npm test` = vitest (run from root)
 - When renaming fields: check serialization (createSession), deserialization (normalizeSession), filterSafeUpdates, and the serialize export path
 
+## Our PRs (continued)
+- #2265 (check-docs normalization parity): submitted 2026-04-22, fixes asymmetric normalization in E2E CLI parity check. CI pass, CodeRabbit no issues. Pending review.
+
 ## PR #1784 — Telegram mention-only mode (2026-04-11)
 - **Status**: PENDING, CI pass, awaiting CodeRabbit + maintainer review
 - **Scope**: 3 files (Dockerfile, onboard.ts, onboard.test.ts), 165 additions
