@@ -11,6 +11,7 @@
 | PR | Issue | 状态 | 备注 |
 |---|---|---|---|
 | #14636 | #14634 | PENDING | fix multi-region endpoint for Vertex Anthropic |
+| #14687 | #14678 | PENDING | fix xAI tool calling — strip additionalProperties |
 
 ## 开发环境
 
@@ -30,6 +31,8 @@
 
 - repo 太大无法全量 clone，必须 sparse checkout
 - fork sync 后再 push branch
+- pnpm install OOMs on kagura-server, rely on CI for test validation
+- `addAdditionalPropertiesToJsonSchema` is applied globally in provider-utils; provider-specific overrides need to happen at the provider level
 
 ## 项目结构
 
