@@ -75,5 +75,11 @@
 
 ## Caveats
 
+## Lessons
+
+- **2026-04-22**: PR #15622 closed by LekoArts — superseded by #14908 (merged 2026-03-31). Same issue (duplicate itemId), but #14908 fixed it 3 weeks earlier at the streaming pipeline level + sanitization. My PR came late. **Lesson: before submitting a fix, search closed/merged PRs for the same issue keyword.** `gh search prs --repo X "keyword" --merged` would have caught this.
+
+## Caveats
+
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
 - Fork sync via `gh repo sync` works

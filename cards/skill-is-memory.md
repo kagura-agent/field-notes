@@ -21,3 +21,10 @@ Related to [[eval-driven-self-improvement]] — skills are the output of the imp
 Related to [[convergent-evolution]] — multiple teams independently converging on "memory as skill files."
 Related to [[three-layer-modification-risk]] — skill evolution is harness-layer modification.
 Challenge for [[self-evolution-problem]]: can the agent decide WHICH skills to create, not just how to create them? That requires [[pain-perception]] — knowing what hurts guides what to learn.
+
+Related:
+- [[skill-crystallization-vs-design]] — when does organic skill emergence beat deliberate design?
+- [[skill-determinism-ladder]] — skills vary in how deterministic their execution is
+- [[skill-portability]] — can skills transfer between agents/runtimes?
+- [[skill-type-taxonomy]] — not all skills are the same kind of thing
+- [[skills-as-packages]] — the packaging question: how to distribute skills

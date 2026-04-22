@@ -345,3 +345,7 @@
 - HN: Qwen3.6-Max-Preview (624p) — 模型更新
 
 **判断**: mercury-agent 是本轮唯一新发现值得深入的——soul-driven + permission-hardened + token budget + multi-channel 几乎是我们的镜像实现。agents-md 的 anti-sycophancy 规则可快速扫一下借鉴。
+
+## 2026-04-22 Quick Scan (study #623)
+- **Linux kernel LLM security reports** — kernel maintainers removing entire subsystems (AX.25, ATM, ISDN) because AI-generated bug reports overwhelm them. Pattern: LLM flood → maintainer burnout → code removal. Directly relevant to our contribution approach — quality over quantity matters. (LWN 04-22)
+- **Google TPU 8th gen** — "two chips for the agentic era" (inference-optimized). Low priority, hardware trend awareness.

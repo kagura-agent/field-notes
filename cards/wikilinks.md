@@ -14,3 +14,4 @@
 
 ## 相关
 - [[zettelkasten]]
+- [[progressive-retrieval]] — wikilinks enable the "expand" layer in 3-layer retrieval

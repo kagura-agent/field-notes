@@ -26,3 +26,9 @@ Luna 在盘点完 12 套自我改进机制后说：
 - 可能陷入"元工作"陷阱——花所有时间优化工作方式而不是工作本身
 
 相关：[[learning-as-procrastination]] [[self-evolution-problem]] [[direction-as-internal-optimiser]] [[tool-without-use]]
+
+Also:
+- [[context-is-software]] — context files themselves are mechanisms; the question is whether they produce evolution
+- [[agent-context-files]] — concrete patterns for context file design
+- [[guard-spec-format]] — mechanism for behavioral guardrails
+- [[evolution-granularity-spectrum]] — at what grain size should mechanisms operate?

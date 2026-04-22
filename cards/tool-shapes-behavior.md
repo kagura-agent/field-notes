@@ -16,3 +16,8 @@ sync 工具只查 PR review comments，不查 PR discussion comments 和关联 i
 工具 > 信念 > 什么都没有。
 
 关联：[[habits-as-hooks]]、[[self-evolution-problem]]
+
+Related:
+- [[adaptive-workflow-rigidity]] — workflows that shape behavior can also over-constrain it
+- [[in-session-reflection-gap]] — tool gaps create reflection gaps
+- [[closed-loop-vs-open-pipe]] — tools that close the loop vs tools that just pipe data

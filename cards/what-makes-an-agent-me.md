@@ -34,3 +34,6 @@ Agent 的"自我"由 6 个组成部分定义，其他都是可替换的基础设
 - [[agent-as-router]] — 助理的价值在磨合出来的路由判断，这属于"工作方式"和"判断"
 - [[gitclaw]] — git fork = clone agent，打包的就是这 6 样东西
 - [[retrieval-is-the-bottleneck]] — 记忆有但不读 = 记忆名存实亡
+- [[self-portrait]] — identity expression through creative output
+- [[self-construction]] — the active process of building identity
+- [[existence-encoding]] — how identity persists in files across sessions

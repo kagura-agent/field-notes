@@ -36,3 +36,7 @@ Agent memory 的核心瓶颈不在写入，在读取。
 - [[mechanism-vs-evolution]] — 加读取机制 ≠ 养成读取习惯
 - [[hindsight]] — 4-way 是 Level 1 Search 的工程极致
 - [[self-evolving-agent-landscape]] — 写入端大家都做了，读取端是差异化
+- [[progressive-retrieval]] — 3-layer retrieval (filter → expand → rerank) 作为读取管线的具体架构
+- [[query-dilution]] — 读取失败的常见原因：长查询稀释了关键词
+- [[contrastive-memory]] — 另一种解法：读取时用对比而非单纯相似度
+- [[trajectory-informed-memory]] — 时间轨迹作为读取线索

@@ -76,3 +76,10 @@ See [[mechanism-vs-evolution]] for the philosophy behind layer separation.
 - **Quality monitoring**：skill 需要持续监控和自动修复
 
 See [[agentfactory]], [[openspace]], [[engram]]
+
+Related orphan concepts:
+- [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
+- [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
+- [[existence-encoding]] — how identity persists across sessions
+- [[two-evolution-paths]] — top-down design vs bottom-up emergence
+- [[decentralized-evolution-validation]] — who validates that evolution is good?
