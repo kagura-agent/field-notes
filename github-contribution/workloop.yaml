@@ -206,6 +206,11 @@ nodes:
       \ litellm 废弃白做 PR）\n6. 确认 issue 的根因或需求\n7. **查近期修复**：`git log --oneline -20\
       \ -- <相关文件>` 看有没有近期 commit 已经修了这个 issue\n   - 如果发现已修但 issue 未关闭，在 issue 下评论指出，然后退回\
       \ find_work\n7. 确认没有人在做同一个 issue（检查 issue 下的关联 PR 和评论）\n8. 评估是否真的能在这个 repo 修（不是上游问题）\n\
+      8b. **Root-cause checklist**（教训：claude-hud #462/#469, multica #1415 被 supersede）：\n\
+      \   a. 调用层/框架有没有内置解决方案？（先读目标结构体所有字段）\n\
+      \   b. 我是在修根因还是在绕症状？（看到 fallback 值不对→改控制流，不改数字）\n\
+      \   c. related issues 能不能合并成一个 PR？\n\
+      \   d. 安全类 issue？→ 考虑 security@ 私下报告再公开 PR\n\
       9. **提 PR 前 5 问**（全过才提）：\n   a. 这个 PR 只解决一个问题吗？\n   b. 上游没有已有修复或竞争 PR 吗？\n \
       \  c. 我读了 CONTRIBUTING.md 和最近的 merge 模式吗？\n   d. 我能验证这个修复吗？\n   e. 这个 repo 我的\
       \ open PR ≤ 8 吗？（超过就停，等已有 PR 被消化）\n汇报你的理解和实现计划，包含从笔记和维护者 PR 中学到的关键信息。\n"
