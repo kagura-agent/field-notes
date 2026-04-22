@@ -75,6 +75,14 @@
 - **Tests**: 2 new validation tests + 1 recovery test, all 45 pass
 - **Lesson**: HTTP status codes are ambiguous across providers — message-based classification should precede status-based for credential errors
 
+## PR #2245 — TLS certificate error classification (2026-04-22)
+- **Status**: PENDING, CI pass, CodeRabbit clean (no actionable comments)
+- **Scope**: 3 files (validation.ts, validation-recovery.ts, onboard.test.ts), 23 additions / 2 deletions
+- **Root cause**: classifyValidationFailure() had no pattern for TLS/certificate errors → fell through to 'unknown' → user got generic prompt instead of TLS-specific recovery message
+- **Fix**: Add /ssl|tls|certificate|handshake/ regex → classify as transport; improve recovery message to mention proxy interference for HTTP endpoints
+- **Tests**: 3 new test cases, all pass
+- **Lesson**: Error classification gaps mean existing good recovery messages never fire — always check if the classifier routes to the recovery path
+
 ## PR #2080 — Connect hint instructions (2026-04-20)
 - **Status**: PENDING, CI pass, CodeRabbit feedback adopted
 - **Scope**: 2 files (nemoclaw.ts, install.sh)
