@@ -113,3 +113,16 @@ dora node remove agent-demo calc-tool  # graceful removal
 ## 状态
 - ✅ 深读完成（04-19）：agent 集成模式已理解，设计洞察已提炼
 - 📌 关注：下一个版本是否支持 LLM streaming node（目前 agent 是 polling 模式）
+
+## 跟进 2026-04-22
+
+**近期活动 (04-15~22)**: 大量 QA/CI 基础设施建设
+- 三层测试体系: qa-deep / qa-nightly / qa-release-gate
+- 完整 nightly CI 与 GitHub workflows 对齐
+- Miri 测试集成（内存安全验证）
+- CLI 重构: BuildConfig 抽取、positional args 统一、stop/restart 增强
+- replay 修复: .drec 使用 parent dir 作为 working_dir
+- 健康检查测试: kill→respawn→kill 全周期测试
+- **贡献者活跃度极高**: 7 天 14+ PR merged
+
+**信号**: 项目处于 v0.5→v0.6 的质量加固期。没有大的架构变动，但 QA infra 做法值得学习（分层测试、smoke test 自动覆盖所有 examples）。

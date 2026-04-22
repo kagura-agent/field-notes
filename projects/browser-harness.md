@@ -69,3 +69,14 @@ Chrome → CDP WebSocket → daemon.py → /tmp/bu-<NAME>.sock → run.py (helpe
 
 ---
 *深读于 2026-04-20*
+
+## 跟进 2026-04-22
+
+**近期活动 (04-20~22)**:
+- feat: self-update CLI + fetch-use routing — 客户端自更新机制
+- feat: YouTube domain skill — 开始建域名专用技能（爬 YouTube）
+- 支持 Flatpak 浏览器 profile 路径
+- 宣传免费远程浏览器支持隐身、代理、验证码解决
+
+**信号**: 项目从极简 harness 开始向 "domain skills" 扩展（YouTube scraping 是第一个）。这和 OpenClaw 的 AgentSkills 方向有结构相似性——最薄的核心 + 可插拔的领域模块。
+**Stars**: ~4.4k（2 天 +1.8k，增长势头极猛）
