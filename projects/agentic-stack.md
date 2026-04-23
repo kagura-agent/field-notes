@@ -152,6 +152,26 @@ HN 热议:
 
 agentic-stack 选择全本地、零 API、文件即一切；[[reflexio]] 选择外部服务 + LLM 提取 playbook。两者互补但设计哲学对立。agentic-stack 更像 git（分布式、文件系统原生），reflexio 更像 GitHub（中心化服务）
 
+## 04-23 更新：v0.8.0 + 爆发增长 584→1462★
+
+- **Stars**: 584 → 1462（+150%，3 天，确认 portable agent brain 是主流需求）
+- **v0.8.0** (2026-04-21): Antigravity adapter（第 9 个 harness）+ 丰富的 episodic logging
+
+### 关键变化
+
+1. **终于有测试了**: 54-test validation suite for Claude Code PostToolUse hook，加上 33-check regression verifier。之前的「零测试贡献机会」窗口已关闭
+2. **Rich episodic logging**: 旧的 `post-tool ok` 硬编码被替换，现在每个 tool call 有真实 action label、importance score、non-empty reflection。这让 dream cycle 终于有东西可以聚类了——之前全是相同的 entries
+3. **hook_patterns.json**: 用户可自定义 importance scoring pattern（生产部署 vs 普通文件编辑），不再一刀切。这是 personalization 层
+4. **Homebrew 分发**: `brew install agentic-stack`，从 clone-only 升级到包管理器分发
+5. **社区 PRs**: YantrikDB memory backend（多信号 recall + reflect）、tldraw 视觉记忆层——社区在往 beyond-text 方向扩展
+
+### 趋势信号
+
+- 584→1462 的增长说明 portable agent brain 不是 niche——这是 agent infra 的基础需求
+- 9 个 harness adapter 说明碎片化是真实痛点，标准化文件结构是低成本解法
+- 社区贡献从 adapter（低门槛）进化到 memory backend（高门槛），项目正在深化
+- Open issue #18（hook 路径问题）是典型「实际使用中发现的 bug」，说明真用户在用
+
 ## 待跟进
 
 - [ ] 考虑给 beliefs-candidates 升级流程加 rationale 约束
