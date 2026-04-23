@@ -64,3 +64,10 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 - **Result**: Maintainer (omeraplak) closed PR + issue without comment, no superseding PR
 - **Pattern**: Security-sensitive PRs may be handled silently by maintainers who prefer internal fixes. External contributors exposing auth vulnerabilities can be seen as unwelcome even when the fix is valid
 - **Lesson**: For security issues, consider private disclosure (security@) before public PR. Public PRs expose the vulnerability before the fix lands
+
+## mastra #15575 → #15634 (2026-04-22)
+- **Issue**: Surrogate-safe string truncation for Anthropic JSON parse errors
+- **My approach**: Added `surrogateSafeTruncate` helper with dedicated test file
+- **Their approach**: Created `safeSlice` in a shared `string-utils` module, routed all 3 truncation sites through it. More minimal — single utility, no separate test file, tests inline with existing test suite
+- **Lesson**: Prefer minimal shared utilities over standalone helpers. Maintainer (roaminro) prefers changes that touch fewer files and reuse existing test structure
+- **Pattern**: When fixing a cross-cutting concern, create one utility and wire it in, rather than adding parallel infrastructure

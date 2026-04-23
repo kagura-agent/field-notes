@@ -102,3 +102,8 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **Key decision**: Used CREATE_NO_WINDOW (0x08000000) instead of DETACHED_PROCESS (0x00000008) because agents need stdio pipes to work
 - **Approach**: Used acpx exec with Claude Code — efficient for multi-file surgical changes
 - **go vet**: passes clean on non-Windows (build tags handle platform separation)
+
+## PR #1328 Superseded (2026-04-23)
+- My fix: `adoptOrphanedAgents()` at daemon register time — narrow, single entry point
+- Maintainer's fix (#1476): sweeper-based orphan recovery + auto-retry + `issue rerun` CLI + new API endpoints
+- Takeaway: multica codebase prefers infrastructure-level solutions (sweeper, service layer) over point fixes. Future PRs should align with existing patterns.

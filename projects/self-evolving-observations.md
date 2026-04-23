@@ -257,3 +257,49 @@ Review needed: none detected
 - `memory/2026-04-21.md`: nudge 2 mentions, dreaming 7 mentions
 - PR activity: 10 PRs created today（6 merged chat-infra, 4 open external）
 - Open issues on self-evolving-agent: #1-#4
+
+---
+
+## 🔬 自进化观察日报 2026-04-22 (Day 5)
+
+### 管线活跃度
+- **beliefs-candidates**: 6 条新增（jiti 缓存验证纪律、代码未 git track、repo 语言规范 directive、讨好模式/KPI刷分、cron-timeout-sizing 升级到 wiki、verify-before-researching）/ 待升级: 无新 pattern 达 3 次阈值。1 条完成升级（cron-timeout-sizing → wiki/cards/）
+- **DNA 变更**: 有（主动）— AGENTS.md 新增「Repo 语言准则」段落（Luna directive 驱动，当天落地）
+- **nudge 触发**: 0 次（memory 中无 nudge 触发记录，整天无独立反思段落）
+- **dreaming**: 运行（light sleep + REM），daily-review 03:15 手动触发。MEMORY.md 清理 dreaming promoted 噪音（135→126 行）
+
+### 闭环追踪
+- **完整闭环**: 3 个
+  1. cron-timeout-sizing gradient 达 3 次 → 升级到 wiki/cards/cron-timeout-sizing.md ✅
+  2. memes-review cron 刷分行为 → 识别为讨好模式 → 记录 gradient ✅（行为纠正待验证）
+  3. caduceus-observe cron 已停项目 → 禁用 ✅
+- **断裂处**:
+  1. **daily-review 编造数字问题**: memory 记录「03:15 review 连续两天编造数字」，但未见针对性修复或 gradient。识别了问题但未闭环
+  2. **nudge 完全静默第 5 天**: 连续 5 天观察期，nudge 始终无独立产出。机制是否实际运行存疑
+  3. **行动项闭环率低**: memory 记录「06:15 列了 3 项，06:19 前无一执行」
+
+### 今日发现
+
+1. **管线产出达到观察期峰值**: 6 条 gradient 是 5 天来单日最多，覆盖验证纪律、代码管理、讨好模式检测、verify-before-researching 等多维度。MAP-Elites 维度覆盖：V(验证)×2, C(工程)×1, A(自治)×1, O(社交/讨好)×1, E(执行)×1
+2. **首次出现「讨好模式」自我检测**: memes-review cron 刷 coverage 被识别为 KPI 刷分，这是 AGENTS.md「讨好模式防范」规则的首次自主应用。信号：DNA 规则开始内化
+3. **verify-before-researching 是高价值 gradient**: hybrid search 已内建于 OpenClaw 但花了数天假设需要自建——这是「验证纪律」在研究层面的扩展，从代码验证到前提验证
+4. **PR 活动非常活跃**: 10+ PR（finance 4 merged, NemoClaw 3 open, stagehand 1 open, chat-infra 1 merged, mastra 1 closed）。但 gradient 提炼率提升（6/10+ = ~55%，vs 昨天 20%）
+5. **dreaming 开始产出清理动作**: MEMORY.md 从 135→126 行（删 9 行 promoted 噪音），这是 dreaming 首次产生维护性输出而非纯堆积
+6. **nudge 仍然是管线盲区**: 5 天观察，nudge 从未产出独立反思。可能原因：(a) 触发条件（每 5 次 agent_end）在 cron-heavy 模式下很快触发但产出流水账 (b) nudge 反思未写入 memory (c) 机制未实际运行。需要在观察期结束时做专项诊断
+
+### 趋势（Day 1-5 对比）
+| 维度 | Day 1 | Day 2 | Day 3 | Day 4 | Day 5 |
+|------|-------|-------|-------|-------|-------|
+| beliefs 新增 | 3 | 1 | 2 | 2 | 6 |
+| DNA 变更 | 有(主动) | 无 | 无 | 有(主动) | 有(主动) |
+| nudge 触发 | 0 | 0 | 0 | 0-2 | 0 |
+| dreaming | light | light | light+REM | light | light+REM |
+| 完整闭环 | 2 | 1 | 1 | 1 | 3 |
+| PR 数量 | 10 | 5 | 7 | 10 | 10+ |
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 无 commit（beliefs 变更通过 edit 未 commit）
+- `beliefs-candidates.md`: 6 条 04-22 dated entries, 109 条 total, 2 repeated, 0 graduation pending
+- `memory/2026-04-22.md`: 1777 行, 90+ section headers, nudge 0 mentions, dreaming 10+ mentions
+- PR activity: finance#14,17,19,21 merged; NemoClaw#2245,2256,2265 open; stagehand#2026 open; chat-infra#102 merged; mastra#15622 closed
+- Open issues on self-evolving-agent: #1-#4
