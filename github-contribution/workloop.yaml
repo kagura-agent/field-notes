@@ -268,6 +268,13 @@ nodes:
       如果结果 **≥ 5** → **停止，不提交 PR**。汇报"PR 数量已达上限，放弃本轮"。
 
       确认 < 5 后再继续：
+
+      **提交前复盘检查**（cat wiki/cards/code-review-lessons.md + pr-superseded-lessons.md 快速扫一遍）：
+      - 我是在修根因还是绕症状？调用层有没有内置方案？
+      - 有没有绕过项目已有的安全/权限模式？
+      - related issues 能不能合并？`gh pr list --search` 有没有竞争 PR？
+      - bot review 建议在提交前就能避免的问题？
+
       1. push 分支到 fork
       2. 创建 PR，标题清晰，描述写明改了什么、为什么、怎么测的
       3. 关联 issue（Closes #XX）
