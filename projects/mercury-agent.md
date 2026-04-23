@@ -98,6 +98,38 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 
 **信号**: Mercury 在快速追赶——Ollama 支持意味着可以脱离付费 API 运行，provider registry 暗示未来多模型切换。增速依然强劲（每天 +50-60⭐）。
 
+## 跟进 2026-04-23: v0.5.x 快速迭代
+
+⭐516（+167，增速加快）。从 v0.4.x → v0.5.2 在 24h 内。
+
+### v0.5.0 核心变化
+- **Telegram organization access**: 从单 owner 转向 admin/member 模型。pairing-code flow + CLI 管理命令。比 OpenClaw 的设备配对更偏向多用户组织模型。
+- **Provider model selection**: onboarding 时自动从 API/Ollama 获取可用模型列表，交互式选择。比手动配置 model 名称友好。
+- **Loop detection circuit breaker**: 3+ 次相同 tool call 自动中断。v0.5.2 改进为 interactive loop detection + user confirmation。
+- **CLI 美化**: spinner、ANSI streaming、arrow-key command menus
+
+### 增长分析
+- 04-20: 0⭐ (created) → 04-21: 232⭐ → 04-22: 349⭐ → 04-23: 516⭐
+- 日均 +130⭐，发布节奏极快（3 天 5 个 release）
+- 这是 "soul-driven agent" 概念被市场验证的信号
+
+### 生态趋势观察
+- **Skills 生态爆发**: 过去 7 天 ~1,979 个 claude+code+skill 相关 repo。cc-design (597⭐)、agent-style (266⭐)、agent-startup-kit (232⭐) 都是 "drop-in skill" 模式。AgentSkills 规范正在成为事实标准。
+- **SwarmForge** (292⭐) Uncle Bob 的 tmux multi-agent 编排——multi-agent 协作是另一个热方向。
+- **auto-memory** (105⭐) progressive session recall——agent 记忆仍是痛点。
+
+### 与 OpenClaw 的差距在缩小的领域
+- Daemon mode (mercury up) vs gateway start
+- Organization access model (multi-user Telegram)
+- Interactive model selection
+
+### OpenClaw 仍然领先的领域
+- 多 channel 生态（Discord, Telegram, Feishu, WhatsApp vs 仅 CLI+Telegram）
+- Subagent/ACP/session spawn 编排
+- memex 语义搜索 vs 关键词 `.includes()`
+- Gateway 架构（webhook + 持久连接）
+- 成熟的 skill 生态和 clawhub
+
 ## 跟进 2026-04-22 PM: 架构深入 + 代码阅读
 
 ⭐349。

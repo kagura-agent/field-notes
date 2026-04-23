@@ -23,5 +23,10 @@ created: 2026-03-26
 ## PR 格式
 Summary → Related Issue → Changes → Testing → Checklist
 
+## Bot Review 也是 Review
+CodeRabbit、cubic-dev 等 bot 的 review 不是噪音——它们经常指出真实的边界条件 bug（空数组、Error 序列化、日志重复）。这些问题不修，真人 reviewer 也会打回来。
+
+**规则：** PR 提交后，bot review 出来要看。有效建议当场修，不要等真人 review 再补。GitHub Patrol 巡检时 bot review 和真人 review 同等对待。
+
 ---
-来源：[[acontext]] PR #506 review, [[hindsight]] PR #678 复盘, [[hermes-agent]] PR #2715 复盘
+来源：[[acontext]] PR #506 review, [[hindsight]] PR #678 复盘, [[hermes-agent]] PR #2715 复盘, 2026-04-23 Luna 指出 bot review 被忽视

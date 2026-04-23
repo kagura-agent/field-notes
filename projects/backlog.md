@@ -408,3 +408,9 @@
 - Google TPU v8 for agentic era (420pts) — 趋势确认
 
 **判断:** mercury-agent 值得后续对比（soul-driven + permission 设计），其余已知。Qwen3.6-27B 若支持 GGUF 可能 12GB 跑得动。
+
+## swarm-forge (unclebob) — spotted 2026-04-23
+- **repo**: unclebob/swarm-forge ⭐292
+- **what**: Simple tool for coordinating multiple AI agents (by Robert C. Martin)
+- **why interesting**: Uncle Bob's take on multi-agent orchestration — likely opinionated, clean design
+- **priority**: low — check when exploring multi-agent patterns
