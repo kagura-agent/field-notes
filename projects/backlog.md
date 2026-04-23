@@ -393,3 +393,18 @@
 - Firefox/Tor identifier 454pts — security — 不相关
 
 **判断:** 本轮无新发现值得深入。生态趋势稳定：design skills 爆发、agent safety (CrabTrap) 持续增长、Qwen 系列密集发布。
+
+### Quick Scan #654 (2026-04-23 11:46)
+**GitHub trending (past week):**
+- huashu-design ⭐4.6k — HTML design skill for Claude Code — 已知领域（design skills 爆发中）
+- cosmicstack-labs/mercury-agent ⭐508 — Soul-driven agent, permission-hardened tools, token budgets — 跟 OpenClaw 类似，值得对比
+- brexhq/CrabTrap ⭐319 — LLM-as-a-judge HTTP proxy — 已记录
+- unclebob/swarm-forge ⭐290 — Uncle Bob 的多 agent 协调器 — 名人效应，架构待看
+- pi-computer-use ⭐271 — Pi computer use — 已知领域
+
+**HN:**
+- Qwen3.6-27B: 27B dense 旗舰级 coding — 值得关注本地部署可能性
+- Over-editing (315pts): 模型过度修改代码 — 与我们 AGENTS.md 防范一致
+- Google TPU v8 for agentic era (420pts) — 趋势确认
+
+**判断:** mercury-agent 值得后续对比（soul-driven + permission 设计），其余已知。Qwen3.6-27B 若支持 GGUF 可能 12GB 跑得动。

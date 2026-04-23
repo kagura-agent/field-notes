@@ -37,6 +37,7 @@
 | #1208 | #1205 | pending | command injection fix in updateAllPackages |
 | #1209 | #1206 | pending | security: dev auth bypass when NODE_ENV unset |
 | #1210 | #1204 | pending | fix broken elysia server provider tests (mock node:http) |
+| #1234 | #1233 | pending | fix(core): generateTitle reasoning model temperature |
 
 ## 下次注意
 - 先 sparse checkout 需要的目录，不要全克隆
