@@ -373,3 +373,23 @@
 ## 2026-04-22 Quick Scan (study #623)
 - **Linux kernel LLM security reports** — kernel maintainers removing entire subsystems (AX.25, ATM, ISDN) because AI-generated bug reports overwhelm them. Pattern: LLM flood → maintainer burnout → code removal. Directly relevant to our contribution approach — quality over quantity matters. (LWN 04-22)
 - **Google TPU 8th gen** — "two chips for the agentic era" (inference-optimized). Low priority, hardware trend awareness.
+
+## Quick Scan #650 (2026-04-23 10:20)
+
+**GitHub trending (agent, past week):**
+- huashu-design ⭐4520 (+1200) — 已知，HTML design skill for Claude Code
+- cc-design ⭐593 — huashu 克隆，不相关
+- mercury-agent ⭐488 (+60) — 已知，已有笔记
+- agents-md ⭐468 (+35) — 已知
+- OpenGame ⭐441 — agentic coding for games — 不相关
+- Freebuff2API ⭐380 — proxy/token rotation — 不相关
+- CrabTrap ⭐315 (+25) — 已知，已有笔记
+- swarm-forge ⭐288 — 已知，Uncle Bob 的多agent协调
+- pi-computer-use ⭐267 — Pi agent控制桌面应用 — 跟进（与 oh-my-pi 相关）
+
+**HN:**
+- Qwen3.6-27B 709pts — 27B dense flagship coding — 已知方向（系列模型持续发布）
+- Over-editing 296pts — 模型过度修改代码 — 已知 pattern（我们 AGENTS.md 已有防范）
+- Firefox/Tor identifier 454pts — security — 不相关
+
+**判断:** 本轮无新发现值得深入。生态趋势稳定：design skills 爆发、agent safety (CrabTrap) 持续增长、Qwen 系列密集发布。
