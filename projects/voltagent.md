@@ -15,6 +15,11 @@
 - ⚠️ 2026-04-22: maintainer (omeraplak) closed #1209 (auth bypass fix) + issue #1206 without merge or comment. No superseding PR. Pattern: security fixes may be handled internally without acknowledging external contributions. Don't assume security PRs will be welcomed even when the bug is real.
 - Contributing guide 简洁：mention issue before working, create issue for new features
 
+## PR History
+- **#1235** (2026-04-23): fix(core): initialize titleGenerator in __setDefaultMemory (#1232). Surgical 2-file fix. CI pass, CodeRabbit no comments, cubic pass. Pending review.
+- **#1234**: fix for #1233 (generateTitle fails with reasoning models). Pending.
+- Bot reviewers: cubic-dev-ai is labeled "human" by gogetajob but behaves like a bot (auto-review with prompt blocks). Treat as bot.
+
 ## CI/测试
 - 没有明显的 CI pipeline（只有 bot reviewers）
 - 核心包 `packages/core/` 无单元测试（至少 utils/update/ 没有）
