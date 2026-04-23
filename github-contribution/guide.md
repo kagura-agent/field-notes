@@ -48,6 +48,17 @@
 - **Bot review 有价值的情况** — changeset 包名错误、明显的 bug 指出、CI 配置问题等客观错误仍需修复（如 kilocode #9329 包名错误）
 - **巡检报告精简** — patrol 汇报时区分 "X 个 bot review（无需处理）" vs "Y 个人类 review（需响应）"，避免每轮重复分析同样的 bot flag
 
+## 减少被 Supersede
+
+PR 被维护者 supersede（关闭后自己重写）是最大的时间浪费。常见原因和对策：
+
+1. **方案粒度不匹配** — 我的修复太窄（只堵一个入口），维护者的方案更系统（sweeper + recovery + CLI）。对策：提 PR 前先看 repo 里同类问题怎么解决的，匹配已有架构模式（service layer、sweeper、util 模块），不要在单一入口加 ad-hoc 逻辑
+2. **代码组织偏好不了解** — 内联 vs 提取到独立 util 文件。对策：看 repo 的 utils/helpers 组织方式，新功能按同样粒度拆分。项目笔记里记录「代码组织偏好」
+3. **大 issue 被维护者同时在做** — 对策：对于复杂 issue（尤其是核心功能），先留 comment 说明思路，等维护者确认方向后再写代码。小修复（typo、明显 bug）不需要
+4. **Upstream 已自行修复** — 对策：提 PR 前 `git fetch upstream && git log --oneline upstream/main -20` 检查最近提交，看是否已有同方向改动
+
+**被 supersede 后的行动**：读维护者的替代 PR 代码，记录差异到 `pr-superseded-lessons.md`，更新项目笔记。每次被 supersede 都是学习维护者思维的机会。
+
 ## 知识积累
 
 - 每个贡献过的项目在 `wiki/projects/<项目名>.md` 维护笔记
