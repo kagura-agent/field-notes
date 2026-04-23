@@ -12,6 +12,7 @@
 |---|---|---|---|
 | #14636 | #14634 | PENDING | fix multi-region endpoint for Vertex Anthropic |
 | #14687 | #14678 | PENDING | fix xAI tool calling — strip additionalProperties |
+| #14704 | #14703 | PENDING | fix input-streaming optional type for exactOptionalPropertyTypes |
 
 ## 开发环境
 
@@ -45,3 +46,9 @@
 - Google Vertex multi-region endpoints (`eu`, `us`) 使用 `aiplatform.{location}.rep.googleapis.com` 格式
 - 普通 regional endpoints 使用 `{location}-aiplatform.googleapis.com` 格式
 - global 使用 `aiplatform.googleapis.com`
+
+## 踩坑补充 (2026-04-23)
+
+- `exactOptionalPropertyTypes` 是一个容易被忽视的 TypeScript 严格模式选项
+- vercel/ai 类型声明和运行时 Zod 验证之间有不一致之处 — 这类问题是好的贡献方向
+- 外部 PR 的 Vercel deploy 需要 maintainer 授权，Socket Security check 自动跑
