@@ -51,3 +51,12 @@
 - 修安全问题时 grep 全 repo 查同一 pattern 的其他出现点
 - Bot reviewers: CodeRabbit (chill), cubic-dev-ai, Joggr — CodeRabbit 质量最高，会查 diff 外相关代码
 - pnpm install 耗内存大，可能被 SIGKILL，耐心等
+
+## PR History (cont.)
+- **#1237** (2026-04-23): fix(server-core): throw error when user-specified port is occupied (#1236). Changed `allocatePort()` to fail fast when `preferredPort` is specified and unavailable. CodeRabbit review caught that Hono/Elysia providers also called allocatePort directly — refactored to make strict mode automatic (no explicit parameter needed). 22 tests pass. Pending review.
+
+## Lessons
+- VoltAgent uses sparse checkout — remember `git sparse-checkout add` when touching new packages
+- Build depends on shared plugins that aren't in sparse checkout — full test suite won't build locally, but individual package tests work fine
+- CodeRabbit gives good architectural feedback (caught the Hono/Elysia oversight)
+- biome lint is strict about unused variables and formatting — run `pnpm biome check --write --unsafe` before pushing
