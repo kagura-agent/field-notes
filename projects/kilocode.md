@@ -111,6 +111,40 @@
 - **根因**: `convertToGlob("secret.txt")` 返回 `"secret.txt"`，`Wildcard.match` 用 `^secret\.txt$` 正则只匹配 root 路径。gitignore spec 规定无 `/` 分隔符的模式应匹配任意深度
 - **方法**: 对每个 unrooted 模式额外生成 `*/pattern` 规则
 
+## 学习笔记
+
+### 2026-04-23: v3.80.0 — Enterprise Remote Skills + Architecture Changes
+
+**Release highlights (v3.80.0, 2026-04-22):**
+1. **Enterprise Remote Skills** (PR #10283) — org-managed skills pushed via remote config
+2. **OOM Fix** (PR #10290) — `--max-old-space-size=8192` for cline-core Node process
+3. **Remove Foreground Terminal** (PR #10196) — all command execution now background-only
+
+**Enterprise Skills Architecture — Deep Read:**
+
+Three skill sources with clear precedence: **remote (enterprise) > disk-global (user) > project (workspace)**.
+
+Key design decisions:
+- **`frontmatter.name` is canonical identity** — if `entry.name` (from dashboard) drifts from SKILL.md frontmatter, warns but includes (drift-tolerant). Silently hiding org-configured skills would be worse.
+- **`remote:` path prefix** as namespace separator — distinguishes remote skills in toggle stores, content loading, UI.
+- **`parseRemoteSkillEntries`** — single shared validation point, eliminates duplicated frontmatter parsing.
+- **`skills.ts` stays pure** — zero StateManager coupling. Remote entries injected as optional params.
+- **`alwaysEnabled` enforcement** — enterprise skills can't be toggled off, enforced at UI + execution.
+- **Atomic `replaceRemoteConfig`** — fixed race condition in config swap.
+
+**`discoverSkills` resolution:** array order project → disk-global → remote, then `getAvailableSkills` iterates **backwards** so last-added (remote) wins on name collision. Elegant reverse-priority trick.
+
+**Relevance to us ([[openclaw]]):**
+- OpenClaw's skill system is filesystem-only. No remote/enterprise skill support yet.
+- Precedence model maps to potential: ClawHub remote skills > user global > workspace.
+- `alwaysEnabled` could apply to org-mandated safety/compliance skills.
+- Drift-tolerant validation (warn but include) is good pattern for multi-source plugin systems.
+
+**Terminal removal:** completed migration to background-only execution. Same direction OpenClaw already took.
+**OOM fix:** `--max-old-space-size=8192` for long conversations. Relevant to any long-running agent.
+
+See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skills]]
+
 ## 踩坑记录
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
