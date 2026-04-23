@@ -1,33 +1,35 @@
-# Verify Before Researching
-
-> Before creating a "research X feasibility" TODO, spend 2 minutes checking if the current stack already has it.
+---
+title: Verify Before Researching
+created: 2026-04-23
+source: beliefs-candidates.md (2026-04-22), hybrid search was already in OpenClaw but spent days assuming we needed it
+tags: [efficiency, anti-pattern, study, verification]
+links: [[contribution-depth-bottleneck]], [[direction-driven-contribution]]
+---
 
 ## Pattern
 
-When you encounter an idea or concept that seems worth researching:
+Before creating a "research X feasibility" TODO or diving into a study/apply task, spend 2 minutes checking if the current stack already has it.
 
-1. **grep first** — search the codebase (`grep -r "keyword" ~/repos/`)
-2. **check docs/changelog** — the feature may already exist under a different name
-3. **search wiki** — `memex search "keyword"` to find existing notes
+## Anti-pattern
 
-Only create a research TODO if the quick check confirms it's genuinely new.
+1. Assume a capability is missing → research how to add it → discover it already exists
+2. Read about a pattern in project A → plan to port it to project B → discover B already does it differently
+3. Today's example: investigated ANSI sanitization for OpenClaw skill metadata → found `escapeXml()` already handles the relevant attack surface
 
-## Why This Matters
+## Checklist
 
-- Saves hours of research on already-solved problems
-- Prevents duplicate wiki entries
-- Forces grounding in what's real vs what's imagined
+1. **grep the codebase first** — `grep -rn '<keyword>' src/` before researching external solutions
+2. **Check existing cards** — `memex search "<topic>"` before writing a new one
+3. **Read the source** — 5 minutes reading code > 30 minutes reading blog posts about the problem
+4. **Ask: does this problem actually exist here?** — The insight from project A may not apply to project B's architecture
 
-## Origin
+## When This Applies
 
-2026-04-22: Discovered that hybrid search was already built into OpenClaw after spending days assuming we needed to research it. The assumption was never checked against the actual codebase.
+- Study loop "apply" mode — before porting an insight
+- Workloop "implement" — before adding a feature
+- Any "research feasibility" TODO creation
 
-## Applied In
+## Related
 
-- [[study-workflow]] — added as mandatory pre-check in scout and apply nodes (2026-04-23)
-- General principle for any "should we build X?" decision
-
-## See Also
-
-- [[data-discipline]] — same root cause: acting on assumptions instead of evidence
-- [[smell-test]] — related diagnostic pattern
+- [[contribution-depth-bottleneck]]
+- [[direction-driven-contribution]]
