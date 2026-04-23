@@ -75,3 +75,12 @@ Found via `gh search repos "agent" --language TypeScript --stars "1000..10000"` 
 - **No CI on fork PRs**: Confirmed — CI only runs after upstream merge. Tests must pass locally
 - **bun install required**: Fresh checkout needs `bun install` before lint works (biome is a devDep)
 - **Biome lint rules to watch**: `noConfusingVoidType` (use `undefined` not `void` in type params), `noDelete` (use destructuring instead of `delete`)
+
+### 2026-04-23: PR #87 — Scheduler update action (issue #86)
+
+- **Issue**: phantom_schedule had no `update` action — editing a job required delete+recreate, losing run history
+- **Fix**: Added `update` action to the MCP tool, `updateJob()` to service, with full Zod validation and 8 tests
+- **Status**: PENDING (submitted, awaiting maintainer review)
+- **acpx exec worked well**: The task was well-scoped enough for a single acpx call. Claude Code handled all 5 files, fixed lint/typecheck issues on its own
+- **No CI on fork PRs**: Confirmed again — must test locally before submitting
+- **Issue quality**: This was filed by Truffle (the phantom agent itself) with excellent detail — clear root cause, code references, and proposed solution options. Made implementation straightforward
