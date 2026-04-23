@@ -1,6 +1,6 @@
 # Mercury Agent
 
-> cosmicstack-labs/mercury-agent | ⭐232 (2026-04-21) | TypeScript | MIT
+> cosmicstack-labs/mercury-agent | ⭐541 (2026-04-23, was 232 on 04-21) | TypeScript | MIT
 > "Soul-driven AI agent with permission-hardened tools, token budgets, and multi-channel access."
 
 ## 概要
