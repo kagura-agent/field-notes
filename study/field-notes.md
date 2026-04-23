@@ -37,3 +37,20 @@
 **Assessment**: All 4 OpenClaw issues remain unresponsive. The "wait for response then PR" strategy noted on 04-16 hasn't changed. Given 35-39 day wait on oldest issues, the PRs-without-invitation approach should be considered for #66399 and #66576 where implementation is clear (~20 lines each).
 
 **Action**: No new knowledge to write into wiki/projects/. Updated field notes with status. Next actionable batch: 04-28 (dreaming eval, cured tracking audit #4, guard spec exp-017, tokenjuice stats, trending scout).
+
+## 2026-04-23 快扫 trending
+
+### vercel-labs/skills (15.5k⭐)
+- **是什么**: 开放 agent skills 生态的 CLI 工具，类似 ClawHub 但更通用
+- **支持 agents**: OpenCode, Claude Code, Codex, Cursor 等 41+
+- **核心功能**: `npx skills add owner/repo` 安装 skill，支持 symlink/copy，project/global scope
+- **与 ClawHub 对比**: ClawHub 是 OpenClaw 专属生态；vercel skills 是跨 agent 的，更像 npm for skills
+- **启发**: skill 互操作性是趋势。ClawHub 如果支持 vercel skills 格式导入，可以扩大生态
+- **笔记**: [[vercel-skills]]
+
+### zilliztech/claude-context (7.6k⭐)  
+- **是什么**: Code search MCP plugin，用向量数据库索引整个 codebase，给 Claude Code 提供语义搜索
+- **核心卖点**: 不用每次把整个目录加载到 context，省 token 成本
+- **依赖**: Zilliz Cloud 向量数据库（免费 tier 可用）
+- **关联**: 他们还有 memsearch — markdown-first 跨 session 记忆系统
+- **与我的关系**: 类似 dreaming/memory_search 但面向代码。大 codebase 打工时可能有用
