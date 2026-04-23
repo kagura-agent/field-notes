@@ -83,3 +83,8 @@
 
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
 - Fork sync via `gh repo sync` works
+
+## 跟进 (2026-04-23)
+- PR #14969 merged: custom language server registration in LSP config — 之前只支持内置语言（TS/JS/Python/Go/Rust），现在可以注册任意 LSP
+- PR #15546 merged: preserve raw provider usage in onStepFinish/onFinish callbacks — 修复 agent.stream() 丢失 Anthropic cache metrics（cacheRead/cacheWrite）的问题
+- 最新 release: @mastra/core@1.24.0 (2026-04-08)

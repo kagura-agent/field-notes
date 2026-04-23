@@ -53,3 +53,7 @@ Agent → HTTP_PROXY=CrabTrap → [TLS MITM] → [Static Rules] → [LLM Judge] 
 - [[agent-safety]]
 - [[guard-spec-format]]
 - [[tool-execution-policy-enforcement]]
+
+## 跟进 (2026-04-23)
+- PR #3 merged (2026-04-22): fix avoiding draining large request bodies during LLM approval — 防止 proxy 在等 LLM 审批时把大 request body 读完耗尽内存
+- 仍然只有 3 个 commit，非常早期

@@ -35,6 +35,23 @@
 - agents map 按 slug（文件名）做 key，`name` 字段可以不同
 - fork PR 的 CI checks 大部分 skip，不影响 review
 
+### PR #9341 — perf(streaming): four fixes that unfreeze long-session streaming
+- **状态**: ✅ MERGED (2026-04-23)
+- **作者**: @marius-kilocode (core maintainer)
+- **问题**: ~200 message session 中 LLM streaming 卡顿——main thread 只有 36% idle，每个 SSE batch 有 3 个 ~440ms blocking tasks
+- **四个独立修复**:
+  1. **DataBridge reactive cascade**: `createMemo(() => ({...}))` 包整个 session data → 每个 token delta invalidate 所有 downstream consumer（O(N) scan）。改为 plain object + reactive getters over individual keys
+  2. **TextShimmer timer thrashing**: `createEffect` + `setTimeout/clearTimeout` 在 streaming 时产生 ~2500 timer ops/1.3s。改为纯 CSS `data-active` 属性驱动
+  3. **GrowBox layout thrashing**: ResizeObserver callback 里调 `getBoundingClientRect()` 强制同步 layout @60Hz。改为复用 observer entries 的 `contentBoxSize/contentRect` + sub-pixel delta guard (<2px)
+  4. **Markdown re-parse per token**: `innerHTML + morphdom` 每个 SSE token 触发一次（60-200Hz）。改为 `requestAnimationFrame` coalescing
+- **结果**: main-thread idle 36%→72%, peak HandlePostMessage 446ms→15ms, streaming stalls gone
+- **测试策略**: 静态 AST regression guards（检查源文件不含 anti-pattern），避免 JSX 组件测试 CI 不稳定
+- **洞察**:
+  - [[reactive-framework-antipatterns]]: 在 SolidJS 中用 createMemo 包大对象是性能杀手，粒度越细越好
+  - static source guards 是运行时测试不可靠时的聪明替代——检查代码结构而非运行时行为
+  - 所有四个问题都是「在低频场景正常，高频（streaming）暴露」的经典模式
+  - 与 [[openclaw]] 的 ACPX streaming 相关：如果 UI 端也做 token streaming，同样的 anti-pattern 会出现
+
 ### PR #9329 — fix(log): use relative history path to prevent double-concatenation
 - **Issue**: #9321 — Log stream error: double-concatenated absolute path
 - **状态**: ❌ CLOSED (2026-04-21) — maintainer @johnnyeric 关闭，"changes already present in main"
