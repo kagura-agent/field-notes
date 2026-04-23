@@ -239,11 +239,17 @@ Hooks 新增 `type: "mcp_tool"` — hook handler 可直接调用已注册的 MCP
 ### Forked Subagents 开放 (v2.1.117)
 `CLAUDE_CODE_FORK_SUBAGENT=1` 让外部 build 也能用 fork-based subagent。Agent frontmatter `mcpServers` 在 `--agent` main-thread session 中被加载。
 
+### `/resume` 性能大提升 (v2.1.116)
+40MB+ session 恢复速度提升 67%。处理大量 dead-fork entries 更高效。说明 Claude Code 用户确实在跑超长 session，resume 是刚需。
+
+### Auto Mode `$defaults` (v2.1.118)
+`autoMode.allow` / `autoMode.soft_deny` / `autoMode.environment` 中可用 `"$defaults"` 关键字——在内置默认列表基础上增量添加自定义规则，而非替换。这是权限 DX 的好设计：用户只需声明"除了默认的，还允许 X"。
+
 ### 其他值得注意
-- `/resume` 大 session 性能优化 67%（40MB+ session）
 - MCP startup 并发连接成默认（多 stdio server 时更快）
-- Bash tool 检测 `gh` rate limit 提示 agent 退避
-- Auto mode `$defaults` 关键字——允许增量 allow/deny 而非替换
+- Bash tool 检测 `gh` rate limit 提示 agent 退避（实用——我们也遇到过）
+- credential save crash on Linux/Windows 修复（`~/.claude/.credentials.json` 损坏）
+- `/fork` 改为 pointer + lazy hydrate（之前每次 fork 写完整父对话到磁盘）
 
 ### Codex 动态
 - `codex_hooks` 标记 stable（从 experimental 毕业）
@@ -252,3 +258,9 @@ Hooks 新增 `type: "mcp_tool"` — hook handler 可直接调用已注册的 MCP
 - Permission profiles 进入 app-server
 
 **信号：** Codex hooks 稳定化 + computer_use = OpenAI 在补齐 agent 基建。两家（Anthropic + OpenAI）hook 系统都在成熟，说明 hook 是 agent 扩展的标准模式。
+
+### 综合趋势（三版连读）
+1. **Agent 长期运行基建持续强化：** resume 优化、fork lazy hydrate、stale worktree 清理 — 都是 "agent as daemon" 思路的延续
+2. **Plugin/Hook 系统走向正式 API：** MCP-in-hooks、plugin tagging、dependency resolution、auto-update skip diagnostics — 从"hacker 玩具"走向"平台 API"
+3. **权限 DX 成差异化：** `$defaults` 增量模式、"Don't ask again"、`DISABLE_UPDATES` 分级 — 越来越细粒度的控制，目标是 enterprise + power user 都满意
+4. **MCP OAuth 痛点暴露：** 一个版本修了 7+ 个 OAuth/credential bug — token refresh race、keychain race、scope mismatch。说明 MCP auth 在实际部署中问题很多，谁先解决好谁赢
