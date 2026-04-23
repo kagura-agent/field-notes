@@ -86,6 +86,14 @@
 - **Tests**: 3 new test cases, all pass
 - **Lesson**: Error classification gaps mean existing good recovery messages never fire — always check if the classifier routes to the recovery path
 
+## PR #2338 — Brew preset TLS skip (2026-04-23)
+- **Status**: PENDING, CI pass, CodeRabbit clean
+- **Issue**: #2331 — git TLS verification fails in sandbox with brew preset
+- **Scope**: 1 file (brew.yaml), 6 lines added
+- **Root cause**: OpenShell v0.0.15+ auto-terminates TLS; brew preset had no `tls` field → proxy MITMs git → git can't validate proxy cert (`CAfile: none`)
+- **Fix**: Add `tls: skip` to all 6 brew endpoints for L4 pass-through (same pattern as #2098 for Discord/Slack WSS)
+- **Lesson**: Presets with `access: full` and no L7 rules should use `tls: skip` — TLS termination only needed when L7 inspection rules exist
+
 ## PR #2080 — Connect hint instructions (2026-04-20)
 - **Status**: PENDING, CI pass, CodeRabbit feedback adopted
 - **Scope**: 2 files (nemoclaw.ts, install.sh)
