@@ -1,6 +1,6 @@
 # OpenCode (anomalyco/opencode)
 
-Open-source coding agent CLI. 144k+ stars, 92% merge rate.
+Open-source coding agent CLI. 148k+ stars (2026-04-23), 92% merge rate. Now under `sst/opencode`.
 
 ## Repo 基本信息
 - **语言**: TypeScript (Bun)
@@ -147,3 +147,36 @@ opencode 的 session compaction 架构分三层：
 - **Approach**: GitHub API (repo too large to clone)
 - **Note**: Related PR #15610 addresses sh/dash/ash (different issue — brace expansion), complementary not duplicate
 - **Lesson**: check-duplicates bot uses LLM — may flag false positives, need to explain in PR description
+
+## Session Compaction Architecture (2026-04-23 deep read, v1.14.21)
+
+OpenCode has a sophisticated session compaction system (`src/session/compaction.ts` + `overflow.ts`) for managing long conversations within context limits. Key design:
+
+### Mechanism
+1. **Overflow detection**: Triggers when total tokens ≥ `usable()` (context limit minus reserved buffer of 20k or max output tokens)
+2. **Pruning** (lightweight): Walks backwards through tool outputs, marks old ones as compacted after protecting the most recent 40k tokens worth. Tool output truncated to 2k chars in compaction context. `skill` tool is protected from pruning.
+3. **Summarization** (heavy): Uses a dedicated `compaction` agent to generate structured summaries with a fixed template (Goal / Constraints / Progress / Key Decisions / Next Steps / Critical Context / Relevant Files)
+4. **Tail preservation**: Keeps recent N turns (default 2) uncompacted, with a token budget (2k-8k, or 25% of usable context). Can split a turn mid-way if it's too large.
+5. **Anchored summaries**: When prior compactions exist, the new summary is built by updating the previous summary rather than starting fresh — "preserve still-true details, remove stale details, merge in new facts"
+
+### Architecture Patterns
+- Built on **Effect.ts** (functional effect system) — entire module is layered services with dependency injection
+- **Plugin hooks**: `experimental.session.compacting` lets plugins inject context; `experimental.compaction.autocontinue` controls post-compaction behavior
+- **Overflow replay**: When compaction is triggered by overflow, the system finds the last real user message, compacts everything before it, then replays that message after compaction
+- **Auto-continue**: After compaction, injects a synthetic user message asking the agent to continue or clarify
+
+### Relevance to [[openclaw]]
+- OpenClaw doesn't have session compaction yet — long sessions just hit context limits
+- The "anchored summary" pattern (incremental updates to a rolling summary) is elegant — avoids losing context from early in the conversation
+- The tail preservation with token budgeting is smart — ensures recent context is always verbatim, not summarized
+- Plugin extensibility for compaction is forward-thinking — allows custom context injection during compaction
+- The pruning step (mark old tool outputs as compacted) is a lightweight optimization before the expensive summarization step
+
+### Constants
+- `PRUNE_MINIMUM`: 20k tokens (minimum savings to actually prune)
+- `PRUNE_PROTECT`: 40k tokens (recent tool outputs protected)
+- `TOOL_OUTPUT_MAX_CHARS`: 2k (truncation in compaction context)
+- `DEFAULT_TAIL_TURNS`: 2
+- `MIN_PRESERVE_RECENT_TOKENS`: 2k
+- `MAX_PRESERVE_RECENT_TOKENS`: 8k
+- `COMPACTION_BUFFER`: 20k (reserved for output during compaction)
