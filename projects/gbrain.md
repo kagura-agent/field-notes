@@ -832,3 +832,26 @@ Stars: 10,101 (+698 since 04-20). 仍在快速增长。
 - Two-phase tool ledger 是我们 subagent crash recovery 可以参考的模式
 - Rate leases 比简单计数器更适合 multi-worker 场景
 - 但 GBrain 仍然是单用户系统（Garry 的个人 brain），我们面向多用户/社区
+
+### 更新 (04-23): v0.17.0-v0.18.0 — Dream Cycle + Multi-Source Federation
+
+**v0.17.0 — `gbrain dream` + `runCycle` primitive**
+- 统一所有 brain maintenance 为单一 `runCycle(engine, opts)` 入口
+- 6 阶段固定顺序: lint → backlinks → sync → extract → embed → orphans（先修文件再索引）
+- 3 个调用者（dream CLI, autopilot daemon, Minions handler）全部收敛到同一原语
+- Lock coordination: `gbrain_cycle_locks` table（TTL-based, 支持 PgBouncer transaction pooling）
+- 前身 PR#309 被深度 review 发现 7+ 结构性问题后从零重写
+- **学习点**: phase order 很重要（sync before lint = wrong）, dry-run 必须贯穿所有 phase
+
+**v0.18.0 — Multi-source brains**
+- 一个 DB 承载多个知识源（wiki, gstack, yc-media, garrys-list 等）
+- Slug per source（不全局唯一），qualified wikilinks `[[source:slug]]`
+- Federation controls: 每个 source 可选是否参与默认搜索
+- 9 步实现: sources primitive → composite keys → qualified wikilinks → per-source sync → CLI → migration ledger → getting-started guide → integration tests
+- 85+ 新测试, 4 regression-critical, 3 security-critical
+- **Review 质量极高**: CEO/Eng/DX/Codex adversarial reviews, 每个 commit bisectable
+
+**对我们的启示**:
+- `runCycle` 模式 = 我们 dreaming 的理想架构（统一入口, 固定 phase order, lock coordination）
+- Multi-source federation = 我们 wiki 可以分源管理（projects vs cards vs memory），控制搜索范围
+- Schema migration ledger + crash-point recovery = 我们 memex 升级路径可参考
