@@ -1,4 +1,28 @@
 
+## 2026-04-23 Quick Scan AM (08:23)
+
+**GitHub Trending (past week, agent):**
+- huashu-design ⭐4.4k (+400) — 已知，继续涨
+- cc-design ⭐593 — 跟风品，不相关
+- mercury-agent ⭐473 (+113) — 类 OpenClaw，持续观察
+- agents-md ⭐466 (+35) — 已知
+- OpenGame ⭐420 — agentic coding for games — 不相关
+- Freebuff2API ⭐380 — proxy，不相关
+- **CrabTrap ⭐314** — Brex 出品，LLM-as-judge HTTP proxy 保护 agent production — **值得深入**（agent safety 方向）
+- swarm-forge ⭐283 (+19) — 已知
+- pi-computer-use ⭐266 — 不相关
+- agent-style ⭐255 — 已知模式
+
+**HN:**
+- Qwen3.6-27B 642pts — 27B dense flagship coding — 值得关注（本地模型候选）
+- Google TPU gen 8 387pts — agentic era — 行业趋势
+- Over-editing 275pts — agent 过度修改代码 — 值得读
+- Win9x Subsystem for Linux 877pts — 趣味但不相关
+
+**判断:** CrabTrap（agent safety proxy）值得深入。Qwen3.6-27B 和 over-editing 后续跟进。
+
+---
+
 ## 2026-04-22 Quick Scout PM3 (18:47)
 
 **GitHub Trending (past week, agent):**
