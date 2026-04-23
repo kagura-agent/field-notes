@@ -414,3 +414,14 @@
 - **what**: Simple tool for coordinating multiple AI agents (by Robert C. Martin)
 - **why interesting**: Uncle Bob's take on multi-agent orchestration — likely opinionated, clean design
 - **priority**: low — check when exploring multi-agent patterns
+
+## OpenGame (leigest519) — spotted 2026-04-23
+- **repo**: leigest519/OpenGame ⭐488
+- **what**: Open agentic coding for games
+- **why interesting**: Novel domain application of coding agents — game dev is complex multi-file context
+- **priority**: low — check if game-specific patterns are transferable
+
+## Qwen3.6-27B — spotted 2026-04-23 (HN 796pts)
+- **what**: Flagship-level coding in 27B dense model
+- **why interesting**: If coding quality matches larger models at 27B, significant for local deployment
+- **priority**: medium — benchmark results worth reviewing

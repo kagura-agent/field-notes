@@ -1,7 +1,7 @@
 # Claude Code Plugin 系统研究笔记
 
 > 源码版本：2026-04 读码分析
-> 最后更新：2026-04-14
+> 最后更新：2026-04-23
 
 ---
 
@@ -218,3 +218,37 @@ v2.1.101 是一个大版本，2026-04-10 发布。关键变化：
 ### 趋势信号
 - Agent 从 "CLI tool" 走向 "always-on runtime"：monitors + worktree cleanup + PreCompact 都是长期运行 agent 需要的基础设施
 - Memory management 成为竞争维度：PreCompact hook 让插件控制 compaction = 开放 memory 管理给社区
+
+---
+
+## 2026-04-23 Followup: v2.1.116–v2.1.118 变化
+
+### Hook MCP Tool 类型 (v2.1.118)
+Hooks 新增 `type: "mcp_tool"` — hook handler 可直接调用已注册的 MCP tool，不需要走 shell command。这意味着 hook 可以用 MCP server 的能力来做决策（比如 PreToolUse hook 调 MCP tool 检查安全策略）。
+
+**对 OpenClaw 的意义：** OpenClaw 的 plugin 系统（nudge 等）本质也是 hook。Claude Code 把 hook 和 MCP tool 打通了，说明 hook→tool 调用是生态共识方向。OpenClaw 已经有类似能力（plugin 里可以调 tool），但命名和 schema 可以参考对齐。
+
+### Plugin 生态成熟化
+- `plugin install` 对已安装 plugin 改为安装缺失依赖而非报错
+- `blockedMarketplaces` / `strictKnownMarketplaces` 管理策略执行到 install/update/refresh/autoupdate 全链路
+- Plugin 可以 ship themes（`themes/` 目录）
+- `/doctor` 展示 plugin auto-update 跳过原因
+
+**趋势：** Plugin 系统从"能用"走向"可管理"——企业级权限控制、依赖解析、诊断工具都在补齐。跟 [[codex-marketplace-mcp-apps]] 的方向一致。
+
+### Forked Subagents 开放 (v2.1.117)
+`CLAUDE_CODE_FORK_SUBAGENT=1` 让外部 build 也能用 fork-based subagent。Agent frontmatter `mcpServers` 在 `--agent` main-thread session 中被加载。
+
+### 其他值得注意
+- `/resume` 大 session 性能优化 67%（40MB+ session）
+- MCP startup 并发连接成默认（多 stdio server 时更快）
+- Bash tool 检测 `gh` rate limit 提示 agent 退避
+- Auto mode `$defaults` 关键字——允许增量 allow/deny 而非替换
+
+### Codex 动态
+- `codex_hooks` 标记 stable（从 experimental 毕业）
+- 新增 `computer_use` feature requirement key — Codex 开始支持计算机使用能力
+- Cloud requirements 错误信息改进 + unknown feature requirements warn-and-continue
+- Permission profiles 进入 app-server
+
+**信号：** Codex hooks 稳定化 + computer_use = OpenAI 在补齐 agent 基建。两家（Anthropic + OpenAI）hook 系统都在成熟，说明 hook 是 agent 扩展的标准模式。
