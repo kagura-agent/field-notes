@@ -169,10 +169,12 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 
 ### PR #9414 — fix(session): clamp max output tokens to remaining context window
 - **Issue**: #9404 — ContextOverflowError during autocompact due to static max_tokens
-- **状态**: OPEN (2026-04-23)
+- **状态**: ❌ CLOSED (2026-04-23) — maintainer rejected
 - **改动**:
   - `packages/opencode/src/session/llm.ts`: 在 `streamText` 调用前，用 `Token.estimate()` 估算 input tokens，如果 `context - input_estimate < maxOutputTokens` 则 clamp
   - changeset: patch (`@kilocode/cli`)
 - **根因**: `ProviderTransform.maxOutputTokens()` 返回 static 32k，不考虑 context 剩余空间。LiteLLM 等严格校验的 provider 会拒绝 `input + output > context` 的请求
 - **方法**: 防御性 clamp — 仅在剩余空间不足时生效，不影响正常对话
 - **效率**: 手动改（~15 行改动），比 acpx exec 快
+- **拒绝原因**: maintainer 说 token estimates 本身就不可靠，clamping 不会真正解决问题
+- **教训**: 不要在本身不精确的值上做精度优化。如果底层数据不可靠，上层 fix 加了复杂度但没有实际收益

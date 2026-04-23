@@ -1,6 +1,6 @@
 # Mercury Agent
 
-> cosmicstack-labs/mercury-agent | ⭐541 (2026-04-23, was 232 on 04-21) | TypeScript | MIT
+> cosmicstack-labs/mercury-agent | ⭐556 (2026-04-23 PM, was 232 on 04-21) | TypeScript | MIT
 > "Soul-driven AI agent with permission-hardened tools, token budgets, and multi-channel access."
 
 ## 概要
@@ -129,6 +129,24 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - memex 语义搜索 vs 关键词 `.includes()`
 - Gateway 架构（webhook + 持久连接）
 - 成熟的 skill 生态和 clawhub
+
+## 跟进 2026-04-23 PM: v0.5.3-v0.5.4 + 增长观察
+
+⭐556（+40 from morning）。v0.5.3-v0.5.4 是 polish releases：
+- **`mercury upgrade`**: CLI 自升级命令（先停 daemon → 删旧包 → 装新版），解决 npm ENOTEMPTY rename 问题
+- **CLI 格式修复**: 修重复 agent 名、统一缩进、readline prompt 简化
+- 无架构变化，进入打磨期
+
+### 增长曲线
+- 04-20: 0⭐ → 04-21: 232⭐ → 04-22: 349⭐ → 04-23 AM: 516⭐ → 04-23 PM: 556⭐
+- 增速从爆发期（Day 1: +232）进入稳定期（Day 3: ~+40/半天）
+- 总体 3.5 天 556⭐，同期类似项目（[[SwarmForge]] 292⭐, [[auto-memory]] 138⭐）远低于此
+
+### 生态新信号：Agent Memory 热潮
+本轮侦察发现 memory 是热点：
+- **[[auto-memory]]** (138⭐): 读 Copilot CLI 的 SQLite 做 session recall，zero-dep Python CLI。解决 "context window death spiral"（compact → 失忆 → 重新解释 → 再 compact）。目前仅支持 Copilot CLI，Claude Code/Cursor 计划中。
+- **cavemem** (105⭐): Cross-agent persistent memory，compressed + local-first。
+- **趋势**: agent memory 从 "nice-to-have" 变成 "must-have"。OpenClaw 的 memex 语义搜索是差异化优势，但 auto-memory 指出的 "context rot at 60% window" 是我们也面临的问题。
 
 ## 跟进 2026-04-22 PM: 架构深入 + 代码阅读
 
