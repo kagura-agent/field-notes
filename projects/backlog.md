@@ -1,4 +1,24 @@
 
+## 2026-04-23 Quick Scan PM (16:33)
+
+**GitHub Trending (past week, agent):**
+- huashu-design ⭐4.8k (+400) — 已知，继续涨
+- cc-design ⭐602 — 跟风品，已知
+- mercury-agent ⭐529 (+56) — 持续观察
+- web-design-skill ⭐514 — ConardLi 版 design skill — 已知模式
+- OpenGame ⭐510 (+90) — 已知
+- agents-md ⭐475 — 已知
+- Freebuff2API ⭐380 — 不相关
+- CrabTrap ⭐334 (+20) — 已在 backlog
+- swarm-forge ⭐293 (+10) — 已知
+- pi-computer-use ⭐278 — 不相关
+
+**HN:** SnapState (persistent state for agent workflows) — 6pts, 太早期
+
+**判断:** 无新发现。design skill 生态继续膨胀，mercury-agent 稳步增长。本轮无值得深入的新项目。
+
+---
+
 ## 2026-04-23 Quick Scan AM (08:23)
 
 **GitHub Trending (past week, agent):**

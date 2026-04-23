@@ -55,6 +55,9 @@ Directly aligned with self-evolving agent direction. Phantom wraps the Claude Ag
 | 78 | OPEN | Clear stale SDK session IDs on startup to prevent CLI deadlock | #25 |
 | 80 | OPEN | Webhook async polling: 202 + task_id on sync timeout, polling endpoint | #26 |
 
+## PR History (cont.)
+- **#88** (2026-04-23): fix(memory): add quality gates to heuristic fact extractor (#84). Added word count filter (5-150 words), truncation detection, text dedup, lowered heuristic confidence to 0.4. 18 new tests, all 82 memory tests pass. Pending review.
+
 ## Lessons & Notes
 
 ### 2026-04-17: First PR
