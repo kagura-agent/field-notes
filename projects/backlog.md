@@ -445,3 +445,18 @@
 - **what**: Flagship-level coding in 27B dense model
 - **why interesting**: If coding quality matches larger models at 27B, significant for local deployment
 - **priority**: medium — benchmark results worth reviewing
+
+## 2026-04-23 PM Quick Scout
+
+| Project | Stars | Verdict |
+|---------|-------|---------|
+| OpenGame | 560 | 已知 (opengame.md) |
+| mercury-agent | 555 | 已知 (mercury-agent.md) |
+| pi-computer-use | 282 | 值得深入 — pi agent控制应用，invisible模式 |
+| agent-style | 276 | 值得深入 — 21条agent写作规则，适用Claude Code/Codex |
+| dspy-agent-skills | 173 | 一般 — DSPy 3.2 examples |
+| auto-memory | 135 | 值得深入 — session recall CLI，和我们的memory方向相关 |
+| CyberVerse | 131 | 不相关 — digital human video call |
+| Hy3-preview | 126 | 已知方向 — Tencent 295B reasoning model |
+
+HN: 无agent相关热帖
