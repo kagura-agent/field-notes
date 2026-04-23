@@ -77,6 +77,15 @@ Links: cli-everything, [[agent-as-router]]
 - Status: pending review
 - 无新测试（workspace key 传到浏览器扩展，单元测试不覆盖）
 
+### PR #1161 — fix: dash-prefixed positional args (2026-04-23)
+- Issue: #1160 — `boss detail -123abc` errors with "unknown option"
+- Root cause: Commander.js treats any arg starting with `-` as an option flag
+- Fix: Override `parseOptions` in `commanderAdapter.ts` to insert `--` sentinel before unrecognized dash-prefixed tokens
+- Framework-level fix: all 351 commands with positional args benefit
+- CI: all green (adapter-test, unit-test x2, build x3, bun-test, audit, docs)
+- 3 new tests added, 1921 existing tests pass
+- Status: pending review
+
 ### PR #1142 — fix(deepseek): separate thinking from response (2026-04-22)
 - Issue: #1124 — `deepseek ask --think` mixes thinking and response in single string
 - Root cause: `waitForResponse()` returns raw `innerText` including thinking prefix
