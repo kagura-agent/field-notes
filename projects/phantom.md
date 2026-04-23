@@ -58,6 +58,25 @@ Directly aligned with self-evolving agent direction. Phantom wraps the Claude Ag
 ## PR History (cont.)
 - **#88** (2026-04-23): fix(memory): add quality gates to heuristic fact extractor (#84). Added word count filter (5-150 words), truncation detection, text dedup, lowered heuristic confidence to 0.4. 18 new tests, all 82 memory tests pass. Pending review.
 
+## v0.20.2 — Agent Public Web Surface (2026-04-18)
+
+Phantom added `/public/*` — a static file serving surface without auth, so agents can self-publish blogs, feeds, sitemaps on their own domain (e.g. `truffle.ghostwright.dev/public/blog/`).
+
+### Architecture
+
+- Files live at `public/public/*` on disk, served via `handlePublicRequest()` in `src/core/server.ts`
+- **Security**: `path.resolve()` + containment check — resolved path must equal or start with `publicRoot/`. Percent-decode before check catches `..%2F` traversal. Null bytes → 403
+- **Directory fallback**: `/public/blog/` → `public/public/blog/index.html`
+- **Cache**: `Cache-Control: public, max-age=300`
+- **Isolation**: `EXCLUDED_ROOT_DIRS` in `src/ui/api/pages.ts` excludes `public/` from the internal "recent pages" rail
+- 9 regression tests covering traversal, null bytes, cache headers, auth regression for `/ui/*`
+
+### Why This Matters
+
+This is agent-as-web-citizen: an agent that can maintain its own public web presence (blog, portfolio, API docs, RSS) without human intermediary. Combined with [[self-evolution-system|self-evolution]], Phantom agents can now both evolve internally AND publish externally.
+
+Relevant to our direction: OpenClaw agents could benefit from a similar public surface — publishing skill docs, status pages, or content directly. See also [[crabtrap]] for the complementary problem of securing agent outbound traffic.
+
 ## Lessons & Notes
 
 ### 2026-04-17: First PR
