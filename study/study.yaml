@@ -52,7 +52,8 @@ nodes:
          **优先用 GitHub API search**（`gh api search/repositories?q=topic:ai-agent+created:>YYYY-MM-DD&sort=stars`）比 scrape trending 页更可靠、可复现
       2. 已关注项目有没有大的方向变化（新 release、架构重构、重要讨论）
       3. 有没有新冒出来的项目或趋势
-      4. 核心问题：**业界在做 agent 的什么？钱和注意力往哪里流？**
+      4. **Verify before researching**: 对每个"值得深入"的项目，先 grep wiki 和代码库确认不是已知/已有功能
+      5. 核心问题：**业界在做 agent 的什么？钱和注意力往哪里流？**
       5. 跟我们的直觉对比：我们感受到的问题（信任、贡献信誉等）是不是真问题？
       6. **看人**：有没有值得研究的高效贡献者？（高 merge rate、跨项目、特定模式）
       汇报侦察结果。
@@ -91,7 +92,11 @@ nodes:
       把之前学到的东西应用到自己身上：
       0. **先搜已有知识**：`cd ~/.openclaw/workspace/wiki && MEMEX_HOME=. memex search "<应用方向>" --limit 5`，找出相关卡片和笔记作为输入
       1. 读 IDEAS.md 和最近的 memory，找出"学到了但没用上"的洞察
-      2. 选一个最值得应用的，具体执行：
+      2. **Verify before researching**（不可跳过）：选定应用方向后，先花 2 分钟确认现有 stack 是否已经有这个功能：
+         - `grep -r "关键词" ~/repos/` 或相关代码库
+         - 检查工具文档/changelog
+         - 如果已有 → 记录发现，换一个方向
+      3. 选一个最值得应用的，具体执行：
          - 改工具代码（gogetajob、FlowForge、nudge）
          - 改工作流（study.yaml、workloop.yaml、reflect.yaml）
          - 验证一个假设（EXP 系列）
