@@ -166,3 +166,13 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
 - **大 repo 用 git cat-file 恢复缺失包源码时，会覆盖已修改的文件。应先 commit 改动，再恢复依赖**
+
+### PR #9414 — fix(session): clamp max output tokens to remaining context window
+- **Issue**: #9404 — ContextOverflowError during autocompact due to static max_tokens
+- **状态**: OPEN (2026-04-23)
+- **改动**:
+  - `packages/opencode/src/session/llm.ts`: 在 `streamText` 调用前，用 `Token.estimate()` 估算 input tokens，如果 `context - input_estimate < maxOutputTokens` 则 clamp
+  - changeset: patch (`@kilocode/cli`)
+- **根因**: `ProviderTransform.maxOutputTokens()` 返回 static 32k，不考虑 context 剩余空间。LiteLLM 等严格校验的 provider 会拒绝 `input + output > context` 的请求
+- **方法**: 防御性 clamp — 仅在剩余空间不足时生效，不影响正常对话
+- **效率**: 手动改（~15 行改动），比 acpx exec 快
