@@ -6,15 +6,23 @@
 
 ## PR History
 
+### PRs #15571, #15577, #15709, #15718 — bulk-closed (2026-04-24)
+- **#15571** fix(core): preserve tool execution errors through history reload
+- **#15577** fix(client-js): collect all tool invocations from streamed tool-calls step
+- **#15709** fix(core): match provider-executed tool results by toolName when toolCallId mismatches
+- **#15718** fix(core): stop agent loop when finishReason is 'length' with pending tool calls
+- **All CLOSED** by `intojhanurag` at 13:00-13:03 UTC, with comments "No AI serving PRs" and "bro I got exhausted with these Agent PRs"
+- **Not superseded** — just rejected as AI-generated
+- **Lesson**: intojhanurag has an explicit anti-AI-PR policy. 5 PRs closed across 2 sessions. mastra is hostile territory for AI contributors. Do NOT submit more PRs here.
+
 ### PR #15511 — fix(core): preserve raw usage field (2026-04-20)
 - **Issue**: #15510 — `onStepFinish`/`onFinish` usage drops `raw` field
 - **Status**: CLOSED by maintainer `intojhanurag` within minutes, no explanation
-- **Root cause of closure**: Unknown. PR was clean, had tests, changeset. Possibly closed as part of external contributor triage policy
-- **Lesson**: This repo may auto-close PRs from first-time external contributors or have an internal triage gate. Check if there's a pattern before investing again
+- **Root cause of closure**: Same anti-AI-PR stance from intojhanurag
 
 ## Maintainer Notes
 
-- **intojhanurag**: Active contributor/maintainer, also has open PRs. Closed our PR without comment
+- **intojhanurag**: Has close permissions. Explicitly anti-AI-PR: "No AI serving PRs", "bro I got exhausted with these Agent PRs". Closed 5 of our PRs total. DO NOT submit PRs while this person is active triage
 - **epinzur**: Very active, recent merges (observability focused)
 - **daneatmastra**: Handles dependency/security updates
 - **dane-ai-mastra[bot]**: Auto-comments on external PRs asking to link issues
