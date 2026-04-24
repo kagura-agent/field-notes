@@ -1,4 +1,26 @@
 
+## 2026-04-24 Quick Scan Evening (19:07)
+
+**GitHub Trending (past week, agent):**
+- OpenMythos ⭐9926 — 🆕 Claude Mythos 架构理论重建，爆发式增长。值得深入
+- mercury-agent ⭐619 (+12) — 已知，稳定期
+- auto-memory ⭐176 (+38) — 已知
+- cavemem ⭐135 (+30) — 已知
+- future-agi ⭐143 — 🆕 开源 agent eval/observability 平台，Apache 2.0
+- agent-experience-capitalization ⭐17 — 🆕 "TEAM memory" 团队级工程经验资产，概念有趣
+- floodsung-skill ⭐19 — 🆕 "开源自己" Claude Code skill，用知乎语料训练个人 voice
+
+**HN Top (agent 相关):**
+- GPT-5.5 (1402pts) — OpenAI 新模型
+- DeepSeek v4 (1102pts) — DeepSeek 新模型 API
+- Claude Code quality postmortem (767pts) — Anthropic 复盘 04-23 质量问题
+- Bitwarden CLI supply chain (775pts) — 安全事件
+- Tolaria (220pts) — macOS markdown KB 管理
+
+**判断:** OpenMythos 值得深读 — 9.9k⭐ 的 Claude 架构理论重建说明社区对 Claude 内部机制好奇心爆发。GPT-5.5 + DeepSeek v4 同日发布是前沿动态大事件但属于 frontier model dynamics，读 API docs 即可。Claude Code postmortem 上午已在 backlog，优先级仍高。
+
+---
+
 ## 2026-04-24 Quick Scan PM (12:51)
 
 **GitHub Trending (past week, agent):**
