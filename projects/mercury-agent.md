@@ -163,14 +163,25 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 
 ## 跟进 2026-04-24: v1.0.5 + 增长放缓
 
-⭐611（+7 from yesterday PM）。v1.0.5：
+⭐611（+7 from yesterday PM）→ 613（04-24 PM）。v1.0.5：
 - **Daemon overhaul**: auto-daemonize on start, stale PID cleanup, SIGHUP handling
 - CI improvements (skip-if-already-published guard)
 - Docs polish
 
-**增长曲线收敛**：Day 1: +232 → Day 2: +117 → Day 3: +167 → Day 4: +48 → Day 5: +7。从爆发期进入平台期。v1.0.0 "Second Brain" 是高点，之后是 diminishing returns。
+**增长曲线收敛**：Day 1: +232 → Day 2: +117 → Day 3: +167 → Day 4: +48 → Day 5: +7 → Day 6: +2。进入平台期，增长基本停滞。
 
 **同期大事件**：GPT-5.5 发布（Terminal-Bench 82.7%）、DeepSeek v4 发布（v4-flash + v4-pro，Anthropic API 兼容）。这些 frontier model 更新加剧了 "scaffold vs model" 的张力——[[little-coder]] 证明 scaffold 对小模型很重要，但 frontier 继续拉大绝对差距。
+
+## 跟进 2026-04-24 PM: 增长完全停滞 + 生态对比
+
+⭐613。48h 几乎零增长。Mercury 已从「爆发新星」进入「存量维护」阶段。
+
+**生态对比（2026-04-24）：**
+- Mercury (613★) vs [[auto-memory]] (170★) vs [[cavemem]] (134★) — 三个项目分别代表 soul-driven agent / session recall / cross-agent memory 三个方向
+- 都在 1 周内出现，说明 agent memory/identity 是当前最热赛道
+- 但增长都在收敛——市场注意力正在转向 GPT-5.5 和 DeepSeek v4
+
+**对我们的意义：** Mercury 验证了 soul-driven agent 的市场需求，但没有突破 OpenClaw 已有能力的边界。重点关注从 Mercury/cavemem 可借鉴的 pattern（progressive skill disclosure、deterministic compression、lifecycle FSM），而不是担心竞争。
 
 ## 跟进 2026-04-23 PM: v0.5.3-v0.5.4 + 增长观察
 
