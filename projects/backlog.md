@@ -502,3 +502,10 @@ HN: 无agent相关热帖
 | cavemem | 126 | ✅ 已深读 — cross-agent persistent memory，deterministic compression |
 
 HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), Bitwarden CLI supply chain (613pts)
+
+## 2026-04-24 快扫发现
+- [ ] **OpenMythos** (kyegomez/OpenMythos, 9.8k⭐) — Claude Mythos architecture reconstruction from research literature. 理解 Claude 系统架构的理论重建
+- [ ] **codeburn** (getagentseal/codeburn, 3.5k⭐) — AI coding token cost TUI dashboard. 可能对我们的 token 使用优化有参考价值
+- [ ] **GPT-5.5 发布** — OpenAI 新模型，需评估能力差异
+- [ ] **Claude Code quality postmortem** (Anthropic 04-23) — 直接影响我们的工具使用
+- [ ] **DeepSeek v4 API** — 新模型 API 更新

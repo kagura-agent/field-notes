@@ -1,7 +1,7 @@
 # OpenMythos
 
 - **Repo**: kyegomez/OpenMythos
-- **Stars**: 4,735 (2026-04-21, 3 天涨到 4.7k)
+- **Stars**: 9,813 (2026-04-24, 6 天涨到 9.8k; +5.1k in 3 days since last check)
 - **Created**: 2026-04-18
 - **Language**: Python (PyTorch)
 - **License**: MIT
@@ -72,3 +72,11 @@
 - ACT: Graves 2016, https://arxiv.org/abs/1603.08983
 - Looped Transformers: Saunshi et al. 2025
 - Parcae, Prairie et al. 2026 (LTI injection)
+
+## 2026-04-24 Update
+
+- Stars 翻倍 (4.7k → 9.8k in 3 天)，但代码活跃度低（仅 3 commits: examples, tiny tests, flash attn）
+- 41 open issues，多是社区贡献（ablation flags, FSDP fix, metadata）
+- 结论：**星增长靠话题热度，代码尚未进入实质性开发阶段**。继续观察但不投入时间
+- 新 topics 加了 gpt-5, gpt-7, claude-code 等蹭热度标签
+- Forks: 2,146（高 fork/star 比说明很多人 fork 了没贡献回来）
