@@ -65,8 +65,14 @@
 
 **PR #1224** (merged 2026-04-22): Reuse active Zod instance for Swagger schemas — avoids Zod version conflicts in monorepo. Pattern: detect runtime Zod version and adapt.
 
+## PR History (cont. 2)
+- **#1240** (2026-04-24): fix(server-core): add cancel endpoint for resumable chat streams (#1239). When resumableStream enabled, AbortSignal was cleared unconditionally → cancel non-functional. Fix: internal AbortController + cancel endpoint in Elysia & Hono. CodeRabbit caught 3 valid issues (leak on error path, 404 mapping, JSON parse) — all fixed in follow-up commit. Pending review.
+
 ## Lessons
 - VoltAgent uses sparse checkout — remember `git sparse-checkout add` when touching new packages
 - Build depends on shared plugins that aren't in sparse checkout — full test suite won't build locally, but individual package tests work fine
 - CodeRabbit gives good architectural feedback (caught the Hono/Elysia oversight)
 - biome lint is strict about unused variables and formatting — run `pnpm biome check --write --unsafe` before pushing
+- biome enforces `noImplicitAnyLet` — use `Awaited<ReturnType<typeof fn>>` for split declaration/assignment
+- When adding a handler following an existing pattern (e.g. cancel workflow → cancel chat), check error string consistency with route status mapping (`includes("not found")` must match actual error text)
+- Wrap potentially-throwing calls in try/catch when cleanup is needed (AbortController leak pattern)
