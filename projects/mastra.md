@@ -84,6 +84,15 @@
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
 - Fork sync via `gh repo sync` works
 
+### PR #15709 — fix(core): match provider-executed tool results by toolName when toolCallId mismatches (2026-04-24)
+- **Issue**: #15706 — file_search tool-results dropped when combined with any other tool → "Corrupted tool call context"
+- **Status**: PENDING (submitted, CodeRabbit ✅ all 5 checks passed, CI running)
+- **Root cause**: Google AI SDK assigns different `toolCallId` values to tool-call vs tool-result chunks when function declarations coexist with server tools. `updateToolInvocation()` only matched by exact `toolCallId`, so results were silently dropped.
+- **Fix**: Added fallback in `updateToolInvocation()` — when exact `toolCallId` match fails, search for `providerExecuted: true` tool-invocation with same `toolName` still in `state: 'call'`. 3 new tests.
+- **Changeset**: included
+- **Note**: Implementation was partly pre-written from a previous session (Claude Code had written the diff but it was uncommitted). Committed, added changeset, ran tests, pushed.
+- **Key insight**: Understanding the AI SDK's Google provider internals (`lastServerToolCallId` correlation mechanism in `@ai-sdk/google`) was essential for diagnosing the root cause. The fix is Mastra-side because the ID mismatch originates from how Google's API formats responses differently when function declarations are present alongside server tools.
+
 ## 跟进 (2026-04-24)
 - PR #14486 merged (2026-04-23): **Modal as sandbox provider** — 深读完成，见下方架构分析
 - PR #14824 merged: fix `.` root path resolution in GCS and S3 filesystem providers
