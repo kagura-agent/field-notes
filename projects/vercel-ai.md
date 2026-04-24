@@ -47,6 +47,12 @@
 - 普通 regional endpoints 使用 `{location}-aiplatform.googleapis.com` 格式
 - global 使用 `aiplatform.googleapis.com`
 
+## PRs 补充
+
+| PR | Issue | 状态 | 备注 |
+|---|---|---|---|
+| #14723 | #14721 | PENDING | fix audio/mp4 ftyp detection at byte offset 4 |
+
 ## 踩坑补充 (2026-04-23)
 
 - `exactOptionalPropertyTypes` 是一个容易被忽视的 TypeScript 严格模式选项
