@@ -229,9 +229,12 @@ nodes:
       \ 讨论和 reviewer 反馈\n     b. 类似 bug 的已有修复（可作为参考模式）\n     c. 项目架构和代码位置的关键信息\n \
       \    d. maintainer 偏好（从 wiki 读）\n   - **task 开头必须加 surgical constraints**：\n\
       \     CONSTRAINTS: 1) Surgical changes only — every changed line must trace\
-      \ to the issue. Do not improve adjacent code/comments/formatting. 2) Match existing\
-      \ style. 3) No speculative features, no while-I-am-here refactors. 4) Clean up\
-      \ only orphans YOUR changes created.\n   - **task 末尾必须加验证指令**：\n     \"Before committing:\
+      \ to the issue. Do not improve adjacent code/comments/formatting. Preserve\
+      \ original code structure, variable names, and comments exactly as-is unless the\
+      \ fix requires changing them. 2) Match existing style. 3) No speculative features,\
+      \ no while-I-am-here refactors. Do not rename variables, add validation, or restructure\
+      \ functions beyond what the fix requires. 4) Clean up only orphans YOUR changes\
+      \ created. 5) Aim for the smallest possible diff that correctly fixes the issue.\n   - **task 末尾必须加验证指令**：\n     \"Before committing:\
       \ 1) grep for all test files that import/mock the interfaces you changed, update\
       \ their mocks. 2) Run the project's test/lint commands. 3) git diff --stat to\
       \ confirm no files were missed.\"\n   - 一行级别的简单修复可以自己做，不需要调 Claude Code\n  \
@@ -240,6 +243,8 @@ nodes:
       \ 里\n2. Claude Code 完成后：检查他的 commit，review 改动是否正确\n3. 确保代码风格符合项目规范\n4. **push\
       \ 前自检**（不能跳过）：\n   a. `git diff --stat` 看全局影响\n   b. 改了接口/类型？→ grep 所有 import\
       \ 这个接口的文件，确认 mock/stub 同步了\n   c. 项目有测试命令？→ 跑。没有本地环境？→ 至少 grep 验证 mock 完整性\n\
+      \   d. **Over-editing check**: 逐行审查 diff — 每一行改动都必须 trace back\n\
+      \ to the issue. 如果发现改了不相关的变量名、格式、注释、import 顺序，revert 那些改动。\n\
       汇报实现结果和测试状态。\n"
     branches:
     - condition: 实现完成，测试通过
