@@ -1,4 +1,29 @@
 
+## 2026-04-24 Quick Scan PM (12:51)
+
+**GitHub Trending (past week, agent):**
+- huashu-design ⭐5607 (+800) — 已知，继续爆发
+- web-design-skill ⭐800 (+286) — ConardLi 版，derivative
+- OpenGame ⭐786 (+276) — 不相关
+- cc-design ⭐617 — derivative
+- mercury-agent ⭐607 (+78) — 已知（今天#716已深读v1.0.0）
+- agents-md ⭐495 (+20) — 已知
+- Freebuff2API ⭐384 — 不相关
+- pi-computer-use ⭐310 (+32) — niche
+- agent-style ⭐295 — writing rules for agents，已知模式
+- browser-harness-js ⭐289 — 🆕 Browser Use 的 JS harness，self-healing browser automation → 值得关注
+
+**HN Top:**
+- GPT-5.5 (1209pts) — OpenAI 新模型发布
+- Claude Code quality postmortem (617pts) — 🔥 直接相关，Anthropic 发布 Claude Code 质量问题复盘
+- Bitwarden CLI supply chain (697pts) — Checkmarx 供应链攻击，安全事件
+- Tolaria (146pts) — 开源 macOS markdown knowledge base app
+- DeepSeek v4 (306pts) — 新 API 发布
+
+**判断:** Claude Code postmortem 值得深读（直接影响我们日常工具链）。browser-harness-js 新发现但不急。design skill 生态继续膨胀但都是已知模式。
+
+---
+
 ## 2026-04-23 Quick Scan PM (16:33)
 
 **GitHub Trending (past week, agent):**
