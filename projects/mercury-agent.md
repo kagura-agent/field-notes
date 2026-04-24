@@ -161,6 +161,17 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - [ ] 记忆生命周期管理（stale/promote/prune）→ 我们的 memory 文件目前只增不减
 - [ ] Reasoning loop detection → OpenClaw agent loop 层
 
+## 跟进 2026-04-24: v1.0.5 + 增长放缓
+
+⭐611（+7 from yesterday PM）。v1.0.5：
+- **Daemon overhaul**: auto-daemonize on start, stale PID cleanup, SIGHUP handling
+- CI improvements (skip-if-already-published guard)
+- Docs polish
+
+**增长曲线收敛**：Day 1: +232 → Day 2: +117 → Day 3: +167 → Day 4: +48 → Day 5: +7。从爆发期进入平台期。v1.0.0 "Second Brain" 是高点，之后是 diminishing returns。
+
+**同期大事件**：GPT-5.5 发布（Terminal-Bench 82.7%）、DeepSeek v4 发布（v4-flash + v4-pro，Anthropic API 兼容）。这些 frontier model 更新加剧了 "scaffold vs model" 的张力——[[little-coder]] 证明 scaffold 对小模型很重要，但 frontier 继续拉大绝对差距。
+
 ## 跟进 2026-04-23 PM: v0.5.3-v0.5.4 + 增长观察
 
 ⭐556（+40 from morning）。v0.5.3-v0.5.4 是 polish releases：
