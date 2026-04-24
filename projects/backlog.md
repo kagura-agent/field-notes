@@ -460,3 +460,20 @@
 | Hy3-preview | 126 | 已知方向 — Tencent 295B reasoning model |
 
 HN: 无agent相关热帖
+
+## 2026-04-24 Quick Scout
+
+| Project | Stars | Verdict |
+|---|---|---|
+| huashu-design | 5388 | 已知品类 — Claude Code HTML design skill，design skill 爆发中 |
+| web-design-skill | 727 | 同品类 — AI agent design skill |
+| OpenGame | 712 | 不相关 — agentic coding for games |
+| cc-design | 614 | 同品类 — HTML design prototype |
+| mercury-agent | 600 | 已知（昨天深读 v0.8.0） |
+| agents-md | 490 | 值得看 — drop-in AGENTS.md，与我们设计相关 |
+| pi-computer-use | 305 | 有趣 — computer use via Pi coding agent |
+| agent-style | 287 | 已知（昨天深读） |
+| auto-memory | 158 | 已知（昨天深读） |
+| cavemem | 126 | ✅ 已深读 — cross-agent persistent memory，deterministic compression |
+
+HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), Bitwarden CLI supply chain (613pts)
