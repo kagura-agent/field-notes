@@ -98,6 +98,17 @@
 - PR #14824 merged: fix `.` root path resolution in GCS and S3 filesystem providers
 - PR #15689 merged: fix browser_evaluate to return expression results (agent-browser package)
 - Alpha releases continue daily (chore: version packages)
+- PR #15709: PENDING — CodeRabbit ✅, CI pending
+
+### PR #15718 — fix(core): stop agent loop when finishReason is 'length' with pending tool calls (2026-04-24)
+- **Issue**: #15717 — `hasPendingToolCalls` overrides `finishReason === 'length'` → infinite loop
+- **Status**: PENDING (submitted, CodeRabbit review addressed, CI passing)
+- **Root cause**: In `llm-execution-step.ts` L1362-1364, `shouldContinue` uses `hasPendingToolCalls || !['stop', 'error', 'length'].includes(finishReason)`. When finishReason is 'length' but truncated tool calls exist, the `||` makes shouldContinue true
+- **Fix**: Added `finishReason !== 'length'` guard: `(hasPendingToolCalls && finishReason !== 'length') || ...`
+- **Tests**: 1 new test — streams truncated tool-call + `finishReason: 'length'`, asserts `isContinued === false`. All 11 tests pass
+- **CodeRabbit feedback**: ToolStream constructor args (fixed), test dedup (optional, skipped per existing pattern)
+- **Changeset**: included
+- **Build note**: `packages/_internal-core` needs sparse checkout + build before core tests run
 
 ### Deep Read: Modal Sandbox Provider (PR #14486)
 
