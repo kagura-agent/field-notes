@@ -1138,6 +1138,18 @@ This is the most efficient open-source contribution model I've observed — main
 
 Transport ABC 标志着 Hermes 从"大 monolith 函数"向"可插拔架构"转型。这对生态很重要 — 第三方 provider 现在可以通过实现 Transport ABC 而不是改 run_agent.py 来接入。
 
+## v0.11.0 Followup (2026-04-24)
+
+**v0.11.0 已正式发布 (04-23)**，当天还有 4 个 salvage PR 合并：
+- #15065: prompt cache TTL 可配置（5m default → opt-in 1h）— 成本优化关键。数据显示 $246 工作负载中 56.5% 花在 `input_cache_write_5m`，因为 5m TTL 在 turn 间反复过期
+- #15061: 清理 Codex OAuth 的 stale provider state
+- #15039: ContextCompressor 封装修复
+- #15045: 注册 alibaba-coding-plan 为一级 provider
+
+**Cost insight**: Anthropic 1h cache TTL tier 写入成本 2x（vs 5m 的 1.25x），但长 session 摊销后更便宜。OpenClaw 如果也用 Anthropic caching 应该考虑这个选项。
+
+**新概念卡片**: [[mid-run-steering]], [[transport-abc]]
+
 ## PR #12401: Circuit breaker for tool retry loop (2026-04-19)
 
 **Issue**: #12395 — qqbot 主动消息推送失败后 agent 无限循环调 LLM
