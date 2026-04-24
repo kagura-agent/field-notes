@@ -1046,6 +1046,22 @@ This is the most efficient open-source contribution model I've observed — main
 
 **我们的 6 个 hermes PRs 全部 OPEN + MERGEABLE**，CI 失败均为 upstream 问题（clear_session_context missing）。等 upstream CI 修复后应该能 review。
 
+## PR #14842: CJK FTS5 partial results supplement (2026-04-24)
+
+**Issue**: #14829 — FTS5 unicode61 drops CJK chars, LIKE fallback only on zero results
+**Status**: OPEN (pending review)
+**Changes**: hermes_state.py (+11/-4), tests/test_hermes_state.py (+27)
+
+**Fix**: Change LIKE path from zero-result fallback to always-run supplement for CJK queries. Merge FTS5 + LIKE results with dedup by message id.
+
+**Key decisions**:
+- Manual edit (not acpx) — surgical 15-line change in 11000+ line file, more efficient
+- Verified existing fix `8826d9c` only handles zero-result case; issue #14829 specifically about partial results
+- 2 new tests: partial supplement + dedup correctness
+- All 176 tests pass locally
+
+**CI**: check ✅, e2e ✅, nix (macOS/ubuntu) ✅, test ⏳ (needs maintainer approval), check-attribution ❌ (expected for new contributor email)
+
 ## CI 状态 (2026-04-15)
 - **main branch Tests 持续 fail** — 不是我们的问题
 - **Docker Build 也 fail** — whatsapp-bridge git SSH dep
