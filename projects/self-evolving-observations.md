@@ -303,3 +303,32 @@ Review needed: none detected
 - `memory/2026-04-22.md`: 1777 行, 90+ section headers, nudge 0 mentions, dreaming 10+ mentions
 - PR activity: finance#14,17,19,21 merged; NemoClaw#2245,2256,2265 open; stagehand#2026 open; chat-infra#102 merged; mastra#15622 closed
 - Open issues on self-evolving-agent: #1-#4
+
+## 🔬 自进化观察日报 2026-04-23 (Day 6)
+
+### 管线活跃度
+- **beliefs-candidates**: 7 条新增（全部 04-23 dated），涵盖项目建制、cron质量、验证纪律、自驱力、内部优先等多维度。总计 37 条 active entries / 205 行
+- **DNA 变更**: 无（`git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md` 无 commit）。beliefs 通过 edit 写入但未 commit
+- **nudge 触发**: 0 次（`grep -c nudge memory/2026-04-23.md` = 0）
+- **dreaming**: cron 本身处于 consErr 4 (timeout) 状态，daily-review 手动触发了 dreaming。promote 内容多为巡检记录和 cron 状态，质量偏低（操作记录而非认知洞察）
+
+### 闭环追踪
+- **完整闭环**: 1 个 — Luna 连续指出项目管理不足 → 7 条 gradient 写入 beliefs-candidates → 其中"主动性/自驱"达到第3次，已触达升级阈值
+- **断裂处**:
+  - beliefs-candidates 写入后未 git commit（数据存在但无版本记录）
+  - "主动性/自驱" pattern 第3次但未升级到 DNA — 升级动作断裂
+  - dreaming cron consErr 4 连续多天，排查记录存在但修复未闭环
+
+### 今日发现
+1. **gradient 质量跃升**: 今天 7 条 gradient 全部来自 Luna 直接反馈，且每条都有具体场景（不是泛泛总结）。这是观察期内单日最高质量 gradient 产出
+2. **MAP-Elites 维度分布**: 今日 gradient 集中在 E(执行力) 和 A(自治) 维度 — 恰好是 Luna 反复 push 的方向
+3. **dreaming 基础设施不稳**: dreaming cron 连续 timeout (consErr 4)，依赖 daily-review 手动触发作为 fallback。管线的自动化层有裂缝
+4. **nudge 完全缺席**: 0 次触发。nudge 作为反思触发器在今天完全没有发挥作用
+5. **打工 PR 池平稳**: 31 PRs tracked，全部等 maintainer review，无需行动。1 个 closed (multica#1328)
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 无 commit
+- `git log --since="2026-04-23 00:00" --all --oneline`: 1 commit (memory hygiene)
+- `grep -c nudge memory/2026-04-23.md`: 0
+- `beliefs-candidates.md`: 205 行, 37 条 dated entries, 7 条 04-23 新增
+- `memory/2026-04-23.md`: dreaming 相关 10+ mentions, nudge 0 mentions

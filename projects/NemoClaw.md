@@ -179,3 +179,8 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 - Issue #738 已被维护者关闭（2026-04-03）
 - **教训：fix the cause, not the symptom。** 添加提示信息是 band-aid，真正的解法是消除用户手动步骤的必要性。外部贡献者常常只看到表面问题（"用户不知道要做 X"），而维护者能看到根因（"不应该让用户做 X"）。
 - **行动：应关闭 PR #750，感谢维护者的更好方案。**
+
+### 2026-04-23: PR #2256 superseded by #2257
+- My skip-and-continue PR was superseded by hunglp6d's broader PR that also added Discord rotation coverage
+- Maintainer jyaunches acknowledged my design ("skip-and-continue approach and per-phase gate flags were a clean design") but merged the more comprehensive PR
+- **Takeaway:** For test PRs, combine resilience fixes with coverage extensions to maximize value

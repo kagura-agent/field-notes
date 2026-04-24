@@ -62,6 +62,16 @@ nodes:
       - bot comment（CodeRabbit nitpick）→ 低优先级但也要看
       - 纯信息性通知（CI 状态等）→ 非 actionable
 
+      **🚨 负面事件必须 @ Luna：**
+      以下情况视为负面事件，必须在汇报中 `<@1359351419181863053>` 提醒 Luna：
+      - PR 被 close（非自己关闭的）
+      - PR 收到 CHANGES_REQUESTED
+      - PR 被 superseded（别人的 PR 替代了我的）
+      - maintainer 负面评论 / 批评 / 警告
+      - bot/policy 关闭（如超限、违规）
+      - issue 中被投诉或质疑
+      - 任何声誉风险事件
+
       汇报每条通知的判断结果和需要的行动。
     branches:
       - condition: 有 actionable 通知需要处理
@@ -155,6 +165,8 @@ nodes:
       - 行动：rebase/reply/close/ping
       - 当前 open PR 总数
       - 下次需要关注的事项
+
+      **🚨 如果本轮有任何负面事件（PR closed/rejected/superseded、CHANGES_REQUESTED、声誉风险等），汇报中必须包含 `<@1359351419181863053>` 提醒 Luna。**
 
       记录到 memory/YYYY-MM-DD.md。
     terminal: true

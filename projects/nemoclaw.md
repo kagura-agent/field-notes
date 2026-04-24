@@ -127,3 +127,9 @@
   - Summary always prints
 - **CodeRabbit**: 2 suggestions adopted (environmental→SKIP, Phase 3 gate on Phase 2)
 - **GPG**: Commit signed ✅
+
+## PR #2256 Superseded (2026-04-24)
+- Issue #2247: e2e test-token-rotation.sh hard exits
+- My approach: skip-and-continue with PHASE0_OK/PHASE2_OK gate flags
+- Winning approach (#2257 by hunglp6d): same resilience fix + Discord rotation coverage expansion
+- Takeaway: bundle test coverage expansion with infra fixes for higher value-per-PR

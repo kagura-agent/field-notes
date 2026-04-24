@@ -148,7 +148,7 @@ opencode 的 session compaction 架构分三层：
 - **Note**: Related PR #15610 addresses sh/dash/ash (different issue — brace expansion), complementary not duplicate
 - **Lesson**: check-duplicates bot uses LLM — may flag false positives, need to explain in PR description
 
-## Session Compaction Architecture (2026-04-23 deep read, v1.14.21)
+## Session Compaction Architecture (2026-04-23 deep read, v1.14.21; updated 2026-04-24 v1.14.22)
 
 OpenCode has a sophisticated session compaction system (`src/session/compaction.ts` + `overflow.ts`) for managing long conversations within context limits. Key design:
 
@@ -171,6 +171,20 @@ OpenCode has a sophisticated session compaction system (`src/session/compaction.
 - The tail preservation with token budgeting is smart — ensures recent context is always verbatim, not summarized
 - Plugin extensibility for compaction is forward-thinking — allows custom context injection during compaction
 - The pruning step (mark old tool outputs as compacted) is a lightweight optimization before the expensive summarization step
+
+### v1.14.21-22 Improvements (PR #23870, 2026-04-22)
+
+**Split tail turns**: Previously, if the most recent turn exceeded the tail budget, the system fell back to full summarization (losing verbatim recent context). Now it tries to split the turn mid-way — walks forward through messages within the turn until the remaining slice fits within the remaining budget. This means even a huge last turn preserves its tail portion verbatim.
+
+**Stricter summary template**: Replaced the freeform template with a rigid Markdown structure with explicit sections: Goal / Constraints & Preferences / Progress (Done/In Progress/Blocked) / Key Decisions / Next Steps / Critical Context / Relevant Files. Added hard rules: "keep every section even when empty", "use terse bullets", "preserve exact file paths and identifiers".
+
+**Prior compaction hiding**: `completedCompactions()` scans message history for successful compaction user+assistant pairs and filters them out before feeding history to the new compaction agent. This prevents the compaction agent from re-summarizing previous summaries (which would cause information loss through recursive summarization).
+
+**Previous summary extraction**: The system now properly extracts the text content from the most recent successful compaction response and passes it as `<previous-summary>` to the anchored update prompt. Before this was less explicit.
+
+**Configurable tool output truncation** (PR #23770): Tool output `MAX_LINES` (2000) and `MAX_BYTES` (50KB) are now configurable via `tool_output.max_lines` / `tool_output.max_bytes` in opencode config. Uses `Effect.serviceOption` for backward compatibility — tests without Config get the defaults. Also wired `bash.ts` to use `trunc.limits()` so the model-facing description matches the enforced limits.
+
+**Pattern**: The split-tail approach is worth studying for [[openclaw]] — it maximizes verbatim recent context without sacrificing the compaction mechanism. The "hide prior compactions" logic prevents a subtle failure mode where recursive summarization progressively loses detail.
 
 ### Constants
 - `PRUNE_MINIMUM`: 20k tokens (minimum savings to actually prune)

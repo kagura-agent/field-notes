@@ -84,6 +84,12 @@
 - Very large repo — full clone may OOM on constrained machines. Use sparse checkout or GitHub API for file edits
 - Fork sync via `gh repo sync` works
 
+## 跟进 (2026-04-24)
+- PR #14486 merged (2026-04-23): **Modal as sandbox provider** — mirrors Blaxel/Daytona/E2B patterns. Modal has pause/resume (stop-and-resume) + managed background process execution. Good capacity/scale. Shows [[e2b]] commoditization trend — sandboxing becoming a standard pluggable layer
+- PR #14824 merged: fix `.` root path resolution in GCS and S3 filesystem providers
+- PR #15689 merged: fix browser_evaluate to return expression results (agent-browser package)
+- Alpha releases continue daily (chore: version packages)
+
 ## 跟进 (2026-04-23)
 - PR #14969 merged: custom language server registration in LSP config — 之前只支持内置语言（TS/JS/Python/Go/Rust），现在可以注册任意 LSP
 - PR #15546 merged: preserve raw provider usage in onStepFinish/onFinish callbacks — 修复 agent.stream() 丢失 Anthropic cache metrics（cacheRead/cacheWrite）的问题

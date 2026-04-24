@@ -71,3 +71,27 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 - **Their approach**: Created `safeSlice` in a shared `string-utils` module, routed all 3 truncation sites through it. More minimal — single utility, no separate test file, tests inline with existing test suite
 - **Lesson**: Prefer minimal shared utilities over standalone helpers. Maintainer (roaminro) prefers changes that touch fewer files and reuse existing test structure
 - **Pattern**: When fixing a cross-cutting concern, create one utility and wire it in, rather than adding parallel infrastructure
+
+## 2026-04-23: NemoClaw #2256 superseded by #2257
+
+**My PR:** fix(e2e): replace hard exits with skip-and-continue in test-token-rotation.sh
+**Superseding PR:** test(e2e): skip cleanly under VPN, cover Discord token rotation (by hunglp6d)
+**What they did differently:**
+- Extended scope: added Discord token rotation coverage alongside Telegram (cross-talk assertions)
+- Added `PREREQS_OK` flag + upfront prereq validation before running any phases (cleaner than per-phase gates)
+- Added `print_summary()` function with SKIP count for cleaner output
+- Used `unset SLACK_*` for determinism — I didn't consider ambient env pollution
+**Lesson:** When fixing test resilience, also extend test coverage scope. Maintainers prefer PRs that both fix the problem AND add value. My PR only fixed the skip-and-continue pattern; theirs did that + Discord coverage + better prereq gating.
+**Pattern:** "fix + extend" beats "fix only" for test PRs.
+
+## 2026-04-24: mcp-use #1393 closed by maintainer (khandrew1)
+
+**My PR:** fix(auth): append autoConnect param to returnUrl after OAuth redirect
+**Reason for close:** Wrong abstraction layer + URL mutation approach
+**What I did:** Modified library code (`mcp-use/src/auth/callback.ts`) to inject `?autoConnect=` into returnUrl after OAuth redirect
+**What they wanted:** Use existing `sessionStorage` + `INSPECTOR_RECONNECT_STORAGE_KEY` mechanism in the inspector layer — same pattern as tunnel-restart flow
+**Problems with my approach:**
+1. Repurposed a public query param (meant for sharing) as internal signal — visible in address bar permanently
+2. Put inspector-specific URL logic inside library code that shouldn't know about inspector conventions
+**Lesson:** Before modifying library internals, check if the consumer layer already has a mechanism for the exact pattern (session storage, reconnect hooks). "Where does this logic belong?" > "How do I make it work?"
+**Pattern:** Respect abstraction boundaries — don't push consumer-specific logic down into library code, especially when the consumer already has the right hook.

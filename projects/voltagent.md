@@ -55,6 +55,12 @@
 ## PR History (cont.)
 - **#1237** (2026-04-23): fix(server-core): throw error when user-specified port is occupied (#1236). Changed `allocatePort()` to fail fast when `preferredPort` is specified and unavailable. CodeRabbit review caught that Hono/Elysia providers also called allocatePort directly — refactored to make strict mode automatic (no explicit parameter needed). 22 tests pass. Pending review.
 
+## Update (2026-04-24)
+
+**PR #1228** (merged 2026-04-23): `VoltAgent` now applies the configured global workspace to registered agents that didn't explicitly set a workspace. Before this fix, agents constructed before `new VoltAgent({ workspace })` didn't inherit workspace toolkits. Important because it means workspace tools (file access, etc.) were silently missing. The fix checks `workspace !== false` (explicit opt-out preserved) and falls back to global config. Good pattern for [[openclaw]] plugin inheritance.
+
+**PR #1229** (merged 2026-04-23): Published schema factory required by server-hono — another sign of modular package coordination challenges in monorepo architectures.
+
 ## Lessons
 - VoltAgent uses sparse checkout — remember `git sparse-checkout add` when touching new packages
 - Build depends on shared plugins that aren't in sparse checkout — full test suite won't build locally, but individual package tests work fine
