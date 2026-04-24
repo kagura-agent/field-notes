@@ -130,6 +130,37 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - Gateway 架构（webhook + 持久连接）
 - 成熟的 skill 生态和 clawhub
 
+## 跟进 2026-04-24: v1.0.0 "Second Brain" + v1.0.4
+
+⭐604（+48 from yesterday PM）。从 v0.5.4 直接跳到 v1.0.0，24h 内到 v1.0.4。增速放缓但仍稳定。
+
+### v1.0.0 核心变化：Second Brain
+- **SQLite + FTS5 记忆系统**：从 JSONL 关键词搜索升级到 SQLite 全文搜索（之前最大短板之一）
+- **10 种记忆类型**：identity, preference, goal, project, habit, decision, constraint, relationship, episode, reflection
+- **自动提取**：每次对话后提取 0-3 个 fact，带 confidence/importance/durability 评分
+- **自动整合**：每 60 分钟合成 profile summary + active-state summary + reflection memories
+- **记忆生命周期管理**：active → durable promotion（强化 3+ 次自动升级）、21 天 stale、低置信度 120 天淘汰
+- **冲突解决**：相反记忆按 confidence/recency 解决，negation detection
+- **数据统一到 `~/.mercury/`**：所有状态文件集中存放（之前散落在 CWD）
+
+### v1.0.3-v1.0.4 修复
+- **reasoning loop detection**（v1.0.4）：检测模型连续 5 步思考不行动 → 自动中断并通知用户。这是对 v0.5.2 tool call loop detection 的补充——不只检测重复工具调用，还检测 "空转思考"。
+- CI 矩阵测试 + pack-verify 跨平台脚本
+- better-sqlite3 依赖修复
+
+### 分析
+
+**记忆系统的进化路径**：`.includes()` → FTS5 → 下一步大概是 embedding（他们的 issue 里有人提了）。每一步都是对 "agent 需要什么级别的记忆" 的回答。对比我们：OpenClaw/memex 已经有语义搜索，但 Mercury 的结构化记忆类型 + 自动提取 + 生命周期管理是我们没有的。
+
+**Reasoning loop detection** 是个实用 pattern——model 长时间思考不调工具，从外部看就是卡死。OpenClaw 的 Copilot API 60s 流式超时是类似问题的另一面。Mercury 选择在 agent loop 层检测并中断，而不是依赖 API 超时。→ 可能值得在 OpenClaw 层面也加这个检测。
+
+**增长曲线正在收敛**：Day 1: +232, Day 2: +117, Day 3: +167, Day 4: +48。从爆发进入稳定增长。v1.0.0 是心理里程碑——"可以认真用了"。
+
+### 可借鉴（新增）
+- [ ] 结构化记忆类型 + 自动提取 → memex 可以考虑类似的自动 fact extraction
+- [ ] 记忆生命周期管理（stale/promote/prune）→ 我们的 memory 文件目前只增不减
+- [ ] Reasoning loop detection → OpenClaw agent loop 层
+
 ## 跟进 2026-04-23 PM: v0.5.3-v0.5.4 + 增长观察
 
 ⭐556（+40 from morning）。v0.5.3-v0.5.4 是 polish releases：
