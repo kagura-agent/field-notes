@@ -61,6 +61,10 @@
 
 **PR #1229** (merged 2026-04-23): Published schema factory required by server-hono — another sign of modular package coordination challenges in monorepo architectures.
 
+**PR #1220** (merged 2026-04-22): Zod v4 compatibility fix for Swagger/OpenAPI generation. `z.record(z.any())` in Zod v4 leaves value type undefined, breaking vendored OpenAPI generator. Fix: explicit `z.record(z.string(), z.any())`. Practical takeaway for any project migrating to Zod v4.
+
+**PR #1224** (merged 2026-04-22): Reuse active Zod instance for Swagger schemas — avoids Zod version conflicts in monorepo. Pattern: detect runtime Zod version and adapt.
+
 ## Lessons
 - VoltAgent uses sparse checkout — remember `git sparse-checkout add` when touching new packages
 - Build depends on shared plugins that aren't in sparse checkout — full test suite won't build locally, but individual package tests work fine

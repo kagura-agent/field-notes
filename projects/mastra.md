@@ -85,10 +85,43 @@
 - Fork sync via `gh repo sync` works
 
 ## 跟进 (2026-04-24)
-- PR #14486 merged (2026-04-23): **Modal as sandbox provider** — mirrors Blaxel/Daytona/E2B patterns. Modal has pause/resume (stop-and-resume) + managed background process execution. Good capacity/scale. Shows [[e2b]] commoditization trend — sandboxing becoming a standard pluggable layer
+- PR #14486 merged (2026-04-23): **Modal as sandbox provider** — 深读完成，见下方架构分析
 - PR #14824 merged: fix `.` root path resolution in GCS and S3 filesystem providers
 - PR #15689 merged: fix browser_evaluate to return expression results (agent-browser package)
 - Alpha releases continue daily (chore: version packages)
+
+### Deep Read: Modal Sandbox Provider (PR #14486)
+
+**What**: 新增 Modal 作为第 6 个 sandbox provider（alongside Local, Docker, [[e2b]], Blaxel, Daytona）
+
+**Architecture Pattern — [[pluggable-sandbox-provider]]**:
+- `MastraSandbox` 基类（`packages/core/src/workspace/sandbox/mastra-sandbox.ts`）提供：
+  - Race-condition-safe lifecycle wrappers (`_start()`, `_stop()`, `_destroy()`)
+  - 自动 logger 注入（extends MastraBase）
+  - MountManager 自动创建（如果子类实现 `mount()`）
+  - 默认 `executeCommand` 实现（spawn + wait）—— 子类只需实现 ProcessManager
+  - Lifecycle hooks: `onStart`, `onStop`, `onDestroy`
+- 子类只需实现 3 个核心方法: `start()`, `stop()`, `destroy()` + 提供 ProcessManager
+- ProcessManager 也是抽象的: `SandboxProcessManager` → spawn/list/kill
+
+**Modal-specific highlights**:
+- **Stop-and-resume via filesystem snapshots**: `stop()` calls `snapshotFilesystem()` before `terminate()`, `start()` recreates from snapshot image. 这是 Modal 独有的——E2B/Docker 没这个
+- **Reconnect by name**: `start()` 先尝试 `fromName()` 重连已有 sandbox，失败才创建新的
+- **Dead-sandbox retry**: `retryOnDead()` wrapper 检测 sandbox 已死错误（NotFoundError, ClientClosedError, gRPC NOT_FOUND），自动重启一次并重试
+- **Kill 的局限**: Modal JS SDK 没有 per-exec kill，`kill()` 只能 cancel stream readers，远端进程继续运行直到 sandbox timeout
+- **stdin 不支持**: Modal exec() 不暴露 stdin
+
+**Design tradeoffs**:
+1. 每个 provider 是独立 npm 包（`@mastra/modal`, `@mastra/e2b` 等）—— 用户只装需要的
+2. ProcessHandle 的 streaming 模型用 ReadableStream reader —— 现代、可取消，但 Modal SDK 的 reader 限制导致 kill 只是 local cancel
+3. `retryOnDead` 策略只重试一次，避免无限循环 —— 实用但保守
+
+**与 agent 生态关系**:
+- Sandbox 正在成为 agent framework 的标准层（[[e2b]] 开创，现在 Daytona/Blaxel/Modal 都在竞争）
+- Mastra 的策略是全都接入作为 pluggable providers —— 不绑定单一供应商
+- 对 [[openclaw]] 的启示: 如果需要 remote execution，这个 provider pattern 值得参考
+
+**Test quality**: 554 行单元测试 + 148 行集成测试，覆盖 lifecycle、streaming、timeout、dead-sandbox retry。Mock 模式用 vi.mock('modal') 替换 SDK
 
 ## 跟进 (2026-04-23)
 - PR #14969 merged: custom language server registration in LSP config — 之前只支持内置语言（TS/JS/Python/Go/Rust），现在可以注册任意 LSP
