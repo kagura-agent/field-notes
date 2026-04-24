@@ -1068,6 +1068,76 @@ This is the most efficient open-source contribution model I've observed — main
 - **所有 11 个 open PR 已标注** CI failure 是 upstream 的
 - **决策**: 不再提新 PR，等 upstream 修好 CI 再说
 
+## v0.11.0 (2026-04-23) — "The Interface Release"
+
+**规模**: 1,556 commits · 761 merged PRs · 1,314 files changed · 224,174 insertions · 29 contributors
+**10 天** 从 v0.9.0 (04-13) → v0.11.0 (04-23)，包含了 v0.10.0（只发了 Nous Tool Gateway）延期的内容。
+⭐ 已从 78k → ~113k（一周半涨 35k，爆发增长）。
+
+### 核心架构变化
+
+#### 1. Transport ABC — 可插拔传输层
+**最重要的架构升级。** 从 `run_agent.py` 的 11000 行巨函数中抽取 format conversion + HTTP transport 为独立的 `agent/transports/` 层。
+
+4 个 Transport 实现：
+- `AnthropicTransport` — Anthropic Messages API
+- `ChatCompletionsTransport` — ~16 个 OpenAI 兼容 provider（主力路径，删减 run_agent.py 239 行）
+- `ResponsesApiTransport` — OpenAI Responses API + Codex OAuth
+- `BedrockTransport` — AWS Bedrock Converse API
+
+每个 Transport 负责 3 件事：`build_kwargs`（构造 API 参数）、`normalize`（标准化响应）、`validate`（验证配置）。
+
+**架构洞察**：
+- 共享 `NormalizedResponse` + `ToolCall` + `Usage` dataclasses 统一所有 provider 的输出格式
+- 9-PR 分步重构策略（先 types → 先迁移一个 provider 证明 shape → 逐个迁移）
+- `provider_data` 字段保留 provider-specific 信息（如 Gemini `thought_signature`、DeepSeek `reasoning_content`），避免信息丢失
+- **关键学习**: 大规模重构拆成小 PR chain，每个 PR 都有 46+ 测试验证 parity，比一次性大重构风险低很多
+- **与 [[async-agent-transport]] 的关系**: Transport ABC 解决的是 format conversion 层面的可插拔性，而 async-agent-transport 讨论的是 connection lifetime 层面的问题。两个维度互补
+
+#### 2. `/steer` — 运行中的 agent 微调
+`/steer <prompt>` 在 tool call 之间注入用户提示，不打断 agent turn。
+
+**设计精髓**：
+- 不创建新 user turn（保持 role alternation 不变量）
+- Steer 文本附加到最后一个 `tool` 消息的 content 里
+- Cache-safe：tool-result 消息本来就是 tail-of-prefix，每 turn 失效
+- 明确标记 `[USER STEER (injected mid-run, not tool output): …]` 防止模型误判
+- 介于 `/queue`（turn 边界）和 interrupt 之间的第三种用户介入方式
+
+**与 OpenClaw 对比**: OpenClaw 的 `subagents steer` 做类似的事，但 Hermes 的实现更优雅——直接注入 tool result 而不是创建额外消息。
+
+#### 3. Orchestrator Role + File State Coordination
+子 agent 现在有 `leaf` 和 `orchestrator` 两种角色。Orchestrator 可以 spawn 自己的 worker，配置 `max_spawn_depth`（默认 flat=1，opt-in 提高）。
+
+**File State Coordination（PR #13718）是亮点**：
+- `FileStateRegistry` 单例追踪每个 agent 的文件读写时间戳
+- Agent A 读了文件 X → Agent B 写了 X → Agent A 再写 X 时会收到 warning（"agent_B modified this file after your last read"）
+- Per-path `threading.Lock` 防止并发写交叉
+- `patch_tool` 对多文件 patch 按 sorted order 加锁（避免死锁）
+- Parent agent 在 child 完成后收到提醒（"subagent modified files you read — re-read before editing"）
+- **Warning-only, never hard-fails** — 与项目风格一致，让模型自己判断
+
+**架构洞察**：
+- 两层防护：(1) batch 检查防止同 agent turn 内并行 dispatch 冲突路径，(2) registry 防止跨 agent/跨 turn 的 stale write
+- **与 OpenClaw 对比**: OpenClaw subagent 之间没有文件协调机制。当多个 subagent 改同一个 repo 时完全靠运气。这是一个值得参考的设计
+
+### 其他重要变化
+
+- **React/Ink TUI 重写** — 完整的 React 组件化 CLI，Python JSON-RPC 后端。状态栏、子agent 观测 overlay、粘性 composer
+- **QQBot（第 17 个平台）** — QQ 官方 API v2，QR 登录，emoji 反应，DM/群组策略
+- **GPT-5.5 via Codex OAuth** — 新模型 + 动态 model discovery（无需更新目录）
+- **Plugin 扩展** — 插件可注册 slash commands、dispatch tools、veto tool execution、transform tool results、加 dashboard tabs
+- **Shell hooks** — 任意 shell 脚本作为生命周期 hook（无需写 Python plugin）
+- **Webhook direct-delivery** — 零 LLM 推送通知（告警、uptime 检查直接投递到聊天）
+- **Auxiliary models 可配置** — 压缩/视觉/搜索/标题各自选模型，不再默认用廉价模型
+- **Dashboard 插件化** — 第三方插件可加 tab/widget/view + 热切换主题
+
+### 生态观察
+
+从 v0.8 → v0.11（~2 周），Hermes 的发展速度惊人。761 个 PR 合并，29 个贡献者。Teknium 的 salvage 模式（接手社区 PR 补充测试后合并）是这个速度的关键 — 不拒绝 PR，而是自己修好后合并。
+
+Transport ABC 标志着 Hermes 从"大 monolith 函数"向"可插拔架构"转型。这对生态很重要 — 第三方 provider 现在可以通过实现 Transport ABC 而不是改 run_agent.py 来接入。
+
 ## PR #12401: Circuit breaker for tool retry loop (2026-04-19)
 
 **Issue**: #12395 — qqbot 主动消息推送失败后 agent 无限循环调 LLM
