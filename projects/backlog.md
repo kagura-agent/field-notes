@@ -509,3 +509,9 @@ HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), B
 - [ ] **GPT-5.5 发布** — OpenAI 新模型，需评估能力差异
 - [ ] **Claude Code quality postmortem** (Anthropic 04-23) — 直接影响我们的工具使用
 - [ ] **DeepSeek v4 API** — 新模型 API 更新
+
+## 2026-04-24 快速扫描 (14:30)
+- **Tencent-Hunyuan/Hy3-preview** ⭐188 — 295B A21B MoE reasoning+agent model, cost-efficient. Worth watching if open-weight trend continues.
+- **intertwine/dspy-agent-skills** ⭐180 — Production DSPy 3.2 agent skills with validated examples for Claude Code/Codex. Could inform skill design patterns.
+- **Tolaria** (HN 168pts) — macOS markdown knowledge base app, open-source. Tangential to memex/wiki tooling.
+- GPT-5.5 launch (HN 1265pts) — noted, no action needed
