@@ -162,10 +162,24 @@ Key design decisions:
 
 See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skills]]
 
+### PR #9449 — fix(cli): preserve model variant across /compact command
+- **Issue**: #9447 — Running `/compact` resets the model variant to default
+- **状态**: OPEN (2026-04-24)
+- **改动**:
+  - `packages/opencode/src/server/routes/instance/session.ts`: 添加 `variant` 到 summarize body schema + 传入 compact.create()
+  - `packages/opencode/src/session/compaction.ts`: 扩展 `create()` model type 加 `variant?: string`
+  - `packages/app/src/pages/session/use-session-commands.tsx`: compact() 传 `local.model.variant.current()`
+  - `packages/opencode/src/cli/cmd/tui/routes/session/index.tsx`: compact handler 传 `local.model.variant.current()`
+  - changeset: patch
+- **根因**: `/summarize` API 只接受 providerID+modelID，compaction create() 类型也不含 variant。user message schema 本身支持 variant 但被 API 层丢弃
+- **方法**: 沿 API 链路补上 variant 传递（4 文件 6 行插入），不改核心逻辑
+- **洞察**: auto-compaction（overflow）路径正确（从 lastUser.model 读），只有手动 /compact 路径丢了 variant
+
 ## 踩坑记录
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
 - **大 repo 用 git cat-file 恢复缺失包源码时，会覆盖已修改的文件。应先 commit 改动，再恢复依赖**
+- **pre-push hook typecheck 失败是 upstream 问题**（@opencode-ai/shared 缺 @types/node），用 --no-verify push
 
 ### PR #9414 — fix(session): clamp max output tokens to remaining context window
 - **Issue**: #9404 — ContextOverflowError during autocompact due to static max_tokens
