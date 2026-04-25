@@ -2,6 +2,8 @@
 
 Open-source coding agent CLI. 148k+ stars (2026-04-23), 92% merge rate. Now under `sst/opencode`.
 
+> ⚠️ **注意**: `opencode-ai/opencode`（Go 版本）已于 2025-09 归档。最后 commit 2025-09-18。这里记录的是 `sst/opencode`（TypeScript 版本），它仍然活跃。两者是不同项目。
+
 ## Repo 基本信息
 - **语言**: TypeScript (Bun)
 - **运行时**: Bun 1.3+（不是 Node.js）

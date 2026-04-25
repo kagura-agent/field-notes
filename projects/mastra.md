@@ -167,3 +167,57 @@
 - For repos where we've been flagged, do NOT submit more PRs. The relationship is burned.
 - Always check if a repo has existing agent-PR fatigue before submitting.
 **Action:** Do not submit further PRs to mastra-ai/mastra. Remove from target repos.
+
+## 跟进 (2026-04-25 PM)
+
+### Processor 架构深读 — Message Pipeline 中间件系统
+
+Mastra 的 Processor 是目前 agent 生态中最成熟的 **消息处理中间件系统**。
+
+**7 个生命周期钩子**:
+- `processInput` — 请求前一次性处理（全局预处理）
+- `processInputStep` — 每个 agentic loop step 前处理（可运行时切换 model、tools、toolChoice）
+- `processOutputStream` — 流式 chunk 级处理（可过滤/变换单个 chunk）
+- `processOutputStep` — 每步 LLM 响应后、tool 执行前（guardrails + retry 的理想位置）
+- `processOutputResult` — 最终结果处理
+- `processAPIError` — API 拒绝时的错误恢复（非网络错误，是 400/422 类验证拒绝）
+- 还支持 `ProcessorWorkflow`（Workflow 也能充当 Processor）
+
+**关键设计**:
+- `BaseProcessor` 通过 `__registerMastra()` 获取 Mastra 实例 → processor 能调用 knowledge、storage 等服务
+- `processInputStep` 返回 `ProcessInputStepResult` 可包含 `model` 字段 → **单次对话中动态路由到不同模型**
+- 每个 processor 有 per-request `state` 对象，跨所有方法调用持久化
+- 支持 `ProcessorStreamWriter` 发射自定义 `data-*` chunk
+- 类型系统区分 InputProcessor / OutputProcessor / ErrorProcessor
+
+### PR #15730 — ProviderHistoryCompat (merged 2026-04-25)
+
+**问题**: 跨 provider 切换时 tool-call ID 格式不兼容。Anthropic 要求 `^[a-zA-Z0-9_-]+$`，但其他 provider 的 ID 可能包含 `.`、`:`、`/` 等字符。
+
+**方案**: `CompatRule` lookup table 模式
+- 每条 rule: `{ name, errorPatterns: RegExp[], fix: (messages) => boolean }`
+- 内置 `anthropicToolIdFormat` rule：检测所有 tool-invocation 的 toolCallId，把非法字符替换为 `_`
+- 同步建 idMap（原 ID → 清洗 ID），一次遍历全部 messages 做 rewrite
+- `retryCount > 0` 直接返回 → 只重试一次，防无限循环
+- 可扩展：`new ProviderHistoryCompat({ additionalRules: [myRule] })`
+
+**Tradeoff**: 反应式（出错再修）而非预防式（提前清洗）。好处是正常路径零开销，坏处是第一次切换 provider 会多一次 API 调用。
+
+**由 Devin 实现**: PR 作者是 `devin-ai-integration[bot]`，附 Devin session 链接。测试 277 行，覆盖 error matching、ID sanitization、custom rules、rate-limit 不触发等场景。
+
+### Mastra 的 Claude Code Skills 生态
+
+`.claude/skills/` 目录现有 9 个 skill:
+- `e2e-tests-studio`, `mastra-docs`, `mastra-smoke-test`, `ralph-plan`
+- `react-best-practices`, `smoke-test`, `tailwind-best-practices`
+- `testing-core-processors`, `testing-mastracode-tui`
+
+`testing-mastracode-tui` 由 Devin 编写（PR #15752），文档化如何交互式测试 mastracode TUI（模型配置、thread 生命周期、状态隔离验证）。
+
+**元信号**: 大型 agent 项目开始用 AI agent 做 AI agent 开发。Mastra 用 Devin 写 Claude Code skills — 递归层出现。
+
+### 与 [[openclaw]] 的关联
+
+1. **Processor 中间件 vs OpenClaw 消息流**: OpenClaw 没有统一的 message processor 中间件概念。如果需要做 guardrails、provider compat、动态 model routing，需要在各处散落逻辑。Mastra 的 Processor 设计值得研究是否可引入。
+2. **动态 model routing**: `processInputStep` 允许每步切换 model，可用于 cost optimization（简单步骤用便宜模型）或 fallback（某 provider 挂了换另一个）。
+3. **Claude Code skills 组织**: Mastra 的 9 个 skills 覆盖 testing/docs/best-practices — 比我们的 skill 体系更专注于开发流程标准化。
