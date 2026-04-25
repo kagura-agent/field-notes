@@ -201,6 +201,15 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - **cavemem** (105⭐): Cross-agent persistent memory，compressed + local-first。
 - **趋势**: agent memory 从 "nice-to-have" 变成 "must-have"。OpenClaw 的 memex 语义搜索是差异化优势，但 auto-memory 指出的 "context rot at 60% window" 是我们也面临的问题。
 
+## 跟进 2026-04-25 PM: ⭐830 增长恢复
+
+⭐830（从 757 继续回升）。平台期后恢复增长，Agent Skills 生态扩大是助力。
+
+### 生态同期对比
+- [[karpathy-llm-wiki]] (615★) — wiki > RAG 理念主流化（HN 首页），级联更新 + lint 管线值得借鉴
+- Claude Code Skills 爆发：6000+★ 的 HTML 设计 skill、4000+★ 的技术图表 skill
+- Agent Skills (agentskills.io) 正式成为事实标准
+
 ## 跟进 2026-04-25: ⭐757 回升 + 侦察对比
 
 ⭐757（从 613 回升）。过了平台期后小幅回升。

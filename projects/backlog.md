@@ -1,4 +1,22 @@
 
+## 2026-04-25 Quick Scan Evening (17:56)
+
+**GitHub API Search (past week, ai-agent + ai-agents topics):**
+- harmonist ★466 — Portable agent orchestration, 186 agents, zero deps. 🆕 值得关注
+- text-to-cad ★395 — CAD generation. 不相关
+- agent-style ★321 — Writing rules for coding agents. 已知
+- OneResearchClaw ★108 — Skill-driven researcher (OpenClaw ecosystem). 🆕 值得关注
+- alash3al/stash ★53 — Persistent memory layer (Postgres + MCP). ✅ 已深读 → wiki/projects/stash.md
+- agentodyssey ★37 — Long-horizon continual learning. 学术向
+
+**HN:**
+- "Karpathy-style LLM wiki agents maintain" 51pt — 直接相关 memex 方向
+- "OpenClaw vs Hermes Agent" 1pt — 有人在比较了
+
+**Deep read**: stash → 10-table layered memory hierarchy + 8-stage LLM consolidation pipeline. Architecture thinking solid, too heavy for our setup but consolidation pattern worth borrowing.
+
+---
+
 ## 2026-04-24 Quick Scan Evening (19:07)
 
 **GitHub Trending (past week, agent):**
