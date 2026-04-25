@@ -3,6 +3,9 @@ title: Memex 自动 Fact Extraction 设计方案
 slug: memex-auto-extraction-design
 tags: [memex, memory, fact-extraction, architecture, self-evolving]
 created: 2026-04-25
+evidence_count: 2
+last_reinforced: 2026-04-25
+modified: 2026-04-25
 ---
 
 # Memex 自动 Fact Extraction 设计方案
@@ -63,11 +66,33 @@ status: active|draft|stale|archived
 | 生命周期 | 相同：reinforce/stale/prune |  |
 | 冲突解决 | 自动覆盖 | 标记 + 等裁决（更安全）|
 
-## 实现路径
+## 实现状态
 
-1. **Phase 1**: memex card frontmatter 加 lifecycle 字段 + `memex organize` 支持 lifecycle 审计
-2. **Phase 2**: post-session extraction hook（OpenClaw session end event → LLM extraction → memex write）
-3. **Phase 3**: auto-merge + conflict detection
+### Phase 1 ✅ (2026-04-25)
+
+已实现并合入 kagura-agent/memex main。
+
+**新增 `memex lifecycle` 命令：**
+- `memex lifecycle audit` — 扫描所有卡片，报告 status 分布、需要关注的卡片、近期 reinforce 记录
+- `memex lifecycle reinforce <slug>` — 增加 evidence_count，更新 last_reinforced，触发 auto-promote
+- `memex lifecycle init [--dry-run]` — 为所有缺少 lifecycle 字段的卡片初始化
+
+**生命周期规则：**
+- `evidence_count >= 3` → auto-promote 为 `active`
+- 30 天未 reinforce → `stale`（高 evidence 卡片豁免）
+- `stale` + 90 天 + `confidence < 0.5` → `archived`
+
+**额外修复：**
+- `stringifyFrontmatter` 现在正确处理 arrays、numbers、dates、booleans（之前全部 `String()` 化会丢失类型）
+- `memex organize` 新增 Lifecycle Summary section
+
+### Phase 2 ⭕ (TODO)
+
+post-session extraction hook（OpenClaw session end event → LLM extraction → memex write）
+
+### Phase 3 ⭕ (TODO)
+
+auto-merge + conflict detection
 
 ## 链接
 
