@@ -106,3 +106,13 @@ Found via `gh search repos "agent" --language TypeScript --stars "1000..10000"` 
 - **acpx exec worked well**: The task was well-scoped enough for a single acpx call. Claude Code handled all 5 files, fixed lint/typecheck issues on its own
 - **No CI on fork PRs**: Confirmed again — must test locally before submitting
 - **Issue quality**: This was filed by Truffle (the phantom agent itself) with excellent detail — clear root cause, code references, and proposed solution options. Made implementation straightforward
+
+### 2026-04-25: PR #91 — Config memory truncation fix (issue #90)
+
+- **Issue**: Large append-only files in phantom-config/memory/ silently truncated by SDK auto-include on session start. Agent loses heartbeat-log, presence-log at every restart.
+- **Fix**: New prompt block `src/agent/prompt-blocks/config-memory.ts` mirroring `working-memory.ts` pattern — 100-line cap per file, header+tail retention, compaction nudge. Wired into prompt-assembler after working memory block.
+- **Key decision**: Excluded agent-notes.md to preserve existing anti-feedback-loop architecture (agent reads own writes via Read tool, not system prompt injection). This was validated by existing test `does not inject agent-notes.md file contents into the system prompt`.
+- **Status**: PENDING review
+- **acpx experience**: acpx got SIGKILL (likely 300s timeout during full test suite run of 1839 tests). Had to commit manually. Code was complete and correct — all tests/lint/typecheck passed.
+- **Testing**: 10 new tests, all 1839 project tests pass. No CI on fork PRs (confirmed again).
+- **Lesson**: For phantom, acpx needs to be told to commit early before running full test suite (13.5s for 1839 tests + prior work can push past 300s).
