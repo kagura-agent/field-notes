@@ -17,7 +17,7 @@ CLI tool (`npx skills`) for installing, managing, and sharing agent skills acros
 - **Agent targeting**: `-a claude-code -a cursor` to install to specific agents
 - **Discovery**: `npx skills find` for interactive search
 
-## Comparison with [[ClawHub]]
+## Comparison with ClawHub
 
 | Aspect | vercel-labs/skills | ClawHub |
 |--------|-------------------|---------|

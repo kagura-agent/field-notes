@@ -47,7 +47,7 @@
 - **结果**: main-thread idle 36%→72%, peak HandlePostMessage 446ms→15ms, streaming stalls gone
 - **测试策略**: 静态 AST regression guards（检查源文件不含 anti-pattern），避免 JSX 组件测试 CI 不稳定
 - **洞察**:
-  - [[reactive-framework-antipatterns]]: 在 SolidJS 中用 createMemo 包大对象是性能杀手，粒度越细越好
+  - reactive-framework-antipatterns: 在 SolidJS 中用 createMemo 包大对象是性能杀手，粒度越细越好
   - static source guards 是运行时测试不可靠时的聪明替代——检查代码结构而非运行时行为
   - 所有四个问题都是「在低频场景正常，高频（streaming）暴露」的经典模式
   - 与 [[openclaw]] 的 ACPX streaming 相关：如果 UI 端也做 token streaming，同样的 anti-pattern 会出现

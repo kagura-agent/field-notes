@@ -76,6 +76,6 @@ session events → redact <private> → compress → SQLite + FTS5
 
 ## Links
 
-- Related: [[auto-memory]], [[agent-memory-landscape-202603]], [[opencode-compaction]]
+- Related: [[auto-memory]], [[agent-memory-landscape-202603]], opencode-compaction
 - Concept: [[context-budget-constraint]] — compression directly addresses context budget
 - Pattern: [[existence-encoding]] — different approach to the same "preserve signal, drop noise" problem

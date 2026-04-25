@@ -52,7 +52,7 @@ Has rollout.py, api_server.py, config.py — suggests online GRPO+PRM training l
 
 **What's relevant to us:**
 - [[skill-evolution]] pattern: Recording tool sequences → compiling into skills. We do something similar with beliefs-candidates.md but less structured. Could inspire a more systematic approach to skill creation from repeated patterns.
-- [[guardian]] pattern: Adding LLM review before high-risk operations is something OpenClaw could adopt. Currently OpenClaw relies on static approval — LLM pre-review is an additional layer.
+- guardian pattern: Adding LLM review before high-risk operations is something OpenClaw could adopt. Currently OpenClaw relies on static approval — LLM pre-review is an additional layer.
 - Progressive context loading (L0/L1/L2) — mentioned in README, aligns with OpenClaw #66576 (selective workspace file injection).
 
 ## Links

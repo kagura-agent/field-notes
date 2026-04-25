@@ -55,4 +55,4 @@
 
 ## Links
 
-- Previous scouts: [[agent-ecosystem-scout-2026-04-22]], [[agent-ecosystem-scout-2026-04-23]]
+- Previous scouts: agent-ecosystem-scout-2026-04-22, agent-ecosystem-scout-2026-04-23

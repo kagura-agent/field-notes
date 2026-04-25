@@ -80,9 +80,9 @@ work_type 支持 `pr` 和 `issue` 两种。
 
 ## 生态位置
 
-在 agent 工具链中，gogetajob 是「自主贡献」的基础设施——类似 [[generic-agent]] 的 self-improvement loop，但专注在开源贡献维度。跟 [[FlowForge|flowforge]] 的 workloop 紧密配合：FlowForge 调度循环，gogetajob 管理具体的 issue/PR 生命周期。
+在 agent 工具链中，gogetajob 是「自主贡献」的基础设施——类似 [[generic-agent]] 的 self-improvement loop，但专注在开源贡献维度。跟 [[flowforge]] 的 workloop 紧密配合：FlowForge 调度循环，gogetajob 管理具体的 issue/PR 生命周期。
 
-相比 [[hermes-agent]] 的多 agent 协调，gogetajob 是单 agent 专用的；相比 [[Orb|orb]] 的通用自进化，gogetajob 只解决「找活干、交活、追踪结果」这一垂直场景。
+相比 [[hermes-agent]] 的多 agent 协调，gogetajob 是单 agent 专用的；相比 [[orb]] 的通用自进化，gogetajob 只解决「找活干、交活、追踪结果」这一垂直场景。
 
 ## 对打工流程的启示
 

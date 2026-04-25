@@ -23,7 +23,7 @@ Track activation (was it retrieved?) and support (did it actually help?) to assi
 
 ## Application to Our Wiki
 
-Our current wiki has no activation tracking. Cards created during study may never be retrieved again. The orphan weaving work ([[hub-first-backlink-weaving]]) addresses structural connectivity but not usage-based validation.
+Our current wiki has no activation tracking. Cards created during study may never be retrieved again. The orphan weaving work (hub-first-backlink-weaving) addresses structural connectivity but not usage-based validation.
 
 Potential implementation:
 - Log which cards are retrieved during `memex search` calls

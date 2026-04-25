@@ -102,3 +102,28 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 **Their approach:** Dynamic argv length guard — only activates on Windows when the limit is hit. Non-Windows unaffected. Short command lines unaffected.
 **Lesson:** When fixing a platform-specific bug, scope the fix to the affected platform. Dynamic guards > unconditional behavior changes. The fix should be as narrow as possible — "if broken, fix; if not broken, don't touch."
 **Pattern:** SCOPE_TOO_BROAD — my fix changed behavior for all platforms when only Windows was affected.
+
+## 2026-04-25: VoltAgent #1235 → #1248, #1234 → #1249 (both by omeraplak)
+
+**Issue #1232 — global memory title generation:**
+- My PR #1235: Surgical 2-file fix (+13/-0). Added `setTitleGenerator()` to MemoryManager, called from `__setDefaultMemory()`. No tests.
+- Their PR #1248: 4 files (+90/-9). Same core fix + concurrent creation race handling + clearing generator on disable + 61 lines of tests.
+- **Gap**: Happy-path-only fix. Didn't consider disable/clear path or concurrent races. Zero tests.
+
+**Issue #1233 — reasoning model temperature:**
+- My PR #1234: 3 files (+18/-4). Removed hardcoded `temperature: 0`, made configurable, upgraded log to warn.
+- Their PR #1249: 7 files (+432/-5). Default stays `temperature: 0` (backward compat), `null` to opt out. Provider-specific warning detection. 356 lines of tests. Docs updated.
+- **Gap**: My default change was a **breaking change** (omitting temperature entirely). Theirs preserved backward compat. Massive test gap.
+
+**Patterns:**
+- **NO_TESTS** — Both my PRs had zero tests. Both replacements had substantial test suites. For this maintainer, tests aren't optional.
+- **BREAKING_DEFAULT** — Changing a default value (temperature: 0 → omitted) is a breaking change. Preserve defaults, add opt-out.
+- **HAPPY_PATH_ONLY** — Fixing the reported bug without considering adjacent edge cases (disable, race, provider warnings). Maintainers think in terms of the full state space.
+- **Pattern accumulation**: This is now the 3rd time (after claude-hud, openclaw) that "scope too narrow" is the core issue. The recurring lesson: spend 30 min reading adjacent code and writing tests instead of shipping the minimal fix in 10 min.
+
+## Checklist update
+
+Added to pre-PR checklist:
+6. Does my fix preserve backward-compatible defaults? (New behavior = opt-in, not default)
+7. Did I write tests? (If the maintainer's replacement has 10x my line count in tests, I'm not writing enough)
+8. Did I handle the disable/teardown/error path, not just the happy path?

@@ -1,7 +1,7 @@
 # Chat-Infra 开源 IM 平台调研
 
-> 2026-04-20 深读 | 为 [[chat-infra]] 项目选型
-> 关联：[[workshop]] → [[chat-infra]]（方向转换 04-15），[[sharkord]]
+> 2026-04-20 深读 | 为 chat-infra 项目选型
+> 关联：[[workshop]] → chat-infra（方向转换 04-15），[[sharkord]]
 
 ## 背景
 Luna 04-15 提出：与其从零造 Workshop，不如 fork 开源 Discord 替代 + AI-native 层。需要找可 fork 改代码的开源 chat 平台。

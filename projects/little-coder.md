@@ -41,7 +41,7 @@ Little Coder 是一个专为小型本地 LLM 优化的 coding agent，构建在 
 
 ## 生态位
 
-与 [[aider]] 的关系：aider 假设 frontier model，little-coder 证明 scaffold 可以让小模型接近 aider 的表现。
+与 aider 的关系：aider 假设 frontier model，little-coder 证明 scaffold 可以让小模型接近 aider 的表现。
 与 [[openclaw]] 的关系：互补。OpenClaw 做 agent 编排和生命周期，little-coder 做 coding 执行层优化。如果 OpenClaw 用户跑本地模型（Ollama），little-coder 的 scaffold 技巧有参考价值。
 与 [[pi-agent]] 的关系：上层应用，展示 Pi 的扩展性。
 

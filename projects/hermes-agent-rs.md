@@ -49,7 +49,7 @@ Hermes Python (NousResearch/hermes-agent) active — 10 PRs merged in 3 days:
 
 ### Notable PRs
 
-**Circuit Breaker for MCP (#10776)** — Solves #10447: MCP server errors caused 90-iteration burn loops (15-45 min of wasted API calls). Fix: per-server consecutive error counter, threshold=3, returns "do NOT retry" message to model. Pattern: module-level dict `_server_error_counts`, reset on success, increment on any failure path (not connected / timeout / error response). Directly relevant to our [[openclaw-66399]] process hang watchdog — same class of problem (runaway retries burning resources).
+**Circuit Breaker for MCP (#10776)** — Solves #10447: MCP server errors caused 90-iteration burn loops (15-45 min of wasted API calls). Fix: per-server consecutive error counter, threshold=3, returns "do NOT retry" message to model. Pattern: module-level dict `_server_error_counts`, reset on success, increment on any failure path (not connected / timeout / error response). Directly relevant to our openclaw-66399 process hang watchdog — same class of problem (runaway retries burning resources).
 
 **dispatch_tool() for Plugins (#10763)** — Public API for plugin slash commands to call tools through registry without coupling to framework internals. Resolves `parent_agent` context automatically. Clean separation: plugins register commands → commands dispatch tools → tools get agent context.
 

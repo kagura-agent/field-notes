@@ -2,7 +2,7 @@
 
 - **Source**: https://api-docs.deepseek.com/
 - **Date**: 2026-04-24 (observed)
-- **Tags**: [[deepseek]], [[llm-api]], [[reasoning]]
+- **Tags**: deepseek, llm-api, [[reasoning]]
 
 ## What's New
 

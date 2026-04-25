@@ -9,8 +9,10 @@ cd "$WIKI_DIR"
 echo "=== Wiki Lint Report ($(date -I)) ==="
 echo ""
 
-# 1. Collect all wikilink references
-grep -roh '\[\[[^]]*\]\]' cards/ projects/ 2>/dev/null \
+# 1. Collect all wikilink references (skip backtick-quoted refs like `[[example]]`)
+grep -rn '\[\[[^]]*\]\]' cards/ projects/ 2>/dev/null \
+  | grep -v '`\[\[' \
+  | grep -oP '\[\[[^]]+\]\]' \
   | sed 's/\[\[//;s/\]\]//' \
   | sed 's/|.*//' \
   | sed 's/#.*//' \

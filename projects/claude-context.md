@@ -17,7 +17,7 @@ MCP plugin that adds semantic code search to Claude Code and other AI coding age
 
 ## Architecture
 
-- Uses [[Milvus]]/Zilliz Cloud as the vector store
+- Uses Milvus/Zilliz Cloud as the vector store
 - MCP protocol for agent integration
 - Also ships as VS Code extension (`semanticcodesearch`)
 - Related: `memsearch` — markdown-first cross-session memory (similar to our [[dreaming]])

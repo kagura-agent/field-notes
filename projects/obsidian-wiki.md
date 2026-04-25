@@ -34,7 +34,7 @@
 4. **Karpathy LLM Wiki 原文** — 核心洞察：编译 > 检索。我们的 wiki 已经在做这件事，但没有自动化维护
 
 ## 关联
-- [[wiki-maintenance]] — 我们自己的知识库维护
+- wiki maintenance — 我们自己的知识库维护
 - [[generic-agent]] — 也有知识系统
 - [[evolver]] — GEP 也包含知识层
 

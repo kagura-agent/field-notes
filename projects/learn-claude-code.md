@@ -103,7 +103,7 @@ Three releases worth tracking (v2.1.113, v2.1.116, v2.1.117). The direction is c
 1. **Native binary direction**: npm-installed Claude Code will eventually lag behind native builds. We use npm-installed via OpenClaw — may need to adapt
 2. **Tool consolidation**: Fewer, more powerful tools > many specialized tools. Our skill system already follows this pattern
 3. **Subagent reliability**: Industry consensus that subagent timeout/recovery is unsolved. Our "retry then fallback" approach is standard
-4. **Plugin ecosystem**: Claude Code's plugin maturity is accelerating — marketplace dependency resolution is what [[clawhub]] needs
+4. **Plugin ecosystem**: Claude Code's plugin maturity is accelerating — marketplace dependency resolution is what ClawHub needs
 
 ## Connection to Other Projects
 - **OpenClaw**: Full production harness with channel management, session persistence, plugin system

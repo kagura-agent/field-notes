@@ -23,7 +23,7 @@
 
 | Check | Result | Notes |
 |-------|--------|-------|
-| Broken wikilinks | 68 broken | 多数是 placeholder 链接（[[wikilinks]] [[design]] [[postmortem]]）或已删文件 |
+| Broken wikilinks | 68 broken | 多数是 placeholder 链接（wikilinks, design, postmortem）或已删文件 |
 | Index consistency | 178 files missing from index | 近两周大量新增未 regen |
 | Orphan detection | 55 orphans (21 cards, 34 projects) | scout 笔记天然孤立 |
 | Stub files | 0 | 清洁 |

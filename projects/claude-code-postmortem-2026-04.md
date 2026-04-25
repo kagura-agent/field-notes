@@ -2,7 +2,7 @@
 
 - **Source**: https://www.anthropic.com/engineering/april-23-postmortem
 - **Date**: 2026-04-23
-- **Tags**: [[claude-code]], [[anthropic]], [[postmortem]], [[reasoning-effort]]
+- **Tags**: [[claude-code]], anthropic, postmortem, reasoning-effort
 
 ## Summary
 

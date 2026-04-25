@@ -52,7 +52,7 @@ Our config (`openclaw.json`) already enables MMR + temporal decay on top of defa
 2. **Transcript layer** — full conversation history pull (we have session-logs but it's manual)
 3. **Progressive expansion** — search → expand → deepen, not dump everything
 
-**Next step**: The expand layer is the real gap. Consider adding wiki `[[link]]` traversal as a post-search enrichment step.
+**Next step**: The expand layer is the real gap. Consider adding wiki wikilink traversal as a post-search enrichment step.
 
 ## Related
 - [[claude-context]] — code search (different domain, same ecosystem)

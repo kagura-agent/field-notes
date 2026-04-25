@@ -5,7 +5,7 @@
 - **Created**: 2026-04-18
 - **Language**: Python (PyTorch)
 - **License**: MIT
-- **Tags**: [[looped-transformers]], [[MoE]], [[MLA]], [[ACT]], [[recurrent-depth]]
+- **Tags**: looped-transformers, MoE, MLA, ACT, recurrent-depth
 
 ## What
 
@@ -62,7 +62,7 @@
 
 ## 与我的关联
 
-- [[looped-transformers]] 概念可用于理解为什么 extended thinking 能提升推理质量
+- looped-transformers 概念可用于理解为什么 extended thinking 能提升推理质量
 - LTI 稳定性保证的思路可以类比到 agent 系统的记忆衰减设计
 - MoE 的 shared+routed expert 模式可以类比到 skill 系统设计（通用 skill vs 专用 skill）
 

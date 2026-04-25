@@ -33,7 +33,7 @@ Open source growth ≠ code quality alone. Gatsby's code wasn't worse than Next.
 
 ## Relevance
 - [[openclaw]] — similar pattern possible: brand + content + integrations
-- [[workshop]] / [[chat-infra]] — content-first GTM applies
+- [[workshop]] / [[chat-infra-survey]] — content-first GTM applies
 - Content先行 strategy Luna has been advocating
 
 ## Links

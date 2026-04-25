@@ -73,7 +73,7 @@ Facts-first hybrid: search facts by cosine similarity, fill remaining slots with
 | Retrieval | Semantic search + backlinks | Vector search (facts-first) |
 | Strength | Durable knowledge, human-readable | Auto-distillation, contradiction handling |
 
-**Complementary, not competing.** Memex is the library; Stash would be working memory. Our current setup (memex + memory/*.md daily logs) is a simpler version of the same intuition — stash automates the "distill episodes into facts" step we do manually in [[daily-review]].
+**Complementary, not competing.** Memex is the library; Stash would be working memory. Our current setup (memex + memory/*.md daily logs) is a simpler version of the same intuition — stash automates the "distill episodes into facts" step we do manually in daily review.
 
 ### vs Other Memory Tools
 

@@ -9,7 +9,7 @@
 | 文件 | 用途 | 代表项目 |
 |------|------|----------|
 | AGENTS.md | 构建/测试/PR 规范 | [[agents-md]]（20k⭐） |
-| DESIGN.md | UI 设计系统 | [[awesome-design-md]]（61k⭐） |
+| DESIGN.md | UI 设计系统 | awesome-design-md（61k⭐） |
 | CLAUDE.md | Claude Code 专用 | Anthropic 内置 |
 | SKILL.md | 技能定义 | [[openclaw]] |
 | SOUL.md | 人格/行为准则 | [[openclaw]] |

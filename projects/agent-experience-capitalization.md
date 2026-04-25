@@ -5,7 +5,7 @@
 - **Created**: 2026-04-21
 - **Language**: Python
 - **License**: Apache-2.0
-- **Tags**: [[agent-memory]], [[team-memory]], [[skill-is-memory]]
+- **Tags**: [[agent-memory-taxonomy]], team-memory, [[skill-is-memory]]
 
 ## What
 

@@ -1,0 +1,34 @@
+name: Wiki Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run wiki-lint
+        run: |
+          chmod +x scripts/wiki-lint.sh
+          output=$(bash scripts/wiki-lint.sh)
+          echo "$output"
+
+          # Extract counts from summary line
+          broken=$(echo "$output" | grep '^Broken:' | grep -oP 'Broken: \K\d+')
+          dupes=$(echo "$output" | grep '^Broken:' | grep -oP 'Duplicates: \K\d+')
+
+          # Fail on duplicates (zero tolerance)
+          if [ "${dupes:-0}" -gt 0 ]; then
+            echo "::error::Found $dupes duplicate slugs"
+            exit 1
+          fi
+
+          # Warn on broken links (track trend, don't block yet)
+          if [ "${broken:-0}" -gt 0 ]; then
+            echo "::warning::Found $broken broken wikilinks"
+          fi

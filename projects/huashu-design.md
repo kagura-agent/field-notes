@@ -53,4 +53,4 @@
 - **素材质量门槛**：5-10-2-8 的思路可以借鉴到代码方案评估
 
 ## 标签
-[[agent-skill]] [[design]] [[claude-code]] [[html-prototyping]]
+[[agent-skill-standard-convergence]] design [[claude-code]] html-prototyping

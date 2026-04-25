@@ -14,6 +14,7 @@
 - Merge rate ~90%，外部 PR 友好
 - ⚠️ 2026-04-22: maintainer (omeraplak) closed #1209 (auth bypass fix) + issue #1206 without merge or comment. No superseding PR. Pattern: security fixes may be handled internally without acknowledging external contributions. Don't assume security PRs will be welcomed even when the bug is real.
 - ⚠️ 2026-04-25: maintainer (omeraplak) closed #1237 (port-occupied error) without comment or superseding PR. Second time a PR is closed silently. Emerging pattern: omeraplak may prefer to close external PRs without explanation. Consider reducing investment in this repo — multiple PRs closed without feedback suggests low ROI.
+- ⚠️ 2026-04-25: #1235 superseded by #1248, #1234 superseded by #1249 — both by omeraplak. He rewrote the fixes with substantially more tests, backward-compat defaults, and edge case handling. Pattern: omeraplak prefers to rewrite external PRs rather than request changes. He's not hostile — just has high standards and prefers to do it himself.
 - Contributing guide 简洁：mention issue before working, create issue for new features
 
 ## PR History
@@ -65,6 +66,14 @@
 **PR #1220** (merged 2026-04-22): Zod v4 compatibility fix for Swagger/OpenAPI generation. `z.record(z.any())` in Zod v4 leaves value type undefined, breaking vendored OpenAPI generator. Fix: explicit `z.record(z.string(), z.any())`. Practical takeaway for any project migrating to Zod v4.
 
 **PR #1224** (merged 2026-04-22): Reuse active Zod instance for Swagger schemas — avoids Zod version conflicts in monorepo. Pattern: detect runtime Zod version and adapt.
+
+## Update (2026-04-25)
+
+**PR #1248** (by omeraplak, supersedes my #1235): Same core fix for #1232 but added: concurrent conversation creation race handling, clearing title generator on memory disable, 61 lines of tests. My fix was correct but only covered the happy path.
+
+**PR #1249** (by omeraplak, supersedes my #1234): Same core idea for #1233 but preserved backward compat (default `temperature: 0`, `null` to opt out — my approach defaulted to omitting, which was a breaking change). Added 356 lines of tests, provider-specific warning detection, docs update.
+
+**Key takeaway for this repo**: omeraplak expects PRs to include tests, handle edge cases (disable, race conditions), and preserve backward compatibility. Surgical minimal fixes are not enough — he'll rewrite them with full coverage.
 
 ## PR History (cont. 2)
 - **#1240** (2026-04-24): fix(server-core): add cancel endpoint for resumable chat streams (#1239). When resumableStream enabled, AbortSignal was cleared unconditionally → cancel non-functional. Fix: internal AbortController + cancel endpoint in Elysia & Hono. CodeRabbit caught 3 valid issues (leak on error path, 404 mapping, JSON parse) — all fixed in follow-up commit. Pending review.

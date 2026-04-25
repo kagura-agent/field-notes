@@ -16,7 +16,7 @@
 - OpenClaw：目前隐式状态（session 状态 + heartbeat 状态），无显式 FSM
 
 ## 关联
-- [[agent-daemon-mode]] — daemon 需要 lifecycle 管理
+- agent-daemon-mode — daemon 需要 lifecycle 管理
 - [[self-evolution-system]] — 进化时需知道 agent 当前状态
 
 ## 评价
