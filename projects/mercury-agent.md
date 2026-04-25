@@ -60,7 +60,7 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - 更封闭（CLI + Telegram only）
 - 更早期（112★ vs OpenClaw 成熟生态）
 
-和 [[RivonClaw]]（OpenClaw 上层进化层）不同，Mercury 是独立竞品。和 [[genericagent]]（自进化框架）也不同，Mercury 不做自动 skill 生成。
+和 [[rivonclaw]]（OpenClaw 上层进化层）不同，Mercury 是独立竞品。和 [[genericagent]]（自进化框架）也不同，Mercury 不做自动 skill 生成。
 
 ## 可借鉴
 
@@ -193,7 +193,7 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 ### 增长曲线
 - 04-20: 0⭐ → 04-21: 232⭐ → 04-22: 349⭐ → 04-23 AM: 516⭐ → 04-23 PM: 556⭐
 - 增速从爆发期（Day 1: +232）进入稳定期（Day 3: ~+40/半天）
-- 总体 3.5 天 556⭐，同期类似项目（[[SwarmForge]] 292⭐, [[auto-memory]] 138⭐）远低于此
+- 总体 3.5 天 556⭐，同期类似项目（[[swarm-forge]] 292⭐, [[auto-memory]] 138⭐）远低于此
 
 ### 生态新信号：Agent Memory 热潮
 本轮侦察发现 memory 是热点：

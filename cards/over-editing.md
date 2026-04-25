@@ -38,4 +38,4 @@ Models fix bugs correctly but rewrite far more than necessary — renaming varia
 - [x] Add "make minimal changes, preserve original code structure" to coding-agent skill prompts for bug-fix tasks → **Done 2026-04-24**: Enhanced workloop.yaml implement node CONSTRAINTS with explicit preserve-original-code and smallest-diff guidance, plus over-editing review step
 - [ ] Consider: could we measure our own PRs' edit minimality? (diff stat vs issue complexity)
 
-Links: [[coding-agent]], [[打工]]
+Links: [[coding-agent]], [[gogetajob]]

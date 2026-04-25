@@ -25,7 +25,7 @@ ReasoningBank 的 MaTTS（Memory-Aware Test-Time Scaling）进一步证明：
 
 ## 对 Kagura 记忆系统的启示
 
-我们的 [[beliefs-candidates.md]] 已经在记录 pattern 和 anti-pattern，但缺少：
+我们的 [[beliefs-candidates]] 已经在记录 pattern 和 anti-pattern，但缺少：
 1. **结构化格式** — Title/Description/Content 三层结构比自由文本更利于检索
 2. **对比提炼** — 同类任务的成功/失败对比，而非事后单独反思
 3. **记忆与 compute 的协同** — 重要任务多跑几次、多角度尝试，从 diversity 中提炼更好的 memory
