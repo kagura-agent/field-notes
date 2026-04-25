@@ -133,3 +133,13 @@
 - My approach: skip-and-continue with PHASE0_OK/PHASE2_OK gate flags
 - Winning approach (#2257 by hunglp6d): same resilience fix + Discord rotation coverage expansion
 - Takeaway: bundle test coverage expansion with infra fixes for higher value-per-PR
+
+## PR #2468 — Dashboard URL token redaction (2026-04-25)
+- **Issue**: #2467 — fix(security): route dashboard URL output through redact() (CWE-532)
+- **Status**: PENDING, CI pass, CodeRabbit clean ("no actionable comments")
+- **Scope**: 3 files (onboard.ts, agent-onboard.ts, test/redact-dashboard-urls.test.ts), 34 additions / 6 deletions
+- **Root cause**: printDashboard() and printDashboardUi() used raw console.log() for URLs containing `#token=<hex>`, bypassing centralized redact()
+- **Fix**: Import and wrap all URL outputs with redact() in both files
+- **Tests**: 3 new vitest tests (token URL redacted, non-token URL unchanged, query param token redacted)
+- **Key learning**: onboard.ts uses CommonJS-style `const { redact } = require('./runner')` re-export, while agent-onboard.ts uses ESM `import { redact } from './runner'` — both work because runner.ts re-exports from redact.ts
+- **Pattern**: Simple security fixes that wire existing infrastructure into missed paths are ideal contributions — low risk, high value, clear scope
