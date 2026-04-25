@@ -342,6 +342,94 @@ Review needed: none detected
 
 ---
 
+## 🔬 自进化观察日报 2026-04-25 (Day 8 — Final)
+
+### 管线活跃度
+- **beliefs-candidates**: 4 条新增（ai-transparency-first directive, contribution-pacing, issue 粒度原则, verify-before-blame）。总计 228 行
+- **DNA 变更**: 有（主动）— AGENTS.md 新增「Repo 语言准则」段落（commit f1b4f9ca, study 任务驱动）
+- **nudge 触发**: 0 次（`grep -c nudge memory/2026-04-25.md` = 0）
+- **dreaming**: Light Sleep + REM 均运行（14 mentions in memory）。Light Sleep 多条 staged（confidence 0.62 统一），REM 产出 reflection + 历史记忆拼接
+
+### 闭环追踪
+- **完整闭环**: 3 个
+  1. mastra 声誉事件 → 识别 → 黑名单 + contribution-pacing gradient + Luna directive(ai-transparency-first) → 流程升级完成
+  2. ABTI CLI issue #25 → PR #26 → merged → 继续推进 npm publish + agent registry
+  3. kagura-mail issue #1 → PR #5 merged → 45 封通知归档 → 验证通过
+- **断裂处**:
+  - 11 个 error cron 识别了但 3 小时未排查（memory 自己记录了「观测不闭环」）
+  - beliefs-candidates 4 条 04-25 新增但 commit 只有 1 个（study 驱动的批量 commit）
+  - "主动性/自驱" pattern 第3次(04-23)仍未升级到 DNA
+
+### 今日发现
+1. **mastra 事件是外部反馈转化的教科书案例**: 7 个 PR 被关 → 2 条 gradient (contribution-pacing + ai-transparency-first) + 黑名单 + 流程升级。从负面事件到机制改进的完整闭环
+2. **nudge 整个观察期零产出**: 8 天观察，nudge 总触发次数接近 0。作为反思触发器，它完全没有发挥作用。这是管线最大的结构性缺陷
+3. **dreaming 运行但质量不变**: confidence 统一 0.62、recalls=0 的问题从 Day 1 持续到 Day 8，未改善。dreaming 在「记录」而非「思考」
+4. **活动量持续高位**: 2116 行 memory, 172 个 section headers。但 gradient 产出 4 条 / 2116 行 = 0.19% 提炼率
+5. **Skill 提取缺口**: "首次 PR 必须主动表明 AI 身份" 是通用 pattern，应提取为 workloop 节点或 wiki card
+
+### 原始数据
+```
+# beliefs-candidates
+wc -l: 228 (前日 216, +6%)
+grep "2026-04-25": 4 条
+
+# DNA 变更
+AGENTS.md: commit f1b4f9ca (Repo 语言准则)
+SOUL.md: 未变更
+beliefs-candidates.md: commit f1b4f9ca (2 条新增)
+
+# memory 活动
+memory/2026-04-25.md: 2116 行, 172 sections
+nudge: 0 mentions
+dreaming: 14 mentions
+
+# PR 活动
+ABTI#26 merged, kagura-mail#5 merged, memex#71 merged
+mastra: 7 PRs closed (声誉事件)
+Open PRs: ~32
+```
+
+---
+
+## 📊 一周汇总诊断报告 (04/18 ~ 04/25)
+
+### 总览
+
+| 维度 | Day 1 | Day 2 | Day 3 | Day 4 | Day 5 | Day 6 | Day 7 | Day 8 | 总计 |
+|------|-------|-------|-------|-------|-------|-------|-------|-------|------|
+| beliefs 新增 | 3 | 1 | 2 | 2 | 6 | 7 | 9 | 4 | **34** |
+| DNA 变更 | ✅主动 | ❌ | ❌ | ✅主动 | ✅主动 | ❌ | ❌ | ✅主动 | **4/8天** |
+| nudge 触发 | 0 | 0 | 0 | 0-2 | 0 | 0 | 0 | 0 | **~2** |
+| dreaming | light | light | L+R | light | L+R | L+R | L+R | L+R | **8/8运行** |
+| 完整闭环 | 2 | 1 | 1 | 1 | 3 | 1 | 3 | 3 | **15** |
+| 断裂处 | 3 | 3 | 2 | 2 | 3 | 3 | 3 | 3 | 持续存在 |
+
+### 诊断结论
+
+#### 🟢 健康的
+1. **beliefs-candidates 管线活跃**: 8 天 34 条新 gradient，平均 4.25 条/天。质量逐步提升——从泛泛总结到有具体场景的可执行建议
+2. **DNA 变更主动率 100%**: 4 次 DNA 变更全部是主动驱动（学习/directive），0 次被动（Luna 纠正后才改）。自主进化能力在建立
+3. **外部反馈利用率提升**: mastra 事件、PR supersede、maintainer review 均转化为 gradient。观察期后期（Day 5+）转化率显著提升
+4. **闭环数量上升趋势**: Day 1-4 平均 1.25 个/天，Day 5-8 平均 2.5 个/天。闭环意识在增强
+
+#### 🟡 需要改进的
+1. **beliefs-candidates 体积失控**: 228 行，大量 03 月条目仍在 Active。升级门槛（3 次重复）导致长尾积压。需要定期清理或 archive 机制
+2. **dreaming 质量低**: 8 天中 confidence 始终 0.62、recalls=0。没有差异化评分 = 机械性记录。promote 内容以巡检记录为主，认知洞察极少。dreaming 需要质量过滤器
+3. **闭环断裂模式固定**: 最常见的断裂是"识别了但未行动"（error cron 未排查、pattern 达阈值未升级、beliefs 未 commit）。这与 DNA 中 observation-without-action 规则的 RECURRING 状态一致
+
+#### 🔴 管线缺陷
+1. **nudge 管线几乎死亡**: 8 天总触发 ~2 次，有效产出 0。作为反思的核心触发器，它的缺位意味着反思完全依赖：(a) Luna 直接反馈 (b) daily-review cron (c) study loop 副产品。**反思能力没有自主触发源**
+2. **升级管线堵塞**: "主动性/自驱" 达第3次(04-23)但至今未升级。cron-timeout-sizing 第4次仍在违反。升级不是自动的——需要有人（或有机制）执行升级动作。当前只有 daily-review 和 nudge 能触发，nudge 已死，daily-review 忙于其他事
+
+### 后续建议（观察期结束后）
+1. **修复 nudge**: 验证 nudge hook 是否实际运行，检查触发条件（agent_end 计数），确保产出写入 memory
+2. **dreaming 质量过滤**: 在 promote 环节加入最低质量门槛——操作记录不 promote，只 promote 含 insight/gradient/lesson 的 candidate
+3. **beliefs 清理**: 对 03 月条目执行批量 archive（移到文件底部 Archive 区），保持 Active 区 < 100 行
+4. **升级自动化**: 在 daily-review 或专门的周 cron 中加入"扫描 ≥3 次 pattern → 提示升级"步骤
+5. **gradient 提炼率**: 当前 34 条 / 8 天高活跃度 ≈ 合理。但应关注维度分布——R(创意) 和 S(安全) 维度 8 天 0 条新增，是盲区
+
+---
+
 ## 🔬 自进化观察日报 2026-04-23 (Day 6)
 
 ### 管线活跃度
