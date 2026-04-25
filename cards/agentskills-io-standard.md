@@ -55,6 +55,10 @@ skill-name/
 
 agentskills.io 解决的是 **skill 格式标准化**，不解决 skill 发现和分发。这正是 ClawHub 的机会——做 agent skill 的 npm registry。
 
+## 2026-04-25 市场验证
+
+设计类 skill 爆发（[[huashu-design]] 6天6k★）证明 agentskills.io 格式已被市场接受。`npx skills add` 成为事实安装标准。跨 agent 兼容不再是理论——同一 skill 已经在 Claude Code、Cursor、Codex、OpenClaw 等 10+ agent 上运行。
+
 ## 链接
 
 - [[agent-skill-standard-convergence]] — 三层标准化趋势

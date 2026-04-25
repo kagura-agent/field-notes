@@ -36,6 +36,7 @@ AI agent 经济基础设施正在成型。五个层次：
    - 5,700+ skills，类 npm 注册表
    - 供应链安全问题：~400 个恶意 skill（6.9%），有 credential stealer 案例
    - Luna 洞察对应：skill 本质是安装包
+   - **2026-04 更新**：skill 市场爆发期开始。agentskills.io 成为事实格式标准，设计类 skill 是第一个 killer app。见 [[agent-skill-standard-convergence]]
 
 5. **Agent 目录** — agent.ai
    - 1,000+ agent 列表
