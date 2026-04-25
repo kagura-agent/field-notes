@@ -201,6 +201,47 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - **cavemem** (105⭐): Cross-agent persistent memory，compressed + local-first。
 - **趋势**: agent memory 从 "nice-to-have" 变成 "must-have"。OpenClaw 的 memex 语义搜索是差异化优势，但 auto-memory 指出的 "context rot at 60% window" 是我们也面临的问题。
 
+## 跟进 2026-04-25: ⭐757 回升 + 侦察对比
+
+⭐757（从 613 回升）。过了平台期后小幅回升。
+
+### 生态对比：「行为标准之争」
+
+本轮侦察发现 agent 生态正从「框架之争」转向「行为标准之争」：
+- **agents-md** (504⭐) — 反 sycophancy AGENTS.md drop-in，融合 Karpathy 四原则
+- **agent-skills-standard** (436⭐) — Agent Skills 标准化最佳实践
+- **agent-style** (316⭐) — 21 条 Claude Code 写作规则
+- Skill/AGENTS.md 正在成为新 "dotfiles" 文化
+
+### Mercury 在这个趋势中的位置
+
+Mercury 的 soul 4 文件模板是这个趋势的**早期实现者**——把 agent 行为规范文件化。但它的模板化方式（`{name}/{owner}` 变量替换）不如我们的自进化活文档灵活。
+
+### 新架构发现（深读补充）
+
+**Second Brain v1.0.0 完整架构：**
+- 自动提取：每次对话后 background LLM 调用（~800 tokens），提取 0-3 个 memory candidates
+- 合并策略：≥74% overlap → 合并（strengthens evidence_count）
+- 冲突解决：极性冲突按 confidence/recency 解决
+- 分层：identity/preference → durable，goal/project → active，强化 3+ 次 → promote
+- 生命周期：active inferred 21 天未见 → dismissed，durable inferred 120 天低 confidence → dismissed
+- 检索：FTS5 + 自定义 scoring（confidence × importance × recency），每次注入 top 5（~900 chars）
+- **完整 vitest 测试覆盖**
+
+**对比我们的 memex：** Mercury 在结构化管理上更强（自动提取 + 冲突解决 + 生命周期），memex 在搜索质量上更强（embedding 语义 vs FTS5 关键词）。**最佳组合：memex 语义搜索 + Mercury 式自动提取和生命周期管理。**
+
+**Loop Detection 完整实现：**
+- Tool call loop: 相同调用 3 次中断
+- Failure loop: 失败 4 次中断
+- Reasoning loop: 空转思考 5 步中断
+- Total cap: 25 次调用硬限
+
+### 可借鉴（更新）
+- [ ] Memory 自动 fact extraction（background LLM ~800 tokens/次）
+- [ ] Memory 生命周期 stale/promote/prune
+- [ ] Memory 冲突解决（极性检测 + confidence-based resolution）
+- [ ] Reasoning loop detection（补充 tool call loop detection）
+
 ## 跟进 2026-04-22 PM: 架构深入 + 代码阅读
 
 ⭐349。
