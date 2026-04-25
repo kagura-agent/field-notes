@@ -70,6 +70,27 @@
 
 **Convention established**: repos/tools → `projects/`, abstract concepts/patterns → `cards/`
 
+## 2026-04-25 Evening — wiki-lint.sh + Round 2 Fixes
+
+**wiki-lint.sh 上线**（替代 wiki-lint.py，纯 bash，无依赖）：
+- 路径：`wiki/scripts/wiki-lint.sh`
+- 5 项检查：broken wikilinks, orphans, duplicates, .md suffix errors
+- 当前状态：42 broken / 40 orphans / 0 duplicates
+
+**Round 2 链接修复**（6 links）：
+- Case fixes: `[[OmniAgent]]`→`[[omniagent]]`, `[[RivonClaw]]`→`[[rivonclaw]]`, `[[SwarmForge]]`→`[[swarm-forge]]`
+- Suffix fix: `[[beliefs-candidates.md]]`→`[[beliefs-candidates]]`
+- Slug fix: `[[打工]]`→`[[gogetajob]]`
+
+**Broken links 分析**：
+- 42 remaining broken 中，~30 是 tag-style 引用（`[[anthropic]]`, `[[deepseek]]` 等），非真实卡片需求
+- ~5 是示例文本中的占位符（wiki-health-check.md 自身的例子）
+- ~7 是可能值得创建的概念卡（`[[agent-daemon-mode]]`, `[[hub-first-backlink-weaving]]` 等）
+
+**下一步**：
+- [ ] 设置 GitHub Actions CI 自动跑 wiki-lint.sh
+- [ ] 考虑 tag-style 引用的处理策略（创建 stub cards? 改为纯文本?）
+
 ## 关联
 - [[obsidian-wiki]] — wiki-status 概念来源
 - [[generic-agent]] — 也有知识自动维护
