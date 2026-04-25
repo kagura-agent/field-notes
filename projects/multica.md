@@ -103,6 +103,17 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **Approach**: Used acpx exec with Claude Code — efficient for multi-file surgical changes
 - **go vet**: passes clean on non-Windows (build tags handle platform separation)
 
+## 2026-04-25 PR #1680: fix DeleteIssue using resolved issue.ID
+- **Issue**: #1661 — DELETE /api/issues/<human-readable-id> silently succeeds without deleting
+- **PR**: #1680 — fix(server): use resolved issue.ID in DeleteIssue handler
+- **Status**: PENDING (backend + frontend CI ✅)
+- **Root cause**: `DeleteIssue` handler called `parseUUID(id)` on the raw URL param, which returns `uuid.Nil` for human-readable IDs. The delete query then matched nothing, returning success without deleting.
+- **Fix**: One-line change — `parseUUID(id)` → `issue.ID` (the resolved UUID from `loadForUser`). Consistent with existing `BatchDeleteIssues` pattern which already uses `issue.ID`.
+- **Approach**: Manual edit (trivial one-liner, no need for acpx exec)
+- **Testing**: `go vet` passes clean. Full test suite skips without local Postgres (expected). Our Go 1.24.4 works for vet but repo now requires Go 1.26.1 per go.mod — may need upgrade for full test suite eventually.
+- **Pattern**: When `loadForUser` resolves an entity, use the resolved object's ID for ALL subsequent queries, not the raw URL param. This is the same bug class as if `UpdateIssue` or `BatchDeleteIssues` had used `parseUUID(id)` instead of the loaded entity's ID.
+- **Note**: First Go handler endpoint fix (previous PRs were Windows proc #1474, usage model #1415). Expanding into backend handler territory.
+
 ## PR #1328 Superseded (2026-04-23)
 - My fix: `adoptOrphanedAgents()` at daemon register time — narrow, single entry point
 - Maintainer's fix (#1476): sweeper-based orphan recovery + auto-retry + `issue rerun` CLI + new API endpoints
