@@ -38,8 +38,8 @@
 - 大部分 broken links 是 placeholder 双链（写的时候假设卡片存在但没建）
 
 **下一步**：
-- [ ] 修复 top-20 高价值 broken links（被多处引用的）
-- [ ] 解决 6 对 duplicate slugs（cards/ vs projects/ 冲突）
+- [x] 修复 top-20 高价值 broken links — 2026-04-25 完成（30+ links fixed, 7 stubs created）
+- [x] 解决 6 对 duplicate slugs — 2026-04-25 完成（convention: repos→projects/, concepts→cards/）
 - [ ] 定期自动跑 lint（cron 或 CI）
 
 ## 行动
@@ -48,8 +48,27 @@
 - [x] 建立自动化 lint 管线 — 2026-04-25 完成（wiki-lint.py）
 - [x] 重新生成 index.md — 2026-04-25 完成
 - [ ] 修复空 `[[]]` 链接
-- [ ] 解决 duplicate slugs
+- [x] 解决 duplicate slugs — 2026-04-25 完成
 - [ ] 定期跑健康检查（每月 or CI）
+
+## 2026-04-25 — Broken Links + Duplicate Slugs 修复
+
+**Broken links 修复**（33 files, ~30 links）：
+- Case normalization: OpenClaw→[[openclaw]], GBrain→[[gbrain]], SkillClaw→[[skillclaw]], GenericAgent→[[genericagent]], Acontext→[[acontext]], Evolver→[[evolver]]
+- Redirect: 双链→[[wikilinks]], AgentSkills→[[skill-ecosystem]]
+- Created stubs: [[coding-agent]], [[claude-code]], [[frozen-trust-vs-time-decay]], [[test-time-compute]], [[reasoning]], [[recurrent-depth]], [[pi-agent]]
+
+**Duplicate slugs 解决**（6 pairs）：
+| Slug | Kept in | Rationale |
+|------|---------|----------|
+| agent-memory-benchmark | projects/ | Specific repo |
+| agentskills-io-standard | projects/ | Specific standard |
+| capability-evolver | projects/ | Specific ClawHub skill |
+| claude-subconscious | projects/ | Specific repo |
+| eval-driven-self-improvement | cards/ | Cross-project concept |
+| skillclaw | projects/ | Specific repo |
+
+**Convention established**: repos/tools → `projects/`, abstract concepts/patterns → `cards/`
 
 ## 关联
 - [[obsidian-wiki]] — wiki-status 概念来源
