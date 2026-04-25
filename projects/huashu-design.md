@@ -1,7 +1,7 @@
 # huashu-design
 
 - **Repo**: alchaincyf/huashu-design
-- **Stars**: 2213 (2026-04-21, 2天涨到2k+)
+- **Stars**: 6129 (2026-04-25, was 2213 on 04-21)
 - **Created**: 2026-04-19
 - **Language**: HTML (skill 文件 + 参考文档 + 脚本)
 - **定位**: Claude Code 的 HTML 原生设计 skill — 高保真原型/幻灯片/动画/设计变体

@@ -1,6 +1,6 @@
 # agentic-stack — 深读笔记
 
-> codejunkie99/agentic-stack | 154★ | Python+Markdown | 2026-04-17 深读
+> codejunkie99/agentic-stack | 1557★ (2026-04-25, was 154 on 04-17 深读) | Python+Markdown | 2026-04-17 深读
 
 ## 核心定位
 
