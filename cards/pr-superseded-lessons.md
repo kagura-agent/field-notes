@@ -95,3 +95,10 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 2. Put inspector-specific URL logic inside library code that shouldn't know about inspector conventions
 **Lesson:** Before modifying library internals, check if the consumer layer already has a mechanism for the exact pattern (session storage, reconnect hooks). "Where does this logic belong?" > "How do I make it work?"
 **Pattern:** Respect abstraction boundaries — don't push consumer-specific logic down into library code, especially when the consumer already has the right hook.
+
+## 2026-04-24: openclaw/openclaw#69179 → superseded by #69211
+
+**My approach:** Always pass claude-cli prompt via stdin (unconditional behavior change for all platforms).
+**Their approach:** Dynamic argv length guard — only activates on Windows when the limit is hit. Non-Windows unaffected. Short command lines unaffected.
+**Lesson:** When fixing a platform-specific bug, scope the fix to the affected platform. Dynamic guards > unconditional behavior changes. The fix should be as narrow as possible — "if broken, fix; if not broken, don't touch."
+**Pattern:** SCOPE_TOO_BROAD — my fix changed behavior for all platforms when only Windows was affected.

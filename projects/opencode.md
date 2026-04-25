@@ -8,7 +8,9 @@ Open-source coding agent CLI. 148k+ stars (2026-04-23), 92% merge rate. Now unde
 - **默认分支**: `dev`
 - **构建**: `bun install && bun dev`
 - **测试**: `bun test`（推测，未本地验证）
-- **本地环境**: ❌ 无法 clone（OOM，repo 太大）。用 GitHub API 读文件 + 提交。本地有 Bun 1.3.12。
+- **本地环境**: ✅ fork 已 clone 到 `~/repos/forks/opencode`，可以 `bun install` + `bun test`。Bun 1.3.12。
+  - ⚠️ 根目录有 `do-not-run-tests-from-root` 哨兵目录，必须 `cd packages/opencode` 再跑测试
+  - electron postinstall 会 fail（无 GUI），不影响测试
 
 ## PR 模式
 - CONTRIBUTING.md 要求：先评论 issue 表明意图，等 maintainer assign
@@ -130,6 +132,15 @@ opencode 的 session compaction 架构分三层：
 - **Approach**: GitHub API (repo too large to clone)
 - **Key learning**: SolidJS `createEffect` without `on()` tracks all reactive dependencies including intermediate memos. Use deduplication guards for effects that should only fire on semantic changes, not reference changes.
 - **Related**: #23420 (also model persistence, different root cause — agent switch vs sync refresh)
+
+### #24234 — fix(config): detect non-object frontmatter data from gray-matter (2026-04-25)
+- **Status**: PENDING (CI all green ✅, compliance passed ✅)
+- **Issue**: #24181 — Invalid YAML in agent .md frontmatter silently ignored
+- **Root cause**: gray-matter returns `md.data` as string/number/boolean/array for certain malformed YAML (e.g. `skill:true` without space after colon) without throwing. `...md.data` spread produces garbage properties, agent loads with degraded config silently.
+- **Fix**: Added type guard in `ConfigMarkdown.parse()` after both initial parse and fallback sanitization. If `md.data` is not a plain object, triggers fallback or throws `FrontmatterError`.
+- **Test**: 3 new tests — fixture with `skill:true`, parameterized test for number/boolean/array/string types
+- **Approach**: Local clone + bun test (`~/repos/forks/opencode`). First PR done with local test run!
+- **Key learning**: gray-matter's `js-yaml` parser can produce ANY scalar/sequence type for frontmatter — not just objects or throws. Always validate `md.data` type.
 
 ### 对我们的启发
 - **preserve_recent_tokens 策略**值得借鉴：25% context 给最近对话保持连贯性 → 参考 [[context-budget-constraint]]
