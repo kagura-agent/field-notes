@@ -61,6 +61,24 @@ solidify() → 验证 + git commit + 更新 Gene/Capsule store
 | 知识共享 | A2A Hub（跨 agent） | 无（仅个体） |
 | 安全 | blast radius + rollback | Luna 观察者 + 通知 |
 
+## Concept
+
+A pattern where an agent's capabilities evolve through use — not just through manual updates.
+
+**Mechanism:**
+1. Agent uses a skill/tool repeatedly
+2. Friction points and failures accumulate as gradients
+3. Gradients trigger improvements: new skills, modified workflows, updated beliefs
+4. Agent becomes more capable over time
+
+**vs Static Skills:**
+- Static: human writes skill → agent uses skill → human updates skill
+- Evolving: agent uses skill → agent detects friction → agent proposes improvement → improvement applied
+
+**Key Insight:** The evolver needs both **sensing** (detecting what's not working) and **actuating** (making changes). Most systems have sensing but not actuating — they log problems but don't fix themselves.
+
+See also: [[skill-as-behavior-trigger]] [[mechanism-vs-evolution]]
+
 ## 可借鉴
 
 1. **Gene 模式**：把"遇到 X → 用 Y 策略"模板化
