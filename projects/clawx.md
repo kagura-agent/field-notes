@@ -61,6 +61,15 @@
   - `pnpm-lock.yaml` 被 lint-staged 自动创建但 main 上不存在，需移除
 - **维护者模式**: 非常活跃（每天 merge），PR 描述需清晰（问题+根因+修复+测试），CI 必须全绿
 
+### PR #915 — fix(chat): filter internal messages (NO_REPLY) in SSE final handler (Issue #904)
+- **状态**: pending review, build/check/comms-regression ✅, E2E pending (fork PR 需 maintainer approve workflow)
+- **根因**: SSE 'final' 事件处理器把 NO_REPLY 直接加入 messages[] 数组，isInternalMessage 过滤只在 loadHistory 异步跑，如果 quiet-mode reload 被 debounce（800ms cooldown）跳过，NO_REPLY 永久可见
+- **修复**: 在 final handler 中 isInternalMessage() 检查，内部消息不入 messages[]，直接清空 streaming 状态 + 触发 history reload
+- **关键代码位置**: 
+  - `src/stores/chat/runtime-event-handlers.ts` — 重构后的模块
+  - `src/stores/chat.ts` — legacy handler（两处都要改）
+- **注意**: chat store 已拆分成多个模块 (helpers.ts, runtime-event-handlers.ts, history-actions.ts, etc.)，改 handler 要看新文件，改完也要同步 legacy chat.ts
+
 ## 观察
 - ClawX 有完善的 Windows 兼容性补丁但 macOS 的被忽略——后续可扫描是否有其他 macOS 缺失的兼容处理
 - preload 脚本是 template string 内嵌 JS，不受 TypeScript 类型检查
