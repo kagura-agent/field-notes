@@ -86,9 +86,30 @@ status: active|draft|stale|archived
 - `stringifyFrontmatter` 现在正确处理 arrays、numbers、dates、booleans（之前全部 `String()` 化会丢失类型）
 - `memex organize` 新增 Lifecycle Summary section
 
-### Phase 2 ⭕ (TODO)
+### Phase 2 ✅ (2026-04-25)
 
-post-session extraction hook（OpenClaw session end event → LLM extraction → memex write）
+已实现并合入 kagura-agent/memex main。
+
+**新增 `memex extract` 命令：**
+- `memex extract < session.md` — 从 stdin 读取 session transcript
+- `memex extract --file session.md` — 从文件读取
+- `memex extract --dry-run` — 预览模式，不写入
+- `memex extract --model <model>` — 指定 LLM 模型
+
+**提取流程：**
+1. 截取 transcript 前 6000 字符（控制 LLM 成本）
+2. LLM 提取 0-3 个 facts（type: identity/preference/goal/project/decision/insight/pattern）
+3. 语义搜索已有 cards（similarity > 0.78 = 命中）
+4. 命中 → reinforce + append evidence section
+5. 未命中 → 创建 draft card（带完整 lifecycle frontmatter）
+
+**LLM 后端支持：**
+- OpenAI-compatible API（复用 .memexrc 的 openaiApiKey/openaiBaseUrl）
+- Shell command 模式（`llmCommand` config / `MEMEX_LLM_COMMAND` env）
+  - 例：`"llmCommand": "openclaw capability model run --gateway"` 通过 OpenClaw gateway 调用
+
+**新增 lib/llm.ts：**
+- 轻量级 OpenAI chat completion client（纯 Node native http/https，零依赖）
 
 ### Phase 3 ⭕ (TODO)
 
