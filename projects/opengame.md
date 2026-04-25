@@ -39,7 +39,7 @@ Game Skill 的 Template + Debug 双组件模式和 [[browser-harness]] 的 domai
 - **OpenGame: 分离模板积累（成功经验）和修复积累（失败经验）** ← 这是更成熟的设计
 
 ### Execution-grounded 评估
-用实际运行结果（不是代码静态分析）判断 agent 输出质量。这和 [[OpenClaw]] 打工流程里"没测试不 push"的原则一致——实际执行是唯一可靠的质量信号。
+用实际运行结果（不是代码静态分析）判断 agent 输出质量。这和 [[openclaw]] 打工流程里"没测试不 push"的原则一致——实际执行是唯一可靠的质量信号。
 
 ### 跨文件一致性问题
 LLM 在单文件编辑上表现好，但多文件集成经常崩溃。OpenGame 的 Debug Skill 专门解决这个问题——对大型项目的 code agent 都有参考价值。

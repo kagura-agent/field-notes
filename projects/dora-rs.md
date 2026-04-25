@@ -20,10 +20,10 @@
 - **Record/Replay** — .drec 文件捕获回放，用于回归测试
 - **OpenTelemetry** — 内建日志、指标、分布式追踪
 
-## 与 [[OpenClaw]] 的关联
+## 与 [[openclaw]] 的关联
 - 战略方向 "embodied AI" 的关键中间件
 - agent 控制物理设备的 dataflow 层：agent → dora pipeline → 传感器/执行器
-- 可复用模块（modules）= [[AgentSkills]] 的物理世界版本
+- 可复用模块（modules）= [[skill-ecosystem]] 的物理世界版本
 - record/replay 思路类似 [[hindsight]] 的时间旅行调试
 - "Built and maintained with agentic engineering" — 他们自己就用 AI agent 驱动开发
 

@@ -8,14 +8,14 @@
 1. **Broken links** — `[[target]]` 指向不存在的文件
 2. **Orphan files** — 没有被任何其他文件引用的笔记
 3. **Stale files** — 超过 N 天未更新的项目笔记（项目可能已变化）
-4. **Link density** — 每篇笔记平均多少个 `[[双链]]`，越低越孤立
+4. **Link density** — 每篇笔记平均多少个 `[[wikilinks]]`，越低越孤立
 
 ## 2026-04-18 Baseline
 
 - 总文件数: 375
 - Broken links: 15（含 `[[]]` 空链接、`[[wiki-maintenance]]` 等未创建目标）
 - 值得修的：`[[agent-self-evolution]]`, `[[coding-agent-ecosystem]]`, `[[multi-agent-coordination]]` — 都是高频概念，应该有对应卡片
-- 可忽略的：`[[#section]]` 内部锚点、大小写不一致（`[[GBrain]]` vs `gbrain.md`）
+- 可忽略的：`[[#section]]` 内部锚点、大小写不一致（`[[gbrain]]` vs `gbrain.md`）
 
 ## 2026-04-25 — wiki-lint Pipeline 上线
 
@@ -23,7 +23,7 @@
 
 | Check | Result | Notes |
 |-------|--------|-------|
-| Broken wikilinks | 68 broken | 多数是 placeholder 链接（[[双链]] [[design]] [[postmortem]]）或已删文件 |
+| Broken wikilinks | 68 broken | 多数是 placeholder 链接（[[wikilinks]] [[design]] [[postmortem]]）或已删文件 |
 | Index consistency | 178 files missing from index | 近两周大量新增未 regen |
 | Orphan detection | 55 orphans (21 cards, 34 projects) | scout 笔记天然孤立 |
 | Stub files | 0 | 清洁 |

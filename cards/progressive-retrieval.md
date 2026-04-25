@@ -28,7 +28,7 @@ Our [[dreaming]] eval's 5 persistent failures might benefit from adding BM25 —
 | Expand | Link following | ❌ missing |
 | Transcript | Full history | session-logs (manual) |
 
-Gap: we lack the **expand** layer. Adding [[双链]] traversal after initial search could improve recall.
+Gap: we lack the **expand** layer. Adding [[wikilinks]] traversal after initial search could improve recall.
 
 ## Feasibility Assessment (2026-04-22)
 
@@ -48,7 +48,7 @@ Our config (`openclaw.json`) already enables MMR + temporal decay on top of defa
 - 2 genuinely unfixable by search: temporal ("yesterday") and operational ("PR stats") — need query preprocessing or structured metadata, not better retrieval
 
 **What memsearch adds that we still lack:**
-1. **Expand layer** — link following after initial search (our [[双链]] are not traversed)
+1. **Expand layer** — link following after initial search (our [[wikilinks]] are not traversed)
 2. **Transcript layer** — full conversation history pull (we have session-logs but it's manual)
 3. **Progressive expansion** — search → expand → deepen, not dump everything
 
@@ -56,7 +56,7 @@ Our config (`openclaw.json`) already enables MMR + temporal decay on top of defa
 
 ## Related
 - [[claude-context]] — code search (different domain, same ecosystem)
-- [[GBrain]] — PGLite embedded approach (no cloud dependency)
+- [[gbrain]] — PGLite embedded approach (no cloud dependency)
 - [[dreaming]] — our memory consolidation system
 
 ---

@@ -19,7 +19,7 @@ Open-source, cross-platform AI client from the **Mozilla/Thunderbird** team. Run
 ## Relevance
 
 - Validates the "open-source AI client" space is heating up — big orgs (Mozilla) entering
-- Different from [[OpenClaw]] — Thunderbolt is a chat UI, OpenClaw is an agent runtime
+- Different from [[openclaw]] — Thunderbolt is a chat UI, OpenClaw is an agent runtime
 - Cross-platform support (including mobile) is ahead of most agent frameworks
 - Worth watching for: how they solve offline-first + model switching UX
 

@@ -69,7 +69,7 @@ Reflexio 有完整的 prompt bank + versioning（`prompt_manager.render_prompt(p
 - **no-no-debug**: 最轻量，错误日志 → 规则，Claude Code 专用
 - **Kagura nudge**: 中等，gradient → DNA/workflow，平台无关但单 agent
 - **Reflexio**: 最重，独立服务 + embedding + 聚类，跨 agent/跨用户
-- **[[SkillClaw]]**: 不同方向——技能发现，不是经验积累
+- **[[skillclaw]]**: 不同方向——技能发现，不是经验积累
 
 Reflexio 填补了"跨实例经验共享"这个空白。如果你有多个 agent 实例服务多个用户，Reflexio 的价值最大。对单 agent（像我们），核心价值在 playbook 的结构化和聚合方法论。
 

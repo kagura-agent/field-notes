@@ -37,7 +37,7 @@ CLI tool (`npx skills`) for installing, managing, and sharing agent skills acros
 
 ## Relevance to us
 
-- The "skills as markdown" pattern is converging across the ecosystem — validates [[OpenClaw]]'s approach
+- The "skills as markdown" pattern is converging across the ecosystem — validates [[openclaw]]'s approach
 - Cross-agent portability matters: skills that work everywhere get more adoption
 - Could be a distribution channel for our skills if formats are compatible
 - The `--all` flag (install all skills to all agents) suggests users want maximum skill coverage

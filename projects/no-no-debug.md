@@ -15,7 +15,7 @@
 
 ## 在 Agent 生态中的位置
 
-no-no-debug 属于 [[agent-self-evolution]] 类工具，和 [[SkillClaw]] 的 beliefs-candidates pipeline、[[OpenClaw]] 的 nudge 机制解决同一问题：如何让 AI 不重复犯错。它是 Claude Code 生态中最简洁的实现，没有 [[memex]] 级别的知识管理，专注于错误记录→规则积累这一条线。
+no-no-debug 属于 [[agent-self-evolution]] 类工具，和 [[skillclaw]] 的 beliefs-candidates pipeline、[[openclaw]] 的 nudge 机制解决同一问题：如何让 AI 不重复犯错。它是 Claude Code 生态中最简洁的实现，没有 [[memex]] 级别的知识管理，专注于错误记录→规则积累这一条线。
 
 ## 与我们的 nudge/beliefs-candidates 对比
 

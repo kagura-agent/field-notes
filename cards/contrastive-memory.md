@@ -2,7 +2,7 @@
 title: Contrastive Memory — Learning from Both Success and Failure
 created: 2026-04-21
 source: ReasoningBank (arxiv 2509.25140, ICLR 2026)
-links: ["[[agent-memory-taxonomy]]", "[[reasoningbank]]", "[[Acontext]]"]
+links: ["[[agent-memory-taxonomy]]", "[[reasoningbank]]", "[[acontext]]"]
 ---
 
 > Agent memory 的有效性不只取决于存什么，更取决于**从什么学**。成功+失败的对比信号 > 只存成功 workflow。

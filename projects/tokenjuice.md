@@ -63,9 +63,9 @@ Agent → tool call (git status, pnpm test, etc.)
 - `--raw` escape hatch is critical for correctness
 - The safe-inventory policy (keep file reads raw, compact inventory) is well-designed
 
-**vs our context budget work**: Our context budget optimization ([[OpenClaw]] #66576) focuses on reducing injected workspace files. tokenjuice targets tool output — complementary, not competing.
+**vs our context budget work**: Our context budget optimization ([[openclaw]] #66576) focuses on reducing injected workspace files. tokenjuice targets tool output — complementary, not competing.
 
-**Ecosystem position**: Part of a growing category of agent-infra optimization tools. Similar ethos to [[Acontext]] (context management) but at a different layer — Acontext manages what context to include, tokenjuice compresses what tools produce. Both reduce token waste, different attack vectors.
+**Ecosystem position**: Part of a growing category of agent-infra optimization tools. Similar ethos to [[acontext]] (context management) but at a different layer — Acontext manages what context to include, tokenjuice compresses what tools produce. Both reduce token waste, different attack vectors.
 
 ## Key Design Decisions Worth Noting
 
@@ -110,16 +110,16 @@ Significant jump: 3 → 23 entries. Actual coding sessions generating data.
 - `tests/npm-test`: 1 call, 43% ratio (57% savings — test output compaction works)
 - **Daily breakdown**: 04-21 3 calls / 285 saved; 04-22 20 calls / 7k saved
 - **Insight**: git diff dominates savings — makes sense since diff output is verbose and highly compressible via structural rules
-- **vs [[context-budget-baseline-2026-04-14]]**: tokenjuice operates on tool output, complementary to workspace file injection reduction ([[OpenClaw]] #66576). Together they'd hit both injection and output sides.
+- **vs [[context-budget-baseline-2026-04-14]]**: tokenjuice operates on tool output, complementary to workspace file injection reduction ([[openclaw]] #66576). Together they'd hit both injection and output sides.
 - Next trend check: 04-28.
 
 ## v0.6.0–v0.6.1 Deep Read (04-22)
 
-Two releases in 24h. Major evolution toward first-class [[OpenClaw]] integration.
+Two releases in 24h. Major evolution toward first-class [[openclaw]] integration.
 
 ### OpenClaw Embedded Adapter (`tokenjuice/openclaw` export)
 
-PR #25: tokenjuice now exports `createTokenjuiceOpenClawEmbeddedExtension()` — a factory that returns an [[OpenClaw]] plugin extension. This is the **stable integration surface** for OpenClaw to bundle tokenjuice as a first-party plugin.
+PR #25: tokenjuice now exports `createTokenjuiceOpenClawEmbeddedExtension()` — a factory that returns an [[openclaw]] plugin extension. This is the **stable integration surface** for OpenClaw to bundle tokenjuice as a first-party plugin.
 
 Architecture:
 - Hooks into OpenClaw's `pi.on("tool_result", ...)` event system

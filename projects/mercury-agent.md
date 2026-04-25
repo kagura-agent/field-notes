@@ -5,7 +5,7 @@
 
 ## 概要
 
-Mercury 是一个独立的 24/7 AI agent，定位和 [[OpenClaw]] 高度重合：soul 文件驱动人格、权限沙盒、多 channel（CLI + Telegram）、heartbeat 调度、skill 系统。
+Mercury 是一个独立的 24/7 AI agent，定位和 [[openclaw]] 高度重合：soul 文件驱动人格、权限沙盒、多 channel（CLI + Telegram）、heartbeat 调度、skill 系统。
 
 ## 架构要点
 
@@ -60,7 +60,7 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 - 更封闭（CLI + Telegram only）
 - 更早期（112★ vs OpenClaw 成熟生态）
 
-和 [[RivonClaw]]（OpenClaw 上层进化层）不同，Mercury 是独立竞品。和 [[GenericAgent]]（自进化框架）也不同，Mercury 不做自动 skill 生成。
+和 [[RivonClaw]]（OpenClaw 上层进化层）不同，Mercury 是独立竞品。和 [[genericagent]]（自进化框架）也不同，Mercury 不做自动 skill 生成。
 
 ## 可借鉴
 

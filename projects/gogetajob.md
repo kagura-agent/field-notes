@@ -125,4 +125,4 @@ work_type 支持 `pr` 和 `issue` 两种。
 - 每个 repo 扫完后清空 issues 引用（`issues.length = 0`）让 GC 回收
 - heap > 200MB 时主动 `global.gc?.()`
 
-**Pattern**: 批量操作工具要默认保守（低并发 + 主动释放），用户需要快可以手动调高。这跟 [[GBrain]] 的 conservative-default 思路一致。
+**Pattern**: 批量操作工具要默认保守（低并发 + 主动释放），用户需要快可以手动调高。这跟 [[gbrain]] 的 conservative-default 思路一致。

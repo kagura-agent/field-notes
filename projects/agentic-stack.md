@@ -66,7 +66,7 @@ auto_dream.py 明确注释 "Never: subjective validation, promotion, git commit"
 ## 在 Agent 生态中的位置
 
 - **层级**：Agent 基础设施（memory + skill 标准化）
-- **竞品**：[[GBrain]]（更重，PostgreSQL + dream cycle）、我们的 SOUL.md/AGENTS.md 体系（更轻，文件即一切）
+- **竞品**：[[gbrain]]（更重，PostgreSQL + dream cycle）、我们的 SOUL.md/AGENTS.md 体系（更轻，文件即一切）
 - **互补**：[[reflexio]]（外部 playbook 服务）可以和 agentic-stack 集成——Reflexio 提取 playbook，agentic-stack 存储和分发
 - **上游**：各 harness（Claude Code、Cursor、Hermes）
 - **信号**：agent 知识可移植性正在成为需求。用户不想被锁死在一个 harness 里

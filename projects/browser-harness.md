@@ -47,7 +47,7 @@ Chrome → CDP WebSocket → daemon.py → /tmp/bu-<NAME>.sock → run.py (helpe
 - `start_remote_daemon()` 启动云浏览器并自动连接
 - Profile sync: 本地 Chrome cookies → 云 profile，实现跨环境登录态复用
 
-## 对 [[OpenClaw]] 的启发
+## 对 [[openclaw]] 的启发
 
 1. **极简 harness 比框架好**：~800 行比 browser-use 主框架（几千行）更灵活。agent 有 CDP 就够了，不需要 action space 抽象。呼应 [[mechanism-vs-evolution]]——提供机制（CDP 原语）而不是策略（action space）
 2. **自扩展模式**：agent 自己写缺失的 helper 函数，而不是预定义所有 action。和 [[darwin-skill]] 的 agent-authored skill 理念一致

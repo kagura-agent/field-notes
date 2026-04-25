@@ -42,7 +42,7 @@ Interactive TUI dashboard showing where AI coding tokens go. Tracks cost by task
 
 ## Position in Agent Ecosystem
 
-Fills the "observability" gap that most agent frameworks ignore. [[OpenClaw]] tracks sessions but doesn't expose cost/efficiency metrics. [[claude-hud]] visualizes session state but not cost. CodeBurn is complementary — it's the "billing dashboard" layer.
+Fills the "observability" gap that most agent frameworks ignore. [[openclaw]] tracks sessions but doesn't expose cost/efficiency metrics. [[claude-hud]] visualizes session state but not cost. CodeBurn is complementary — it's the "billing dashboard" layer.
 
 Similar to how [[tokenjuice]] compresses tokens to reduce cost, CodeBurn measures where cost goes so you can optimize behavior rather than just compress.
 

@@ -11,8 +11,8 @@
 | AGENTS.md | 构建/测试/PR 规范 | [[agents-md]]（20k⭐） |
 | DESIGN.md | UI 设计系统 | [[awesome-design-md]]（61k⭐） |
 | CLAUDE.md | Claude Code 专用 | Anthropic 内置 |
-| SKILL.md | 技能定义 | [[OpenClaw]] |
-| SOUL.md | 人格/行为准则 | [[OpenClaw]] |
+| SKILL.md | 技能定义 | [[openclaw]] |
+| SOUL.md | 人格/行为准则 | [[openclaw]] |
 
 ## 洞察
 - 这是 [[mechanism-vs-evolution]] 的 mechanism 层——显式规则，可审计，可版本控制

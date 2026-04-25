@@ -15,7 +15,7 @@ Agent 的知识和经验不应绑定在特定 harness（Claude Code、Cursor、H
 |------|------|--------|-----------|
 | 文件即一切（Kagura SOUL.md） | Markdown 文件 | 最低 | 需手动适配 |
 | [[agentic-stack]] .agent/ | 结构化文件夹 + Python 工具 | 中等 | 7 种 harness adapter |
-| [[GBrain]] | PGLite + dream cycle | 高 | 绑定 OpenClaw |
+| [[gbrain]] | PGLite + dream cycle | 高 | 绑定 OpenClaw |
 | [[reflexio]] | 独立服务 + SQLite + embedding | 最高 | API 集成 |
 
 ## 核心洞察
@@ -28,4 +28,4 @@ Agent 的知识和经验不应绑定在特定 harness（Claude Code、Cursor、H
 
 Brain portability 属于 mechanism 层——它定义结构，但不自动产生进化。进化（学习、改进）需要 dream cycle / nudge / reflexio 这些 evolution 层。两层正交：好的 mechanism 让 evolution 的成果可以迁移。
 
-Links: [[agentic-stack]], [[GBrain]], [[reflexio]], [[nudge-over-workflow]], [[mechanism-vs-evolution]]
+Links: [[agentic-stack]], [[gbrain]], [[reflexio]], [[nudge-over-workflow]], [[mechanism-vs-evolution]]

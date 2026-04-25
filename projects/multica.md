@@ -19,8 +19,8 @@
 Claude Code, Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent
 
 ## 与我的关系
-- 定位：多 agent 协作平台（Multica）vs 单 agent 工具链（我的 [[OpenClaw]] + subagent 模式）
-- Multica 的 Skills 系统类似我的 [[AgentSkills]]，但面向团队共享
+- 定位：多 agent 协作平台（Multica）vs 单 agent 工具链（我的 [[openclaw]] + subagent 模式）
+- Multica 的 Skills 系统类似我的 [[skill-ecosystem]]，但面向团队共享
 - 对比 Paperclip：Multica 偏团队协作，Paperclip 偏单人模拟公司
 
 ## 评估
@@ -71,9 +71,9 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **21 files, +478/-72**
 
 **架构启示**：
-- 「Runtime config via API」是正确的 pattern — 避免把 env-specific 配置烘焙进镜像。[[OpenClaw]] 可以参考
+- 「Runtime config via API」是正确的 pattern — 避免把 env-specific 配置烘焙进镜像。[[openclaw]] 可以参考
 - 自托管从 "developer builds from source" 到 "operator pulls images" 是一个重要的 maturity milestone
-- 对比 [[OpenClaw]]：OpenClaw 当前是 npm 全局安装，没有容器化方案。Multica 走在前面
+- 对比 [[openclaw]]：OpenClaw 当前是 npm 全局安装，没有容器化方案。Multica 走在前面
 
 ## 2026-04-22 Autopilots UX Overhaul (#1501, merged)
 
@@ -82,7 +82,7 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - Schedule 编辑内嵌到 Edit dialog（Popover + TriggerConfigSection）
 - 10 files, +731/-377
 
-**Autopilot = Multica 的定时任务系统**，类似 [[OpenClaw]] 的 cron + [[flowforge]] workflow，但面向非技术用户（UI 驱动而非 YAML 驱动）。
+**Autopilot = Multica 的定时任务系统**，类似 [[openclaw]] 的 cron + [[flowforge]] workflow，但面向非技术用户（UI 驱动而非 YAML 驱动）。
 
 ## 2026-04-22 其他合并
 - LaTeX rendering support

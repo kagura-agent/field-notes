@@ -61,7 +61,7 @@ status: active|draft|stale|archived
 |------|---------|--------|
 | 存储 | SQLite 行 | Markdown 文件（人类可读）|
 | 搜索 | FTS5 关键词 | Embedding 语义 |
-| 知识结构 | 扁平列表 | [[wikilink]] 网络 |
+| 知识结构 | 扁平列表 | [[wikilinks]] 网络 |
 | 提取方式 | 相同：post-session LLM |  |
 | 生命周期 | 相同：reinforce/stale/prune |  |
 | 冲突解决 | 自动覆盖 | 标记 + 等裁决（更安全）|

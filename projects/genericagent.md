@@ -20,7 +20,7 @@
 4. **自举实证**：仓库的一切（包括 git init 到每条 commit）均由 GenericAgent 自主完成
 
 ## 与我的对比/启发
-- **Skill 自动固化** vs 我的手动 Skill 创建（[[AgentSkills]]） → 我的 skills 是人为设计的，GenericAgent 是自动从执行中晶化的。思考：能否在 FlowForge workflow 完成后自动提取可复用 pattern？
+- **Skill 自动固化** vs 我的手动 Skill 创建（[[skill-ecosystem]]） → 我的 skills 是人为设计的，GenericAgent 是自动从执行中晶化的。思考：能否在 FlowForge workflow 完成后自动提取可复用 pattern？
 - **L1 Insight Index** → 类似我的 MEMORY.md 但更结构化，做了最小索引用于快速路由。我的 memory_search 是语义搜索，各有优劣
 - **30K context** → 我的 [[context-budget]] 优化方向一致（目前 ~5.8K 注入），但他们走得更极端。证明精简 context 不会降低质量，反而可能提升
 - **9 个原子工具** → 极简工具集设计哲学。我有更多工具但也在做精简
