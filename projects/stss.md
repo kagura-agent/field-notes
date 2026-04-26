@@ -79,6 +79,29 @@ Every config field supports both `camelCase` and `snake_case` via Zod transforms
 
 **Verdict**: Start with unit tests PR (safe, high value, builds relationship). If Ken is responsive and adds a license, escalate to chain-tracer improvements and ClawHub adapter.
 
+## Contribution Log
+
+### 2026-04-26: PR #2 — chain-tracer unit tests
+
+**PR**: https://github.com/kenhuangus/stss/pull/2
+**Status**: Submitted, awaiting review
+
+Submitted 14 unit tests for `chain-tracer.ts` — the module we identified as the architectural differentiator. Tests cover:
+
+| Edge case | Why it matters |
+|-----------|---------------|
+| Circular imports | Real codebases have them; must not infinite loop |
+| Deep chains (3+ hops) | Obfuscated attacks use indirection depth |
+| Diamond dependency | Common in Python packages |
+| Cross-language (Python/JS/TS/Shell) | STSS's unique multi-language support |
+| `importlib.import_module` | Dynamic import = real attack vector |
+| Missing files | Graceful degradation on broken imports |
+| Deduplication | Same entry→terminal shouldn't produce duplicate findings |
+
+**Insight from writing tests**: The chain tracer's BFS correctly handles cycles via visited-set, but the deduplication only works per-finding (not globally). If two different static findings hit the same terminal file, both get separate chain findings from the same entry point. This is arguably correct (different attack chains), but worth noting.
+
+**Next**: Wait for Ken's response. If positive → LICENSE issue (#3) + chain tracer blind spots (dynamic `__import__`, `eval`, `exec`).
+
 ## Relation to Other Projects
 
 - vs [[skill-trust-landscape-2026-04|SkillCheck]]: SkillCheck is browser-only, no signing. STSS is full pipeline.
