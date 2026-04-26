@@ -49,6 +49,26 @@ Skill 之于 Agent ≈ npm package 之于 Node.js app
 | [[agentic-stack]] | 1,557★ | 04-17 | 可移植 .agent/ |
 | paper2code | 1,078★ | — | 论文→代码 skill |
 
+## 2026-04-26 更新：信任层补位加速
+
+之前观察到「分发层是空白」——现在更新：**安全/信任层也在快速填充**。
+
+至少 7 个项目在做 skill 信任层（详见 [[skill-trust-landscape-2026-04]]）：
+- **STSS**: Ed25519 签名 + Merkle 验证 + LLM 行为审计（最完整的开源方案）
+- **Gen + Vercel**: 企业级 Agent Trust Hub 接入 skills.sh
+- **Skillpub**: Nostr 去中心化身份 + 闪电网络支付
+- **Tessl** (Snyk founder): 全生命周期质量管理
+- **SkillCheck**: 浏览器端安全扫描器
+
+**关键修正**：之前说「聚焦分发层的差异化」——现在看来，分发+信任要一起做。没有信任层的分发平台正在被质疑（ClawHub 7.1% credential leak rate）。三层标准化应该是四层：
+
+| 层 | 标准 | 状态 |
+|---|------|------|
+| Agent 定义 | GAP | 有 |
+| Skill 格式 | SKILL.md | 共识 |
+| Skill 分发 | ClawHub / npm / skills.sh | 有，碎片化 |
+| **Skill 信任** | STSS / Skillpub / Gen Trust Hub | **新，爆发中** |
+
 **关键信号**：
 1. **设计类 skill 是第一个大规模应用场景**（低门槛、高视觉冲击力 → 病毒传播）
 2. `npx skills add` + agentskills.io 成为事实安装标准
