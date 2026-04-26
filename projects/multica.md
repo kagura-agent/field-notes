@@ -129,3 +129,14 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **Approach**: Manual edit (one-line fix, no need for acpx)
 - **Testing**: `go vet ./internal/service/...` passes. No local Postgres for full tests (expected)
 - **Note**: Good follow-up to PR #1412 (CompleteTask/FailTask race fix, merged) — same area, same pattern. Building depth in task lifecycle code
+
+## 2026-04-26 PR #1712: fix send-code Retry-After header
+- **Issue**: #1666 — 429 response on `/auth/send-code` missing `Retry-After` header
+- **PR**: #1712 — fix(auth): add Retry-After header to send-code 429 response
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: Rate-limit branch in `SendCode()` called `writeError(w, 429, ...)` without setting `Retry-After`
+- **Fix**: Compute remaining seconds (`60 - ceil(elapsed)`), clamp to ≥1, set `w.Header().Set("Retry-After", ...)` before `writeError`. +6 lines, 1 file
+- **Pattern**: `writeJSON` sets `Content-Type` then calls `w.WriteHeader(status)` — so custom headers must be set before `writeError`/`writeJSON` call
+- **Note**: math.Ceil used for remaining seconds to avoid edge case where truncation gives 0
+- **Approach**: Manual edit (one-liner fix, no need for acpx)
+- **CI**: backend + frontend pass. Vercel deploy auth expected for external PRs
