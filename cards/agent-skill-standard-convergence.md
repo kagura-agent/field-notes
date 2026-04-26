@@ -55,7 +55,26 @@ Skill 之于 Agent ≈ npm package 之于 Node.js app
 3. 跨 agent 兼容已是现实（Claude Code、Cursor、Codex、OpenClaw、Hermes 都能用同一个 skill）
 4. 增速证据：huashu-design 6天6k★，agentic-stack 10天10x
 
-**对三层标准化框架的影响**：格式层（agentskills.io）已被市场验证。分发层竞争开始——ClawHub 的窗口期在缩短。
+## 2026-04-26 更新：生态规模爆发 + 信任层涢出
+
+Skill 生态规模进一步爆发，头部项目星数级变：
+
+| 项目 | Stars | 类型 |
+|------|-------|------|
+| caveman | 46,611 | token 优化 |
+| planning-with-files | 19,620 | 工作流方法论 |
+| humanizer | 15,204 | AI 文本人性化 |
+| alirezarezvani/claude-skills | 12,739 | 235+ skills 合集 |
+
+**关键新信号**：
+1. **Token 经济学是最大驱动力**：caveman 凭“省 75% output tokens”拿下 46.6K⭐，超过所有功能性 skill
+2. **第三方信任服务涢出**：SkillCheck（质量验证）、loaditout.ai（安全审计）、skillsplayground.com（发现）、skill-history.com（下载追踪）
+3. **Fork 是主要分发/定制方式**：planning-with-files 1,760 forks，版本同步是未解决问题
+4. **跨 agent 兼容已是默认期望**：alirezarezvani 支持 12 种 agent，包含 OpenClaw
+
+详见 [[claude-code-skill-ecosystem]] 的完整分析。
+
+**对三层标准化框架的影响**：格式层已定、分发层竞争白热化、信任层刚开始。ClawHub 的竞争对手不再只是 npm/git clone，而是专门的 skill 发现/审计服务。
 
 ## 链接
 
