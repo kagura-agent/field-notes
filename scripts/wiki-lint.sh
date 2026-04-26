@@ -11,6 +11,7 @@ echo ""
 
 # 1. Collect all wikilink references (skip backtick-quoted refs like `[[example]]`)
 grep -rn '\[\[[^]]*\]\]' cards/ projects/ 2>/dev/null \
+  | grep -v 'scripts/' \
   | grep -v '`\[\[' \
   | grep -oP '\[\[[^]]+\]\]' \
   | sed 's/\[\[//;s/\]\]//' \
@@ -31,7 +32,7 @@ echo "## Broken Wikilinks: $BROKEN_COUNT"
 if [ "$BROKEN_COUNT" -gt 0 ]; then
   echo "$BROKEN" | while read -r slug; do
     echo "  ❌ [[$slug]]"
-    grep -rn "\[\[$slug" cards/ projects/ 2>/dev/null | head -2 | sed 's/^/     /'
+    grep -rn "\[\[$slug" cards/ projects/ 2>/dev/null | head -2 | sed 's/^/     /' || true
   done
 fi
 echo ""
@@ -72,6 +73,32 @@ else
 fi
 echo ""
 
+# 7. Staleness check (confidence decay)
+echo "## Stale Files (not verified recently):"
+STALE_COUNT=0
+NOW=$(date +%s)
+for f in cards/*.md projects/*.md; do
+  # Try last_verified first, then created, then git date
+  verified=$(grep -m1 'last_verified:' "$f" 2>/dev/null | sed "s/.*: *['\"]\{0,1\}//;s/['\"].*//" || true)
+  if [ -z "$verified" ]; then
+    verified=$(grep -m1 'created:' "$f" 2>/dev/null | sed "s/.*: *['\"]\{0,1\}//;s/['\"].*//" || true)
+  fi
+  if [ -z "$verified" ] || ! date -d "$verified" +%s &>/dev/null; then
+    continue
+  fi
+  file_epoch=$(date -d "$verified" +%s 2>/dev/null || continue)
+  days_old=$(( (NOW - file_epoch) / 86400 ))
+  # Threshold: projects 14d, cards 30d
+  threshold=30
+  [[ "$f" == projects/* ]] && threshold=14
+  if [ "$days_old" -gt "$threshold" ]; then
+    echo "  ⏰ ${days_old}d stale: $f"
+    STALE_COUNT=$((STALE_COUNT + 1))
+  fi
+done
+echo "  Total: $STALE_COUNT stale files"
+echo ""
+
 # Summary
 echo "=== Summary ==="
-echo "Broken: $BROKEN_COUNT | Orphans: $ORPHAN_COUNT | Duplicates: $DUP_COUNT"
+echo "Broken: $BROKEN_COUNT | Orphans: $ORPHAN_COUNT | Duplicates: $DUP_COUNT | Stale: $STALE_COUNT"
