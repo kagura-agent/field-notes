@@ -84,3 +84,21 @@ caveman-compress addresses the same problem as memory summarization — reducing
 - **Low risk**: Easily reversible ("stop caveman" / "normal mode")
 
 The lesson for skill distribution: **skills that save money spread faster than skills that add features.**
+
+## 2026-04-26 — 实验验证：Skill Context 压缩
+
+对 gogetajob SKILL.md 做了实际压缩实验：
+
+| Metric | Original | Compressed | Savings |
+|--------|----------|-----------|---------|
+| Bytes | 5,943 | 2,291 | **61.5%** |
+| Words | 895 | 346 | **61.3%** |
+
+关键发现：
+- 大部分节省来自 prose bridges、motivation paragraphs、verbose checklists
+- 代码块、命令、路径完全保留
+- AI 理解无损（所有 rules、commands、decision criteria 保留）
+
+→ 详细实验记录：[[skill-context-compression]]
+
+**但更大的 insight**：单个 SKILL.md 是 on-demand 加载的（~1K tokens），真正的 always-on 成本在系统 prompt 的 `<available_skills>` block 和 workspace files 注入。压缩 ROI 最高的地方不是 SKILL.md 本身。

@@ -129,3 +129,20 @@
 - [[karpathy-llm-wiki]] - lint 管线灵感来源
 - [[wuphf]] - MCP lint 参考
 - [[stash]] - confidence decay 参考
+- [[confidence-decay-design]] - 我们的 staleness 设计方案
+- [[skill-context-compression]] - 相关 token 优化实验
+
+## 2026-04-26 — Staleness Check 实装
+
+**可做的事** section 中第 2 项实现：wiki-lint.sh 新增 staleness check。
+
+实装结果：
+- Projects 阈值 14 天，Cards 阈值 30 天
+- 基于 `last_verified` 或 `created` 前置字段
+- 首次跑发现 88 个 stale 文件（70 cards + 18 projects）
+- 详细设计 → [[confidence-decay-design]]
+
+剩余未做：
+- [ ] 定期自动跑 lint（cron — 可整合进 daily-audit workflow）
+- [ ] wiki-lint 暴露为 MCP tool / memex subcommand
+- [ ] 矛盾检测自动化
