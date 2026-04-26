@@ -118,3 +118,14 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - My fix: `adoptOrphanedAgents()` at daemon register time — narrow, single entry point
 - Maintainer's fix (#1476): sweeper-based orphan recovery + auto-retry + `issue rerun` CLI + new API endpoints
 - Takeaway: multica codebase prefers infrastructure-level solutions (sweeper, service layer) over point fixes. Future PRs should align with existing patterns.
+
+## 2026-04-26 PR #1708: fix ClaimTask race with CancelTask
+- **Issue**: #1707 — cancelling a just-claimed task leaves agent stuck at `status=working`
+- **PR**: #1708 — fix(task): use ReconcileAgentStatus in ClaimTask to prevent race
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: `ClaimTask` unconditionally set `updateAgentStatus("working")` — when interleaving with `CancelTask`, the blind write could land after the cancel-side reconcile, leaving agent permanently stuck
+- **Fix**: One-line: replace `updateAgentStatus(ctx, agentID, "working")` with `ReconcileAgentStatus(ctx, agentID)` — gates on `CountRunningTasks`, making it idempotent under concurrent cancellation
+- **Pattern**: `ClaimTask` was the only status-affecting path that didn't use `ReconcileAgentStatus`. All other paths (CancelTask, CompleteTask, FailTask, etc.) already use it
+- **Approach**: Manual edit (one-line fix, no need for acpx)
+- **Testing**: `go vet ./internal/service/...` passes. No local Postgres for full tests (expected)
+- **Note**: Good follow-up to PR #1412 (CompleteTask/FailTask race fix, merged) — same area, same pattern. Building depth in task lifecycle code
