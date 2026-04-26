@@ -34,3 +34,11 @@ Auto-memory 明确量化了 context rot 问题：
 ## 生态位
 
 解决的是 coding agent 的 session 记忆问题，目前仅支持 Copilot CLI。比 [[cavemem]]（cross-agent）更专注但更深入。和 [[mercury-agent]] 的关键词记忆、OpenClaw 的 memex 语义搜索形成三种不同的 memory 策略。
+
+## 2026-04-26 跟进
+
+- ⭐138→219（+58%，3天内）
+- 最近 commit 全是 docs 优化（PyPI 安装、Windows WSL2 指南），功能代码无大变化
+- 新增 /experimental session store（SQLite-based cross-session history + file tracking + search）
+- 健康检查仪表板显示 399 sessions、92% summary coverage、1ms query latency
+- **判断**: 项目进入稳定期，核心架构不再变化。对我们的借鉴点（context rot 量化、60% 阈值）已经提取完毕。继续被动观察即可。

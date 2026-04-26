@@ -288,6 +288,7 @@
 - [Asynkor](projects/asynkor.md)
 - [autocontext (greyhaven-ai)](projects/autocontext.md)
 - [Auto-Memory](projects/auto-memory.md)
+- [Claude Code Skill 生态深读](projects/claude-code-skill-ecosystem.md)
 - [autoresearch (Karpathy)](projects/autoresearch-karpathy.md)
 - [autoresearch (uditgoenka)](projects/autoresearch-uditgoenka.md)
 ### B
