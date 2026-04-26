@@ -112,7 +112,20 @@
 
 **最终状态**：0 broken / 40 orphans / 0 duplicates ✅
 
+## 2026-04-26 — 新参考: WUPHF `/lint` + Stash confidence decay
+
+[[wuphf]] wiki 后端实现了类似健康检查，暴露为 MCP tool (`run_lint` + `resolve_contradiction`)，agent 可在对话中主动触发。与我们的 CLI wiki-lint 不同，他们还有 contradiction resolution。
+
+[[stash]] 的 confidence decay 机制：facts 随时间自动降低置信度，未被 reinforced 的 fact 最终过期。这是我们缺少的：wiki cards 没有时效性概念，旧 fact 和新 fact 权重相同。
+
+**可做的事**：
+1. wiki-lint 暴露为 MCP tool / memex subcommand
+2. cards 加 `last_verified` metadata，超过 30 天未验证的在 lint 中 flag
+3. 矛盾检测自动化（写新卡时语义搜索矛盾）
+
 ## 关联
 - [[obsidian-wiki]] - wiki-status 概念来源
 - [[generic-agent]] - 也有知识自动维护
 - [[karpathy-llm-wiki]] - lint 管线灵感来源
+- [[wuphf]] - MCP lint 参考
+- [[stash]] - confidence decay 参考
