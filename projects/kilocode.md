@@ -192,3 +192,17 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - **效率**: 手动改（~15 行改动），比 acpx exec 快
 - **拒绝原因**: maintainer 说 token estimates 本身就不可靠，clamping 不会真正解决问题
 - **教训**: 不要在本身不精确的值上做精度优化。如果底层数据不可靠，上层 fix 加了复杂度但没有实际收益
+
+### PR #9509 — fix(cli): prefer Kilo-branded config paths in `kilo plugin` command
+- **Issue**: #9503 — `kilo plugin` writes to `.opencode/` instead of Kilo-named config
+- **状态**: OPEN (2026-04-26)
+- **改动**:
+  - `packages/opencode/src/plugin/install.ts`: `patchDir` 改为 async，搜索 `.kilocode` → `.kilo` → `.opencode` 现有配置文件；`patchNames` 返回 `["kilo", "opencode"]`；`patchOne` 遍历所有名称变体
+  - `packages/opencode/src/cli/cmd/plug.ts`: `PatchDeps.files` 类型放宽为 `string`
+  - changeset: patch
+- **Review**: Kilo Code Review bot 指出 `.kilo/` 目录存在（用于 agents/modes）但插件配置在 `.opencode/` 时可能分裂配置。已修复：改为检查配置文件存在性而非目录存在性。
+- **学到的**: 
+  - Kilo 的 branding 改动要注意读/写路径一致性问题
+  - `.kilo/` 目录可能不只放配置，还有 agents/modes 等其他东西
+  - Kilo Code Review bot 反馈质量不错，比一般 bot 更有价值
+  - fork PR 的 CI checks 大部分 skip，但 typecheck 会跑（pre-push hook）
