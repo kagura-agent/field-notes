@@ -1,7 +1,10 @@
 # Mercury Agent
 
-> cosmicstack-labs/mercury-agent | ⭐749 (2026-04-25, was 556 on 04-23, 232 on 04-21) | TypeScript | MIT
+> cosmicstack-labs/mercury-agent | ⭐1214 (2026-04-26, was 749 on 04-25, 556 on 04-23, 232 on 04-21) | 137 forks | TypeScript | MIT
 > "Soul-driven AI agent with permission-hardened tools, token budgets, and multi-channel access."
+>
+> **Growth spike**: 749→1214 (+62%) in ~2 days after v1.0.0 "Second Brain" release. Community building phase: Discord server, Contributing guide, theme-aware branding, Chinese README PR.
+> Post-v1.0.0 (v1.0.1-1.0.6): CLI polish (execution time display, output formatting), CI optimization (32→15 matrix jobs), branding assets.
 
 ## 概要
 

@@ -119,11 +119,100 @@ claude-mem 50k 星验证了 **agent 记忆是刚需**。它的爆火来自两个
 - Knowledge Agents 是走向 "可对话知识库" 的尝试，类似 [[evo-nexus]] 的 ADW 但更轻量
 - 与 [[skillclaw]] 对比：claude-mem 完全没有 skill evolution 概念，只做知识管理不做行为优化
 
+## v12.4.4-v12.4.7 "Cynical Deletion" Era (2026-04-25~26)
+
+### 核心哲学：Delete the Moats
+
+PR #2141 一次性关闭 27 个 issue，通过**删除两种反模式**而非修补它们：
+
+#### Defenders（防守者）
+"为了防止 X 而加的代码，但防守代码本身产生的 bug 比它防止的更多"
+- `aggressiveStartupCleanup()` — 启动时扫描并杀死孤儿进程（~190 行，Windows WQL + Unix ps 解析）
+- PowerShell `-EncodedCommand` spawn — 为了处理 Windows 路径空格的 shell 字符串拼接
+- restart-with-port-steal — 为了处理端口占用的强制杀进程逻辑
+- duplicate-worker liveness probes — 重复 worker 检测
+
+每个 defender 引入新的平台特定 bug（WQL 语法、Git Bash `$_` 解释、空格路径引号、SIGKILL 杀祖先进程），形成**防守螺旋**。
+
+#### Tolerators（容忍者）
+"遇到异常数据时 silently drop/passthrough 而非报错，隐藏 bug 直到更大规模爆发"
+- 静默 JSON 丢弃 — stdin 收到 malformed JSON 返回 undefined 而非报错
+- 漂移的 SSE/SQL filters — SSEBroadcaster 和 PaginationHelper 各自实现 observer-session 过滤，逐渐不同步
+- `.passthrough()` Zod schemas — 接受任意字段然后 insert 时丢弃，用户以为数据存了实际没存
+- file-context `updatedInput: { limit: 1 }` — 截断 Read 结果但告诉模型"文件已读"，导致 Edit 死锁
+
+### 9 个阶段的手术
+
+| Phase | 动作 | 关闭 Issues | 关键改动 |
+|-------|------|------------|----------|
+| P1 | 删除进程管理戏剧 | 9个 | 删 `aggressiveStartupCleanup`(190行)、PowerShell spawn、port-steal |
+| P2 | 信任边界重建 | 2个 | `CLAUDE_MEM_INTERNAL=1` env var 替代 cwd-based 判断；新 `shouldEmitProjectRow` 共享谓词 |
+| P3 | 硬编码清除 | 3个 | 8处 `37777` → `SettingsDefaultsManager.get()`；多账户文档 |
+| P4 | 环境变量净化 | 2个 | `HTTP_PROXY` 等 10 个代理变量无条件剥离（拒绝 whitelist 提案） |
+| P5 | Fail-fast | 3个 | stdin-reader reject malformed JSON；file-context 不再截断 Read |
+| P6 | 小删除 | 5个 | 外置 Zod、删 `setFallbackAgent`、session timeout 4h→24h、删 `installCLI()` |
+| P7 | 安装修复 | 1个 | 共享 `shutdown-helper`、uninstall 路径覆盖 |
+| P8 | 确定性安装 | 3个 | pin `chroma-mcp==0.2.6` |
+| P9 | 测试更新 | 1个 | per-UID port + migration 30 测试 |
+
+### 关键架构决策
+
+1. **Single trust boundary** — `CLAUDE_MEM_INTERNAL=1` env var 在 `buildIsolatedEnv` 设一次，所有内部 agent 继承。取代了分散在各处的 `cwd === OBSERVER_SESSIONS_DIR` 检查。Belt-and-braces: 旧检查保留作后备。
+
+2. **Shared predicate** — `shouldEmitProjectRow()` 函数同时被 SSE 和 Pagination 使用，**物理上不可能漂移**（同一个函数引用）。
+
+3. **`.strict()` 替代 `.passthrough()`** — MemoryRoutes Zod schema 从 passthrough 改为 strict，新增 `metadata` 字段（migration 30）。未知字段直接 400 而非静默丢弃。
+
+4. **Never modify the Read call** — file-context hook 从"截断文件读取+注入时间线"改为"保持原始 Read 不变+附加补充上下文"。修复了 Edit 死锁：模型看到完整文件内容，不再在截断快照上循环 Edit。
+
+5. **拒绝 config knobs** — proxy 处理拒绝了 #2099 的 whitelist 提案（"don't add new config knobs, fix the default"）。session timeout 直接 4h→24h（no knob）。
+
+### v12.4.4 SessionEnd Shim 移除
+PR #2136: 发现 `SessionEnd → session-complete` hook 从 2025-11-07 开始就在静默清空 observation queue（`/clear`、退出、注销都触发）。6 个月的 bug。修复：**删除整个 SessionEnd hook**，worker 通过 SDK-agent generator 的 finally-block 自行完成。
+
+### v12.4.5 Migration 28 Mirror Fix
+`SessionStore` 缺少 migration 28 的列（`tool_use_id`, `worker_pid`），新安装的 DB 每次 insert 都因 "no such column" 静默失败。加了 mirror columns + column-existence guards 自愈。
+
+### Tradeoffs
+- **删除 defender = 不再自动处理孤儿进程** — 用户如果有端口被占需要手动解决。赌注：PID file + fail-fast 比自动杀进程更可靠
+- **无条件剥离 proxy vars** — 如果内部 API 调用确实需要 proxy（企业环境），会 break。但认为"internal API calls should never go through user proxy"
+- **session timeout 24h 无旋钮** — 简化但不灵活
+
+## 对我们的启发
+
+### Pattern 1: Defender/Tolerator 识别框架
+**直接可用。** 审视我们自己的代码和流程时，可以用这个透镜：
+- 这段逻辑是在"防守"某个问题？它防守的过程中是否产生了新问题？
+- 这段逻辑在"容忍"异常数据？它隐藏的 bug 未来会不会更大规模地爆发？
+
+我们的 candidates:
+- nudge hook 的各种 edge case 处理 — 是否变成了 defenders？
+- memory 写入时的 silent failures — 是否是 tolerators？
+
+### Pattern 2: Shared Predicate > Repeated Logic
+当两个地方需要做同一个判断时，提取为一个函数引用，**物理上消除漂移可能**。不是"保持同步"的纪律问题，是工程结构问题。
+
+### Pattern 3: 拒绝 Config Knobs
+"Fix the default, don't add a knob." 每个 config 选项都是表面积。如果 default 是错的，修 default；如果需要 per-user 定制，大概率说明架构不对。
+
+### Pattern 4: Plan-Driven Deletion
+写一个详细的 plan document **在动手之前**，列出：
+- 什么是 defender，什么是 tolerator
+- 每个要删的东西为什么要删
+- 什么要保留（anti-pattern guards）
+- 验证方法
+
+claude-mem 的 `plans/2026-04-25-cynical-deletion.md` 是这个模式的典范。
+
+### Pattern 5: 6 个月的静默 Bug
+SessionEnd hook 从 2025-11 就在清空 queue，但因为症状分散（"偶尔丢 observation"）没人定位到根因。教训：**tolerator 的 half-life 可以非常长**。我们的 memory pipeline 有没有类似的 silent data loss？
+
 ## 贡献机会
 
 - OpenClaw 集成已有官方支持（installer script），可参与改进
-- 31 open issues (截至 2026-04-13)
+- 27 issues 一次关闭后 open issues 大幅减少
 - AGPL-3.0 要求 derivative works 也开源
+- 项目从 50k → 67.6k⭐，增长迅猛
 
 ---
-*Created: 2026-04-13 | Source: GitHub README + v12.0.0/12.0.1/12.1.0 release notes + PR #1653 + 源码 src/services/worker/knowledge/*
+*Created: 2026-04-13 | Updated: 2026-04-26 | Source: GitHub README + v12.0.0-12.4.7 release notes + PR #2141 plan document + source diffs*
