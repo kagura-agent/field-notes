@@ -24,10 +24,16 @@
 | #1033 | #967 | pending | corrupt JSON silent fallback → throw error |
 | #1034 | #964 | pending | ghost worktree cleanup false success |
 | #1037 | #1035 | pending | Windows path spaces in --spawn terminal |
+| #1307 | N/A | pending | register safe.directory for bind-mount restart |
+| #1294 | N/A | pending | clear stale session ID on error_during_execution |
+| #1423 | #1419 | pending | cleanup-service respect worktree.baseBranch |
 
 ## 注意事项
 - eslint 禁止 unused vars，catch 里不用的 error 要命名为 `_err`
 - `packages/core/src/db/connection.ts` 是 mock 重点 — 测试通过 `mock.module('./connection', ...)` 注入
+- **不能从 cleanup-service 导入 config-loader**：config-loader.ts 有顶层 `import from '@archon/providers'`，导入会在 cleanup-service 测试中触发 module resolution failure。需要读 config 时直接用 `Bun.YAML.parse` + `readFile` 内联读取。
+- **测试嵌套位置很重要**：describe block 的嵌套决定了 beforeEach 作用域。错嵌会导致 mock 泄漏和 order-dependent failures。
+- CodeRabbit 会认真 review，反馈质量高，值得认真处理
 - CodeRabbit 自动 review，有 pre-merge checks 模板（Description check 会 warn 缺少 template sections 但不 block）
 - Shell 脚本改动：CodeRabbit 会检查 find 性能（如 -prune），值得关注
 
