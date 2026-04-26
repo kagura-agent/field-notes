@@ -127,3 +127,17 @@ Added to pre-PR checklist:
 6. Does my fix preserve backward-compatible defaults? (New behavior = opt-in, not default)
 7. Did I write tests? (If the maintainer's replacement has 10x my line count in tests, I'm not writing enough)
 8. Did I handle the disable/teardown/error path, not just the happy path?
+
+## 2026-04-26: openclaw/openclaw#69247 — superseded by upstream normalizeTaskTimestamps
+
+**My approach:** Add 1000ms `TIMESTAMP_JITTER_MS` tolerance in audit `findTimestampInconsistency()`
+**Upstream approach:** `normalizeTaskTimestamps()` at create/update/restore in task-registry.ts — fix data at the source
+**Lesson:** Tolerating bad data at the checker is a band-aid. Normalizing data at the source prevents the problem for all consumers, not just the audit path. Upstream approach also preserves strict audit checks for real corruption.
+**Pattern:** FIX_SOURCE_NOT_CHECKER — when data is wrong, fix where it's written, not where it's read.
+
+## 2026-04-26: openclaw/openclaw#68534 — superseded by #70737 isolated cron dreaming
+
+**My approach:** File-based cooldown store + per-phase throttling to prevent dreaming-narrative respawn on every heartbeat
+**Upstream approach (#70737):** Moved managed dreaming to isolated cron agent turn + gated heartbeat handler on pending managed cron event. Decoupled dreaming from heartbeat entirely.
+**Lesson:** Architecture-level fix (isolation + event gating) > application-level workaround (cooldown files). Upstream eliminated the coupling rather than managing it. Also: steipete's CHANGES_REQUESTED review correctly identified that cron-derived cooldowns were fragile.
+**Pattern:** DECOUPLE_NOT_THROTTLE — if two systems shouldn't interact, separate them architecturally rather than adding rate-limiting between them.
