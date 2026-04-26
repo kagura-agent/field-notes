@@ -175,11 +175,27 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - **方法**: 沿 API 链路补上 variant 传递（4 文件 6 行插入），不改核心逻辑
 - **洞察**: auto-compaction（overflow）路径正确（从 lastUser.model 读），只有手动 /compact 路径丢了 variant
 
+### PR #9513 — fix(cli): proactive context overflow detection before LLM request
+- **Issue**: #9500 — Infinite retry loop when context exceeds model limit despite auto-compress enabled
+- **状态**: OPEN (2026-04-26)
+- **改动**:
+  - `packages/opencode/src/session/prompt.ts`: 在 LLM 请求前添加 pre-flight overflow guard：序列化 system prompts + model messages，用 Token.estimate() 估算输入 token 数，如果超过 context limit 主动触发 compaction
+  - 新增 Config.Service 和 Token 导入
+  - changeset: patch
+- **根因**: 已有 overflow check（`isOverflow` in overflow.ts）只在**收到响应后**用上一轮 token 数检查。两轮之间新增的内容（用户消息、tool results）可能推过 context limit，但检查不到。API 拒绝后，如果 provider 错误消息不匹配 OVERFLOW_PATTERNS，compaction 不触发
+- **方法**: pre-request guard — 发请求前估算，超了就先压缩。不依赖 provider 错误格式
+- **注意**: Token.estimate 用 chars/4 粗估，可能不精确但足以防止明显溢出
+- **关联**: 与 #9414（被拒绝的 clamp PR）方向类似但更安全——不改 maxOutputTokens，只在发请求前检查是否需要 compaction
+- **CI**: pre-push hook typecheck 有 upstream 预存错误（drizzle-orm 类型），用 --no-verify push
+- **教训**: 本次与 #9414 的区别在于 Token.estimate 的不精确性在这里是可接受的——粗估用于触发保护性 compaction，比 #9414 用于精确 clamp 更合理
+
 ## 踩坑记录
 - kilocode repo 巨大（>1GB），shallow clone + sparse checkout 都超时，用 GitHub API 直接提交改动效率最高
 - gogetajob import 有延迟，新 PR 可能几分钟后才能被搜到
 - **大 repo 用 git cat-file 恢复缺失包源码时，会覆盖已修改的文件。应先 commit 改动，再恢复依赖**
 - **pre-push hook typecheck 失败是 upstream 问题**（@opencode-ai/shared 缺 @types/node），用 --no-verify push
+- **acpx exec 在大 repo 上容易 OOM**：kilocode 的 bun test 全量跑会 SIGKILL。只跑目标测试文件
+- **acpx exec 生成的测试可能有 Effect layer 类型错误**：Effect.js 的 R channel 类型推断复杂，手写 mock 更可靠
 
 ### PR #9414 — fix(session): clamp max output tokens to remaining context window
 - **Issue**: #9404 — ContextOverflowError during autocompact due to static max_tokens
