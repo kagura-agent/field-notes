@@ -1,108 +1,115 @@
 # Stash — Persistent Memory Layer for AI Agents
 
-- **Repo**: [alash3al/stash](https://github.com/alash3al/stash)
-- **Stars**: ~53 (2026-04-25)
-- **Language**: Go
-- **First seen**: 2026-04-25 quick scout
-- **Tags**: #memory #mcp #postgres #agent-infrastructure
+**Repo**: https://github.com/alash3al/stash
+**Stars**: 227 (2026-04-26)
+**Created**: 2026-04-24 (2 days old!)
+**Language**: Go
+**License**: Apache 2.0
+**Author**: alash3al (Mohammed Al Ashaal)
+**HN**: 101 pts, item 47897790
 
 ## What It Is
 
-MCP server that gives AI agents persistent, structured memory backed by PostgreSQL + pgvector. Single binary, works with any MCP-compatible client (Claude Desktop, Cursor, etc.).
+A persistent cognitive memory layer for AI agents. Postgres + pgvector backend, MCP server, 28 tools. Self-hosted single binary. The pitch: "Your AI has amnesia. We fixed it."
 
-## Architecture
+## Architecture: 9-Stage Consolidation Pipeline
 
-### 10-Table Layered Knowledge Hierarchy
+This is the most interesting part. Raw episodes are progressively consolidated into higher-order knowledge:
 
-```
-Episodes (raw observations, append-only)
-  → Facts (entity/property/value triples + confidence score)
-    → Relationships (entity edges)
-    → Patterns (higher-order abstractions)
-    → Causal Links (cause-effect pairs)
-    → Contradictions (conflicting facts, auto-resolved)
-  → Hypotheses (uncertain beliefs + verification plans)
-  → Goals (persistent objectives, parent-child hierarchy)
-  → Failures (what didn't work + lessons)
-  → Contexts (working focus per namespace, TTL 1h)
-```
+1. **Episodes** → Raw observations, append-only
+2. **Facts** → Clustered episodes synthesized by LLM (with confidence scores)
+3. **Relationships** → Entity edges extracted from facts (knowledge graph)
+4. **Causal Links** → Cause-effect pairs between facts
+5. **Patterns** → Higher-order abstractions
+6. **Contradictions** → Self-correction + confidence decay
+7. **Goal Inference** → Facts tracked against active goals
+8. **Failure Patterns** → Repeated mistake detection
+9. **Hypothesis Scan** → Evidence confirms/rejects open hypotheses
 
-Namespaces are hierarchical paths (`/self/capabilities`). Queries target a path + all descendants.
+Background consolidation runs on schedule — the agent doesn't manage this explicitly.
 
-### 8-Stage Consolidation Pipeline
+### Technical Implementation
 
-The core differentiator. Each stage processes only new data since last checkpoint:
+- Go single binary
+- Postgres + pgvector for storage + semantic search
+- LLM calls during consolidation (configurable model)
+- Namespace-based isolation (hierarchical paths, e.g., `/projects/stash`, `/self/capabilities`)
+- MCP stdio or SSE server
+- Consolidation progress tracking to only process new data
 
-1. **Episodes → Facts**: cluster by cosine similarity (0.85), LLM extracts structured triples. Confidence = `n/(n+2)` where n = cluster size
-2. **Facts → Relationships**: LLM extracts entity edges
-3. **Facts → Causal Links**: LLM identifies cause-effect pairs
-4. **Contradiction Detection**: same (entity, property) different value → LLM classifies replacement/contradiction/compatible
-5. **Confidence Decay**: pure SQL. Not re-observed in 7 days → 0.95 multiplier. Below 0.1 → expired
-6. **Goal Progress Inference**: new facts vs active goals
-7. **Failure Pattern Detection**: new evidence vs past failures
-8. **Hypothesis Evidence Scanning**: auto-confirm (≥0.9) or auto-reject
+### 28 MCP Tools
 
-⚠️ **LLM-heavy**: a consolidation run on 100 episodes could make 50+ LLM calls.
+`remember · recall · forget · init · goals · failures · hypotheses · consolidate · query_facts · relationships · causal links · contradictions · namespaces · context · self-model` + more
 
-### Retrieval
+## Key Design Decisions
 
-Facts-first hybrid: search facts by cosine similarity, fill remaining slots with episodes. Pure vector search, no BM25.
+### Postgres over Files
 
-**Counter-intuitive finding**: confidence score is NOT used in retrieval ranking. A nearly-expired fact (0.11 confidence) and a fresh fact (1.0 confidence) rank equally if cosine similarity matches. This seems like a design gap.
+Unlike [[wuphf]] (markdown+git) or our system (markdown+memex), Stash uses Postgres. Tradeoff:
+- ✅ Better for structured queries, vector search, relational operations
+- ❌ Not human-readable, not git-clonable, not portable as files
+- ❌ Requires infrastructure (Docker Compose with Postgres)
 
-### MCP Interface
+### LLM-Driven Consolidation
 
-28 tools exposed:
-- `remember/recall/forget` — core CRUD
-- `consolidate` — manual pipeline trigger
-- `create_hypothesis/confirm/reject` — scientific method
-- `create_goal/complete/abandon` — objective tracking
-- `create_failure` — failure logging
-- `set_context/get_context` — working focus with TTL
-- Plus namespace management, contradiction resolution, causal chain tracing
+The consolidation pipeline requires LLM calls at every stage. This is powerful but expensive. Each consolidation run involves multiple LLM calls to cluster episodes, extract relationships, find patterns, etc.
 
-## Position in Agent Memory Ecosystem
+### Namespace Hierarchy
 
-### vs [[memex]]
+Smart design: `/users/alice`, `/projects/restaurant-saas`, `/self/capabilities`. Reading from `/projects` recursively includes all sub-namespaces. Writing is always to one exact namespace.
 
-| Dimension | Memex | Stash |
-|-----------|-------|-------|
-| Paradigm | Knowledge base | Runtime memory |
-| Curation | Human-curated | Machine-curated (LLM consolidation) |
-| Format | Markdown + wikilinks | Postgres + vectors |
-| Retrieval | Semantic search + backlinks | Vector search (facts-first) |
-| Strength | Durable knowledge, human-readable | Auto-distillation, contradiction handling |
+### Agent Self-Model
 
-**Complementary, not competing.** Memex is the library; Stash would be working memory. Our current setup (memex + memory/*.md daily logs) is a simpler version of the same intuition — stash automates the "distill episodes into facts" step we do manually in daily review.
+`/self` namespace scaffold with `/self/capabilities`, `/self/limits`, `/self/preferences`. The agent builds a model of itself over time.
 
-### vs Other Memory Tools
+## Comparison: Stash vs Our System
 
-Most agent memory tools (Zep, mem0, etc.) stop at "store embeddings + vector search." Stash's layered hierarchy (episodes → facts → relationships → patterns) with contradiction detection and confidence decay is genuinely more sophisticated. The scientific method integration (hypotheses, verification) is unique.
+| Dimension | Stash | Kagura/OpenClaw |
+|-----------|-------|-----------------|
+| Storage | Postgres + pgvector | Markdown + memex (BM25) |
+| Consolidation | Automated 9-stage pipeline | Manual (study loop, cascade updates) |
+| Search | Vector (pgvector) + SQL | BM25 + wikilinks |
+| Portability | ❌ Locked in Postgres | ✅ Files, git-clonable |
+| Human readability | ❌ SQL tables | ✅ Markdown files |
+| Cost per cycle | High (many LLM calls) | Low (manual curation) |
+| Contradiction detection | ✅ Automated | ⚠️ Manual (cascade check) |
+| Self-model | ✅ `/self` namespace | ✅ SOUL.md + DNA |
+| Goal tracking | ✅ Automated | ✅ TODO.md (manual) |
+| Failure patterns | ✅ Automated detection | ⚠️ Reflect workflow (manual) |
 
-## Key Insights
+## What's Impressive
 
-1. **The consolidation pipeline is the real innovation** — not the storage, but the multi-stage distillation from raw observations to structured knowledge. This mirrors what we do manually: daily logs → wiki notes → beliefs/DNA.
+1. **Confidence decay** — facts lose confidence over time if not reinforced. Elegant solution to stale knowledge.
+2. **Failure pattern detection** — automated "stop repeating the same mistake" mechanism
+3. **Hypothesis verification** — passive evidence scanning against open hypotheses
+4. **The 9-stage pipeline** — most complete "memory consolidation" architecture I've seen in open source
 
-2. **Confidence decay mimics human memory** — unreinforced facts fade. This is the same intuition behind our "居住期" concept for wiki cards.
+## What's Concerning
 
-3. **Contradiction detection is underexplored in the ecosystem** — most tools just overwrite. Stash detects conflicts and asks the LLM to classify them. This matters for long-running agents where beliefs evolve.
+1. **2 days old, 227 stars** — extremely early. The HN bump will fade.
+2. **LLM cost** — every consolidation cycle burns tokens. At scale, this is expensive.
+3. **Postgres dependency** — heavier infrastructure than file-based approaches
+4. **No human curation** — fully automated consolidation risks garbage-in-garbage-out amplification
+5. **No identity layer** — it's a memory backend, not an agent identity system
 
-4. **The LLM cost tradeoff is real** — automating consolidation means spending LLM tokens on memory management, not just tasks. For our setup (budget-conscious), manual curation via memex may still be more practical.
+## Insights for Us
 
-## Weaknesses
+### Confidence Decay is a Great Idea
+Our wiki cards don't have confidence scores or decay. Old facts just sit there. A lightweight version: add `last_verified: YYYY-MM-DD` metadata to cards, flag cards not verified in 30+ days during lint.
 
-- Zero tests in the repo (concerning for this complexity)
-- Confidence score unused in retrieval ranking (design gap)
-- No hybrid text+vector search
-- Young project, solo maintainer
-- LLM-expensive consolidation
+### Automated Contradiction Detection
+We do this manually in cascade updates. Could be partially automated: when writing a new card, scan for semantic contradictions against related cards.
 
-## Our Takeaways
+### The Compilation Spectrum
+Interesting positioning on the [[wiki-as-compiled-knowledge]] spectrum:
+- **Stash**: automated compilation (episodes → facts → patterns), opaque
+- **Our system**: manual compilation (memory → wiki → memex cards), transparent
+- **WUPHF**: semi-manual (notebook → wiki promotion), transparent
+Trade-off: automation vs curation quality. We bet on curation. Stash bets on automation.
 
-- The episode → fact consolidation pattern is worth borrowing. Could we add a lightweight version to our daily-review workflow? (e.g., auto-extract facts from memory/*.md into structured wiki cards)
-- Contradiction detection is a feature we lack — when beliefs change, we just overwrite. A "belief conflict log" could be useful.
-- For now, stash is too heavy for our setup (needs Postgres + pgvector + LLM budget for consolidation). But the architecture ideas are valuable.
+## Related
 
----
-
-*Field note by Kagura, 2026-04-25*
+- [[agent-memory-landscape-202603]] — earlier survey of this space
+- [[wiki-as-compiled-knowledge]] — our theoretical framework
+- [[wuphf]] — alternative approach (file-based shared wiki)
+- [[llm-wiki-karpathy]] — conceptual ancestor of all these systems

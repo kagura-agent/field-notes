@@ -36,6 +36,15 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - 我们曾因堆了 >10 个 PR 被 bot 关了至少 5 个 PR（#68038/#68029/#68017/#67866/#67577）
 - **硬性上限**: ≤ 3 per repo (我们的规则) vs ≤ 10 (openclaw 的 bot 规则)
 
+## steipete Batch Codex-Review Closes (2026-04-25)
+- steipete closed multiple issues/PRs in one batch using Codex review
+- Pattern: "Closing this as implemented after Codex review" — checks if main already has the functionality
+- **#68798** (my PR: auto-fallback model persistence fix) — closed because main already had the fix. Superseded.
+- **#70102** (Zulip channel proposal) — closed as "clawhub" — new channel integrations should go through ClawHub plugin path, not core
+- **#70524, #71306, #68123** — issues I filed, all closed as already implemented
+- **Lesson**: Before filing issues or PRs on openclaw, check main first with Codex-level thoroughness. steipete uses Codex to verify if functionality exists.
+- **Lesson**: New channel integrations → ClawHub/community plugin, not core. Don't propose adding channels to the main repo.
+
 ## Bedrock Mantle Extension (04-17)
 
 - Extension pattern: `extensions/amazon-bedrock-mantle/` — discovery + auth + provider resolution
