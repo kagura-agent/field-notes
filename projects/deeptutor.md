@@ -99,8 +99,10 @@
 - **Issue**: #400 (Failed to get valid JSON from LLM — actually a Logger.warning TypeError)
 - **Root cause**: Custom `Logger.warning(self, message)` only accepts one positional arg. Line 1627 used `%s`-style format with extra positional arg → `TypeError: Logger.warning() takes 2 positional arguments but 3 were given`
 - **Fix**: Change to f-string, consistent with all other logger calls in the file
-- **Status**: PENDING (CI ✅ all 4 checks pass)
+- **Status**: ❌ CLOSED — maintainer (pancacake) fixed in v1.3.0 via issue #400 comment. PR had merge conflict, already obsolete.
+- **Closed by**: self (2026-04-27), left comment thanking maintainer for quick turnaround
 - **Lesson**: DeepTutor uses a custom Logger class, not stdlib. Always check the Logger interface before using `%s`-style formatting
+- **Pattern**: UPSTREAM_SELF_FIX — maintainer fixed the issue themselves in a release before external PR was reviewed. Small active repos with engaged maintainers may fix bugs faster than PR review cycle.
 - **Note**: Issue title misleading — says "Failed to get valid JSON" but real crash is the logging TypeError in the except handler
 
 ### PR #347 — fix(rag): guard against None embeddings in LlamaIndex pipeline (2026-04-20)

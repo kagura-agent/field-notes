@@ -32,15 +32,26 @@
 
 7. **Skill 提取缺口**: 二次审计捕获虚假毕业的模式（"声称完成但无 commit 证据"）是可复用的 audit pattern，但未提取成 audit checklist 项
 
+### 晚间补充 (22:30)
+
+8. **beliefs-candidates 管线升级**: 下午 15:59 commit 引入 hermes 4D 评分维度（Durability + Reduction）到升级质量门。这是管线自身的进化——不只是内容变化，是评估机制变化。从外部学习（hermes-memory-skills）→ 引入自己体系，是跨项目知识迁移的正面案例
+
+9. **反思产出**: 今日 3 次反思（#2 Session Flush 13:08, #3 Cron 大修 15:49, #4 Nested Lane Bug Fix 16:31），全部有具体 failure/success 记录。质量较高——每次都有 pattern 提炼和 applies_when 标注
+
+10. **study 密度高**: 下午至晚间 10 个 study-related commits，涵盖 hermes memory skills、wanman 竞品、clawhub 评估、reasonix 深读、phantom ROI、agentic-stack 跟进。学习管线活跃，且有沉淀（wiki 更新）
+
+11. **open issues 状态**: #5 nudge dead（未修）、#6 dreaming quality（dreaming route 已修但质量问题未解）、#7 beliefs upgrade blocked（今天有 2 条毕业，说明机制开始工作但靠 evolve instance 手动驱动而非自动化）
+
 ### 原始数据
-- `git log --since="2026-04-26 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 2 commits (study reflections, SOUL.md update)
-- `git log --since="2026-04-26 22:30" --all --oneline`: 4 commits (todo, study×2, daily-review)
+- `git log --since="2026-04-26 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 3 commits (study×2 + SOUL.md update)
+- `git log --since="2026-04-26 22:30" --all --oneline`: 14+ commits (study×10, daily-review, todo, memory)
 - `grep -c nudge memory/2026-04-27.md`: 0
-- `grep dreaming memory/2026-04-27.md`: 2 mentions (both "delivery route broken")
-- `beliefs-candidates.md`: 244 行, 48 条 active, 7 升级, 3 CURED, 3 RECURRING
-- `SOUL.md diff`: +2 lines ("Waiting is not a strategy" paragraph)
-- PR activity today: 4 new open, 8 merged, 2 closed (gh search prs --author=kagura-agent --created>=2026-04-27)
-- evolve instances: #857 (虚假毕业, 纠正) → #861 (实际执行, SOUL.md commit 完成)
+- `grep dreaming memory/2026-04-27.md`: delivery route broken → fixed (加 delivery.channel)
+- `beliefs-candidates.md`: 244 行, 48 active, 8 升级(~~), 3 CURED. 新增 Durability+Reduction 维度到升级门
+- `SOUL.md diff`: +2 lines ("Waiting is not a strategy")
+- 反思: 3 次 (Session Flush, Cron 大修, Nested Lane Bug Fix)
+- PR activity: abti#66 merged+deployed, memex#78 merged+#80 submitted, lobster-post#60 merged
+- evolve instances: #857 (虚假毕业) → #861 (纠正+实际执行) → #870 (二次审计 evolve)
 
 ---
 

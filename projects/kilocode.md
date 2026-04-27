@@ -27,6 +27,8 @@
 - PR 标题格式: `fix(scope): description` / `feat(scope): description`
 - kilocode 标记改动: `// kilocode_change` 注释
 - 内部 AI review: Kilo Code Review (app.kilo.ai)
+- **marius-kilocode 偏好**: 不接受"简单开关"式修复（如 `--no-ignore-vcs` toggle）。偏好精准、最小影响面的方案：用专门工具做专门的事（`git ls-files` 查 gitignored files > `rg --no-ignore-vcs` 全量扫描）。会明确告诉你 better approach 并要求开新 PR，不是拒绝贡献
+- **反复验证的 pattern**: marius 3 次关闭我的 PR（#9329 已在 main、#9414 estimates 不可靠、#9513 scope 太窄、#9564 approach 太 simple），每次都给出清晰反馈。他的标准是：修复必须在正确的抽象层、用正确的工具、覆盖完整的状态空间
 
 ### PR #9513 — fix(cli): proactive context overflow detection before LLM request
 - **Issue**: context overflow crashes
@@ -238,7 +240,7 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 
 ### PR #9564 — fix(search): include gitignored files in @mention file search
 - **Issue**: #9532 — File extensions in gitignore also ignored by @mentions
-- **状态**: OPEN (2026-04-27)
+- **状态**: CLOSED (2026-04-27) — maintainer said approach too simple
 - **改动**:
   - `packages/opencode/src/file/ripgrep.ts`: 新增 `noIgnoreVcs?: boolean` 到 `FilesInput`，`filesArgs` 对应加 `--no-ignore-vcs`
   - `packages/opencode/src/file/index.ts`: `search()` 在 fuzzy 结果不足时，用 `noIgnoreVcs: true` + glob 做补充搜索
@@ -247,6 +249,10 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - **方法**: 不改 scan 缓存（保持默认行为），只在 search 阶段做 fallback——结果不足时跑第二次 ripgrep
 - **技术选择**: 用 `Effect.catchCause` 而非 `Effect.catchAll`（后者在 Effect v4 不存在）；不用 `Stream.take`（直接 slice 更简单）
 - **测试**: 单元测试有 upstream 问题（`@npmcli/config` 缺失），typecheck 无新错误
+- **Review (marius-kilocode)**: Said fix was "too simple". Better approach: keep normal cache unchanged, add a supplemental search that finds *only* Git-ignored files (not every file under ignored directories via broad ripgrep). Separate the fallback to target gitignored files specifically rather than broadening the entire search.
+- **Maintainer's preferred approach**: Use `git ls-files --others --ignored --exclude-standard -z` to get only gitignored files, apply fuzzysort matching to those, then append after normal results. This is more surgical than `rg --no-ignore-vcs` which also pulls in files under ignored directories.
+- **Lesson**: Don't just toggle `--no-ignore-vcs` globally — it pulls in too many unwanted files. The right approach is a targeted supplemental search for gitignored files only, keeping the normal search path clean.
+- **Action**: Maintainer explicitly asked to open a new PR with the `git ls-files` approach. This is a redo opportunity, not a rejection.
 
 ## Superseded PR Lessons (2026-04-27)
 - **#9513 closed by marius**: My approach was "detect overflow proactively before LLM request" — a guard check. Marius's #9557 is "model-aware dynamic budgets for compaction" — scales pruning budgets from model limits (input/context), adds in-memory shrinking of tool outputs and synthetic text before summary model call. Much more comprehensive:

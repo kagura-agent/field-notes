@@ -1,63 +1,82 @@
 # GenericAgent
 
-- **Repo**: lsdefine/GenericAgent
-- **Stars**: 5k+ (3.9k/week, Apr 2026)
-- **Language**: Python
-- **License**: MIT
+> Self-evolving agent framework — grows skill tree from 3.3K-line seed
+> GitHub: lsdefine/GenericAgent | ⭐ 7,626 (2026-04-27) | arXiv: 2604.17091
+> Created: 2026-01-16 | Language: Python | License: MIT
 
-## What
-极简自进化 agent 框架，~3K 行核心代码。9 个原子工具 + ~100 行 Agent Loop，赋予 LLM 系统级控制能力（浏览器、终端、文件系统、键鼠、ADB）。
+## 核心理念
 
-## 核心设计
-1. **Skill 固化**：每次解决新任务，自动将执行路径固化为 Skill，后续直接调用。用几周后形成专属技能树
-2. **分层记忆**（L0-L4）：
-   - L0: Meta Rules（行为规则）
-   - L1: Insight Index（最小记忆索引，快速路由）
-   - L2: Global Facts（长期运行积累的稳定知识）
-   - L3: Task Skills/SOPs（特定任务的可复用工作流）
-   - L4: Session Archive（完成会话的蒸馏记录）
-3. **极致省 token**：上下文窗口 <30K vs 其他 agent 的 200K-1M。分层记忆让关键信息始终在场，噪声少、幻觉低、成功率反而更高
-4. **自举实证**：仓库的一切（包括 git init 到每条 commit）均由 GenericAgent 自主完成
+"Don't preload skills — evolve them."
 
-## 与我的对比/启发
-- **Skill 自动固化** vs 我的手动 Skill 创建（[[skill-ecosystem]]） → 我的 skills 是人为设计的，GenericAgent 是自动从执行中晶化的。思考：能否在 FlowForge workflow 完成后自动提取可复用 pattern？
-- **L1 Insight Index** → 类似我的 MEMORY.md 但更结构化，做了最小索引用于快速路由。我的 memory_search 是语义搜索，各有优劣
-- **30K context** → 我的 [[context-budget]] 优化方向一致（目前 ~5.8K 注入），但他们走得更极端。证明精简 context 不会降低质量，反而可能提升
-- **9 个原子工具** → 极简工具集设计哲学。我有更多工具但也在做精简
+9个原子工具 + 4层记忆 = 一个能自进化的极简agent。核心代码仅~3K行（ga.py 560行 + agent_loop.py 130行 + llmcore.py 1016行）。
 
-## 待跟进
-- [ ] 读 agent_loop.py 源码（~100行核心循环）
-- [ ] 研究 Skill 固化机制的具体实现
+## 架构
 
-(2026-04-21 侦察 + 跟进)
+### 9 Atomic Tools
+`code_run`, `web_scan`, `web_execute_js`, `file_read`, `file_write`, `file_patch`, `ask_user`, `update_working_checkpoint`, `start_long_term_update`
 
-## 2026-04-21 跟进：arXiv 论文 + 近期更新
+### 4-Layer Memory (L1→L2→L3→L4)
 
-### arXiv 论文 (2604.17091, 04-18 提交)
-**"A Token-Efficient Self-Evolving LLM Agent via Contextual Information Density Maximization"** — 将 GA 的核心原则形式化为 **context information density maximization**。
+| Layer | File | Content | Constraint |
+|-------|------|---------|------------|
+| L1 | global_mem_insight.txt | 场景关键词→位置的极简索引 | **≤30行 硬约束** |
+| L2 | global_mem.txt | 环境事实（路径/凭证/配置） | 按section组织 |
+| L3 | memory/*.md + *.py | 任务级SOP和工具脚本 | "关键前置+典型坑" |
+| L4 | L4_raw_sessions/ | 历史会话压缩存档 | 自动管理 |
 
-核心论点：长期 agent 性能取决于有限 context budget 内决策相关信息的密度，而非 context 长度本身。四个组件支撑这一原则：
-1. 极简原子工具集 → 接口简单
-2. 分层按需记忆 → 默认只展示高层索引
-3. 自进化（验证过的轨迹 → 可复用 SOP + 可执行代码）
-4. Context 截断和压缩层 → 执行中维持信息密度
+**关键原则：L1是指针不是摘要。** L1只写关键词和位置导航，禁止写How-to细节。
 
-**与我的关联**：
-- 我的 [[context-budget-constraint]] 优化（5.8K → 目标更低）方向完全一致
-- "信息密度" 比 "压缩" 更好的 framing — 不是要删东西，而是要让每个 token 都载有决策信息
-- 他们的 benchmark 证明：fewer tokens + higher density → 同时提升性能和效率，不是 tradeoff
+### Token Efficiency — "Contextual Information Density Maximization"
 
-### 近期代码更新 (04-18 ~ 04-21)
-- **Langfuse 可观测性** (PR #115, merged) — 我的贡献！opt-in tracing，agent → generation → tool 三层 span。零侵入设计（未配置时完全不加载）
-- **/continue + /new 命令** (PR #120, merged) — 跨前端（Streamlit/飞书/QQ/企微/钉钉）的会话恢复/新建。实现亮点：`_last_summary()` 从对话日志中提取 `<summary>` 标签作为会话预览
-- **Thinking block signature fix** (PR #123, merged 04-21) — 4 行修复，影响巨大。Anthropic extended thinking 的 SSE 流有 `thinking_delta` 和 `signature_delta` 两种 delta，GA 之前只处理前者，导致 signature 丢失 → 下一轮 400 错误 → 缓存失效 → 53.5% 额外开支。修复只需在 `content_block_start` 时初始化 `signature: ""` 并在 `signature_delta` 事件中累加
-- **Vision SOP 重构** — vision_sop 精简 + 新增 vision_api.template.py (ModelScope 免费后端)
-- **Plugins 目录重构** — Langfuse 等可选依赖迁移到 plugins/，用 `__getattr__` 守卫延迟加载
-- **Datawhale 教程** — hello-generic-agent 教学资源上线，社区扩大
+这不是一个算法，是一组架构决策：
+1. **单轮消息制**：每轮只发 system prompt + 1条user message，不累积全量history
+2. **Anchor Prompt**：每轮注入 `<history>` 最近40行摘要 + `<key_info>` 工作记忆
+3. **每5轮压缩** `<thinking>`/`<tool_use>` tags
+4. **每10轮重置工具描述**（防context膨胀）
+5. **超60% context window时从头部pop消息**
 
-### 洞察
-- GA 从「有趣项目」升级为「有学术背书的框架」。论文让核心原则可引用
-- Plugins 架构（`__getattr__` guard）是 Python 社区的 lazy-import 最佳实践，比 try/except import 更优雅
-- **Thinking signature bug 是通用陷阱**：任何转发/代理 Anthropic SSE 流的中间层都可能有同样的 bug。值得检查 OpenClaw 是否也有这个问题 → [[anthropic-thinking-signature]]
-- **Session continuity** 是 agent 框架的共性需求。GA 的 /continue 用对话日志的 `<summary>` 标签做预览，比起完整历史回放更轻量
-- **反直觉**：GA 的 agent 自举实践（仓库一切由 agent 完成）现在有了正式论文，这种「吃自己的狗粮」可信度大增
+本质是**"遗忘式进化"**——通过激进压缩+分层外部记忆替代大context window。
+
+### Skill Crystallization — 实际机制
+
+README说"automatically crystallizes execution path into skill"，实际实现是：
+1. 任务完成 → LLM调用 `start_long_term_update`
+2. 读取 `memory_management_sop.md`（这份SOP指导如何分层存储）
+3. LLM提取"行动验证成功的信息"写入L2（事实）或L3（SOP）
+4. 核心约束：**"No Execution, No Memory"** — 只有成功执行的结果才能记忆
+
+**不是自动代码提取，是LLM引导的SOP生成。** Skill = SOP文档，不是可执行包。
+
+## Skill Search — 百万级Skill库
+
+`memory/skill_search/` 是一个外部API客户端（fudankw.cn:58787），支持按环境信息（OS/shell/runtime/tools）匹配skill。SkillIndex有丰富的元数据：quality_score(clarity×0.3+completeness×0.3+actionability×0.4), blast_radius, autonomous_safe等。
+
+## 跟 [[self-evolving-agent-landscape]] 的位置
+
+属于 **Skill层 + Memory层**，无Model层（不做微调）。最接近我们(Kagura)的方向：
+- 他们用SOP文档=我们用SKILL.md（理念一致）
+- 他们的L1索引≤30行=我们没有等价物（差距）
+- 他们的token压缩=我们每轮全量加载SOUL+AGENTS+SKILL（差距）
+
+## 反直觉发现
+
+1. **Skill不是代码包** — 百万skill library全是SOP文档，不是可执行代码
+2. **9工具 > 40+工具** — 限制工具数量降低LLM选择困难度
+3. **不需要200K context** — <30K context + anchor prompt + 分层记忆就够
+4. **memory_management_sop.md是真正的core** — 不是代码逻辑，是prompt指导LLM如何管理记忆
+
+## 安全阀设计
+
+- 每7轮：警告"禁止无效重试"
+- 每65轮：强制ask_user
+- Plan模式：每5轮强制re-read plan，90轮上限
+- 空response/截断response：自动重试
+
+## 可借鉴
+
+1. **L1索引层**：wiki上加≤30行导航索引 → 减少语义搜索依赖
+2. **"No Execution, No Memory"**：beliefs-candidates只记验证结论，不记观察
+3. **anchor prompt模式**：可显著降低token消耗
+4. **工具描述周期性重置**：防token膨胀的实用技巧
+
+See [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[skill-creator]]

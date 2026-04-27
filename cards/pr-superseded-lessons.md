@@ -169,6 +169,15 @@ Added to pre-PR checklist:
 - **Context**: Maintainer consolidated multiple doc PRs. #8 was a subset of #11 which covered all v0.10b commands plus full CLI reference.
 - **Lesson**: When multiple PRs target the same area, the more comprehensive one wins. Not a negative — just consolidation. Better to submit one comprehensive PR than multiple narrow ones.
 
+## 2026-04-27: Kilo-Org/kilocode #9564 — approach "too simple"
+- **Issue**: Gitignored files invisible to @mention file picker
+- **My approach**: Toggle `--no-ignore-vcs` on ripgrep as fallback when fuzzy results insufficient
+- **Maintainer's preferred approach**: Use `git ls-files --others --ignored --exclude-standard -z` for a targeted list of only gitignored files, then fuzzysort over those. Don't broaden the entire ripgrep search.
+- **Why mine was rejected**: `--no-ignore-vcs` pulls in ALL files under ignored directories (node_modules, build outputs, etc.), not just the specific gitignored files the user wants. Way too broad.
+- **Lesson**: When adding a supplemental search, the supplement should be as targeted as possible. Use purpose-built tools (`git ls-files --ignored`) over general tools with flags toggled (`rg --no-ignore-vcs`). The specificity of the data source matters more than the simplicity of the implementation.
+- **Pattern**: BROAD_TOGGLE_VS_TARGETED_QUERY — toggling a flag to include "everything" when you only need a specific subset. Same family as SCOPE_TOO_BROAD but at the data-query level.
+- **Action**: Maintainer asked for a new PR with the `git ls-files` approach. Redo opportunity.
+
 ## 2026-04-27: Kilo-Org/kilocode #9513 — superseded by #9557
 - **Context**: My PR did proactive context overflow detection before LLM request. @marius-kilocode closed it and opened #9557 with model-aware compaction budgets, dynamic pruning scaling, overflow shrinking, and comprehensive regression tests.
 - **Lesson**: Detection-only PRs lose to adaptation PRs. "Here's the problem" < "Here's the problem + here's how to dynamically adapt". When the domain has tuning parameters (model limits, context windows), use them dynamically (ratios/budgets) instead of hardcoded thresholds.
@@ -187,3 +196,4 @@ Added to pre-PR checklist:
 
 **Pre-investment check to add**:
 9. Check external merge history: `gh pr list --state merged --limit 20` — what % are non-maintainer? Recent trend up or down? If zero external merges in last 2 weeks, deprioritize.
+10. Is my supplemental search/fallback targeted enough? (Use purpose-built queries like `git ls-files --ignored` over broad flag toggles like `--no-ignore-vcs`)

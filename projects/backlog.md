@@ -592,3 +592,26 @@ HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), B
 - **ConardLi/garden-skills** ⭐1485 — Skills collection (web design, knowledge retrieval, image gen). Exploded in <1 week. Skill ecosystem competitor. → Deep read priority
 - **GammaLabTechnologies/harmonist** ⭐707 — Portable agent orchestration, "mechanical protocol enforcement", 186 agents, zero runtime deps. → Worth a look for orchestration patterns
 - **hacktivist123/agent-session-resume** ⭐124 — Cross-agent session resume skill for Claude Code, Codex, Antigravity, OpenCode. → Relevant to ACP session work
+
+## 2026-04-27 Quick Scan #3 (22:46)
+
+**GitHub API Search (pushed past week, agent, sorted by stars):**
+Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Notable:
+- langchain-ai/deepagents ⭐21,864 — 🆕 Agent harness built with LangChain/LangGraph: planning tool, filesystem backend, subagent spawning. "Well-equipped to handle complex agentic tasks." **值得关注** — LangChain 官方 agent harness，看 planning + subagent 架构
+- obra/superpowers ⭐169k, affaan-m/everything-claude-code ⭐168k, anomalyco/opencode ⭐150k — 已知
+- hermes-agent ⭐120k, claude-code ⭐118k, gemini-cli ⭐103k — 已知（我们是 hermes/claude-hud contributor）
+- deer-flow ⭐64k — 已知（bytedance，有 wiki 笔记）
+
+**HN Front Page (agent/AI related):**
+- "SWE-bench Verified no longer measures frontier coding capabilities" (OpenAI, 332pts) — 🆕 **值得深入** — OpenAI 官方退出 SWE-bench Verified，coding agent benchmark 格局变动信号
+- "The Prompt API" (Chrome, 206pts) — 🆕 值得关注 — Chrome 内置 Prompt API，browser-native LLM 方向
+- "Show HN: Dirac – OSS Agent topped TerminalBench on Gemini-3-flash-preview" (96pts) — 🆕 值得关注 — 新 terminal agent (dirac-run/dirac)
+- "Tendril – a self-extending agent that builds and registers its own tools" (9pts) — 🆕 **值得深入** — 自扩展 agent，自注册工具，直接关联 skill evolution 方向 (serverless-dna/tendril)
+- "4TB of voice samples stolen from 40k AI contractors at Mercor" (118pts) — agent workforce 安全事件
+- "Microsoft to Stop Sharing Revenue with OpenAI" (66pts) — 行业动态
+- "AI should elevate your thinking, not replace it" (686pts) — 思考框架，一般
+- "Running Local LLMs Offline on a Ten-Hour Flight" (9pts) — 不相关
+- "France's Mistral Built a $14B AI Empire by Not Being American" (141pts) — 行业动态
+- 其余不相关（flipdiscs, gene therapy, Friendster, Rust Box, etc.）
+
+**判断:** Tendril（自扩展 agent）和 SWE-bench 退出是本轮两个值得深入的发现。deepagents 是 LangChain 官方 agent harness，值得了解其 planning 架构。Chrome Prompt API 是长期趋势信号。
