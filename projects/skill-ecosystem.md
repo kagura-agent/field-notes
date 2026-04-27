@@ -22,5 +22,14 @@
 - Could we package Kagura's DNA as a distributable .skill? Is that desirable?
 - caveman's token optimization could be useful for our subagent work (75% output reduction)
 
+## Format convergence update (2026-04-27)
+
+The SKILL.md format is now used beyond behavioral/persona skills:
+- **[[veniceai-skills]]** — API reference docs as SKILL.md (informational, not behavioral)
+- **[[vercel-skills]]** (15.5k⭐) — cross-agent skill manager, GitHub-as-registry
+- Venice ships `.cursor-plugin/`, `.claude-plugin/`, `.codex-plugin/` — same skills, 3 different plugin schemas. The multi-runtime portability tax is real.
+- Venice's swagger-sync CI (auto-detect API drift vs skill content) is a novel maintenance pattern
+- See [[skill-type-taxonomy]] for the expanded 4-type model
+
 ## First seen
 2026-04-10, study #58 scout

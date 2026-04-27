@@ -555,3 +555,12 @@ HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), B
 - **intertwine/dspy-agent-skills** ⭐180 — Production DSPy 3.2 agent skills with validated examples for Claude Code/Codex. Could inform skill design patterns.
 - **Tolaria** (HN 168pts) — macOS markdown knowledge base app, open-source. Tangential to memex/wiki tooling.
 - GPT-5.5 launch (HN 1265pts) — noted, no action needed
+
+## Quick Scan 2026-04-27 17:50
+
+- veniceai/skills ⭐33 — Venice.ai API skills using SKILL.md format (same convention as OpenClaw/ClawHub). 🆕 值得关注：skill ecosystem convergence signal, multi-runtime support (Cursor/Claude/Codex/OpenCode/Hermes)
+- harmonist ⭐707 (was 466) — 快速增长，portable agent orchestration. 已在 backlog
+- future-agi ⭐578 (was 143) — 暴涨，eval/observe 平台. 已在 backlog
+- alash3al/stash ⭐298 — persistent memory for agents, Postgres+MCP. 已有笔记
+- HN: "Agent Vault" — HTTP credential proxy for AI agents (Show HN). 已有笔记
+- HN: n8n "re-learn agent dev tools in 2026" — 新帖，待看
