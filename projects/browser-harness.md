@@ -80,3 +80,7 @@ Chrome → CDP WebSocket → daemon.py → /tmp/bu-<NAME>.sock → run.py (helpe
 
 **信号**: 项目从极简 harness 开始向 "domain skills" 扩展（YouTube scraping 是第一个）。这和 OpenClaw 的 AgentSkills 方向有结构相似性——最薄的核心 + 可插拔的领域模块。
 **Stars**: ~4.4k（2 天 +1.8k，增长势头极猛）
+
+## Related: byob (2026-04-27)
+
+[[byob-chrome-reuse-mcp]] takes a similar "reuse existing Chrome" approach but via Chrome Extension + Native Messaging instead of direct CDP WebSocket. Key difference: byob's lifecycle is managed by Chrome (NM host auto-launch), while browser-harness runs its own daemon. byob is MCP-native; browser-harness is Python-native. Both prove the "don't launch, reuse" pattern has legs.
