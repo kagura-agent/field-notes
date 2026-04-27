@@ -84,6 +84,22 @@ See [[mechanism-vs-evolution]] for the philosophy behind layer separation.
 
 See [[agentfactory]], [[openspace]], [[engram]]
 
+## 2026-04-27 更新：wanman — Skill + Workflow 层融合
+
+### wanman (chekusu)
+- **Agent matrix runtime**：多 agent 协作框架，用 Claude Code/Codex 作子进程
+- **Skill evolution pipeline** 完整开源：`run_feedback → metrics → identifyUnderperformers → createVersion → eval → autoPromote`
+- 用 [[db9]] (serverless Postgres) 作 brain adapter 持久化 skill 版本和 run 反馈
+- **Activation snapshots**：冻结特定 run 的 skill 版本组合，支持 A/B 对比和回滚
+- `idle_cached` 模式：Claude `--resume` 保持 session context，idle 时不耗 CPU
+- 关键洞察：**skill 进化不需要 RL**，只需要 metrics + A/B eval + auto-promote。与 OpenSpace 的 quality monitoring 方向一致
+
+### 新趋势（续）
+- **Metrics-driven evolution**：wanman 证明 success_rate + intervention_rate 足以驱动 skill 改进
+- **Session persistence**：idle_cached 填补了 "always-on 太贵 vs stateless 太傻" 的空白
+
+See [[wanman-skill-evolution]] for deep read.
+
 Related orphan concepts:
 - [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
 - [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
