@@ -95,6 +95,14 @@
 - **贡献要求**: PR 必须 target `dev` 分支，pre-commit run --all-files
 - **环境**: Python 3.11/3.12, FastAPI, uvicorn
 
+### PR #404 — fix(research): use f-string in reporting_agent logger.warning call (2026-04-27)
+- **Issue**: #400 (Failed to get valid JSON from LLM — actually a Logger.warning TypeError)
+- **Root cause**: Custom `Logger.warning(self, message)` only accepts one positional arg. Line 1627 used `%s`-style format with extra positional arg → `TypeError: Logger.warning() takes 2 positional arguments but 3 were given`
+- **Fix**: Change to f-string, consistent with all other logger calls in the file
+- **Status**: PENDING (CI ✅ all 4 checks pass)
+- **Lesson**: DeepTutor uses a custom Logger class, not stdlib. Always check the Logger interface before using `%s`-style formatting
+- **Note**: Issue title misleading — says "Failed to get valid JSON" but real crash is the logging TypeError in the except handler
+
 ### PR #347 — fix(rag): guard against None embeddings in LlamaIndex pipeline (2026-04-20)
 - **Issue**: #346 (RAG query crashes with TypeError: NoneType * float)
 - **根因**: `_extract_embeddings_from_response` 用 `item.get("embedding", [])` — `dict.get()` 只在 key 缺失时返回 default，key 存在但值为 None 时返回 None。None 存入 vector store → `np.dot` 崩溃
