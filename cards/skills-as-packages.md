@@ -39,11 +39,24 @@ GBrain: v0.8.1（search quality）→ v0.9.x（security）→ v0.10.x（GStack m
 - 显式 resolver vs 隐式 description 匹配是 tradeoff：显式更省 context 但更 rigid，隐式更灵活但更贵
 - 跨包组合在当前规模（~15 skills）还不紧迫，但值得关注
 
+## 04-27 追加：agentic-stack 的 seed skill + adapter.json
+
+[[agentic-stack]] v0.9+ 提供了另一个独立趋同的证据：
+
+| 项目 | 机制 | 包描述符 | 版本管理 |
+|------|------|----------|----------|
+| [[agentic-stack]] | adapter.json + seed skill SKILL.md | name, files, merge_policy, post_install | SCHEMA_VERSION |
+
+- **adapter.json** 是 harness adapter 的 manifest——声明式文件映射 + merge policy + post-install hooks。本质是小型 IaC
+- **seed skill** 模式：内置 skill（data-layer, data-flywheel, tldraw）作为模板，可被社区 fork/扩展
+- 确认趋势：**四个独立项目**（gbrain, skillclaw, OpenClaw, agentic-stack）趋同于 SKILL.md + YAML/JSON 元数据 + 文件系统原生的 skill 标准
+
 ## 关联
 - [[thin-harness-fat-skills]] — 架构基础
 - [[skill-ecosystem]] — 生态视角
 - [[gbrain]] — 主要证据来源
 - [[skillclaw]] — 另一个独立趋同的证据
+- [[agentic-stack]] — 第四个独立趋同的证据（adapter.json + seed skill）
 
 ## Tags
 #agent-skills #architecture #trend #packaging
