@@ -116,6 +116,21 @@ Asked Ken to add an open-source license (suggested MIT or Apache-2.0). Without a
 
 All valid points. Addressing them would strengthen the PR and show we take review seriously. Queued for next work session.
 
+### 2026-04-27: PR #2 — CodeRabbit review addressed
+
+**Commit**: Pushed review fixes (all 14 tests still passing)
+
+Addressed all 4 CodeRabbit suggestions:
+
+| Fix | What changed | Why it matters |
+|-----|-------------|----------------|
+| `afterAll` guard | Added `if (tmpDir)` before `fs.rm` | Prevents masking original error if `beforeAll` throws |
+| Circular test | Added `entry.py` as entry point + 2s explicit timeout | Test was vacuous — neither `a.py` nor `b.py` had zero importers, so chain was always `[]` |
+| Synthetic findings | JS/TS/Shell/importlib tests now inject `Finding` objects directly | Eliminates conditional `if (findings.length > 0)` that could silently pass if `RegexAdapter` rules changed |
+| Diamond assertion | Assert exact `chainFindings.length === 1` and `chain.length >= 3` | Validates dedup-by-entry→terminal behavior instead of just "contains main.py" |
+
+**Key insight**: The synthetic findings pattern is genuinely better test design. Decoupling `traceImportChains` tests from `RegexAdapter` means the chain tracer tests won't break/go silent if scanning rules change. This is [[code-review-lessons|Bot Review = Real Review]] in action — CodeRabbit caught a subtle testing smell that would have caused real problems later.
+
 ## Relation to Other Projects
 
 - vs [[skill-trust-landscape-2026-04|SkillCheck]]: SkillCheck is browser-only, no signing. STSS is full pipeline.
