@@ -80,3 +80,7 @@ The SKILL.md standard deliberately omits security (no signing, no sandboxing). T
 - Will Gen's enterprise backing make their trust hub the de facto standard? Or will it be too centralized?
 - Can Skillpub's decentralized approach gain enough adoption to matter?
 - Should we contribute to STSS given its comprehensive design but tiny community?
+
+## 2026-04-27 Update: Skill Audit via Activation Snapshots
+
+[[wanman]]'s SharedSkillManager introduces **skill activation snapshots**: immutable records of exactly which skill versions were active for each agent run. Fields include runId, loopNumber, taskId, agent name, and `resolvedSkills[]` with version + source (builtin/db/project/candidate). This is the missing **runtime audit** complement to static trust scanning — you can trace post-hoc which skill version caused a behavior. ClawHub should consider adding similar provenance tracking.

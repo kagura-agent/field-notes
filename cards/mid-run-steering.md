@@ -40,6 +40,22 @@ The choice of **where** to inject matters more than **whether** to inject. Appen
 2. It doesn't violate model-specific role alternation rules
 3. It's naturally scoped to the current tool execution context
 
+### wanman (2026-04-27)
+- Steer-priority messages → SIGKILL current Claude/Codex subprocess → next loop iteration picks up steer message first (SQL ordering by priority)
+- Most aggressive approach: kills the process entirely rather than injecting mid-stream
+- Tradeoff: loses all in-flight context but guarantees the steer is acted on immediately
+- Simpler implementation than Hermes (no need for injection seams), but context loss is significant
+- See [[wanman]]
+
+## Design Insight
+
+Three distinct approaches now visible across the ecosystem:
+1. **Inject into tool results** (Hermes) — minimal disruption, preserves context, but complex to implement
+2. **Queue for next turn boundary** (OpenClaw subagent steer) — no context loss, but delayed
+3. **Kill and restart** (wanman) — immediate but destructive, simplest to implement
+
+The right choice depends on how expensive context loss is vs how urgent the steer is.
+
 ## Related
 
 - [[nudge-over-workflow]] — nudges at session boundaries (between runs, not within)
