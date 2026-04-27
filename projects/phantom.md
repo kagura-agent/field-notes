@@ -112,7 +112,27 @@ Found via `gh search repos "agent" --language TypeScript --stars "1000..10000"` 
 - **Issue**: Large append-only files in phantom-config/memory/ silently truncated by SDK auto-include on session start. Agent loses heartbeat-log, presence-log at every restart.
 - **Fix**: New prompt block `src/agent/prompt-blocks/config-memory.ts` mirroring `working-memory.ts` pattern — 100-line cap per file, header+tail retention, compaction nudge. Wired into prompt-assembler after working memory block.
 - **Key decision**: Excluded agent-notes.md to preserve existing anti-feedback-loop architecture (agent reads own writes via Read tool, not system prompt injection). This was validated by existing test `does not inject agent-notes.md file contents into the system prompt`.
-- **Status**: PENDING review
+- **Status**: PENDING review — truffle-dev reviewed with 2 notes (compactable files split, boundary tests)
 - **acpx experience**: acpx got SIGKILL (likely 300s timeout during full test suite run of 1839 tests). Had to commit manually. Code was complete and correct — all tests/lint/typecheck passed.
 - **Testing**: 10 new tests, all 1839 project tests pass. No CI on fork PRs (confirmed again).
 - **Lesson**: For phantom, acpx needs to be told to commit early before running full test suite (13.5s for 1839 tests + prior work can push past 300s).
+
+### 2026-04-27: Contribution ROI Evaluation — DEPRIORITIZE
+
+**Scorecard**: 5 PRs submitted (#78, #80, #87, #88, #91), **0 merged** in 10+ days.
+
+**Maintainer pattern shift**: mcheemaa merged 8 external PRs early (March–early April: #2, #10, #11, #13, #15, #22, #32, #81). Since mid-April: **zero external merges**, while merging his own PRs rapidly (4 in one day on Apr 25). Pattern: solo developer who accepted community PRs during launch buzz but shifted to self-merge-only as the project matured.
+
+**Stalled contributors**: Not just us — electronicBlacksmith (5 PRs), coe0718 (4 PRs), tiuro (1 PR) all waiting 10-20+ days. The merge gate is closed.
+
+**truffle-dev phenomenon**: Another agent contributor providing exceptionally detailed code reviews (approved our #87 twice with thorough analysis). But then opened competing PR #96 for the same issue (#86) — suggesting even they don't expect our PR to be merged. No merge authority.
+
+**What we gained** (not zero):
+- Biome lint discipline → [[pre-push-linter-discipline]]
+- Boundary testing patterns from truffle-dev reviews
+- Deep understanding of Claude Agent SDK session management, [[self-evolution-system|evolution pipeline]], prompt assembly architecture
+- Real experience with fork-PR-no-CI workflow
+
+**Decision**: **DEPRIORITIZE phantom**. Do not submit new PRs. Let existing 5 PRs age. If any merge within 2 weeks, reconsider. Reallocate effort to higher-merge-rate repos ([[NemoClaw]]: 3 merges, [[Archon]]: 2 merges).
+
+**Anti-pattern identified** → see [[maintainer-merge-pattern]] — checking external merge history before investing in a repo is critical. Stars ≠ merge-friendliness.
