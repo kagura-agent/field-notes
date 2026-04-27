@@ -55,19 +55,34 @@ print(" 1. BROKEN WIKILINKS")
 print("═══════════════════════════════════════════════════════")
 
 wikilink_re = re.compile(r'\[\[([^\]]+)\]\]')
+code_block_re = re.compile(r'```.*?```', re.DOTALL)
+inline_code_re = re.compile(r'`[^`]+`')
 all_wikilinks = []  # (source, target_slug)
 broken_links = []
+
+def strip_code_blocks(text):
+    """Remove fenced code blocks and inline code to avoid false positives."""
+    text = code_block_re.sub('', text)
+    text = inline_code_re.sub('', text)
+    return text
 
 for fpath in all_files:
     try:
         content = open(fpath, 'r', errors='replace').read()
     except Exception:
         continue
-    for m in wikilink_re.finditer(content):
+    clean_content = strip_code_blocks(content)
+    for m in wikilink_re.finditer(clean_content):
         raw = m.group(1).strip()
-        # Handle [[display|slug]] format
+        # Skip anchors-only links like [[#section]]
+        if raw.startswith('#'):
+            continue
+        # Handle [[slug|display]] format (slug is first part)
         if '|' in raw:
-            raw = raw.split('|')[-1].strip()
+            raw = raw.split('|')[0].strip()
+        # Strip .md suffix if present
+        if raw.endswith('.md'):
+            raw = raw[:-3]
         slug = raw.lower().replace(' ', '-')
         all_wikilinks.append((fpath, raw, slug))
         if slug not in slug_lower_set:
@@ -100,7 +115,7 @@ print("════════════════════════�
 index_path = Path('index.md')
 if index_path.exists():
     index_content = index_path.read_text(errors='replace')
-    md_link_re = re.compile(r'\(([^)]*\.md)\)')
+    md_link_re = re.compile(r'\]\(([^)]*\.md)\)')
 
     # Files in index but missing on disk
     missing_disk = 0
@@ -146,7 +161,8 @@ for fpath in all_files:
         content = open(fpath, 'r', errors='replace').read()
     except Exception:
         continue
-    for m in md_ref_re.finditer(content):
+    clean = strip_code_blocks(content)
+    for m in md_ref_re.finditer(clean):
         ref = m.group(1)
         slug = Path(ref).stem.lower()
         referenced.add(slug)
@@ -231,6 +247,59 @@ if ci_path.exists():
         warn(f"cards-index.md may be stale ({actual_cards - len(ci_slugs)} cards not indexed)")
 else:
     info("No cards-index.md")
+
+# ── 7. Frontmatter Consistency ──
+print("\n═══════════════════════════════════════════════════════")
+print(" 7. FRONTMATTER CONSISTENCY (cards)")
+print("═══════════════════════════════════════════════════════")
+
+frontmatter_re = re.compile(r'^---\s*\n(.*?)\n---', re.DOTALL)
+missing_fm = []
+if Path('cards').exists():
+    for f in sorted(Path('cards').glob('*.md')):
+        text = f.read_text(errors='replace')
+        m = frontmatter_re.match(text)
+        issues = []
+        if not m:
+            issues.append('no frontmatter')
+        else:
+            fm = m.group(1)
+            if 'title:' not in fm:
+                issues.append('no title')
+            if 'created:' not in fm:
+                issues.append('no created date')
+        if issues:
+            missing_fm.append((f.stem, ', '.join(issues)))
+
+if not missing_fm:
+    ok("All cards have title + created frontmatter")
+else:
+    warn(f"{len(missing_fm)} cards with frontmatter issues:")
+    warnings -= 1
+    for slug, issue in missing_fm[:20]:
+        warn(f"  {slug}: {issue}")
+    if len(missing_fm) > 20:
+        info(f"  ... and {len(missing_fm) - 20} more")
+
+# ── 8. Link Density Stats ──
+print("\n═══════════════════════════════════════════════════════")
+print(" 8. LINK DENSITY")
+print("═══════════════════════════════════════════════════════")
+
+links_per_file = defaultdict(int)
+for src, _, _ in all_wikilinks:
+    links_per_file[src] += 1
+
+if links_per_file:
+    vals = list(links_per_file.values())
+    avg = sum(vals) / len(vals)
+    info(f"Average wikilinks per linked file: {avg:.1f}")
+    zero_link_cards = [f for f in all_files if f.startswith('./cards/') and f not in links_per_file]
+    info(f"Cards with zero outbound links: {len(zero_link_cards)}")
+    if len(zero_link_cards) <= 10:
+        for c in zero_link_cards:
+            warn(f"  No outbound links: {c}")
+
 
 # ── Summary ──
 print("\n═══════════════════════════════════════════════════════")
