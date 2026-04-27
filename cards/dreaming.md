@@ -26,4 +26,7 @@ OpenClaw's offline memory consolidation system. Runs during low-activity periods
 - 113 events accumulated
 - Workaround for quiet-hours skip: triggered via daily-review cron ✅
 
-Related: [[dreaming-vs-beliefs-candidates]], [[openclaw-architecture]]
+## External Adoption (2026-04-27)
+[[hermes-memory-skills]] (nexus9888) explicitly models its memory consolidation on OpenClaw's dreaming metaphor. Adds a formalized **4-dimension scoring rubric** (Novelty, Durability, Specificity, Reduction) that's more rigorous than our "repeated 3+ times" heuristic. Also introduces capacity-aware thresholds (60%/80%) and post-write integrity checks. Worth evaluating whether we should adopt the rubric.
+
+Related: [[dreaming-vs-beliefs-candidates]], [[openclaw-architecture]], [[hermes-memory-skills]]
