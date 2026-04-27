@@ -564,3 +564,9 @@ HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), B
 - alash3al/stash ⭐298 — persistent memory for agents, Postgres+MCP. 已有笔记
 - HN: "Agent Vault" — HTTP credential proxy for AI agents (Show HN). 已有笔记
 - HN: n8n "re-learn agent dev tools in 2026" — 新帖，待看
+
+## 2026-04-27 Quick Scan
+
+- **ConardLi/garden-skills** ⭐1485 — Skills collection (web design, knowledge retrieval, image gen). Exploded in <1 week. Skill ecosystem competitor. → Deep read priority
+- **GammaLabTechnologies/harmonist** ⭐707 — Portable agent orchestration, "mechanical protocol enforcement", 186 agents, zero runtime deps. → Worth a look for orchestration patterns
+- **hacktivist123/agent-session-resume** ⭐124 — Cross-agent session resume skill for Claude Code, Codex, Antigravity, OpenCode. → Relevant to ACP session work

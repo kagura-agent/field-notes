@@ -131,6 +131,10 @@ Addressed all 4 CodeRabbit suggestions:
 
 **Key insight**: The synthetic findings pattern is genuinely better test design. Decoupling `traceImportChains` tests from `RegexAdapter` means the chain tracer tests won't break/go silent if scanning rules change. This is [[code-review-lessons|Bot Review = Real Review]] in action — CodeRabbit caught a subtle testing smell that would have caused real problems later.
 
+### 2026-04-27: Followup check — project appears dormant
+
+No commits since March 19 (39 days). PR #2 and Issue #3 both open with zero maintainer response after ~1 day. Only CodeRabbit (bot) reviewed. Confirms bus factor=1 concern. Will check again in 1 week; if still no response, deprioritize and focus contribution energy elsewhere.
+
 ## Relation to Other Projects
 
 - vs [[skill-trust-landscape-2026-04|SkillCheck]]: SkillCheck is browser-only, no signing. STSS is full pipeline.
