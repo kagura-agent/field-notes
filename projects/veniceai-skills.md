@@ -63,6 +63,20 @@ Central registry: `{ skills: [{ id, path }] }`. Similar to ClawHub's `clawhub.js
 - **Drift detection**: The swagger sync pattern is worth adopting — skills that reference external APIs should have freshness checks
 - The SKILL.md convergence validates our bet on markdown-based skills as the packaging format
 
+## Evaluation: `clawhub init --template api-ref` (2026-04-27)
+
+Assessed whether ClawHub should adopt Venice's template-driven skill init pattern.
+
+**Verdict: Not worth building now.** Four reasons:
+1. ClawHub marketplace is empty — premature optimization
+2. API-ref is the wrong first template; our skills are behavioral, not informational
+3. Swagger-sync is orthogonal to `init` — better as standalone CI action
+4. LLM-generated skills reduce template value (agents don't need scaffolding)
+
+**Worth remembering**: swagger-sync drift detection pattern for future API-consuming skills.
+
+**Trigger to revisit**: when ClawHub reaches 10+ published skills, consider `clawhub init` with a `behavioral` template first.
+
 ## Related
 - [[skill-ecosystem]] — broader .skill format explosion
 - [[vercel-skills]] — cross-agent skill manager
