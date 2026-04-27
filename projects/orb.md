@@ -100,3 +100,9 @@ scheduler.js EventBus.publish(msg, ctx)
 Orb is the most architecturally mature Claude Code wrapper in the [[coding-agent]] space. Its v0.3.0 refactor shows genuine software engineering (not just "it works"). Growing steadily. Main limitation: Claude-Code-only, JavaScript-only. [[openclaw]] is broader (multi-provider, multi-channel, skill system) but could learn from Orb's event architecture.
 
 Links: [[openclaw]], [[coding-agent]], [[byob-browser]], [[self-evolving-agent-landscape]]
+
+## Followup 2026-04-27 19:52
+- **No new commits** since Apr 25 (v0.3.0 changelog + wechat fixes)
+- Stars: 52→53 (slow steady growth)
+- v0.3.0 not yet tagged as a release (latest release still v0.2.0)
+- **Status: stable between releases**, existing deep read analysis is current

@@ -141,3 +141,9 @@ No commits since March 19 (39 days). PR #2 and Issue #3 both open with zero main
 - vs [[skill-trust-landscape-2026-04|Skillpub]]: Skillpub focuses on distribution + payment (Nostr + Cashu). STSS focuses on verification. Complementary.
 - vs [[agent-skill-standard-convergence]]: STSS fills the security gap that SKILL.md deliberately left open.
 - vs OpenClaw/ClawHub: ClawHub currently uses VirusTotal only. STSS could be the upgrade path.
+
+## Followup 2026-04-27 19:52
+- **PR #2** (chain-tracer tests): still open, 48h+ no review. CodeRabbit feedback addressed Apr 27.
+- **Issue #3** (license): still open, no response.
+- **No new commits** since initial squash. Single maintainer, low engagement signal.
+- **Assessment**: maintainer may be inactive or slow-responding. Re-evaluate in 1 week.

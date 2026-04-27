@@ -86,3 +86,8 @@ Secret pattern 扫描：~30 类 credential patterns（AWS keys, GitHub PATs, Str
 ---
 
 *Updated: 2026-04-27 — deep read from quick scout*
+
+## Followup 2026-04-27 19:52
+- **No activity** since initial commit (Apr 23) + one badge-only docs commit
+- Star farming suspicion reinforced — high star velocity on a single-commit repo
+- **Assessment**: not worth further tracking unless real commits appear
