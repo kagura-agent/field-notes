@@ -100,9 +100,50 @@ See [[agentfactory]], [[openspace]], [[engram]]
 
 See [[wanman-skill-evolution]] for deep read.
 
+## 2026-04-27 更新：三大学派交锋 + personal agent 爆发
+
+### GenericAgent (lsdefine) ⭐7,626 — Skill层+Memory层
+- **极简路线**：3K行核心代码 + 9原子工具 + 4层记忆（L1≤30行索引→L2事实→L3 SOP→L4 sessions）
+- **Skill = SOP文档**，不是可执行包。"百万级skill library"实际是SOP集合
+- **Token效率**：<30K context window（6x less than competitors），通过单轮消息制+anchor prompt+分层外部记忆
+- **"No Execution, No Memory"** — 只有成功执行的结果才能写入记忆
+- 有arXiv论文(2604.17091)
+- 详见 [[genericagent]]
+
+### EvoMap/evolver ⭐7,005 — Gene > Skill 理论
+- **GEP协议**（Genes, Capsules, Events）：4590次实验证明compact Gene > 文档型Skill
+- 从MIT→GPL→source-available（指控hermes-agent抄袭设计）
+- Node.js实现，原生OpenClaw集成
+- arXiv(2604.15097)
+
+### CORAL (Human-Agent-Society) ⭐598 — 多Agent协作进化
+- 多agent自进化基础设施，面向autoresearch
+- 支持Claude Code/Codex/OpenCode作为worker
+- 新增rubric judges（LLM判分）用于开放式任务评估
+
+### nanobot (HKUDS) ⭐41,044 — personal agent 赛道爆发
+- OpenClaw-inspired的Python超轻量personal agent，3个月0→41K星
+- Dream memory, multi-channel, skills, MCP——几乎完全对标OpenClaw
+- 证明personal agent市场需求真实且增长极快
+
+### 新趋势（04-27）
+1. **Evolution representation之争**：三个学派
+   - **SOP文档派**（GenericAgent, Kagura）— 人类可读的经验文档
+   - **Gene派**（EvoMap/evolver）— 紧凑的Gene比Skill文档更稳定
+   - **Code派**（AgentFactory, OpenSpace）— 可执行代码比文档可靠
+2. **Token效率成竞争维度**：GenericAgent用<30K context打40K+竞品
+3. **从论文到产品加速**：至少4个项目有arXiv论文（GenericAgent, evolver, CORAL, a-evolve）
+4. **Personal agent高速增长**：nanobot证明赛道真实
+
+### 我们的位置（04-27更新）
+- Skill层(SKILL.md+beliefs) + Memory层(wiki+memex) + Workflow层(FlowForge)
+- **优势**：真实用户验证(Luna), 生态集成(ClawHub), 知识网络(双链wiki)
+- **差距**：无L1索引层, 每轮全量加载context(token低效), 手动skill提取(vs自动)
+
 Related orphan concepts:
 - [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
 - [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
 - [[existence-encoding]] — how identity persists across sessions
 - [[two-evolution-paths]] — top-down design vs bottom-up emergence
 - [[decentralized-evolution-validation]] — who validates that evolution is good?
+- [[genericagent]] — GenericAgent deep read
