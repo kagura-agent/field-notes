@@ -141,3 +141,12 @@ Added to pre-PR checklist:
 **Upstream approach (#70737):** Moved managed dreaming to isolated cron agent turn + gated heartbeat handler on pending managed cron event. Decoupled dreaming from heartbeat entirely.
 **Lesson:** Architecture-level fix (isolation + event gating) > application-level workaround (cooldown files). Upstream eliminated the coupling rather than managing it. Also: steipete's CHANGES_REQUESTED review correctly identified that cron-derived cooldowns were fragile.
 **Pattern:** DECOUPLE_NOT_THROTTLE — if two systems shouldn't interact, separate them architecturally rather than adding rate-limiting between them.
+
+## 2026-04-26: openclaw/openclaw #68518 — UI filter for system event messages
+- **My approach**: Client-side prefix filter in `shouldHideHistoryMessage` to hide `System:` and `System (untrusted):` lines from chat transcript.
+- **Why superseded**: Upstream already fixed the root cause server-side (preventing async exec/system-event prompts from persisting as visible chat-history rows). My PR was a narrower UI-only band-aid that could also hide legitimate user-authored "System:" messages. The broader UI guard is tracked in #67036.
+- **Lesson**: Check whether the root cause is already fixed upstream before submitting a UI-only workaround. Prefix-based filtering is fragile — it can match legitimate content. Server-side prevention > client-side filtering.
+
+## 2026-04-26: iamtouchskyer/opc #8 — superseded by #11
+- **Context**: Maintainer consolidated multiple doc PRs. #8 was a subset of #11 which covered all v0.10b commands plus full CLI reference.
+- **Lesson**: When multiple PRs target the same area, the more comprehensive one wins. Not a negative — just consolidation. Better to submit one comprehensive PR than multiple narrow ones.

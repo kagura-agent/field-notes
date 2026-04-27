@@ -100,7 +100,21 @@ Submitted 14 unit tests for `chain-tracer.ts` — the module we identified as th
 
 **Insight from writing tests**: The chain tracer's BFS correctly handles cycles via visited-set, but the deduplication only works per-finding (not globally). If two different static findings hit the same terminal file, both get separate chain findings from the same entry point. This is arguably correct (different attack chains), but worth noting.
 
-**Next**: Wait for Ken's response. If positive → LICENSE issue (#3) + chain tracer blind spots (dynamic `__import__`, `eval`, `exec`).
+**Next**: Wait for Ken's response. If positive → address CodeRabbit review + chain tracer blind spots.
+
+### 2026-04-27: Issue #3 — LICENSE request
+
+**Issue**: https://github.com/kenhuangus/stss/issues/3
+**Status**: Opened, awaiting maintainer response
+
+Asked Ken to add an open-source license (suggested MIT or Apache-2.0). Without a LICENSE file the code is legally "all rights reserved" — a blocker for any real integration into ClawHub or other projects.
+
+**PR #2 update**: CodeRabbit auto-reviewed with 3 nitpick suggestions:
+1. Guard `afterAll` cleanup against undefined `tmpDir`
+2. Circular import test passes vacuously — add an entry point file
+3. Decouple chain assertions from `RegexAdapter` using synthetic findings
+
+All valid points. Addressing them would strengthen the PR and show we take review seriously. Queued for next work session.
 
 ## Relation to Other Projects
 
