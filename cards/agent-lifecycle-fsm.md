@@ -19,5 +19,10 @@
 - agent-daemon-mode — daemon 需要 lifecycle 管理
 - [[self-evolution-system]] — 进化时需知道 agent 当前状态
 
+## 新实例 (2026-04-27)
+- [[wanman-skill-evolution]]：三种 lifecycle mode（`24/7` / `on-demand` / `idle_cached`），未用显式 FSM，而是 config-driven mode 选择
+- OpenClaw ACP `persistent` mode：通过 `resolveRuntimeResumeSessionId` + `ensureSession` + fallback retry 实现隐式 lifecycle，含可恢复性检测（`isRecoverableMissingPersistentSessionError`）
+- 详见 [[idle-cached-session-resume]]
+
 ## 评价
-对 long-running 24/7 agent 有价值。简单 agent（单次对话）不需要。OpenClaw 通过 gateway + session 管理实现了类似效果，但没有显式 FSM 层。
+对 long-running 24/7 agent 有价值。简单 agent（单次对话）不需要。OpenClaw 通过 gateway + session 管理 + ACP persistent mode 实现了类似效果，但没有显式 FSM 层。行业趋势：config-driven mode 选择比显式 FSM 更常见。

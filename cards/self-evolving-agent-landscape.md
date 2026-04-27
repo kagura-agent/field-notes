@@ -96,7 +96,7 @@ See [[agentfactory]], [[openspace]], [[engram]]
 
 ### 新趋势（续）
 - **Metrics-driven evolution**：wanman 证明 success_rate + intervention_rate 足以驱动 skill 改进
-- **Session persistence**：idle_cached 填补了 "always-on 太贵 vs stateless 太傻" 的空白
+- **Session persistence**：idle_cached 填补了 "always-on 太贵 vs stateless 太傻" 的空白。**2026-04-27 验证：OpenClaw ACP persistent mode 已覆盖此模式**，详见 [[idle-cached-session-resume]]
 
 See [[wanman-skill-evolution]] for deep read.
 
