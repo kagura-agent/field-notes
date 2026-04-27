@@ -154,6 +154,22 @@ Added to pre-PR checklist:
 - **Lesson**: Steipete fixed this within hours of the issue being filed — maintainer was already on it. The fix was identical in substance but upstream included docs + integration-style test + cleanup. Speed matters: if a maintainer is actively looking at an issue, a PR may arrive too late.
 - **Pattern**: CHECK_MAINTAINER_ACTIVITY — before spending time on a PR, check if the maintainer has already commented/committed on the issue. If they say "investigating" or "root cause confirmed", the window for external contribution is narrow.
 
+## 2026-04-27: Menci/copilot-gateway #10 — self-closed, upstream fix
+- **Issue**: Copilot API rejected unsupported tool fields (e.g. `strict`).
+- **My approach**: Strip unsupported fields before forwarding.
+- **Why closed**: Upstream fixed in commit 1b65d0e (strip-eager-input-streaming interceptor). Same fix, already merged.
+- **Lesson**: Same CHECK_MAINTAINER_ACTIVITY pattern. Small active repos fix fast.
+
+## 2026-04-27: multica-ai/multica #1708 — self-closed, convergent fix
+- **Issue**: Race condition in ClaimTask — agent status not reconciled.
+- **Why closed**: Both sides converged to the same ReconcileAgentStatus code (visible in merge conflict). Already in main.
+- **Lesson**: On active repos with frequent merges, check main branch before submitting — the fix may already be there.
+
 ## 2026-04-26: iamtouchskyer/opc #8 — superseded by #11
 - **Context**: Maintainer consolidated multiple doc PRs. #8 was a subset of #11 which covered all v0.10b commands plus full CLI reference.
 - **Lesson**: When multiple PRs target the same area, the more comprehensive one wins. Not a negative — just consolidation. Better to submit one comprehensive PR than multiple narrow ones.
+
+## 2026-04-27: Kilo-Org/kilocode #9513 — superseded by #9557
+- **Context**: My PR did proactive context overflow detection before LLM request. @marius-kilocode closed it and opened #9557 with model-aware compaction budgets, dynamic pruning scaling, overflow shrinking, and comprehensive regression tests.
+- **Lesson**: Detection-only PRs lose to adaptation PRs. "Here's the problem" < "Here's the problem + here's how to dynamically adapt". When the domain has tuning parameters (model limits, context windows), use them dynamically (ratios/budgets) instead of hardcoded thresholds.
+- **Pattern**: ADAPT_NOT_DETECT — don't just detect the problem; make the system respond to it. Especially in runtime-dependent scenarios (varying model sizes/limits), dynamic scaling > static thresholds.

@@ -28,6 +28,19 @@
 - kilocode 标记改动: `// kilocode_change` 注释
 - 内部 AI review: Kilo Code Review (app.kilo.ai)
 
+### PR #9513 — fix(cli): proactive context overflow detection before LLM request
+- **Issue**: context overflow crashes
+- **状态**: ❌ CLOSED by @marius-kilocode (2026-04-27)
+- **Superseded by**: PR #9557 (marius-kilocode) — `fix(cli): scale compaction pruning by model budget`
+- **我的方案**: 在 LLM 请求前主动检测 context 超限
+- **他们的方案**: 更全面——model-aware budgets、动态 pruning window 缩放、overflow compaction shrinking、完整回归测试
+- **教训**:
+  - 我只做了 detection（发现问题），没做 adaptation（解决问题）。maintainer 的方案同时做了检测和自适应
+  - 他们用 model limits 动态计算 budget（BUDGET_NORMAL_RATIO, BUDGET_OVERFLOW_RATIO），而不是 hardcoded thresholds
+  - shrink() 函数在 overflow 时截断旧 tool outputs 和 synthetic text，而不是简单拒绝
+  - 测试覆盖很全（捕获 compaction processor input 验证 budget 逻辑）
+  - 再次印证：kilocode maintainers 偏好全面的内部方案而非外部简单修复
+
 ## 注意事项
 - Repo 很大，sparse checkout 不太好使（monorepo 依赖互相引用）
 - 建议用 GitHub API 直接提交改动，不本地 clone
@@ -234,3 +247,12 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - **方法**: 不改 scan 缓存（保持默认行为），只在 search 阶段做 fallback——结果不足时跑第二次 ripgrep
 - **技术选择**: 用 `Effect.catchCause` 而非 `Effect.catchAll`（后者在 Effect v4 不存在）；不用 `Stream.take`（直接 slice 更简单）
 - **测试**: 单元测试有 upstream 问题（`@npmcli/config` 缺失），typecheck 无新错误
+
+## Superseded PR Lessons (2026-04-27)
+- **#9513 closed by marius**: My approach was "detect overflow proactively before LLM request" — a guard check. Marius's #9557 is "model-aware dynamic budgets for compaction" — scales pruning budgets from model limits (input/context), adds in-memory shrinking of tool outputs and synthetic text before summary model call. Much more comprehensive:
+  - Dynamic budget calculation from model limits (not fixed constants)
+  - Clamp-based budget ranges (min/max) for normal/overflow scenarios
+  - In-memory truncation of tool output and synthetic text per-part
+  - Message count limiting scaled by usable context size
+  - Proper changeset with `@kilocode/cli: patch`
+  - **Lesson**: For context-management issues, the maintainer's mental model is "adapt to the model" not "guard before the call." My fix was at the wrong abstraction level — I treated the symptom (overflow before request) rather than the cause (fixed-size budgets don't scale across models).
