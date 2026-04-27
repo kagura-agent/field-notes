@@ -59,3 +59,14 @@ Related:
 - 3 个持续失败 query 是 retrieval scope 问题，不是 embedding 质量问题
 
 **下一步**：04-21 重跑（dreaming 新数据 + 1 周自然增长）
+
+## 2026-04-27 更新：SWE-bench 退役与 Benchmark 饱和
+
+OpenAI 宣布退役 SWE-bench Verified，理由是 coding agent 在该 benchmark 上的得分已接近饱和。这是 eval-driven 范式的标志性事件：
+
+- **Benchmark 天花板**：当所有竞争者都能解 90%+ 的 SWE-bench，benchmark 失去区分能力
+- **对 eval-driven self-improvement 的启示**：硬指标有效期有限。eval 本身需要进化，否则 agent 优化的是过时的目标
+- **"eval 过拟合到 eval 本身"的现实案例**：之前在「未回答的问题」里提过这个担忧，SWE-bench 退役正是这个问题的真实发生
+- **下一代 benchmark 方向**：需要更动态、更接近真实场景的 eval（open-ended task, multi-turn interaction, 而非 isolated patch generation）
+
+这也呼应了 Memory Search Eval 的经验：固定 test set 随时间失去区分力，需要持续扩充和淘汰。

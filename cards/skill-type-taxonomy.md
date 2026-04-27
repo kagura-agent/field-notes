@@ -23,3 +23,13 @@ The word "skill" is being overloaded. Need distinct vocabulary: skill (prompt) v
 Despite type differences, all four types converge on **SKILL.md with YAML frontmatter** as the packaging format. Venice, Vercel ([[vercel-skills]]), and OpenClaw all use this convention independently. The format is becoming a de facto standard — the "package.json of agent knowledge."
 
 Related: [[self-evolution-as-skill]], [[agent-publishing-identity]], [[veniceai-skills]], [[vercel-skills]]
+
+## 2026-04-27 更新：Self-Extending Skills (Runtime Tool Generation)
+
+tendril 提出的 tool self-registration 模式引入了第五种类型：
+
+**Self-Extending Skills (generation)**：Agent 在 runtime 自己生成并注册新工具。不是人类写的 skill，不是预装的 plugin，而是 agent 根据任务需求即时创造的。与 AgentFactory 的 "code as skill" 有交集，但 tendril 更强调 runtime 自注册而非事后沉淀。
+
+完整分类：skill (prompt) vs plugin (tool) vs system (transformation) vs reference (API docs) vs self-extending (runtime generation)。
+
+关键问题：自生成的工具如何保证安全性和质量？没有人类 review 的 tool 能不能信任？

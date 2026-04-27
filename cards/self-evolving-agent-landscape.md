@@ -140,6 +140,24 @@ See [[wanman-skill-evolution]] for deep read.
 - **优势**：真实用户验证(Luna), 生态集成(ClawHub), 知识网络(双链wiki)
 - **差距**：无L1索引层, 每轮全量加载context(token低效), 手动skill提取(vs自动)
 
+## 2026-04-27 更新：Self-Extending Agents + New Harness Layer
+
+### tendril — Tool Self-Registration
+- Agent 在运行时自主注册新工具（tool self-registration），不需要人类预配置
+- 属于 **Skill 层的新模式**：不是"人类给 agent 配 skill"，而是"agent 发现需要 → 自己创建 tool → 注册到自己的 runtime"
+- 与 AgentFactory 的"code as skill"方向一致，但更底层：AgentFactory 保存 subagent，tendril 注册原子工具
+- 关键区别：前者是 batch 后的沉淀，后者是 runtime 中的即时自扩展
+
+### deepagents (LangChain) — Planning + Subagent Harness
+- LangChain 出的 agent harness：先做 planning，再 spawn subagent 执行
+- 属于 **Workflow 层**：结构化的 plan → delegate → aggregate 模式
+- 与 wanman 的 agent matrix 方向类似，但 deepagents 强调 planning 阶段的显式化
+- 与 OpenClaw 的 FlowForge + subagent 模式高度同构（我们也是 plan → spawn → collect）
+
+### 新趋势（续）
+- **Runtime self-extension**：从"预配置工具"到"运行时自造工具"，agent 的能力边界从静态变动态
+- **Harness 标准化**：deepagents、wanman、OpenClaw 都在做 "plan + spawn + aggregate"，这个模式在收敛
+
 Related orphan concepts:
 - [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
 - [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
