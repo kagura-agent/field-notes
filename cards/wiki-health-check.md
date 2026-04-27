@@ -146,3 +146,17 @@
 - [ ] 定期自动跑 lint（cron — 可整合进 daily-audit workflow）
 - [ ] wiki-lint 暴露为 MCP tool / memex subcommand
 - [ ] 矛盾检测自动化
+
+## 2026-04-27 — wiki-lint.py 假阳性修复 + 新检查项
+
+**修复了 3 个假阳性来源**：
+1. **`[[slug|display]]` 管道方向错误**（最大的 bug）：代码取 `|` 后面当 slug，但 wikilink 惯例是前面是 slug、后面是显示文本。修复后消除 7 个假阳性
+2. **代码块中的 `[[]]`**：fenced code blocks 和 inline code 中的 `[[` 被误判为 wikilink。新增 `strip_code_blocks()` 过滤，消除 ~8 个假阳性
+3. **`[[#section]]` 锚点链接**：内部锚点不应被检查为 broken link
+4. **markdown link regex 假阳性**：`(Drop-in AGENTS.md)` 被 `\(.*\.md\)` 匹配，改为要求 `](` 前缀
+
+**新增检查项**：
+- Check 7: **Frontmatter consistency** — cards 应有 title + created 前置字段（发现 87 张缺失）
+- Check 8: **Link density stats** — 每文件平均 4.0 个 wikilinks，12 张 cards 零出链
+
+**状态**：31 errors → 2 errors（eval/probe-set.md 的 2 个未建概念卡），22 warnings
