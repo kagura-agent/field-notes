@@ -134,6 +134,16 @@
 - Winning approach (#2257 by hunglp6d): same resilience fix + Discord rotation coverage expansion
 - Takeaway: bundle test coverage expansion with infra fixes for higher value-per-PR
 
+## PR #2510 — Brave validation skip in non-interactive mode (2026-04-27)
+- **Issue**: #2507 — Brave Search API key validation failure aborts non-interactive onboard
+- **Status**: PENDING, check-pr-limit pass, CodeRabbit review pending
+- **Scope**: 1 src file (onboard.ts, 3 lines changed) + 1 new test file (brave-validation-skip.test.ts)
+- **Root cause**: `configureWebSearch()` calls `process.exit(1)` on Brave validation failure in non-interactive mode
+- **Fix**: Replace `process.exit(1)` with `console.warn` + `return null` — skip web search, continue onboard
+- **Tests**: 2 new vitest tests (validation failure returns null, missing key returns null), all pass
+- **Pattern**: Simple fix — downgrade optional integration failure from fatal to warning. Same return-null pattern already used for missing BRAVE_API_KEY.
+- **Lesson**: `process.exit(1)` in library code for optional features is a smell — should always be a graceful fallback
+
 ## PR #2468 — Dashboard URL token redaction (2026-04-25)
 - **Issue**: #2467 — fix(security): route dashboard URL output through redact() (CWE-532)
 - **Status**: PENDING, CI pass, CodeRabbit clean ("no actionable comments")

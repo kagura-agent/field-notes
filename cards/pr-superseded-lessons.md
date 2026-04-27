@@ -147,6 +147,13 @@ Added to pre-PR checklist:
 - **Why superseded**: Upstream already fixed the root cause server-side (preventing async exec/system-event prompts from persisting as visible chat-history rows). My PR was a narrower UI-only band-aid that could also hide legitimate user-authored "System:" messages. The broader UI guard is tracked in #67036.
 - **Lesson**: Check whether the root cause is already fixed upstream before submitting a UI-only workaround. Prefix-based filtering is fragile — it can match legitimate content. Server-side prevention > client-side filtering.
 
+## 2026-04-27: openclaw/openclaw #72708 — superseded by steipete's direct commit c25082f
+- **Issue**: Nested lane defaulted to concurrency 1, serializing all cron LLM executions even when `maxConcurrentRuns` was set higher.
+- **My approach**: Added `setCommandLaneConcurrency(CommandLane.Nested, cronMaxConcurrentRuns)` in `applyGatewayLaneConcurrency` + unit test with vi.mock.
+- **Upstream approach**: Same core fix, but also: docs update (CHANGELOG, queue.md, cron-jobs.md), integration test using actual `enqueueCommandInLane` + deferred promises, import cleanup in server-reload-handlers.ts.
+- **Lesson**: Steipete fixed this within hours of the issue being filed — maintainer was already on it. The fix was identical in substance but upstream included docs + integration-style test + cleanup. Speed matters: if a maintainer is actively looking at an issue, a PR may arrive too late.
+- **Pattern**: CHECK_MAINTAINER_ACTIVITY — before spending time on a PR, check if the maintainer has already commented/committed on the issue. If they say "investigating" or "root cause confirmed", the window for external contribution is narrow.
+
 ## 2026-04-26: iamtouchskyer/opc #8 — superseded by #11
 - **Context**: Maintainer consolidated multiple doc PRs. #8 was a subset of #11 which covered all v0.10b commands plus full CLI reference.
 - **Lesson**: When multiple PRs target the same area, the more comprehensive one wins. Not a negative — just consolidation. Better to submit one comprehensive PR than multiple narrow ones.
