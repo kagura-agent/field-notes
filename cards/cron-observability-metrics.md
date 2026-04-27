@@ -33,6 +33,27 @@ Tracking token cost, success rate, and duration per cron job / routine.
 - [ ] FlowForge workflow 完成时记录 duration + node count
 - [ ] 考虑 weekly-eval 时汇总 cron 成本数据
 
+## 04-27 评估：OpenClaw 已有数据足够，无需外部方案
+
+对比 [[agentic-stack]] v0.11 data-layer skill 后的结论：
+
+### 发现
+- OpenClaw **trajectory JSONL** (`*.trajectory.jsonl`) 已包含完整的 session 生命周期数据
+- 每个 session 的 `trace.artifacts` 事件记录了 `usage: {input, output, cacheRead, cacheWrite, total}`
+- `session.started` 事件包含 sessionKey（可解析 trigger 类型：cron/discord/subagent）、model、provider
+- 50 行 Python 脚本 PoC 验证：可从 200 个 trajectory 文件提取出 cron 级别的 token 分布和成本估算
+
+### PoC 数据（200 session 样本）
+- 157 cron + 18 subagent + 9 discord + 1 main session
+- Top cron jobs 的 cache hit rate 普遍 90%+（prompt cache 在起作用）
+- 单 cron 最高 ~950K tokens/run（study/workloop 类），最低 ~20K（heartbeat/patrol 类）
+
+### 决策
+- **不采用** [[agentic-stack]] data-layer（9-harness 支持是 overkill，TUI/HTML 非刚需）
+- **也不急着自建** — 数据在那里，需要时一行 grep + python 就能查
+- **当以下条件满足时再投入**：(1) 月成本需要日常监控 (2) 需要跨 harness（ACP）聚合 (3) 需要自动异常检测（某 cron 突然 token 暴增）
+- 参考 [[multica]] #824 的实现：Go + bytesContains 快速过滤 + 按 date/provider/model 聚合
+
 ## 关联
 
 - [[evo-nexus]] — 完整实现参考
