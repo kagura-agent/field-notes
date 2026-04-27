@@ -61,5 +61,13 @@ This mirrors cognitive science: short-term → working memory → long-term memo
 - [[cron-observability-metrics]] — dreaming reports are a form of cron observability
 - [[self-evolution-as-skill]] — dreaming is passive self-evolution, beliefs is active
 
+## 2026-04-27: Beliefs Pipeline Upgraded with Hermes Dimensions
+
+After deep-reading [[hermes-memory-skills]], adopted two scoring dimensions into beliefs-candidates upgrade quality gate:
+- **Durability** (hard gate): "Will this pattern matter in 30 days?" — filters temporal/contextual patterns that our "repeated 3×" heuristic can’t catch
+- **Reduction** (soft gate): "Does upgrading this let us merge/simplify existing DNA?" — combats monotonic DNA growth
+
+This brings our gate from 4 to 5+1 dimensions (4 hard + Durability hard + Reduction soft).
+
 ---
-*Created: 2026-04-13 | Source: OpenClaw memory-core source code deep read + comparison with our beliefs-candidates pipeline*
+*Created: 2026-04-13 | Updated: 2026-04-27*
