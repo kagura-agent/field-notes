@@ -565,6 +565,28 @@ HN: GPT-5.5 (1009pts), Claude Code quality postmortem (527pts, 3个bug已修), B
 - HN: "Agent Vault" — HTTP credential proxy for AI agents (Show HN). 已有笔记
 - HN: n8n "re-learn agent dev tools in 2026" — 新帖，待看
 
+## 2026-04-27 Quick Scan #2 (21:21)
+
+**GitHub API Search (created past week, agent, sorted by stars):**
+- **ConardLi/garden-skills** ⭐1508 — Skills collection (web design, knowledge retrieval, image gen). Created 04-21, 1.5k in 6 days. 已知
+- **0x0funky/agent-sprite-forge** ⭐823 — 2D sprite sheet generation skill. Niche, not relevant
+- **wuyoscar/gpt_image_2_skill** ⭐776 — GPT Image 2 prompt gallery/CLI. Not relevant
+- **GammaLabTechnologies/harmonist** ⭐716 — Portable agent orchestration. 已知（star farming 验证过）
+- **future-agi/future-agi** ⭐585 — Eval/observe/improve platform, Apache 2.0. 已知
+- **chekusu/wanman** ⭐379 — Agent matrix runtime. 已知（深读完成）
+- **alash3al/stash** ⭐331 — Persistent memory layer. 已知（深读完成）
+- **Tencent-Hunyuan/Hy3-preview** ⭐261 — 295B A21B reasoning+agent model. 已知
+- **dezgit2025/auto-memory** ⭐245 (↑from 158 on 04-24) — Session recall CLI, zero-dep, read-only SQLite. Progressive recall, ~50 tokens/prompt. **增长持续**，memory 方向直接相关
+- **muxprotocol/kalshi-trading-bot** ⭐224 — Prediction market trading bot. Not relevant
+
+**HN:**
+- "We need re-learn what AI agent development tools are in 2026" (n8n) — workflow 视角的 agent 工具重评
+- YC S26: "attach a coding agent session you're proud of" — agent 能力成为创业者评估维度
+
+**判断:** 无全新值得深入的发现。auto-memory 持续增长（245⭐，+87/3d），Copilot CLI-only 限制实用性。garden-skills 爆炸（6天1.5k⭐）但 skill 合集不是架构创新。生态趋势：skill collections 爆发，memory 方向活跃。
+
+---
+
 ## 2026-04-27 Quick Scan
 
 - **ConardLi/garden-skills** ⭐1485 — Skills collection (web design, knowledge retrieval, image gen). Exploded in <1 week. Skill ecosystem competitor. → Deep read priority
