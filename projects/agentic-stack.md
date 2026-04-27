@@ -1,6 +1,6 @@
 # agentic-stack — 深读笔记
 
-> codejunkie99/agentic-stack | 1676★ (2026-04-27, was 154 on 04-17 深读) | Python+Markdown | 2026-04-17 深读
+> codejunkie99/agentic-stack | 1676★ (2026-04-27, was 154 on 04-17 深读, v0.12.0) | Python+Markdown | 2026-04-17 深读
 
 ## 核心定位
 
@@ -60,8 +60,8 @@ auto_dream.py 明确注释 "Never: subjective validation, promotion, git commit"
 ### 4. Adapter 层的极简设计
 每个 harness adapter 只是一个 AGENTS.md 文件。这说明跨 harness 兼容的关键不是复杂的适配层，而是**标准化的文件结构**。Hermes/Claude Code/Cursor 都能读 markdown 文件，所以适配成本接近零。
 
-### 5. 反直觉：没有测试
-154★ 的项目没有 test 目录。dream cycle 的 Python 代码（聚类、staging、prefilter）全靠代码审查，没有自动化测试。这是贡献机会。
+### 5. 测试覆盖（v0.11+ 改善）
+v0.11+ 开始有测试：test_data_flywheel_export.py、test_data_layer_export.py、test_tldraw_visual_memory.py、test_claude_code_hook.py。用 subprocess 调用导出脚本做端到端验证。Dream cycle 核心（聚类、staging）仍无测试。
 
 ## 在 Agent 生态中的位置
 
@@ -70,6 +70,53 @@ auto_dream.py 明确注释 "Never: subjective validation, promotion, git commit"
 - **互补**：[[reflexio]]（外部 playbook 服务）可以和 agentic-stack 集成——Reflexio 提取 playbook，agentic-stack 存储和分发
 - **上游**：各 harness（Claude Code、Cursor、Hermes）
 - **信号**：agent 知识可移植性正在成为需求。用户不想被锁死在一个 harness 里
+
+## v0.11-v0.12 增量变化（2026-04-27 跟进）
+
+> 星数：1676★（稳定），v0.11.0-v0.12.0 在 04-26~04-27 连发
+
+### v0.11.0 — Data Layer + Data Flywheel
+
+**Data Layer**（PR #25 by @danielfoch）：跨 harness 本地监控。读 `AGENT_LEARNINGS.jsonl` + 可选的 `harness-events.jsonl` / `cron-runs.jsonl`，输出终端仪表盘、token/cost 估算、cron 时间线、KPI 汇总。支持 Claude Code/Hermes/OpenClaw/Codex/Cursor/OpenCode/Windsurf/Pi/Antigravity。
+
+- 纯本地，不发遥测
+- 触发词自然语言（"show me the dashboard"、"how many tokens"）
+- 实质：agent 版 `htop`，把分散在各 harness 的活动统一到一个视图
+
+**Data Flywheel**（PR #26 by @danielfoch）：把 human-approved 的 agent run 转化为可复用的数据资产。
+
+```
+approved run → redacted trace → context card → eval case → training-ready JSONL
+```
+
+**核心设计决策**：
+1. **只用 human-approved runs**——rejected/unknown 只能做 failure-mode notes
+2. **强制 redaction**——通过 `redaction_status: passed` 门控，PII 必须先脱敏
+3. **不训练模型**——只产出数据 harness，downstream 实验（SLM/adapter）是用户自己做的
+4. **阈值体系**：10-25 runs → context card, 25-100 → eval set, 100-300 → measurement, 500-1500 → narrow adapter candidate, 2000-10000+ → workflow family corpus
+5. **context card 带 prompt shrinking 指标**——记录 `context_tokens_before/after`，计算压缩率
+
+**代码质量**：`data_flywheel_export.py` ~250 行，纯 stdlib，零外部依赖。健壮的 JSONL parsing（跳过 malformed lines 并计数）。测试用 subprocess 调用，端到端验证 artifacts 生成。
+
+### v0.12.0 — tldraw Visual Memory
+
+tldraw MCP 集成，把绘图能力加入 agent toolkit。agent 可以通过 MCP 在 localhost:3030 的 canvas 上画图（diagram/flowchart/wireframe/architecture），用户实时看到。
+
+- **Feature flag 机制**：`.agent/memory/.features.json` 控制开关，默认 off
+- **Skill-local storage**：`store.py` 提供 snapshot/list/load/archive，数据在 `.agent/skills/tldraw/` 下，不是第五个记忆层
+- **Beta 隔离好**：不自动安装 MCP config，不影响现有用户
+
+### 洞察
+
+1. **从记忆到数据**：agentic-stack 从 "记住经验" 扩展到 "量化经验"。data-layer 是观测，data-flywheel 是提炼。这跟我们的 nudge（观测行为 → 提炼规则）是同一方向，但他们多了量化维度（token cost, acceptance rate, context reduction）。
+
+2. **阈值体系是好 idea**：我们的 beliefs-candidates 用 "3 次重复" 做升级门控。他们用量化阈值（500+ approved runs → adapter candidate）做数据资产升级。两个方向可以互补——我们可以给 beliefs-candidates 加量化指标（出现频次、影响范围计数）。
+
+3. **Context card 是新概念**：把同一 workflow 的多次 run 聚合成一张卡片，包含稳定规则、典型 failure modes、eval 引用。类似我们的 wiki project notes，但更结构化。
+
+4. **贡献生态在扩大**：v0.11 PR #25/#26 来自 @danielfoch（外部贡献者），说明项目开始有社区参与，不再是 solo project。154→1676★ 的增长验证了 "portable brain" 需求。
+
+5. **Feature flag 是 skill 管理的好 pattern**：beta skill 通过 `.features.json` 控制加载，比我们的全量加载更精细。值得考虑在 OpenClaw skill 系统中引入类似机制。
 
 ## 跟我们方向的关联
 
