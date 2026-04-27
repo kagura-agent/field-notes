@@ -64,3 +64,15 @@ The GoGetAJob audit command is the worst offender: empty `catch {}` is the exact
 
 ---
 *Created: 2026-04-26*
+
+## Resolution (2026-04-27)
+
+Fixed 3 of the 5 findings:
+
+1. **audit empty catches** → ✅ Replaced with `console.warn()` that logs the error message. Fields still degrade gracefully (empty string / 0) but the warning is now visible.
+2. **submit try/catch cascade** → ✅ Flattened to 2-step: try upstream ahead-count with explicit null, then fall through to commit-count check. Same behavior, clearer flow.
+3. **flowforge auto-close** → ✅ Added `console.warn()` with instance ID and node name. Shows up in tests (verified).
+4. **nudge state reset** → Kept as-is (pragmatic, as documented).
+5. **submit hook detector** → Deferred (working fine, will fix when it rots).
+
+Time from audit to fix: 1 day. The fixes were trivial as predicted — the hard part was finding them, not fixing them. This validates the self-audit practice: periodic code review of your own tools catches silent failures before they cause real debugging pain.
