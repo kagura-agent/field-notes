@@ -173,3 +173,17 @@ Added to pre-PR checklist:
 - **Context**: My PR did proactive context overflow detection before LLM request. @marius-kilocode closed it and opened #9557 with model-aware compaction budgets, dynamic pruning scaling, overflow shrinking, and comprehensive regression tests.
 - **Lesson**: Detection-only PRs lose to adaptation PRs. "Here's the problem" < "Here's the problem + here's how to dynamically adapt". When the domain has tuning parameters (model limits, context windows), use them dynamically (ratios/budgets) instead of hardcoded thresholds.
 - **Pattern**: ADAPT_NOT_DETECT — don't just detect the problem; make the system respond to it. Especially in runtime-dependent scenarios (varying model sizes/limits), dynamic scaling > static thresholds.
+
+## 2026-04-27: Phantom — 5 PRs stalled, 0 merged (not superseded, just ignored)
+
+**Different failure mode**: Unlike previous cases where PRs were superseded by better implementations, phantom PRs are simply ignored. 5 PRs (#78, #80, #87, #88, #91) open 4-10 days, 0 merged. Maintainer (mcheemaa) merges own PRs rapidly but doesn't merge external contributors.
+
+**New pattern: MAINTAINER_MERGE_GATE_CLOSED**
+- Repo merged 8 external PRs early (launch phase, March-early April)
+- Since mid-April: zero external merges while maintainer merges own work daily
+- Not hostile (unlike [[mastra-blacklist-agent-pr-backlash]]) — just silent
+- Multiple contributors stalled, not just us (electronicBlacksmith: 5, coe0718: 4, tiuro: 1)
+- Even PRs with external reviewer approval (truffle-dev LGTM x2 on #87) go unmerged
+
+**Pre-investment check to add**:
+9. Check external merge history: `gh pr list --state merged --limit 20` — what % are non-maintainer? Recent trend up or down? If zero external merges in last 2 weeks, deprioritize.
