@@ -67,3 +67,9 @@ index.ts (CLI, commander) → engine.ts (状态机逻辑) → db.ts (SQLite)
 ## 行动项
 - [x] ~~给 FlowForge 加基本测试（engine.test.ts）~~ ✅ 04-19
 - [ ] 考虑 advance 正则改为显式 `BRANCH:N` 前缀避免误匹配
+
+## Stale Instance Warning (2026-04-27)
+
+Added `console.warn()` in `engine.start()` when auto-closing a stale active instance. Previously this happened silently — the return value had `previouslyClosed` but library consumers and CLI users saw nothing. Now the warning includes instance ID and node name for debuggability.
+
+This surfaced from self-audit: the auto-close behavior is correct (prevents "instance already active" errors), but silent auto-closes violate [[observability]] — the user should know their previous run was abandoned.

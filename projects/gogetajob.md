@@ -126,3 +126,13 @@ work_type 支持 `pr` 和 `issue` 两种。
 - heap > 200MB 时主动 `global.gc?.()`
 
 **Pattern**: 批量操作工具要默认保守（低并发 + 主动释放），用户需要快可以手动调高。这跟 [[gbrain]] 的 conservative-default 思路一致。
+
+## Self-Audit Code Fixes (2026-04-27)
+
+From periodic self-audit (inspecting own code for anti-patterns):
+
+**audit.ts — empty catches**: Two `catch {}` blocks silently swallowed `git ls-files` and `git rev-list` failures. Replaced with `console.warn()` so failures are visible without breaking the flow. Pattern: silent error swallowing in CLI tools hides real issues during debugging.
+
+**submit.ts — 3-level try/catch cascade**: The "check if changes exist" logic was: try upstream ahead-count → catch → try total-commit-count → catch → fallback. Simplified to a flat 2-step: try upstream check, then fall through to commit-count check. Same behavior, half the nesting. Pattern: cascading try/catch usually means the control flow wants to be `if/else` with explicit null checks, not exception-driven.
+
+Both relate to [[error-handling-in-cli]] — CLI tools should log warnings, not silence errors, and use structured flow control over exception cascades.
