@@ -26,4 +26,10 @@ Orb stays **outside** agent runtime — doesn't replace Claude Code's loop, just
 - **Trust-scored memory**: Facts get trust scores, decay over time. Could inform our memory evolution.
 - **Per-thread session reuse via IPC inject**: Efficient approach to follow-up turns.
 
-Links: [[openclaw]], [[coding-agent]]
+## Update 2026-04-27
+- Now at v0.3.0 ("Event Stream Unification") — WeChat adapter added alongside Slack
+- Multi-platform hardening: capability-driven typing, permission semantics per platform
+- Growing fast: 52→53⭐ in a week, active daily commits
+- Still Claude-Code-only, still JavaScript
+
+Links: [[openclaw]], [[coding-agent]], [[byob-browser]]
