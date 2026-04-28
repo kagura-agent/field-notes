@@ -19,7 +19,7 @@ source: self-improving skill 体验 + Luna 对话
 1. 把“读取”嵌入流程节点（FlowForge workloop study 节点强制读田野笔记）
 2. [[skill-as-behavior-trigger]] — Skill 在意图触发时主动推送相关知识
 3. 写入时打标签，读取时按标签 pull（而非全量读）
-4. **L1 导航索引** (2026-04-28) — wiki/L1.md ≤ 30 行存在编码，告诉 LLM 知识存在且在哪，触发主动检索。借鉴 [[genericagent]] 的 L1 层设计
+4. **L1 导航索引** (2026-04-28) — wiki/L1.md ≤ 30 行存在编码，告诉 LLM 知识存在且在哪，触发主动检索。借鉴 [[genericagent]] 的 L1 层设计。**已应用**: AGENTS.md session startup step 3 加载 L1.md (2026-04-28)
 
 ## 学术支撑
 - **MemEvolve** (arXiv 2512.18746) - 把这个问题形式化为"记忆架构静态性",提出 4 模块(encode/store/retrieve/manage)独立进化
