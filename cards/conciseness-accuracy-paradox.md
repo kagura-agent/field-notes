@@ -44,6 +44,14 @@ These don't add information — they dilute signal density. Forcing conciseness 
 - SKILL.md files are read by AI more than humans → optimize for AI readability
 - Potential: `ai_summary` frontmatter field for fast context loading
 
+## Additional Evidence: Dirac Coding Agent (2026-04-28)
+
+[[dirac]] operationalizes this paradox specifically for coding agents:
+- **Aggressive context curation** (AST-native reads, file skeletons instead of full files) → 64.8% cost reduction AND 8/8 accuracy vs competitors at 5-6/8
+- **TerminalBench-2**: 65.2% score (Gemini-3-flash) vs Google's own 47.6% baseline — less context, better results
+- Mechanism: `get_file_skeleton` reads structure only, `get_function` reads specific functions. Model never sees irrelevant code.
+- Confirms: **context curation is a multiplier** — it's not just about compressing what you send, but about not sending what's irrelevant
+
 ## Anti-Pattern
 "More verbose prompt = more careful/thorough response" — **this is wrong**. More verbose prompt = more tokens to process, more noise to filter, less signal density.
 

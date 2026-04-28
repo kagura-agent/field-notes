@@ -41,8 +41,18 @@ OpenClaw 作为平台不应该变成 model-native，但可以：
 2. 在 prompt management 层借鉴 cache-stable prefix 的三层分区思想
 3. 为常用模型提供 optional 优化路径，而不是 mandatory 绑定
 
+## Update: Dirac — Agnostic but Native-Tooled (2026-04-28)
+
+[[dirac]] presents an interesting third position: **model-agnostic** (supports Anthropic, OpenAI, Gemini, Groq, etc.) but **tool-native** (rejects MCP, uses native tool calling only). This means:
+- It can switch providers freely (model-agnostic)
+- But optimizes deeply at the *tool design* level, not the model API level
+- Cost reduction comes from **context curation** (surgical reads, batched edits) rather than model-specific cache tricks
+
+This suggests the spectrum isn't just model-native ↔ model-agnostic, but has a third axis: **tool-native optimization** that works across models.
+
 ## 相关
 
 - [[reasonix]] — model-native exemplar
+- [[dirac]] — model-agnostic but tool-native, cost reduction via context curation
 - [[acp]] — OpenClaw 的 model-agnostic agent 协议
 - [[agent-brain-portability]] — 相关但不同维度（brain 可移植性 vs framework 可移植性）

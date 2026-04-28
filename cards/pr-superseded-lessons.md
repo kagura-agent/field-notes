@@ -204,3 +204,15 @@ Added to pre-PR checklist:
 - **Reviewer feedback**: "we shouldn't change existing behaviour. change should ideally be scoped to only in `openai-compatible` provider"
 - **Lesson**: When a bug affects one provider's quirk (e.g., Grok sending tool_calls without function.name), fix at the provider level, not in shared utilities. Shared layers should remain strict; provider-specific workarounds belong in provider packages.
 - **Pattern**: Scope minimization — maintainers prefer minimal blast radius. Even if the shared fix would work, changing shared behavior for one provider's edge case is rejected.
+
+## vercel/ai #14725 → #14760 (2026-04-27)
+
+**My approach**: Fixed at `provider-utils` shared layer — deferred `tool-input-start` event in the generic tool call tracker until `function.name` arrives. Affected all providers.
+
+**Their approach**: Fixed at `openai-compatible` provider layer — added a `PendingToolCall` buffer that accumulates deltas by index until `function.name` is known, then forwards the complete first delta to the shared tracker. Only affects openai-compatible providers.
+
+**Why theirs won**: More conservative scope. The bug only manifests in openai-compatible providers (Grok specifically sends `function.name` late). Fixing at the shared tracker layer risks side effects in other providers (anthropic, google, etc.) that don't have this issue. Their fix is surgical — buffer at the edge, forward clean data to the core.
+
+**Pattern**: **Scope the fix to where the bug manifests, not where you can generically handle it.** Shared layer fixes are tempting (DRY, covers all providers) but riskier. Provider-level fixes are safer when only one provider exhibits the behavior. The maintainer prefers defensive isolation over generic abstraction.
+
+**Also notable**: Their PR had 241 lines (vs my smaller diff) because they added comprehensive tests including an error case for "function.name never arrives". More test investment = more maintainer confidence.
