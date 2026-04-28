@@ -301,6 +301,92 @@ if links_per_file:
             warn(f"  No outbound links: {c}")
 
 
+# ── 9. Secret Scanning ──
+print("\n═══════════════════════════════════════════════════════")
+print(" 9. SECRET SCANNING")
+print("═══════════════════════════════════════════════════════")
+
+# ~25 credential patterns inspired by gitleaks/trufflehog/Harmonist
+SECRET_PATTERNS = [
+    # AWS
+    (r'AKIA[A-Z0-9]{16}', 'AWS Access Key ID'),
+    (r'(?:aws).{0,20}(?:secret|key).{0,20}[\'"][A-Za-z0-9/+=]{40}[\'"]', 'AWS Secret Key'),
+    # GitHub
+    (r'ghp_[A-Za-z0-9]{36,}', 'GitHub PAT (classic)'),
+    (r'gho_[A-Za-z0-9]{36,}', 'GitHub OAuth Token'),
+    (r'ghs_[A-Za-z0-9]{36,}', 'GitHub App Token'),
+    (r'github_pat_[A-Za-z0-9_]{22,}', 'GitHub Fine-grained PAT'),
+    # OpenAI / LLM providers
+    (r'sk-[A-Za-z0-9]{48,}', 'OpenAI API Key'),
+    (r'sk-proj-[A-Za-z0-9\-_]{48,}', 'OpenAI Project Key'),
+    # Stripe
+    (r'sk_live_[A-Za-z0-9]{24,}', 'Stripe Secret Key'),
+    (r'rk_live_[A-Za-z0-9]{24,}', 'Stripe Restricted Key'),
+    # Slack
+    (r'xoxb-[0-9]{10,}-[A-Za-z0-9]{24,}', 'Slack Bot Token'),
+    (r'xoxp-[0-9]{10,}-[A-Za-z0-9]{24,}', 'Slack User Token'),
+    (r'xoxs-[0-9]{10,}-[A-Za-z0-9]{24,}', 'Slack Session Token'),
+    # Google
+    (r'AIza[A-Za-z0-9_\-]{35}', 'Google API Key'),
+    # Telegram
+    (r'[0-9]{8,10}:[A-Za-z0-9_-]{35}', 'Telegram Bot Token'),
+    # Discord
+    (r'[MN][A-Za-z0-9]{23,}\.[A-Za-z0-9_-]{6}\.[A-Za-z0-9_-]{27,}', 'Discord Bot Token'),
+    # npm
+    (r'npm_[A-Za-z0-9]{36,}', 'npm Access Token'),
+    # PyPI
+    (r'pypi-[A-Za-z0-9]{50,}', 'PyPI API Token'),
+    # Private keys
+    (r'-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY', 'Private Key'),
+    # Generic high-entropy secrets in assignments
+    (r'(?:password|passwd|secret|token|apikey|api_key)\s*[:=]\s*[\'"][^\s\'"]{16,}[\'"]', 'Generic Secret Assignment'),
+    # Heroku
+    (r'heroku.{0,10}[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}', 'Heroku API Key'),
+    # Twilio
+    (r'SK[A-Fa-f0-9]{32}', 'Twilio API Key'),
+    # Mailgun
+    (r'key-[A-Za-z0-9]{32}', 'Mailgun API Key'),
+    # SendGrid
+    (r'SG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43}', 'SendGrid API Key'),
+    # Age encryption key (private)
+    (r'AGE-SECRET-KEY-[A-Z0-9]{59}', 'Age Secret Key'),
+]
+
+compiled_secrets = [(re.compile(pat), name) for pat, name in SECRET_PATTERNS]
+secret_findings = []
+
+for fpath in all_files:
+    try:
+        content = open(fpath, 'r', errors='replace').read()
+    except Exception:
+        continue
+    # Skip code blocks (patterns in examples/docs are less likely real)
+    clean = strip_code_blocks(content)
+    for line_no, line in enumerate(clean.splitlines(), 1):
+        for pat, name in compiled_secrets:
+            if pat.search(line):
+                # Avoid false positives: skip lines that look like documentation/examples
+                line_stripped = line.strip()
+                if any(fp in line_stripped.lower() for fp in [
+                    'example', 'placeholder', 'xxx', 'your_', 'changeme',
+                    'dummy', 'fake', 'sample', 'test_', '<your',
+                    'pattern', 'regex', 'r\'', 'r"', 'compiled',
+                ]):
+                    continue
+                secret_findings.append((fpath, line_no, name, line_stripped[:80]))
+                break  # one match per line is enough
+
+if not secret_findings:
+    ok("No credential patterns detected")
+else:
+    error(f"{len(secret_findings)} potential secrets found:")
+    errors -= 1  # counted once above
+    for fpath, line_no, name, preview in secret_findings[:30]:
+        error(f"  {fpath}:{line_no} [{name}] {preview[:60]}...")
+    if len(secret_findings) > 30:
+        info(f"  ... and {len(secret_findings) - 30} more")
+    info("Review these — some may be false positives in documentation")
+
 # ── Summary ──
 print("\n═══════════════════════════════════════════════════════")
 print(" SUMMARY")
