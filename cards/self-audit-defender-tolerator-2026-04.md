@@ -76,3 +76,12 @@ Fixed 3 of the 5 findings:
 5. **submit hook detector** → Deferred (working fine, will fix when it rots).
 
 Time from audit to fix: 1 day. The fixes were trivial as predicted — the hard part was finding them, not fixing them. This validates the self-audit practice: periodic code review of your own tools catches silent failures before they cause real debugging pain.
+
+## Round 2: FlowForge CLI Tolerators (2026-04-28)
+
+Applied the lens again to FlowForge `index.ts` and `engine.ts`. Found 2 more:
+
+1. **autoLoadWorkflows silent catch** → ✅ Fixed. `catch(e) {}` swallowed YAML parse errors. Users saw "workflow not found" with zero explanation. Now emits `console.warn` with filename + error. Immediately caught 2 broken symlinks (`workloop.yaml`, `workloop-night.yaml`) on first run — the fix validated itself.
+2. **advanceWithResult branch regex** → ✅ Fixed. Branch regex failed silently when result text didn't match. Now warns explicitly when current node has branches but no branch detected.
+
+**Meta-observation**: Each audit round finds fewer issues (5 → 2), and lower severity. The codebase is getting cleaner through repeated passes. This matches [[evomap-evolver-gep]]'s observation that evolution velocity naturally decreases as the substrate improves.
