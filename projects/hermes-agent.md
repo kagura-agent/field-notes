@@ -1175,3 +1175,12 @@ Transport ABC 标志着 Hermes 从"大 monolith 函数"向"可插拔架构"转�
 - My approach: LIKE `%query%` fallback — works but full table scan
 - Winning approach (#16651 by alt-glitch): trigram FTS5 index — indexed lookups + BM25 + snippets
 - Takeaway: SQLite trigram tokenizer (3.34.0+) is the right tool for substring matching across scripts. Don't default to LIKE when an index solution exists.
+
+### Issue #16856: Lazy import blocks asyncio event loop (2026-04-28)
+- **Bug**: `model_tools.py:143` runs `discover_mcp_tools()` as module-level side effect. When gateway lazy-imports `run_agent` on first message, this blocks the asyncio event loop with `future.result(timeout=120)` — freezes Discord/Telegram heartbeat for up to 120s if any MCP server is unreachable
+- **Architecture insight**: Gateway uses lazy imports for `run_agent` (line ~9334 in `run.py`) — first user message triggers the import chain `run_agent → model_tools → discover_mcp_tools`
+- **MCP discovery pattern**: `_run_on_mcp_loop()` in `tools/mcp_tool.py:1577` uses a dedicated MCP event loop thread but blocks the calling thread with `future.result(timeout=wait_timeout)` — safe from sync context, but when called from async context it freezes the event loop
+- **Key files**: `model_tools.py` (line 143), `tools/mcp_tool.py` (lines 1577, 2408, 2455), `gateway/run.py` (line 9334)
+- **Fix approach**: Remove module-level `discover_mcp_tools()` call (discovery already runs at gateway startup), OR make `_run_on_mcp_loop` async-aware with `asyncio.wrap_future`
+- **Related**: #10138 (nested-call deadlock in `register_mcp_servers`) — different root cause but same MCP discovery code path
+- **Connection to [[OpenClaw]]**: Similar pattern risk — any lazy import that triggers blocking I/O from async context. Worth checking OpenClaw's own extension loading paths
