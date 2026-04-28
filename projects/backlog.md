@@ -1,4 +1,33 @@
 
+## 2026-04-28 Quick Scan #4 (21:15)
+
+**GitHub Trending (created this week, sorted by stars):**
+| Repo | Stars | Verdict |
+|---|---|---|
+| agent-sprite-forge | 957 | 不相关 — 2D sprite generation skill |
+| gpt_image_2_skill | 908 | 不相关 — image prompt gallery |
+| harmonist | 784 | 已知 — wiki notes exist |
+| future-agi | 685 | 已知 — eval/observability platform |
+| stash | 471 | 已知 — deep read done |
+| wanman | 398 | 已知 — deep read done |
+| bux (browser-use) | 223 | 值得关注 — 24/7 Claude Code + browser harness from browser-use team. 2 days old, 223⭐. Architecture interest: how they compose coding agent + browser automation. Not deep-read priority yet — wait for maturity |
+| endless-toil | 176 | 不相关 — fun name, CLI wrapper |
+| world2agent | 166 | 不相关 — real-world perception protocol |
+| agent-session-resume | 142 | 值得关注 — Cross-agent session resume for Claude Code/Codex/OpenCode. 142⭐ in 3 days. Directly relevant to ACP session resume. But single push (04-25), may be one-shot. Track for 1 week |
+
+**Memory/MCP niche:**
+- agentmako ⭐15 — local-first MCP server for code context (SQLite). Small but interesting concept
+- KNDL ⭐6 — Knowledge Node Data Link. Confidence/time/source-aware agent memory. Interesting thesis (filesystems are dumb about provenance) but too early
+- DecisionGraph ⭐11 — Engineering decision memory from GitHub/Slack/Jira. Captures "why" questions. Niche but novel angle
+
+**HN:** No agent-related stories on front page. Top stories: Microsoft/OpenAI end exclusive deal (919pts), Talkie vintage language model (453pts), VibeVoice open-source voice AI (50pts).
+
+**Delta vs last scan (18:47):** bux and agent-session-resume are new finds. Both very new (2-3 days old). agent-session-resume most relevant to our work (ACP session continuity). No deep read needed tonight — track both.
+
+**Action:** Add to TODO tracking: agent-session-resume (revisit 05-05), bux (revisit 05-05)
+
+---
+
 ## 2026-04-28 Quick Scan #3 (18:47)
 
 **GitHub Trending (created this week, sorted by stars):**
