@@ -311,3 +311,16 @@ v0.12:    Multi-modal（tldraw canvas）
 | **发布速度** | 3天4个minor | 按需（无固定节奏） |
 
 **我们的优势**：语义记忆网络（memex + wikilinks + backlinks）是 agentic-stack 完全没有的。他们的 recall 只有 Jaccard 词法，knowledge graph 为零。我们的劣势：observability 和 data pipeline 空白
+
+## Followup 2026-04-28
+
+**Stars**: 1,678 → 1,712 (+34)
+**Release**: v0.12.0 (2026-04-27)
+
+### v0.12.0: tldraw + Feature Flags
+- **tldraw seed skill**: 画布/图表/架构可视化，MCP tool 引导
+- **Skill-local snapshot store**: snapshots.jsonl + INDEX.md，有意不作为第五记忆层
+- **Feature flag gating**: `.agent/memory/.features.json` 控制 beta skill 加载
+  - 默认关闭，onboarding 写 flag，用户显式启用
+  - adapter 不自动装 beta MCP config
+- Seed skill 数达 9 个: skillforge, memory-manager, git-proxy, debug-investigator, deploy-checklist, design-md, data-layer, data-flywheel, tldraw

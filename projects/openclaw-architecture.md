@@ -743,3 +743,26 @@ GBrain v0.8.1 的 IR eval harness 证明了低成本、可复现的 retrieval qu
 **Workaround**: daily-review cron (03:15, isolated, 不受 quiet hours 限制) 加了步骤 3: `openclaw cron run 0df29bb1-...` 手动触发 dreaming
 
 **长期方案**: 提 OpenClaw issue — managed cron 的 sessionTarget 应考虑 quiet hours 兼容性，或 dreaming systemEvent 应走 isolated session
+
+### 版本差异: 2026.4.12 → 2026.4.24 (2026-04-28 reviewed)
+
+Major jump spanning 5 releases (4.20-4.24). Key changes for our setup:
+
+**Already benefiting from:**
+- Dreaming decoupled from heartbeat — runs as isolated lightweight agent turn (verified: cron shows independent dreaming job, status ok)
+- Memory search raw scores exposed (`vectorScore`, `textScore`) — verified working
+- Heartbeat clamp fix — prevents crash loop from oversized `every` values
+- Cron state split — `jobs-state.json` separate from `jobs.json` (cleaner git tracking)
+- Thinking defaults raised to `medium` for reasoning-capable models
+- Feishu TTS transcode — MP3→Ogg/Opus for native audio bubbles
+
+**Worth evaluating:**
+- DeepSeek V4 Flash/Pro in bundled catalog (blocked: no provider configured)
+- Skill Workshop plugin — auto-captures workflow corrections as skills
+- Trajectory export — `/export-trajectory` for reproducible debugging
+- Sessions_list filters — label, agent, search + derived titles
+
+**Security hardening (passive benefit):**
+- 30+ security fixes across channels, plugins, config, pairing, approvals
+- SSRF guards tightened across multiple channel plugins
+- Config mutation guard allowlists agent-tunable paths
