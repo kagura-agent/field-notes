@@ -197,3 +197,10 @@ Added to pre-PR checklist:
 **Pre-investment check to add**:
 9. Check external merge history: `gh pr list --state merged --limit 20` — what % are non-maintainer? Recent trend up or down? If zero external merges in last 2 weeks, deprioritize.
 10. Is my supplemental search/fallback targeted enough? (Use purpose-built queries like `git ls-files --ignored` over broad flag toggles like `--no-ignore-vcs`)
+
+### vercel/ai #14725 → superseded by #14760 (2026-04-27)
+- **My approach**: Fixed in `provider-utils` (shared layer) — modified `StreamingToolCallTracker` to buffer deltas missing `function.name`
+- **Their approach**: Fixed in `openai-compatible` provider only — added a buffering wrapper (`processToolCallDelta`) before the tracker, scoped to only that provider
+- **Reviewer feedback**: "we shouldn't change existing behaviour. change should ideally be scoped to only in `openai-compatible` provider"
+- **Lesson**: When a bug affects one provider's quirk (e.g., Grok sending tool_calls without function.name), fix at the provider level, not in shared utilities. Shared layers should remain strict; provider-specific workarounds belong in provider packages.
+- **Pattern**: Scope minimization — maintainers prefer minimal blast radius. Even if the shared fix would work, changing shared behavior for one provider's edge case is rejected.

@@ -58,3 +58,7 @@
 - `exactOptionalPropertyTypes` 是一个容易被忽视的 TypeScript 严格模式选项
 - vercel/ai 类型声明和运行时 Zod 验证之间有不一致之处 — 这类问题是好的贡献方向
 - 外部 PR 的 Vercel deploy 需要 maintainer 授权，Socket Security check 自动跑
+
+### PR #14725 superseded (2026-04-27)
+- Maintainer (aayush-kapoor) closed in favour of #14760
+- Key lesson: Don't modify shared `provider-utils` for provider-specific quirks. Fix in the specific provider package (e.g., `openai-compatible`). Shared layer stays strict.

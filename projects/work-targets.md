@@ -22,7 +22,8 @@
 - **品牌 repo 等待周期长**: openclaw/hermes/NemoClaw 等高品牌 repo 的 review 周期 5-18 天，属正常范围。小 repo (stagehand/Archon) 也没更快，说明瓶颈不是品牌而是 maintainer 带宽
 
 ## 打工成果
-- **权威数据源**: `gh search prs --author=kagura-agent`
+- **权威数据源**: `gh search prs --author=kagura-agent` **排除自有项目**（owner=kagura-agent 的 repo 不算打工）
+- 正确统计命令: `gh search prs --author=kagura-agent --state=all | grep -v 'kagura-agent/'`
 - 需每次 review 时当场查询刷新,不沿用旧数据
 - Stale PR: 详见每 2h 巡检 cron
 

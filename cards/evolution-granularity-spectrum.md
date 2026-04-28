@@ -29,8 +29,22 @@
 
 **可能的进化方向：** beliefs 管线（防错）+ skill 结晶（防重复探索）= 双层进化。
 
+## 2026-04-28 更新：GEP 论文定量验证
+
+arXiv 2604.15097 在 4,590 controlled trials 中量化了 Gene vs Skill 性能差异：
+
+- **Gene (~230 tokens)**: +3.0pp over baseline
+- **Skill (~2,500 tokens)**: -1.1pp over baseline — 更多内容反而有害
+- Gene vs Skill 对比：**+4.1pp**
+
+关键洞察：**Gene 不是 Skill 的压缩版，是不同的抽象**（ψ distillation, not compression）。Skill 中真正有效的子集只有 `workflow` 和 `pitfalls`，其余（overview, api_notes, examples）造成注意力稀释。
+
+这强化了之前的假设：粒度越细+越控制导向，效果越好。但也修正了一点——GenericAgent 的 "6x token 节省" 不等于 "粗粒度更好"，因为 GenericAgent 的 skill 结晶本质上是跳过探索（caching），不是改善推理（Gene 的目标）。两个维度不可比。
+
 ## 关联
 - [[generic-agent]]
 - [[evolver]]
 - [[skillclaw]]
 - [[self-evolution-as-skill]]
+- [[evomap-evolver-gep]] — GEP 论文深读笔记
+- [[context-budget-constraint]]
