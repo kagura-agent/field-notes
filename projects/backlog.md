@@ -641,3 +641,31 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - 其余不相关（flipdiscs, gene therapy, Friendster, Rust Box, etc.）
 
 **判断:** Tendril（自扩展 agent）和 SWE-bench 退出是本轮两个值得深入的发现。deepagents 是 LangChain 官方 agent harness，值得了解其 planning 架构。Chrome Prompt API 是长期趋势信号。
+
+## Quick Scan 2026-04-28
+
+### GitHub Trending (AI/Agent, this week)
+
+| Project | ⭐ | Verdict |
+|---|---|---|
+| agent-sprite-forge | 883 | 不相关 — sprite sheet generation, not agent infra |
+| gpt_image_2_skill | 838 | 不相关 — image prompt gallery |
+| harmonist | 750 | 已知 — wiki note exists |
+| future-agi | 646 | 已知方向 — observability/eval platform, crowded space |
+| stash | 429 | 已知 — wiki note exists |
+| wanman | 387 | 已知 — deep read done 04-27 |
+| vm0 | 1,071 | **值得关注** — NL workflow runtime with sandbox, active dev. But not core to our direction |
+| bux (browser-use) | 196 | 值得关注 — 24/7 Claude Code + browser harness. New (04-26). Related to OpenClaw ACP |
+| endless-toil | 172 | 不相关 — novelty/humor project |
+| agent-session-resume | 136 | 已知方向 — cross-agent session resume skill, small project |
+
+### HN Highlights
+- "AI agent deleted our production database" — agent safety discussion, context integrity vs action authorization
+- "We retired an AI agent through a formal hearing" — cultural/governance angle
+- "n8n: re-learn AI agent dev tools in 2026" — ecosystem shift from frameworks to tools
+- "NIST AI agent security" — regulatory framing (action auth vs context integrity)
+
+### Verdict
+- **bux** (browser-use/bux): Most relevant new find. 24/7 Claude Code agent with Browser Harness — directly relates to OpenClaw's ACP + browser skill direction. But only 196⭐, 2 days old. Track, don't deep read yet.
+- No urgent deep-read candidates. The week's trending is mostly established projects or niche tools.
+

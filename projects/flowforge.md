@@ -73,3 +73,14 @@ index.ts (CLI, commander) → engine.ts (状态机逻辑) → db.ts (SQLite)
 Added `console.warn()` in `engine.start()` when auto-closing a stale active instance. Previously this happened silently — the return value had `previouslyClosed` but library consumers and CLI users saw nothing. Now the warning includes instance ID and node name for debuggability.
 
 This surfaced from self-audit: the auto-close behavior is correct (prevents "instance already active" errors), but silent auto-closes violate [[observability]] — the user should know their previous run was abandoned.
+
+## Defender/Tolerator Audit (2026-04-28)
+
+Applied [[claude-mem]]'s Defender/Tolerator lens to FlowForge error handling. Found 2 actionable Tolerator patterns:
+
+1. **autoLoadWorkflows silent catch** — `catch(e) {}` when loading YAML files. User gets zero feedback on invalid workflows, then later "workflow not found" with no clue why. **Fixed**: `console.warn` with filename and error message.
+2. **advanceWithResult branch regex** — silent failure when result text doesn't match `/branch:?\s*(\d+)/i`. Branch stays `undefined`, then `next()` throws a confusing error. **Fixed**: explicit warning when current node has branches but no branch detected in result.
+
+Also fixed stale data: two broken symlinks in `~/.flowforge/workflows/` (workloop.yaml, workloop-night.yaml) pointing to old path. The new warning surfaced them immediately — **the fix validated itself on first run.**
+
+**Remaining Tolerator** (not fixed, acceptable): `engine.start()` auto-closing stale instances. The `console.warn` from 04-27 already makes this visible. Auto-close is the right UX for CLI — forcing confirmation would break non-interactive use.
