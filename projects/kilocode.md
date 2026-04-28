@@ -262,3 +262,16 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
   - Message count limiting scaled by usable context size
   - Proper changeset with `@kilocode/cli: patch`
   - **Lesson**: For context-management issues, the maintainer's mental model is "adapt to the model" not "guard before the call." My fix was at the wrong abstraction level — I treated the symptom (overflow before request) rather than the cause (fixed-size budgets don't scale across models).
+
+### PR #9623 — fix(tool): catch EEXIST on mkdir when parent directory already exists
+- **Issue**: #9618 — write tool fails with EEXIST when parent directory already exists (Windows)
+- **状态**: OPEN (2026-04-28)
+- **改动**:
+  - `packages/opencode/src/kilocode/encoding.ts`: `Encoding.write()` catches EEXIST on `fs/promises.mkdir`
+  - `packages/shared/src/filesystem.ts`: `ensureDir()` and `writeWithDirs` catch AlreadyExists from Effect's `makeDirectory`
+  - Tests: 2 new tests (encoding.test.ts + write.test.ts) verifying write to existing dir
+  - changeset: patch (`@opencode-ai/shared`, `@kilocode/cli`)
+- **根因**: Windows 上 `fs.mkdir` with `recursive: true` 在特定目录类型（junction points、reparse points）下仍会抛 EEXIST
+- **方法**: 在三个 mkdir 调用点都 catch 并忽略 EEXIST/AlreadyExists
+- **技术选择**: Effect 路径用 `Effect.catchIf(e => e.reason._tag === "AlreadyExists", () => Effect.void)`；raw Node 路径用 try-catch 检查 `.code === "EEXIST"`
+- **注意**: fork PR CI 大多 skip（需 maintainer 审批后触发），本地测试全过
