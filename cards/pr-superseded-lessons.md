@@ -223,3 +223,10 @@ Added to pre-PR checklist:
 - **Their approach**: Kept auto-index at init time but added retry-with-context logic — if initial auto-index fails (no context), retries on next `search()` call when context is available.
 - **Why theirs won**: More conservative. My approach changed the constructor contract (callers expecting auto-index at construction time would see different behavior). Their approach preserves existing semantics while adding graceful recovery. Same end result, less behavioral change.
 - **Pattern**: **Prefer additive retry over behavioral deferral.** When a constructor does eager work that sometimes fails, adding "retry with context on next call" is less disruptive than removing the eager behavior entirely. Maintainers prefer fixes that preserve existing contracts.
+
+### openclaw/openclaw #73386 → superseded by db40ec404a (2026-04-28)
+- **Issue**: Ollama discovered models lost thinking level support after discovery refactor
+- **My approach**: Added module-level `Set` (`ollamaDiscoveredThinkingModels`) in the Ollama extension, populated during discovery. `isReasoningModel()` checked this set. Modified 3 files in `extensions/ollama/`.
+- **Their approach**: Passed `catalog?: ThinkingCatalogEntry[]` parameter through existing function signatures in `thinking.ts` and related files. Touched 30+ files across the codebase to thread the metadata properly.
+- **Why theirs won**: My approach introduced **stateful module-level state** in what should be a stateless provider. The maintainer comment: "keeps the Ollama provider stateless and instead passes the discovered catalog reasoning metadata through." Their approach required more changes but maintained architectural purity.
+- **Pattern**: **Keep providers stateless.** When discovery data needs to reach downstream code, pass it through function parameters — even if it means touching many files. Module-level state in providers creates hidden coupling, testing difficulty, and concurrency risks. The extra diff is worth the architectural cleanliness.

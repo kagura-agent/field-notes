@@ -62,3 +62,12 @@
 ### PR #14725 superseded (2026-04-27)
 - Maintainer (aayush-kapoor) closed in favour of #14760
 - Key lesson: Don't modify shared `provider-utils` for provider-specific quirks. Fix in the specific provider package (e.g., `openai-compatible`). Shared layer stays strict.
+
+### PR #14774 (2026-04-28) — PENDING
+- Fix: disable `supportsNativeStructuredOutput` for `claude-opus-4-7` on Bedrock
+- Issue #14773: Bedrock rejects `output_config.format` for this model
+- Approach: model-aware check using `!modelId.includes('claude-opus-4-7')` in bedrock-anthropic-provider
+- Follows same pattern as Anthropic SDK's per-model capability table
+- Tests cover both direct model ID and cross-region prefixed variants
+- Changeset added per CONTRIBUTING.md requirements
+- CI: Vercel deploy needs maintainer auth (expected for external PRs), Socket + Agent Review pass

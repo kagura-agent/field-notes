@@ -53,3 +53,8 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
   - EC2 instance roles (IMDS) have no env vars → can't be detected, need explicit `discovery.enabled = true`
 - Architecture: bearer token resolution → IAM token generation (cached) → model discovery (cached) → implicit provider
 - PR #67550: Added IRSA/ECS env var checks to the guard
+
+## PR #73386 Superseded (2026-04-28)
+- **What**: Ollama thinking level fix — closed by steipete, superseded by db40ec404a
+- **Lesson**: Don't introduce module-level state in providers. Pass metadata through function params even if it means a bigger diff. steipete values stateless providers.
+- **steipete pattern**: Will do larger refactors (30+ files) to maintain architectural principles rather than accept smaller but architecturally impure fixes
