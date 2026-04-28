@@ -86,3 +86,9 @@
 - biome enforces `noImplicitAnyLet` — use `Awaited<ReturnType<typeof fn>>` for split declaration/assignment
 - When adding a handler following an existing pattern (e.g. cancel workflow → cancel chat), check error string consistency with route status mapping (`includes("not found")` must match actual error text)
 - Wrap potentially-throwing calls in try/catch when cleanup is needed (AbortController leak pattern)
+
+## Update (2026-04-28)
+
+**PR #1253** (superseded by maintainer's #1257): Fix for WorkspaceSearch auto-index on tenant-aware filesystems (#1252). My approach deferred auto-index from constructor to lazy execution. Maintainer's approach: kept auto-index timing but added retry-with-context. His was more conservative — preserved constructor contract while adding graceful recovery. Pattern: additive retry > behavioral deferral.
+
+**Maintainer style confirmed**: omeraplak consistently prefers minimal behavioral change. He'll accept the same fix idea but rewrite it to preserve existing contracts. Two supersedes in this repo now (#1234/#1235 and #1253) — the pattern is clear.

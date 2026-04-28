@@ -216,3 +216,10 @@ Added to pre-PR checklist:
 **Pattern**: **Scope the fix to where the bug manifests, not where you can generically handle it.** Shared layer fixes are tempting (DRY, covers all providers) but riskier. Provider-level fixes are safer when only one provider exhibits the behavior. The maintainer prefers defensive isolation over generic abstraction.
 
 **Also notable**: Their PR had 241 lines (vs my smaller diff) because they added comprehensive tests including an error case for "function.name never arrives". More test investment = more maintainer confidence.
+
+### VoltAgent/voltagent #1253 → superseded by #1257 (2026-04-28)
+- **Issue**: WorkspaceSearch auto-index fails for tenant-aware filesystems needing `operationContext`
+- **My approach**: Deferred auto-index entirely — moved from constructor-time to lazy execution on first `search()` or `init()`. Changed the architectural contract: constructor no longer auto-indexes.
+- **Their approach**: Kept auto-index at init time but added retry-with-context logic — if initial auto-index fails (no context), retries on next `search()` call when context is available.
+- **Why theirs won**: More conservative. My approach changed the constructor contract (callers expecting auto-index at construction time would see different behavior). Their approach preserves existing semantics while adding graceful recovery. Same end result, less behavioral change.
+- **Pattern**: **Prefer additive retry over behavioral deferral.** When a constructor does eager work that sometimes fails, adding "retry with context on next call" is less disruptive than removing the eager behavior entirely. Maintainers prefer fixes that preserve existing contracts.
