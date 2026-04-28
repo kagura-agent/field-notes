@@ -91,3 +91,11 @@ Secret pattern 扫描：~30 类 credential patterns（AWS keys, GitHub PATs, Str
 - **No activity** since initial commit (Apr 23) + one badge-only docs commit
 - Star farming suspicion reinforced — high star velocity on a single-commit repo
 - **Assessment**: not worth further tracking unless real commits appear
+
+## Applied: Secret Scanning in wiki-lint (2026-04-28)
+- Implemented ~25 credential patterns in [[wiki]]/scripts/wiki-lint.py (section 9)
+- Patterns cover: AWS, GitHub PATs/OAuth/App, OpenAI, Stripe, Slack, Google, Telegram, Discord, npm, PyPI, private keys, Age keys, Heroku, Twilio, Mailgun, SendGrid, generic assignments
+- False-positive suppression: strips code blocks + skips lines with documentation markers (example, placeholder, dummy, etc.)
+- Tested: zero FP on 493 wiki files, catches all 4 test pattern types
+- Verdict: **lightweight win** — 86 lines, zero dependencies, catches real leaks before git push
+- Pattern: Harmonist's memory-write scanning → our wiki-write scanning. Same concept, different integration point.
