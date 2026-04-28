@@ -1,4 +1,30 @@
 
+## 2026-04-28 Quick Scan (10:45)
+
+**GitHub Trending (created Apr 2026, sorted by stars):**
+- MemPalace ⭐50k — Best-benchmarked OSS AI memory system. 已有笔记 → mempalace.md
+- gbrain ⭐11.8k — Garry Tan's opinionated OpenClaw/Hermes brain. 已有笔记 → gbrain.md
+- design.md ⭐9.4k — Visual identity spec for coding agents (Google Labs). 🆕 有趣但非核心方向
+- huashu-design ⭐8.5k — HTML design skill for Claude Code. 已有笔记 → huashu-design.md
+- obscura ⭐7.2k — Rust headless browser for AI agents. 🆕 值得关注（竞品 browser-use 方向）
+- video-use ⭐5.1k — browser-use 团队的视频编辑 agent. 不相关（非核心方向）
+- fireworks-tech-graph ⭐4.7k — SVG/PNG 技术图表 skill. 不相关
+- CubeSandbox ⭐4.4k — Tencent 轻量 agent sandbox (Rust). 🆕 值得关注（agent infra）
+- agentic-stack ⭐1.7k — 已在跟踪 → agentic-stack 笔记
+- hermes-web-ui ⭐2.4k — Hermes Agent web dashboard. 已知
+- dirac ⭐665 — Coding agent focused on efficiency, "Hash Anchored edits", topped TerminalBench (HN 306pts). 🆕 值得深入（成本优化思路）
+
+**HN Front Page (agent 相关):**
+- GitHub Copilot 转 usage-based billing (562pts) — 行业趋势，agent 服务定价转向
+- China blocks Meta acquisition of Manus AI (310pts) — 地缘政治影响 agent 生态
+- OSS Agent (dirac) topped TerminalBench (306pts) — 效率优化方向
+- 4TB voice samples stolen from Mercor AI contractors (451pts) — AI 数据安全
+- AgentSwift: OSS iOS builder agent (9pts, Show HN) — 小项目，观察
+
+**判断:** dirac 值得深读 — "Hash Anchored edits" 和 50-80% cost reduction 声称值得验证，topped TerminalBench 有 HN 关注度。obscura 和 CubeSandbox 记入 backlog 备查。
+
+---
+
 ## 2026-04-25 Quick Scan Evening (17:56)
 
 **GitHub API Search (past week, ai-agent + ai-agents topics):**
