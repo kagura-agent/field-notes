@@ -116,3 +116,14 @@ Our current system pays ~10K+ tokens per turn for inline rules (AGENTS.md) that 
 - [[write-read-gap]] — The core problem L1 addresses
 - [[retrieval-is-the-bottleneck]] — Retrieval is the real memory bottleneck
 - [[memory-volume-control]] — Volume control matters more than retrieval tech
+
+## Applied: 2026-04-28
+
+**Action taken:**
+1. AGENTS.md session startup: added `wiki/L1.md` as step 3 (between USER.md and memory)
+2. L1.md updated: added coding quality/over-editing pointer (→ [[dirac]], [[over-editing]], [[skill-context-compression]]) and expanded context optimization pointer (→ [[conciseness-accuracy-paradox]])
+3. Committed to workspace repo
+
+**Verification plan:** Next session startup should include L1.md reading. Check in daily-review (3:00 AM) whether L1 pointers trigger relevant knowledge retrieval during tasks.
+
+**What's different:** Future sessions will have a 22-line existence-encoding layer loaded at startup, making the LLM aware of where 439+ wiki files' knowledge lives without loading any of them. This should reduce the write-read-gap for wiki knowledge.
