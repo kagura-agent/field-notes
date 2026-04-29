@@ -23,5 +23,9 @@
 ## 对我们的意义
 OpenClaw 的 AGENTS.md + SOUL.md + SKILL.md 体系比标准 AGENTS.md 更丰富。我们本质上是这个 pattern 的深度实践者，只是分成了多个文件各司其职。
 
+## 2026-04-29 Update: OD extends pattern to output direction
+
+[[open-design]] introduces `<question-form>` XML blocks emitted by the LLM as plain text, parsed by the web app into interactive UI forms. This inverts the context-file pattern: instead of .md files telling the agent what to do (input), the agent generates structured schemas that become user-facing UI (output). Also extends SKILL.md with `od:` frontmatter (mode, inputs, parameters, design_system sections) — shows the convention is evolving beyond simple text instructions into typed metadata.
+
 ## 学习日期
-2026-04-20
+2026-04-20 (updated 2026-04-29)
