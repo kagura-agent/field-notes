@@ -47,5 +47,15 @@
 
 Notable: OD's adapter layer is even thinner than GBrain's — each adapter is just bin name + buildArgs function + stream format hint (~10 lines). All intelligence lives in the prompt stack (discovery.ts) and skill files.
 
+## 2026-04-29 Update: Empirical validation (Augment study)
+
+[[augment-agents-md-study]] provides first data-backed evidence this pattern works:
+- Hub file (AGENTS.md, 100-150 lines) + on-demand reference files = **+10-15% all metrics** in coding tasks
+- Files >150 lines start **reversing gains** (overexploration trap)
+- References from hub are loaded 90%+ of sessions; orphan docs <10%
+- The "thin hub + fat refs" architecture beats "one big file" measurably
+
+This validates our SKILL.md model: AGENTS.md is the thin discovery layer, SKILL.md files are the fat on-demand references.
+
 ## Tags
 #architecture #agent-skills #design-pattern #self-evolving
