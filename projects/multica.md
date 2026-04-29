@@ -140,3 +140,15 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **Note**: math.Ceil used for remaining seconds to avoid edge case where truncation gives 0
 - **Approach**: Manual edit (one-liner fix, no need for acpx)
 - **CI**: backend + frontend pass. Vercel deploy auth expected for external PRs
+
+## 2026-04-29 PR #1848: fix invited users forced to onboarding
+- **Issue**: #1837 — Invited users forced into onboarding instead of their workspace
+- **PR**: #1848 — fix(auth): route invited users to workspace instead of forcing onboarding
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: PR #1411 flipped routing priority so `!hasOnboarded` wins over workspace presence. Backend `onboarded_at` landed but frontend priority never restored.
+- **Fix**: 3 files (resolve.ts, callback page, dashboard guard) — flip workspace-first priority. Also updated existing unit tests in resolve.test.ts and callback page.test.tsx
+- **Test fix bonus**: Found and fixed pre-existing URLSearchParams cleanup bug in callback tests — `forEach + delete` skips entries during iteration. Fixed by snapshotting keys first.
+- **Approach**: Manual edit (small surgical changes, < 20 lines total across 3 source files + 2 test files)
+- **CI lesson**: multica has callback page integration tests (jsdom) that exercise the auth flow. Must check apps/web/app/auth/callback/page.test.tsx for behavior assertions when changing routing logic.
+- **Pattern**: When fixing routing logic, check ALL test files that mock the affected functions — both unit tests (packages/core) and integration tests (apps/web)
+- **pnpm install**: Takes 3+ minutes on this machine (1420 packages). Install needs to complete fully for vitest to link properly in pnpm workspaces.
