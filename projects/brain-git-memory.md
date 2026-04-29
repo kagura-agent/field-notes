@@ -122,6 +122,13 @@ Our system is actually closest to this philosophy — we keep raw memory entries
 3. **Pre-commit validation pattern** — extend our existing checks to run before `git add`, not just in lint
 4. **Bitemporal awareness** — at minimum, distinguish "when something happened" from "when I learned about it" in memory entries
 
+## Applied to Kagura (2026-04-29)
+
+1. **`source:` field added to beliefs-candidates.md** — each gradient entry now carries authority metadata (`human|self|study|review|env`) with differentiated graduation thresholds. Human corrections graduate at 2x (highest trust); self/study/review/env at 3x.
+2. **Pre-commit secret scanning hooks installed** — workspace repo and wiki repo both have git pre-commit hooks running 12 high-signal regex patterns (OpenAI, Anthropic, GitHub, AWS, Google, Slack, private keys, age keys). Prevention > detection pattern directly applied.
+3. **Supersession chains** — not yet implemented (wiki cards don't have a linking mechanism for "this replaces that"). Deferred.
+4. **Bitemporal awareness** — not yet implemented. Current memory format doesn't distinguish event time from recording time. Lower priority.
+
 ## Growth Signal
 
 22⭐ in 2 days with no HN front page. Rust + clean architecture + multi-agent onboarding. Worth watching. The codebase quality is high — proper error handling, security considerations, well-structured crates.
