@@ -33,3 +33,9 @@ tendril 提出的 tool self-registration 模式引入了第五种类型：
 完整分类：skill (prompt) vs plugin (tool) vs system (transformation) vs reference (API docs) vs self-extending (runtime generation)。
 
 关键问题：自生成的工具如何保证安全性和质量？没有人类 review 的 tool 能不能信任？
+
+## 2026-04-29 更新：SKILL.md 标准化加速
+
+[[thclaws]]（Rust-native agent harness, 612⭐ in 9 days）完全兼容 SKILL.md + YAML frontmatter 格式，且同时读取 `.claude/skills/` 和 `.thclaws/skills/`。加上 Claude Code、OpenClaw、[[open-design]]（1902⭐ in 1 day），SKILL.md 作为跨 harness 标准格式的地位进一步巩固。
+
+这不再是"几个项目碰巧用了同样的格式"，而是"新项目默认选这个格式因为生态已在此"。网络效应开始显现。

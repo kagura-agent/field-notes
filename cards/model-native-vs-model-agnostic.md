@@ -56,3 +56,8 @@ This suggests the spectrum isn't just model-native ↔ model-agnostic, but has a
 - [[dirac]] — model-agnostic but tool-native, cost reduction via context curation
 - [[acp]] — OpenClaw 的 model-agnostic agent 协议
 - [[agent-brain-portability]] — 相关但不同维度（brain 可移植性 vs framework 可移植性）
+- [[thclaws]] — model-agnostic exemplar（8+ providers, `/provider` mid-session switch）
+
+## Update: thClaws — Sovereignty as Model-Agnostic Extreme (2026-04-29)
+
+[[thclaws]] pitches "sovereign by design" — explicitly framing provider-agnosticism as **user sovereignty**. 8+ providers built-in, generic `oai/*` slot for any OpenAI-compatible endpoint. Unlike [[dirac]] which is agnostic-but-opinionated, thClaws treats provider-switching as a first-class UX feature (`/provider` and `/model` commands, mid-session). Also reads Claude Code's `.claude/` config for compatibility — leveraging Claude Code's install base while removing the model lock-in.
