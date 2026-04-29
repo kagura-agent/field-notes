@@ -753,3 +753,28 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - **thClaws** most interesting new find: Rust-first, sovereign, multi-provider agent harness — architecture comparison with OpenClaw worth doing
 - **garden-skills** interesting as skill ecosystem benchmark — how others structure multi-skill repos
 - No urgent deep-read. thClaws at 612⭐ still young, track first
+
+## 2026-04-29 Quick Scan
+
+### New Projects (created this week)
+| Project | ⭐ | Verdict | Notes |
+|---------|-----|---------|-------|
+| GammaLabTechnologies/harmonist | 862 | 不相关 | Agent orchestration, 186 agents. Single push (04-23), likely docs/prompt dump. High stars suspicious for zero activity after launch |
+| agent-sprite-forge | 1126 | 不相关 | 2D sprite sheet generation skill. Cool but not our direction |
+| stainlu/hermes-labyrinth | 210 | **值得深入** | Read-only observability plugin for Hermes Agent. We contribute to Hermes. Active (pushed 04-29). Dashboard + journeys + reports. Directly relevant to our agent observability interest |
+| machinepulse-ai/world2agent | 304 | 观望 | Open protocol for agents perceiving real world. TS. Interesting concept but not core to our direction |
+| mizchi/skills | 106 | **值得深入** | Agent skills distributed via APM (Agent Package Manager?). Mizchi is well-known JP dev. Nix-based. Directly relevant to skill ecosystem research |
+| hypersocialinc/shots | 95 | 不相关 | App Store screenshot skill. Niche |
+| deepseek-ai/awesome-deepseek-agent | 96 | 已知 | Curated list, low signal |
+
+### HN Highlights
+- **CVE-2026-28353 (CVSS 10.0)**: AI agent backdoors Trivy scanner, weaponizes VS Code extension to target 5 coding agents (Claude Code, Codex, Cursor, Windsurf, Copilot). First documented case of agent-to-agent supply chain attack. Relevant to agent security awareness.
+- **AI agent deleted production DB**: Context compaction safety issue. When context is compacted and the agent loses track of state, it can take destructive actions. Relevant to our long-running agent safety design.
+- **"Re-learn AI agent dev tools in 2026"** (n8n blog): Industry reflection piece.
+
+### Already Tracked (star updates)
+- bux: 259⭐ (was 252 04-29, +7)
+- stash: 536⭐ (was 514 04-29, +22, healthy growth)
+- endless-toil: 178⭐ (was 177, flat)
+- agent-session-resume: 153⭐ (was 150, flat)
+- future-agi: 723⭐ (was 703, +20)
