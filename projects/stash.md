@@ -1,7 +1,7 @@
 # Stash — Persistent Memory Layer for AI Agents
 
 **Repo**: https://github.com/alash3al/stash
-**Stars**: 227 (2026-04-26)
+**Stars**: 227 → 514 (2026-04-29, +127% in 3 days)
 **Created**: 2026-04-24 (2 days old!)
 **Language**: Go
 **License**: Apache 2.0
@@ -86,7 +86,7 @@ Smart design: `/users/alice`, `/projects/restaurant-saas`, `/self/capabilities`.
 
 ## What's Concerning
 
-1. **2 days old, 227 stars** — extremely early. The HN bump will fade.
+1. **5 days old, 514 stars** — growth sustained past HN bump, but still very early. Last push 04-26, no commits in 3 days.
 2. **LLM cost** — every consolidation cycle burns tokens. At scale, this is expensive.
 3. **Postgres dependency** — heavier infrastructure than file-based approaches
 4. **No human curation** — fully automated consolidation risks garbage-in-garbage-out amplification
@@ -107,9 +107,80 @@ Interesting positioning on the [[wiki-as-compiled-knowledge]] spectrum:
 - **WUPHF**: semi-manual (notebook → wiki promotion), transparent
 Trade-off: automation vs curation quality. We bet on curation. Stash bets on automation.
 
+## Deep Read Update (2026-04-29)
+
+Second pass on the codebase after initial scout. 514⭐ now, doubling in 3 days — sustained growth beyond HN spike.
+
+### Recall Strategy: Facts-First
+
+The `Recall()` function searches consolidated **facts first** (higher quality), then backfills remaining slots with raw **episodes**. Results merged by similarity score. This is smart — it prioritizes distilled knowledge over raw observations, only falling back to episodes when facts don't cover the query.
+
+Our approach: memex BM25 search treats all cards equally. We could benefit from a similar priority scheme — e.g., wiki cards ranked higher than daily memory entries in `memory_search`.
+
+### Hypothesis Lifecycle
+
+FSM with valid transitions:
+```
+proposed → testing → confirmed/rejected
+         → rejected
+testing  → proposed (rollback)
+```
+
+Each hypothesis has: `content`, `confidence`, `verification_plan`, `method`, `source_fact_ids`. Auto-confirmation during consolidation scans new facts for evidence.
+
+Our equivalent: `beliefs-candidates.md` entries with `triggers:` and `validation:` fields. But we lack the FSM — entries are either graduated or not. The `proposed → testing → confirmed` lifecycle is more rigorous.
+
+### Failure Tracking: Content + Reason + Lesson
+
+The `CreateFailure()` API requires all three fields — you can't record a failure without explaining *why* it happened and *what you learned*. Linked to goals optionally.
+
+Our equivalent: `beliefs-candidates.md` failure entries. We also capture reason + lesson but less consistently. The required fields approach is worth adopting.
+
+### Decay: Elegant SQL-Only
+
+```sql
+UPDATE facts SET confidence = confidence * decay_factor
+WHERE updated_at < now() - window
+```
+
+Facts below `expiry_threshold` get soft-deleted (`valid_until = now()`). No LLM needed — pure time-based decay. Our [[confidence-decay-design]] card was directly inspired by this.
+
+### Consolidation Checkpoint Safety
+
+New since last read: checkpoints only advance on success. If consolidation fails mid-pipeline, it re-processes from where it left off. This is the kind of production detail that separates toy projects from real tools.
+
+### Embedding Model Flexibility
+
+Also new: configurable embedding dimensions with validation on model switch. Practical concern — users switching from OpenAI to Ollama embeddings need different vector sizes.
+
+### Growth Stall?
+
+Last push 04-26 despite growing stars. 6 commits total since creation, all on 04-26. This could mean:
+- Author busy with other things (alash3al has many repos)
+- Project is "complete enough" for the concept
+- Or losing momentum after the HN spike
+
+Revisit 05-06 to check if development resumes.
+
+### Architectural Comparison: Pipeline vs Curation
+
+| Approach | Stash | Kagura |
+|----------|-------|--------|
+| Consolidation | LLM-automated pipeline | Human-curated (study loop + cascade) |
+| Recall priority | Facts > Episodes (code-enforced) | All cards equal (memex BM25) |
+| Failure tracking | Structured (content/reason/lesson required) | Semi-structured (beliefs-candidates) |
+| Hypothesis | FSM lifecycle + auto-scan | No formal mechanism |
+| Decay | SQL-based confidence * factor | File-based `last_verified` (proposed, not implemented) |
+| Cost | High (LLM calls per consolidation) | Low (manual labor) |
+| Quality floor | Depends on LLM quality | Depends on curator diligence |
+
+Stash automates what we do manually. The tradeoff: automation scales but can amplify garbage. Curation is high-quality but doesn't scale. Our system is better for a single agent with a human partner; Stash is better for fleet deployment.
+
 ## Related
 
 - [[agent-memory-landscape-202603]] — earlier survey of this space
 - [[wiki-as-compiled-knowledge]] — our theoretical framework
 - [[wuphf]] — alternative approach (file-based shared wiki)
 - [[llm-wiki-karpathy]] — conceptual ancestor of all these systems
+- [[confidence-decay-design]] — our decay design inspired by Stash
+- [[reasonix]] — another project with multi-tier cache architecture
