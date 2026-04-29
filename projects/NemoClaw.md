@@ -184,3 +184,28 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 - My skip-and-continue PR was superseded by hunglp6d's broader PR that also added Discord rotation coverage
 - Maintainer jyaunches acknowledged my design ("skip-and-continue approach and per-phase gate flags were a clean design") but merged the more comprehensive PR
 - **Takeaway:** For test PRs, combine resilience fixes with coverage extensions to maximize value
+
+## 更新：2026-04-29
+
+### PR #2651 — fix: unload Ollama GPU memory on provider switch/sandbox stop (fixes #2638)
+- **Issue**: priority:high bug from maintainer wscurran — Ollama runners hold GPU after provider switch/sandbox stop
+- **Fix**: Added `unloadOllamaModels()` — calls Ollama API (`GET /api/ps` → `POST /api/generate` with `keep_alive:0`) to unload models
+- **Integration points**: cleanupSandboxServices(), sandboxDestroy(), stopAll() — 3 lifecycle hooks
+- **82 lines across 3 files** + test file — clean surgical fix
+- CI: ✅ (check-pr-limit passed, CodeRabbit passed all pre-merge checks)
+- CodeRabbit review: flagged test uses copied logic instead of real import. Responded explaining CJS require limitation (same as shields.test.ts). Pushed comment update.
+- **Status**: pending review
+
+### 工程笔记（新）
+- `onboard-ollama-proxy.ts` is `@ts-nocheck` + CJS require — can't import in vitest tests (same issue as shields.ts)
+- Ollama unload API: `POST /api/generate` with `{"model": "X", "keep_alive": 0}` — not DELETE, not stop
+- `registry.getSandbox(name)?.provider` contains provider string like "ollama-local"
+- `cleanupSandboxServices()` doesn't get the sandbox object itself — need to call `registry.getSandbox()` separately
+- Build: `npm run build:cli` (tsc, not just npm test)
+- Test runner: vitest (`npm test -- <pattern>`)
+- Pre-existing test failures in preflight.test.ts — not ours
+
+### PR Pipeline
+| # | Status | What | Lesson |
+|---|--------|------|--------|
+| #2651 | OPEN | Ollama GPU cleanup | Maintainer-filed bug = higher merge probability |
