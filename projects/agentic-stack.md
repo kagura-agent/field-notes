@@ -324,3 +324,12 @@ v0.12:    Multi-modal（tldraw canvas）
   - 默认关闭，onboarding 写 flag，用户显式启用
   - adapter 不自动装 beta MCP config
 - Seed skill 数达 9 个: skillforge, memory-manager, git-proxy, debug-investigator, deploy-checklist, design-md, data-layer, data-flywheel, tldraw
+
+## Followup 2026-04-29
+
+**Stars**: 1,712 → 1,740 (+28, steady growth)
+**No new commits since v0.12.0** (04-27). Pushed_at shows 04-29 but no new content — likely GitHub cache.
+
+**Status**: Project has settled into post-release calm after the rapid v0.9-v0.12 sprint (4 releases in 3 days). Community engagement ongoing but no new PRs or issues.
+
+**Growth trajectory**: 154(04-17) → 401(04-18) → 510(04-19) → 584(04-20) → 1462(04-23) → 1676(04-27) → 1740(04-29). Growth decelerating from explosive to steady ~2%/day. Healthy for a tool project.

@@ -275,3 +275,17 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - **方法**: 在三个 mkdir 调用点都 catch 并忽略 EEXIST/AlreadyExists
 - **技术选择**: Effect 路径用 `Effect.catchIf(e => e.reason._tag === "AlreadyExists", () => Effect.void)`；raw Node 路径用 try-catch 检查 `.code === "EEXIST"`
 - **注意**: fork PR CI 大多 skip（需 maintainer 审批后触发），本地测试全过
+
+## Followup 2026-04-29
+
+**Stars**: 18,696 (pushed today, very active)
+
+### Auto-Approve Status Indicator (#9662, merged)
+- Adds shield indicator in session prompt controls showing runtime auto-approve state
+- Syncs auto-approve state across sidebar, tab, and Agent Manager session webviews
+- **Pattern**: Trust/permission visibility is becoming standard UX in coding agents. Users want to see at a glance what autonomy level the agent has. Relevant to [[openclaw]] permission model design
+
+### Other Recent Activity
+- #9671: shrink publish artifact to unblock build-vscode download
+- #9668: fix publish default prerelease
+- Mostly CI/build maintenance, no major feature shifts

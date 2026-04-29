@@ -207,3 +207,39 @@ OpenCode has a sophisticated session compaction system (`src/session/compaction.
 - `MIN_PRESERVE_RECENT_TOKENS`: 2k
 - `MAX_PRESERVE_RECENT_TOKENS`: 8k
 - `COMPACTION_BUFFER`: 20k (reserved for output during compaction)
+
+## Followup 2026-04-29
+
+- **Stars**: 151,677 (was ~148k on 04-23)
+- **Latest**: v1.14.29 (2026-04-28)
+
+### Session Fork Compaction Bug (#24898, merged)
+
+**Problem**: `Session.fork` copies messages and remaps IDs via `idMap`, but `CompactionPart.tail_start_id` was left as the **parent session's** message ID. Since `filterCompacted` uses `tail_start_id` as the retention boundary (walks messages until it finds matching ID), and all forked message IDs are new, the boundary is never found → pre-compaction history leaks into prompt → context balloons from ~300k to ~800k tokens.
+
+**Regression**: Introduced when `tail_start_id` + `filterCompacted` were added (2026-04-10, commit 6f5a3d30f). `Session.fork` wasn't updated to remap the new field.
+
+**Fix** (6 lines):
+```ts
+const p: MessageV2.Part = { ...part, id: PartID.ascending(), messageID: cloned.id, sessionID: session.id }
+if (p.type === "compaction" && p.tail_start_id) {
+  p.tail_start_id = idMap.get(p.tail_start_id)
+}
+```
+
+**Pattern insight**: When cloning/forking any stateful object with internal cross-references, **ALL internal IDs must be remapped**, not just the obvious ones (message IDs, parent IDs). Each new field that references other objects is a potential fork bug. This is the same class of issue as database FK violations during data migration.
+
+**Relevance to [[openclaw]]**: ACP session resume/fork has the same risk surface. Any internal references between session parts need consistent remapping. Worth adding to a pre-launch checklist for session management features.
+
+### Open PRs of Note
+
+**Chat Completions API mode** (#24914): `"api": "chat"` provider config forces `/chat/completions` for custom providers. Solves GPT-5.x defaulting to `/responses` endpoint, which breaks gateways/proxies that only implement `/chat/completions`. This `/responses` vs `/chat/completions` split is an emerging ecosystem friction point.
+
+**apiKeyCommand** (#24923): Dynamic API key refresh via shell command, 5-min TTL cache. Matches Claude Code's `apiKeyHelper` pattern. Enterprise use case (IAM, STS, SSO short-lived tokens). OpenClaw's `pass`-based credential management is similar in spirit but static.
+
+### v1.14.29 Release Highlights
+- Sessions keep relative workspace paths (portability)
+- Shell cancellations finish cleanly (no orphaned commands)
+- Experimental LSP tool forwards workspace symbol queries
+- DeepSeek OpenAI-compatible keeps `reasoning_content` interleaved by default
+- Tool streaming defaults off for non-Anthropic models (compatibility)
