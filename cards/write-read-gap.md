@@ -25,6 +25,10 @@ source: self-improving skill 体验 + Luna 对话
 - **MemEvolve** (arXiv 2512.18746) - 把这个问题形式化为"记忆架构静态性",提出 4 模块(encode/store/retrieve/manage)独立进化
 - Retrieve 模块是关键瓶颈--encode 和 store 相对容易,retrieve 需要主动且上下文相关
 
+## 新证据: sop_index → L1 迁移 (2026-04-29)
+
+[[genericagent]] PR #199: plan_sop.md 从依赖单独的 `sop_index.md` 文件改为依赖 L1 Insight (context-injected)。社区贡献者发现 sop_index.md 是私有文件，主仓库不存在 → 改用每轮自动注入的 L1。这验证了解法 #4 的方向：**注入式导航比文件查找可靠。**
+
 ## 相关
 - self-improving-agent - ClawHub 热门 skill,同样面临这个问题
 - [[capability-evolver]] - 用 Gene 模板化读取路径,减少主动读取成本

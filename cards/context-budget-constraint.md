@@ -40,3 +40,7 @@ System prompt / context window 注入的内容需要 **硬性 budget 约束**，
 - [[genericagent]] — L1 ≤30 行约束的来源
 - [[agent-memory-research]] — agent 记忆架构综述
 - [[hermes-memory-system]] — Hermes 的 context 管理
+
+## 更新: L1 trigger word 精化 (2026-04-29)
+
+GenericAgent 进一步收紧 L1 规则：括号内只写场景触发词(2-4字)，禁写机制/方法/步骤。反例：❌ `sop_name(场景A:方法1+方法2)` → ✅ `sop_name(场景A)`。这进一步强化了 "L1是指针不是摘要" 的原则 — 触发词的作用是触发检索，不是包含知识。
