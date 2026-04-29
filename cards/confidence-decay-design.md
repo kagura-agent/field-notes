@@ -71,7 +71,8 @@ done
 
 ## Implementation Plan
 
-1. Add `last_verified` to wiki-lint.sh staleness check
+1. ✅ Add `last_verified` staleness check to wiki-lint.py (section 10) — 2026-04-29
+   - 67 stale files detected on first run (37d oldest)
 2. Backfill: set `last_verified: created` for all existing cards (one-time script)
 3. Study loop: when reading a card during cascade check, update `last_verified` if confirmed
 4. Monthly lint: review stale cards list, verify or archive
