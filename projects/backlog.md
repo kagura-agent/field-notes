@@ -722,3 +722,10 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - **bux** (browser-use/bux): Most relevant new find. 24/7 Claude Code agent with Browser Harness — directly relates to OpenClaw's ACP + browser skill direction. But only 196⭐, 2 days old. Track, don't deep read yet.
 - No urgent deep-read candidates. The week's trending is mostly established projects or niche tools.
 
+
+## 2026-04-29 Quick Scout
+
+- **nexu-io/open-design** ⭐1902 (created 04-28, 1 day!) — Local-first alternative to Claude Design. 19 skills, 71 design systems, sandboxed preview, HTML/PDF/PPTX export. Runs on Claude Code/Codex/Cursor/Gemini CLI/OpenCode. Apache-2.0, TypeScript. **值得深入** — skill ecosystem + multi-agent compatibility, explosive growth
+- **machinepulse-ai/world2agent** ⭐266 — Open protocol for AI agent real-world perception (W2A). Novel direction. **可能值得深入** if agent-physical-world interface becomes relevant
+- **op7418/guizang-ppt-skill** ⭐3914 — Claude Code skill for HTML deck generation. Niche but shows skill marketplace demand
+- **chiefautism/privacy-parser** ⭐376 — Reverse of OpenAI Privacy Filter, returns PII as structured spans. Interesting security tooling
