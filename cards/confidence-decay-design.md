@@ -83,3 +83,21 @@ done
 - [[stash]] — inspiration for confidence decay
 - [[frozen-trust-vs-time-decay]] — related trust concept
 - [[memory-reconsolidation]] — theoretical framework
+
+## Application Log
+
+### 2026-04-29: wiki-lint.py Section 10
+
+**Applied**: Added staleness check as section 10 of wiki-lint.py. Directly implements the design from this card.
+
+**Results on first run**:
+- 67 stale files detected across 497 total .md files (~13.5%)
+- Oldest: 37 days (cards from 2026-03-23, the first batch of concept cards)
+- projects/ hit threshold faster (14d) → more stale hits
+- Most cards/ stale entries are from the early wiki bootstrapping era
+
+**Architecture decision**: Staleness is a **warning**, not an error. Knowledge doesn't expire — freshness does. This matches [[stash]]'s philosophy but uses time-based flagging instead of numeric decay.
+
+**Next steps**: Step 2 (backfill `last_verified`) and Step 3 (study loop integration) remain. Step 2 is mechanical; Step 3 requires workflow change.
+
+**Links**: [[wiki-health-check]], [[stash]], [[wiki-as-compiled-knowledge]]
