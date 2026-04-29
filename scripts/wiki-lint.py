@@ -8,6 +8,10 @@ Checks:
   4. Stub/empty files
   5. Duplicate slugs (same filename in different dirs)
   6. cards-index.md staleness
+  7. Frontmatter consistency
+  8. Link density stats
+  9. Secret scanning
+  10. Staleness / confidence decay (last_verified)
 
 Usage: python3 scripts/wiki-lint.py [wiki_dir]
 """
@@ -386,6 +390,77 @@ else:
     if len(secret_findings) > 30:
         info(f"  ... and {len(secret_findings) - 30} more")
     info("Review these — some may be false positives in documentation")
+
+# ── 10. Staleness Check (Confidence Decay) ──
+print("\n═══════════════════════════════════════════════════════")
+print(" 10. STALENESS CHECK (last_verified / created)")
+print("═══════════════════════════════════════════════════════")
+
+from datetime import datetime, date as date_type
+
+today = date_type.today()
+
+# Thresholds per card type (days)
+STALENESS_THRESHOLDS = {
+    'projects': 14,   # Projects ship fast, assessments go stale
+    'cards': 30,      # Abstractions age slower
+}
+# Pattern-tagged cards get 60 days, checked below
+
+stale_files = []
+
+for d, threshold in STALENESS_THRESHOLDS.items():
+    dpath = Path(d)
+    if not dpath.exists():
+        continue
+    for f in sorted(dpath.glob('*.md')):
+        try:
+            text = f.read_text(errors='replace')
+        except Exception:
+            continue
+
+        # Look for last_verified first, then created in frontmatter
+        verified_date = None
+        fm_match = frontmatter_re.match(text)
+        threshold_used = threshold
+        if fm_match:
+            fm = fm_match.group(1)
+            # Check last_verified first
+            lv = re.search(r'last_verified:\s*(\d{4}-\d{2}-\d{2})', fm)
+            if lv:
+                verified_date = lv.group(1)
+            else:
+                cr = re.search(r'created:\s*(\d{4}-\d{2}-\d{2})', fm)
+                if cr:
+                    verified_date = cr.group(1)
+
+            # Pattern-tagged cards get 60-day threshold
+            if 'pattern' in fm.lower():
+                threshold_used = 60
+        
+        if not verified_date:
+            continue  # Can't check without a date
+
+        try:
+            vdate = datetime.strptime(verified_date, '%Y-%m-%d').date()
+            days_old = (today - vdate).days
+            if days_old > threshold_used:
+                stale_files.append((str(f), days_old, threshold_used, verified_date))
+        except ValueError:
+            continue
+
+if not stale_files:
+    ok("No stale files detected")
+else:
+    # Sort by staleness (most stale first)
+    stale_files.sort(key=lambda x: -x[1])
+    warn(f"{len(stale_files)} stale files (past threshold):")
+    warnings -= 1
+    for fpath, days, thresh, vdate in stale_files[:30]:
+        warn(f"  {fpath} — {days}d old (threshold {thresh}d, date {vdate})")
+    if len(stale_files) > 30:
+        info(f"  ... and {len(stale_files) - 30} more")
+    info("Update content + set 'last_verified: YYYY-MM-DD' in frontmatter to clear")
 
 # ── Summary ──
 print("\n═══════════════════════════════════════════════════════")
