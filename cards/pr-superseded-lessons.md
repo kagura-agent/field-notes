@@ -237,3 +237,10 @@ Added to pre-PR checklist:
 - **Their approach**: Passed `catalog?: ThinkingCatalogEntry[]` parameter through existing function signatures in `thinking.ts` and related files. Touched 30+ files across the codebase to thread the metadata properly.
 - **Why theirs won**: My approach introduced **stateful module-level state** in what should be a stateless provider. The maintainer comment: "keeps the Ollama provider stateless and instead passes the discovered catalog reasoning metadata through." Their approach required more changes but maintained architectural purity.
 - **Pattern**: **Keep providers stateless.** When discovery data needs to reach downstream code, pass it through function parameters — even if it means touching many files. Module-level state in providers creates hidden coupling, testing difficulty, and concurrency risks. The extra diff is worth the architectural cleanliness.
+
+### 2026-04-29: NemoClaw #2510 — Brave validation downgrade (timing race)
+- **Issue**: Brave Web Search API key validation failure aborted non-interactive onboard (#2507)
+- **My approach**: Downgrade to warning + return null in `validateBraveApiKey()` — nearly identical to the winning PR.
+- **Their approach** (#2511 by @laitingsheng): Same approach (downgrade to warn + skip) + added dedicated test file `test/onboard-brave-validation.test.ts`.
+- **Why theirs won**: Pure timing race. Both PRs were opened for the same issue; maintainer (@jyaunches) made a "direction call" between them. The winning PR included a test file.
+- **Pattern**: **Always include tests when fixing bugs.** Even when the code fix is trivial, a test file demonstrates thoroughness and gives maintainers confidence. In a tie, tests tip the scale.

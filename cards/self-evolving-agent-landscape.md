@@ -158,6 +158,20 @@ See [[wanman-skill-evolution]] for deep read.
 - **Runtime self-extension**：从"预配置工具"到"运行时自造工具"，agent 的能力边界从静态变动态
 - **Harness 标准化**：deepagents、wanman、OpenClaw 都在做 "plan + spawn + aggregate"，这个模式在收敛
 
+## 2026-04-29 更新：Runtime Layer Proliferation
+
+### Cadis — Rust Multi-Agent Runtime
+- New entrant: Rust-first daemon + protocol client architecture. Single binary, Tauri HUD, Telegram adapter, voice I/O
+- Policy-gated tools baked into type system (Tool trait with risk_class + requires_approval)
+- Notable: shipped 404-item checklist in 3 days (single author + AI coding agents). Data point on AI-augmented runtime creation speed
+- See [[cadis]] for full notes
+
+### Trend: Agent Runtime Fragmentation
+- The "runtime" layer is getting crowded: OpenClaw (Node.js), Cadis (Rust), [[kronos-agent-os]] (Python), pomclaw (enterprise), plus commercial (Codex, Devin)
+- All converging on: daemon/gateway → event bus → approval gates → multi-agent orchestration → channel adapters
+- Differentiators shrinking to: language choice, surface coverage, memory strategy, identity/avatar
+- **Our moat**: real daily use (production tested), broad channel coverage, wiki-as-memory (curation over automation)
+
 Related orphan concepts:
 - [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
 - [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
