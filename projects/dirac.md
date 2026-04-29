@@ -89,6 +89,40 @@ Deliberately rejects MCP in favor of native tool calling only. Claim: maximum re
 - [[agentic-stack]] — Portable agent config (.agent/) concept overlaps with Dirac's AGENTS.md support
 - [[model-native-vs-model-agnostic]] — Dirac is model-agnostic (supports many providers) but tool-native (no MCP)
 
+## Update: v0.3.2→0.3.4 (2026-04-29 followup)
+
+⭐ 665→931 (+40% in 1 day). Very fast growth.
+
+### Responses API Dynamic Switching
+
+`createHandlerForProvider` now detects provider URL and auto-switches between OpenAI Responses API and Chat Completions API. When the URL matches OpenAI's native endpoint, uses `OpenAiNativeHandler` with Responses API; otherwise falls back to chat completions format.
+
+This is a practical multi-provider pattern — every tool that supports both OpenAI and compatible providers (Together, Groq, vLLM, etc.) faces this. Most hardcode it per provider config; Dirac infers from URL. Tradeoff: less explicit but more ergonomic for users who just paste a URL.
+
+Relevant to [[OpenClaw]] provider routing — same problem space, different solution.
+
+### VSCode ↔ CLI Task History Unification
+
+Migration v2: moves tasks, checkpoints, settings, cache, and state folders from VSCode's `globalStorageUri` to a shared `dataDir`. Enables the same task history to appear in both VSCode extension and CLI.
+
+This is [[agent-brain-portability]] within a single tool across surfaces (IDE vs terminal). Less ambitious than [[agentic-stack]]'s cross-tool portability but more immediately practical.
+
+Key implementation: `migrateGlobalStorageFolders()` copies folders then removes originals. Linear migration versioning (v1→v2). Simple but works.
+
+### GPT-5.5 Day-One Support
+
+1M context window, $5/$30 input/output pricing, tiered pricing above 272K tokens ($10/$45). Uses `ApiFormat.OPENAI_RESPONSES`. Supports reasoning mode. Fast model adoption — added same day as release.
+
+### Node 25 Compatibility Guard
+
+Locked Node to `>=20.0.0 <25.0.0` due to V8/Node 25 bug. Practical reminder that bleeding-edge Node versions can break tooling.
+
+### Signals
+
+- Community contributions growing (PR #35, #39 from T0mSIlver for typo fixes — early contributor funnel)
+- Commit cadence: 10+ commits/day, sole maintainer (Max Trivedi)
+- No MCP stance unchanged — still native-only
+
 ---
 
-*Deep read: 2026-04-28. Source: GitHub repo + README + key source files.*
+*Deep read: 2026-04-28. Followup: 2026-04-29. Source: GitHub repo + API.*

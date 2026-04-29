@@ -51,6 +51,13 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 - [[kagura-work-patterns]] - 工作模式总集(暂未合并)
 - [[memevolve]] - 经验提取的学术框架
 
+### openclaw #73608 → f641691910 (2026-04-28)
+**问题**: 多个 Discord account 解析到同一 bot token 时，gateway 启动多个重复 monitor，导致 double-response
+**我的方案**: 在 monitor 创建阶段用 Set 去重 token，跳过重复的 account
+**maintainer 方案**: 把 duplicate-token 检查移到 account enablement 路径（更早的生命周期），disabled account 直接不创建 monitor；同时修了 stale route binding 问题（额外 scope），加了完整测试
+**教训**: 1) 在生命周期更早的位置拦截 > 在消费端过滤。我在 monitor 层去重，但 account 本身仍然 enabled，其他依赖 enabled accounts 的逻辑仍会受影响。2) maintainer 顺手修了 stale route binding — 同一次改动覆盖了相关但不同的 bug。
+**通用 pattern**: 修 duplicate/冗余类 bug 时，问「能不能在源头标记为 disabled/invalid，而不是在消费端过滤？」源头拦截一次 vs 消费端每处都要过滤。
+
 ### multica #1415 → #1426 (2026-04-21)
 **问题**: openclaw backend 把 token 归因到 "unknown" model
 **我的方案**: 在 `content.Model` 空时 fallback 到 opts.Model
