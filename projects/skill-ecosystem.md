@@ -31,5 +31,15 @@ The SKILL.md format is now used beyond behavioral/persona skills:
 - Venice's swagger-sync CI (auto-detect API drift vs skill content) is a novel maintenance pattern
 - See [[skill-type-taxonomy]] for the expanded 4-type model
 
+## Distribution layer convergence (2026-04-29)
+
+**[[microsoft-apm]]** (2145⭐) solidifies the picture:
+- APM is the **npm for agent context** — `apm.yml` manifest, lockfile, transitive deps
+- Builds on [[agentskills-io-standard]] as the format layer; APM is the distribution layer
+- Key innovation: **compilation** step transforms same primitives into per-client output (AGENTS.md for Copilot, CLAUDE.md for Claude, etc.)
+- Marketplace model: curated `marketplace.json` in git repos (no central registry)
+- The landscape now has three layers: **format** (agentskills.io) → **distribution** (APM, ClawHub, vercel-skills) → **activation** (per-agent runtime loading)
+- APM's enterprise play (policy governance, supply-chain security) is where ClawHub has a gap
+
 ## First seen
 2026-04-10, study #58 scout
