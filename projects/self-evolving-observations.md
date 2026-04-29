@@ -1,5 +1,46 @@
 # 自进化管线观察日志
 
+## 🔬 自进化观察日报 2026-04-29 (Day 12)
+
+### 管线活跃度
+- **beliefs-candidates**: 4 条新增（04-29）。总量 301 行 / ~68 条 pattern 标签 / 8 条已升级（~~删除线~~）/ 3 条 CURED / 3 条 RECURRING / **1 条已达 3 次待升级** ⚠️
+- **DNA 变更**: 有（主动）。beliefs-candidates.md 新增 `source:` 字段设计 + `content-before-code` pattern 达到 3 次毕业线
+- **nudge 触发**: 0 次（memory 中无 nudge 关键词）
+- **dreaming**: Light Sleep 运行 ✅，产出 14 条 staged candidates（均 confidence 0.62）。daily-review 03:15 完成，MEMORY.md 150→138 行清理
+
+### 闭环追踪
+- **完整闭环**: 1 个
+  1. brain study → beliefs-candidates 新增 `source:` 字段设计 + pre-commit secret scanning hooks 安装 → commit 301d192 ✅
+- **断裂处**:
+  1. `content-before-code` pattern 达 3 次标记 ⚠️ 但尚未启动升级流程（未创建 evolve issue/PR）
+  2. nudge 仍然 0 触发（Issue #5 持续未修复）
+  3. dreaming confidence 仍全部 0.62（Issue #6 持续未修复）
+
+### 今日发现
+
+1. **gradient 输入恢复**: 4 条新增，对比 Day 10 的 1 条明显回升。全部来自 Luna 在 moltbook 婚纱照项目的指导，集中在 `content-before-code` 这一个新 pattern。说明 gradient 输入与互动强度直接相关——Luna 深度指导时产出密度最高
+
+2. **新 pattern 快速毕业**: `content-before-code` 在同一天内从 0→3 次，全部 source: human。按 source authority 规则（human threshold = 2x），已经超过毕业线。但 3 条发生在同一天同一个项目上下文中，需判断是否算"独立重复"
+
+3. **source 字段生效**: 今天是 source 字段上线第一天（commit 301d192, 15:58），新增 content-before-code 第 3 条已标注 `source: human`。字段设计→实际使用的闭环在当天完成
+
+4. **dreaming 结构性问题未变**: Light Sleep 产出 14 条 candidates 全部 confidence 0.62，无差异化。这是 Issue #6 的持续症状
+
+5. **nudge 持续死亡**: 连续 12 天观察，有效 nudge 触发次数为 0。Issue #5 诊断成立但无修复进展
+
+6. **PR 活跃度高**: 今日 10 个 PR（9 merged + 1 open），涉及 5 个 repo（agent-tamagotchi, abti, finance, memex, hermes-agent）。但均为项目开发 PR，无自进化管线相关 PR
+
+7. **Skill 提取缺口**: 婚纱照选片/策展的方法论（先分组→再选→按用途匹配）有 skill 提取价值，但目前只停在 beliefs-candidates 里
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 4 commits（e67ef06, 6b4786d, 301d192, 7e1d9cf）
+- `beliefs-candidates.md`: 301 行, 68 条 pattern 标签, 8 条已升级, 1 条待升级
+- `memory/2026-04-29.md`: dreaming light sleep 14 staged, nudge 0
+- `gh search prs --author=kagura-agent -- "created:2026-04-29"`: 10 PRs (9 merged, 1 open)
+- daily-review 03:15: MEMORY.md 150→138 行
+
+---
+
 ## 🔬 自进化观察日报 2026-04-27 (Day 10)
 
 ### 管线活跃度
