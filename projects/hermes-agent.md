@@ -1184,3 +1184,12 @@ Transport ABC 标志着 Hermes 从"大 monolith 函数"向"可插拔架构"转�
 - **Fix approach**: Remove module-level `discover_mcp_tools()` call (discovery already runs at gateway startup), OR make `_run_on_mcp_loop` async-aware with `asyncio.wrap_future`
 - **Related**: #10138 (nested-call deadlock in `register_mcp_servers`) — different root cause but same MCP discovery code path
 - **Connection to [[OpenClaw]]**: Similar pattern risk — any lazy import that triggers blocking I/O from async context. Worth checking OpenClaw's own extension loading paths
+
+### PR #17416: Hindsight circuit breaker (2026-04-29) — PENDING
+- **Issue**: #17403 — Hindsight tool calls freeze session when embedded daemon fails
+- **Fix**: Circuit breaker pattern in `_run_hindsight_operation()` — after 3 consecutive failures, fast-fail immediately instead of blocking 177s each time. 60s cooldown for half-open retry.
+- **Key code**: `plugins/memory/hindsight/__init__.py` (1373 lines)
+- **Testing**: 5 new tests in `tests/plugins/memory/test_hindsight_circuit_breaker.py`, all 132 existing memory tests pass
+- **CI**: `check-attribution` always fails for external contributors (email mapping). Nix builds, e2e, supply chain scan all pass. `test` job queued long.
+- **Pattern**: This is the same circuit breaker pattern as my earlier PR #14842 (tool retry limit in run_agent). hermes-agent uses circuit breakers at multiple layers.
+- **Note**: Claude Code timed out on this task (~5 min) but completed all file edits before kill. For 1300+ line files with moderate changes, acpx exec works but is borderline on timeout.
