@@ -160,3 +160,26 @@
 - Check 8: **Link density stats** — 每文件平均 4.0 个 wikilinks，12 张 cards 零出链
 
 **状态**：31 errors → 2 errors（eval/probe-set.md 的 2 个未建概念卡），22 warnings
+
+## 2026-04-29 - Staleness Check (Section 10) Added
+
+wiki-lint.py now has 10 sections (was 9 as of 04-28):
+
+| # | Check | Added |
+|---|-------|-------|
+| 1-6 | Original checks | 04-25 |
+| 7 | Frontmatter consistency | 04-27 |
+| 8 | Link density stats | 04-27 |
+| 9 | Secret scanning (25 patterns) | 04-28 |
+| **10** | **Staleness / confidence decay** | **04-29** |
+
+**Section 10 details**: Implements [[confidence-decay-design]] — checks `last_verified` (or `created`) frontmatter dates against type-based thresholds:
+- projects/: 14 days
+- cards/: 30 days
+- pattern-tagged cards: 60 days
+
+**First run results**: 67/497 files stale (13.5%). Oldest from 2026-03-23 (37 days). Staleness is a warning, not error — knowledge doesn't expire, freshness does.
+
+**Current health** (04-29): 497 files, 1520 wikilinks, 204 cards, 238 projects, 25 errors (broken links), 70 warnings (incl. 30 staleness)
+
+**Inspiration path**: [[stash]] confidence decay → [[confidence-decay-design]] card → wiki-lint section 10
