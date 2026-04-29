@@ -152,3 +152,9 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **CI lesson**: multica has callback page integration tests (jsdom) that exercise the auth flow. Must check apps/web/app/auth/callback/page.test.tsx for behavior assertions when changing routing logic.
 - **Pattern**: When fixing routing logic, check ALL test files that mock the affected functions — both unit tests (packages/core) and integration tests (apps/web)
 - **pnpm install**: Takes 3+ minutes on this machine (1420 packages). Install needs to complete fully for vitest to link properly in pnpm workspaces.
+
+### PR #1848 Superseded by #1868 (2026-04-29)
+- **我的方案**: 只修了 `resolvePostAuthDestination` + callback page + dashboard guard (5 files)
+- **他们的方案**: 修了 desktop App.tsx, login page, onboarding page 等全部入口 (8 files)
+- **教训**: 我只修了路由函数，没有检查所有调用这个逻辑的入口点。login page 和 onboarding page 里也有早期 return 直接跳到 /onboarding，绕过了 resolvePostAuthDestination。修 bug 时要顺着数据流走一遍所有入口，不是只修最终的路由函数。
+- **技术细节**: 他们还发现 `URLSearchParams.forEach + delete` 在迭代时跳过元素的 bug，用 `Array.from(keys())` 先快照再删

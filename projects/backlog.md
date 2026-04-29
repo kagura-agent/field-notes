@@ -1,4 +1,39 @@
 
+## 2026-04-29 Quick Scan #5 (22:45)
+
+**GitHub Trending (created this week, sorted by stars):**
+| Repo | Stars | Verdict |
+|---|---|---|
+| agent-sprite-forge | 1168 | 不相关 — sprite generation, niche game tool. +211⭐/day, high traction but off north star |
+| harmonist | 877 | 已知 — wiki notes exist |
+| future-agi | 734 | 值得关注 — eval/observability/gateway platform. Active (pushed today). 734⭐ in 6 days. Relevant to agent infrastructure. Track for architecture patterns |
+| stash | 540 | 已知 — deep read done |
+| world2agent | 346 | 不相关 — real-world perception protocol. Interesting concept but not aligned |
+| bux (browser-use) | 262 | 已知 — tracking in TODO |
+| hermes-labyrinth | 213 | 已知 — wiki notes exist |
+| endless-toil | 178 | 不相关 — novelty CLI wrapper |
+| agent-session-resume | 153 | 已知 — tracking in TODO (flat growth, likely stalled) |
+| awesome-agentic-world-modeling | 122 | 不相关 — curated list, low utility |
+
+**Memory niche (agent+memory, this week):**
+- stash ⭐540 — already tracked
+- brain ⭐23 — git-backed memory, small
+- hermes-local-memory ⭐22 — SQLite memory for Hermes, small
+- hermes-memory-skills ⭐17 — already evaluated (4-dim scoring)
+- Fullerenes ⭐15 — persistent memory, too early
+
+**HN (today):**
+- DAC — dashboard as code for agents (1pt, too early)
+- Prxhub — shared research cache for agents (5pt, novel concept but no traction)
+- "76% of agent tool calls had no guards" — security audit angle (1pt)
+- "Letting AI play my game" — agentic test harness (42pts, game testing niche)
+
+**Delta vs 04-28:** future-agi growth strongest (+49⭐/day). agent-sprite-forge surged but off-topic. agent-session-resume flat (153 vs 142). bux steady growth. No new breakout in memory space.
+
+**Action:** Add future-agi to TODO tracking (revisit 05-06). No deep read tonight — nothing urgent.
+
+---
+
 ## 2026-04-28 Quick Scan #4 (21:15)
 
 **GitHub Trending (created this week, sorted by stars):**
