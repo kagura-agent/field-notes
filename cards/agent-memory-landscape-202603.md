@@ -22,7 +22,7 @@ created: 2026-03-25
 | openclaw-auto-dream | 490 | REM sleep memory consolidation for OpenClaw |
 | memsearch (Zilliz) | 1k | Markdown-first，Milvus 团队 |
 | git-context-controller | 37 | Git 操作映射到 memory management |
-| **stash** (alash3al) | **227** | Go+Postgres+pgvector, 9-stage consolidation, MCP native, Apache 2.0 (2026-04-24 新) |
+| **stash** (alash3al) | **514** | Go+Postgres+pgvector, 9-stage consolidation, MCP native, Apache 2.0 (2026-04-24, +127% in 3d) |
 
 ## Sleep-time Compute 产品化
 - Letta 从论文(2504.13171)走向产品：sleep-time agents 架构指南
