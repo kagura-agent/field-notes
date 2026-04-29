@@ -127,3 +127,9 @@ Our current system pays ~10K+ tokens per turn for inline rules (AGENTS.md) that 
 **Verification plan:** Next session startup should include L1.md reading. Check in daily-review (3:00 AM) whether L1 pointers trigger relevant knowledge retrieval during tasks.
 
 **What's different:** Future sessions will have a 22-line existence-encoding layer loaded at startup, making the LLM aware of where 439+ wiki files' knowledge lives without loading any of them. This should reduce the write-read-gap for wiki knowledge.
+
+## Convergence Signal: GenericAgent Adopts L1 Pattern (2026-04-29)
+
+GenericAgent PR #199 removed `sop_index.md` dependency from `plan_sop`, replacing it with a system-generated "L1 Insight index". Same pattern we adopted: a lightweight navigation layer that replaces hand-maintained indexes.
+
+This is independent convergence—two projects solving the same problem (context navigation at scale) arriving at the same structural solution. Validates the L1 direction. GenericAgent's version is auto-generated from skill/SOP metadata; ours is hand-curated. Worth monitoring whether auto-generation becomes necessary as our wiki grows.

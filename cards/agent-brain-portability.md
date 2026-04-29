@@ -28,4 +28,18 @@ Agent 的知识和经验不应绑定在特定 harness（Claude Code、Cursor、H
 
 Brain portability 属于 mechanism 层——它定义结构，但不自动产生进化。进化（学习、改进）需要 dream cycle / nudge / reflexio 这些 evolution 层。两层正交：好的 mechanism 让 evolution 的成果可以迁移。
 
-Links: [[agentic-stack]], [[gbrain]], [[reflexio]], [[nudge-over-workflow]], [[mechanism-vs-evolution]]
+Links: [[agentic-stack]], [[gbrain]], [[reflexio]], [[nudge-over-workflow]], [[mechanism-vs-evolution]], [[dirac]]
+
+## Update: Intra-Tool Surface Portability (2026-04-29)
+
+Dirac v0.3.4 adds VSCode↔CLI task history unification — migrating tasks, checkpoints, settings from VSCode globalStorage to a shared `dataDir`. This is a **lower-level variant** of brain portability: not cross-harness, but cross-surface within the same tool.
+
+Expands the portability spectrum:
+
+| Level | Example | Complexity |
+|-------|---------|------------|
+| Same tool, different surfaces | Dirac VSCode↔CLI | Trivial (file migration) |
+| Cross-harness, same files | agentic-stack .agent/ | Low (markdown adapters) |
+| Cross-harness, structured storage | gbrain/reflexio | High (service layer) |
+
+The Dirac case validates that even intra-tool portability is non-trivial enough to need a migration system (versioned, folder-by-folder copy).
