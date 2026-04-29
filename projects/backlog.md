@@ -729,3 +729,27 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - **machinepulse-ai/world2agent** ⭐266 — Open protocol for AI agent real-world perception (W2A). Novel direction. **可能值得深入** if agent-physical-world interface becomes relevant
 - **op7418/guizang-ppt-skill** ⭐3914 — Claude Code skill for HTML deck generation. Niche but shows skill marketplace demand
 - **chiefautism/privacy-parser** ⭐376 — Reverse of OpenAI Privacy Filter, returns PII as structured spans. Interesting security tooling
+
+## 2026-04-29 Quick Scout (14:30)
+
+### GitHub Trending (new since last scan)
+- **ConardLi/garden-skills** ⭐1712 — Open-source skills collection (web design, knowledge retrieval, image gen). Skill ecosystem play, fast growth. **值得关注**
+- **thClaws/thClaws** ⭐612 — Rust-first multi-provider agent harness. "Sovereign by design." Direct competitor pattern. **值得深入**
+- **YeQing17-2026/OmniAgent** ⭐576 — Self-evolving + dynamic security hardening agent. **值得关注** (self-evolution angle)
+- **leigest519/OpenGame** ⭐1538 — Agentic coding for games. 不相关 (games niche)
+- **ciembor/agent-rules-books** ⭐671 — AGENTS.md from eng books. 已知方向
+- **kangarooking/cangjie-skill** ⭐660 — Distill books into executable skills. 不相关 (content niche)
+- **ZeroZ-lab/cc-design** ⭐645 — HTML design skill. 已知方向 (huashu-design clone)
+
+### HN Highlights (14:30)
+- **Ghostty leaving GitHub** (2188pts) — industry signal, GitHub alternatives gaining traction
+- **"Who owns the code Claude Code wrote?"** (338pts) — IP implications for agent-authored code. **值得关注**
+- **GitHub RCE CVE-2026-3854** (306pts) — security awareness for CI/CD
+- **Claude Code malware reminder regression** (190pts) — subagent refusals from overzealous safety. Affects our Claude Code usage
+- **Warp open-sourced** (222pts) — Rust terminal + AI, potential integration point
+- **OpenAI on Amazon Bedrock** (226pts) — OpenAI models going multi-cloud
+
+### Verdict
+- **thClaws** most interesting new find: Rust-first, sovereign, multi-provider agent harness — architecture comparison with OpenClaw worth doing
+- **garden-skills** interesting as skill ecosystem benchmark — how others structure multi-skill repos
+- No urgent deep-read. thClaws at 612⭐ still young, track first
