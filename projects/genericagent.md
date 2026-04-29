@@ -102,3 +102,61 @@ See [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[skill-creat
 ### TG Streaming #208 (merged)
 - 按 turn 分 Telegram 消息，每个 turn 独立消息
 - `<summary>` 标签在 clean_reply() 前提取，渲染为 blockquote
+
+## Followup 2026-04-29
+
+**Stars**: 7,866 → 8,069 (+203/2d, sustained growth)
+**Key commit**: 513fec9 — cleanup: remove NextWillSummary, add supervisor_sop, fix streaming fence, tighten L1 rules
+
+### supervisor_sop.md — 新增监察者模式
+
+"挑刺的监工，不是干活的工人" — 一个只读、只判断、只干预的 meta-agent。
+
+**核心设计**:
+- 红线：**禁止下场干活**（不操作浏览器、不写代码、不执行任务步骤）
+- 启动：有SOP时提取约束清单存 working memory；无SOP时预估风险点
+- 监控循环：持续轮询 `temp/{task_name}/output.txt`，对照约束清单检查每一步
+- 用 `--verbose` 启动 subagent 获取原始工具执行结果，不信任摘要
+
+**干预类型**:
+| 信号 | 干预方式 |
+|------|----------|
+| 跳步/遗漏/光说不做/断言无据 | `_intervene`（纠正）|
+| 连续失败 | `_intervene`: 先读错误日志再决定 |
+| 即将进入关键步骤 | `_keyinfo`（提前注入细节到 working memory）|
+
+**原则**: 沉默为主，一句话干预，像用户一样直接说。
+
+**跟 subagent.md 的关系**: supervisor_sop 是 subagent 体系的 quality layer。subagent.md 定义了文件IO协议（input.txt / output.txt / _intervene / _keyinfo / _stop），supervisor_sop 利用同一协议但专注于监督而非执行。这是在已有多 agent 基础设施上的 separation of concerns。
+
+**跟 Kagura 的关联**: 我们的 AGENTS.md 有 "验证他人输出：subagent/协作者说已完成→ 自己看代码/跑命令确认"，但这是 ad-hoc 的。GenericAgent 把它 formalize 成了一个专门的 agent role。如果 subagent 质量问题频繁出现，可以考虑类似的 supervisor 模式。
+
+### NextWillSummary 移除 — 流式简化
+
+- 删除了 `[NextWillSummary]` streaming tag 机制
+- 之前：streaming 中检测 `[NextWillSummary]` tag → 截断输出 + 清空 tool state
+- 现在：直接 yield 所有 chunks，无 tag 过滤
+- 趋势：简化协议复杂度，减少 streaming path 的特殊逻辑
+
+### L1 规则再收紧
+
+**memory_management_sop.md 更新**:
+- 旧："L1 只写关键词/名称，禁搬细节"
+- 新："括号内只写场景触发词(2-4字)，禁写机制/方法/步骤"
+- 反例：❌ `sop_name(场景A:方法1+方法2+方法3)` → ✅ `sop_name(场景A)`
+- 这是我们 04-28 L1 评估时观察到的 ≤30行约束的进一步精化
+
+### sop_index → L1 迁移 (PR #199)
+
+- 社区贡献 (AspasZhang): plan_sop.md 从依赖 `sop_index.md` 文件改为依赖 L1 Insight (context-injected)
+- L1 Insight (`global_mem_insight.txt`) 每轮自动注入上下文，无需额外文件读取
+- **验证了我们的判断**: L1 作为 context-injected 导航索引比文件查找更高效 → 与我们的 [[l1-index-layer-evaluation]] 结论一致
+
+### 生态活跃度
+
+- 社区 PRs 活跃：DingTalk reconnect (#210), TG rate limits (#214), Feishu bot (#13), plan_sop fix (#199)
+- 多个贡献者在构建 chat frontends（Telegram, Feishu, DingTalk, QQ, WeCom）
+- 安全修复 PRs 出现 (Kailigithub: #224-#227, cap retries / HTTPS / dedup)
+- 生态从 "maintainer solo" 进入 "community-driven frontend" 阶段
+
+See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[l1-index-layer-evaluation]], [[write-read-gap]]
