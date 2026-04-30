@@ -190,3 +190,44 @@ See [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[skill-creat
 - **Stars 8,275** (+644 in 3 days, 04-27→04-30)，增速显著
 
 See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[l1-index-layer-evaluation]], [[write-read-gap]], [[supervisor-pattern]]
+
+## Followup 04-30 (PM): Stars 8,306, supervisor_sop full read
+
+**Stars**: 8,231 → 8,306 (+75 intraday)
+
+### supervisor_sop.md 全文确认
+
+直接读了 supervisor_sop.md 原文（42 行），比之前 commit message 推断更准确：
+
+**文件 IPC 协议** — supervisor 和 worker 之间通过文件系统通信：
+- `_intervene` 文件 → worker 下一轮 prompt 追加 `[MASTER] <内容>`
+- `_keyinfo` 文件 → worker 的 `key_info` working memory 追加 `[MASTER] <内容>`
+- `consume_file()` 读取并删除，确保一次性注入
+- `[MASTER]` 前缀让 worker LLM 理解这是来自更高权限的指令
+
+**这不是 LLM routing，是文件系统消息总线** — 架构上比 API 调用更简单：supervisor 写文件 → worker 每轮 poll 文件。Race condition 不是问题因为单写单读。
+
+**干预决策表**（7 种触发条件，全部一句话干预）：
+1. 跳步 → "你跳过了StepN，先做"
+2. 细节遗漏 → "你漏了XX约束，重做"
+3. 光说不做 → "别说了，直接做"
+4. 断言无据 → "你怎么确认的？验证一下"
+5. 连续失败 → "停，先读错误日志再决定"
+6. 感觉要偏 → "去重读SOP的StepN再继续"
+7. 即将进入关键步骤 → `_keyinfo` 提前注入
+
+### L1 收紧的具体规则
+
+从 commit diff 确认：
+- 旧："L1 只写关键词/名称，禁搬细节"
+- 新增反例：❌ `sop_name(场景A:方法1+方法2+方法3)` → ✅ `sop_name(场景A)`
+- 括号内限 2-4 字场景触发词，禁止机制/方法/步骤描述
+
+### subagent max_iterations 同步 (nanobot 对比)
+
+nanobot (41,316⭐) 同期也在做 subagent 治理：`_sync_subagent_runtime_limits()` 确保 subagent 继承 parent 的 max_iterations。GenericAgent 的 supervisor 模式和 nanobot 的 iteration limits 是两种 subagent 质量控制路径：
+- **GenericAgent**: 质性监控（supervisor 理解语义，判断每步对不对）
+- **nanobot**: 量化限制（硬性 iteration 上限防失控）
+- 两者互补，我们目前只有 nanobot 式的超时机制，无 supervisor 式质性监控
+
+See [[supervisor-pattern]], [[self-evolving-agent-landscape]]
