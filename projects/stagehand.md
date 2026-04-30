@@ -93,3 +93,13 @@ Browser-Use (85k⭐)  →  Stagehand (22k⭐)  →  Playwright MCP (30k⭐)
 - **教训**: 
   - 关闭后重提很顺畅，之前的实现笔记节省了大量时间
   - wiki 笔记的复利效果明显——第一次花了很多时间理解代码，第二次直接复用
+
+### PR #2069 — fix: respect opts.debug in installV3ShadowPiercer (fixes #1996)
+- **日期**: 2026-04-30
+- **问题**: `V3ShadowPatchOptions.debug` 被忽略，`DEBUG` 硬编码为 `true`
+- **修复**: `const DEBUG = opts.debug ?? false;` — 一行替换
+- **文件**: `packages/core/lib/v3/dom/piercer.runtime.ts`, +1/-2 lines
+- **changeset**: ✅ 已加（上次 #1997 忘了加被 changeset-bot 提醒）
+- **CI**: manage-external-pr pass, cubic reviewer 5/5 no issues
+- **注意**: 这是 #1997 的重提（#1997 自行关闭因为无 response 7 天）。这次加了 changeset
+- **教训**: 关闭后重提很顺畅——代码没变，一行 fix 不需要重新理解。changeset 是必须的
