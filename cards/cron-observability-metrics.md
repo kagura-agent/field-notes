@@ -79,3 +79,21 @@ multica daemon 从本地 session 文件扫描 token usage，不需要 API：
 - 14 个单元测试，Go
 
 这说明 OpenClaw session JSONL 已有完整数据，我们不需要新 API，只要解析现有文件就能做 cron cost tracking。
+
+## 04-30 应用：FlowForge stats 命令
+
+**从"数据在那里"到"数据可查"**：把 hermes-labyrinth guidepost 模式直接实现到 FlowForge。
+
+### 实现的 guideposts
+1. **🐢 慢节点**: avg duration > 10 min → 工作流瓶颈
+2. **⚠ 低完成率**: completion < 50% → 设计问题或经常中断
+3. **💀 滞留节点**: instances 停在某节点最终被 auto-close → 流程断裂点
+
+### 关键发现（1105 instances, 5436 history records）
+- `evolve` 和 `daily-audit` 的"慢"实际是跨 session 跨天的（1300+ min），不是真正的执行瓶颈
+- `workloop-night → done` 平均 76.7 min 说明夜间 done/reflect 步骤经常未及时完成
+- `study → apply` 是 study workflow 最慢的实际工作节点（14.7 min），符合预期
+- Branch choice 数据揭示决策模式：自选 vs TODO 指定 = 211:112
+
+### 行动项更新
+- [x] FlowForge workflow 完成时记录 duration + node count → **已实现**（`flowforge stats` 从 history 表回溯计算）
