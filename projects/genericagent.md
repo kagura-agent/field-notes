@@ -159,4 +159,34 @@ See [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[skill-creat
 - 安全修复 PRs 出现 (Kailigithub: #224-#227, cap retries / HTTPS / dedup)
 - 生态从 "maintainer solo" 进入 "community-driven frontend" 阶段
 
-See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[l1-index-layer-evaluation]], [[write-read-gap]]
+## Followup 04-30: Supervisor SOP + Stars 8,231
+
+### supervisor_sop.md (新增)
+
+**监察者模式** — 一个独立 agent 实时监控 worker agent 的质量：
+
+- **核心原则**："你是挑刺的监工，不是干活的工人" — supervisor 只读、只判断、只干预
+- **启动流程**：有 SOP 时提取约束清单存 working memory，无 SOP 时预估风险点
+- **监控机制**：轮询 `temp/{task_name}/output.txt`，每次新输出对照约束清单检查
+- **两种干预**：
+  - `_intervene`：纠正已犯的错误（跳步、遗漏、断言无据、连续失败）
+  - `_keyinfo`：在 worker 到达某步之前提前注入该步的 ⚠️ 细节（预防性）
+- **干预风格**：沉默为主，一句话像用户一样直接说，禁长篇解释
+
+**与我们 nudge 的对比**：
+| | GenericAgent supervisor | OpenClaw nudge |
+|---|---|---|
+| 时机 | 实时在线（in-flight） | 事后反射（post-session） |
+| 粒度 | 逐步骤检查 | 整体模式观察 |
+| 干预方式 | 直接注入 worker context | 写入 beliefs-candidates |
+| 预防性 | ✅ `_keyinfo` 提前注入 | ❌ 只记录不预防 |
+
+**洞察**：supervisor 的 `_keyinfo` 预注入模式值得思考 — 我们的 nudge 是事后归纳，但 [[flowforge]] workflow 的节点 task 描述其实在做类似的事（提前告诉 agent 该步的约束），只是没有独立的 monitor agent 验证执行。
+
+### 其他变化
+
+- **NextWillSummary 被删除**：streaming fence protection 简化，`[NextWillSummary]` tag 不再使用
+- **_parse_mixed_response 去重**：提取共用 `_parse_text_tool_calls`，减少代码冗余
+- **Stars 8,231** (+605 in 3 days, 04-27→04-30)，增速显著
+
+See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[l1-index-layer-evaluation]], [[write-read-gap]], [[supervisor-pattern]]

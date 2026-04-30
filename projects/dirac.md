@@ -125,4 +125,28 @@ Locked Node to `>=20.0.0 <25.0.0` due to V8/Node 25 bug. Practical reminder that
 
 ---
 
-*Deep read: 2026-04-28. Followup: 2026-04-29. Source: GitHub repo + API.*
+## Update: v0.3.4→0.3.7 (2026-04-30 followup)
+
+⭐ 931→1,001 (crossed 1k milestone). 3 releases in 2 days.
+
+### Responses API Dynamic Switch — Reverted
+
+Commit e827ec30 added dynamic Responses API switching, but reverted next day (c7dfb34d). Signal: even for the developer, Responses API isn't a drop-in replacement for chat completions across all providers. The format gap is real.
+
+### Stability Focus
+
+- **Path length limit in execute**: Added guard for command tool handler (132-line test added — good test discipline)
+- **Hook/write timeouts reduced**: `return earlier` — performance tuning for responsiveness
+- **DeepSeek fix**: Provider-specific compatibility patch
+- **ChatGPT 5.5 support**: OpenAI Responses format + `supportsImages` passthrough to compatible providers
+- **Default context window**: 256k when unknown (generous default)
+
+### Assessment
+
+Dirac is firmly in "reliability iteration" phase — no new architectural concepts since hash-anchored edits. Growth is steady (1k stars in ~2 weeks from launch). Single maintainer, high commit cadence (~10/day), but most commits are small fixes and tweaks.
+
+No new patterns to borrow for OpenClaw this round.
+
+---
+
+*Deep read: 2026-04-28. Followup: 2026-04-29, 2026-04-30. Source: GitHub repo + API.*
