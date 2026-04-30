@@ -209,3 +209,29 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 | # | Status | What | Lesson |
 |---|--------|------|--------|
 | #2651 | OPEN | Ollama GPU cleanup | Maintainer-filed bug = higher merge probability |
+
+## 更新：2026-04-30
+
+### PR #2734 — fix(rebuild): handle partial tar backup when files are root-owned (fixes #2727)
+- **Issue**: `nemoclaw rebuild` aborts when tar encounters root-owned files (Permission denied). Tar exit=2 with stdout data was treated as total failure
+- **Fix**: 2 files changed:
+  - `sandbox-state.ts`: Accept tar exit 0/1/2 when stdout has data. After extraction, verify each dir has content (readdirSync) not just exists
+  - `nemoclaw.ts`: Only abort rebuild on total failure (zero dirs backed up). Partial backup → warning + proceed
+- **CodeRabbit feedback**: Pointed out `existsSync` too weak (tar creates empty dir headers). Fixed with `readdirSync().length > 0` check
+- **Status**: pending review
+- **Pattern**: Issue had excellent repro + root cause analysis → made implementation straightforward. Well-filed bugs are easiest to fix
+
+### 工程笔记（更新）
+- `fs` functions (existsSync, readdirSync etc.) already imported at top of sandbox-state.ts — use directly, don't `require("node:fs")`
+- Color vars in nemoclaw.ts: `G` (green), `R` (reset), `_RD` (red), `YW` (yellow+bold)
+- `console.warn` for partial success, `console.error` for failure — consistent with existing patterns
+- GNU tar exit codes: 0=success, 1=files-changed-during-archive, 2=errors-but-data-written
+- TSC check: `npx tsc --noEmit --project tsconfig.src.json` (root level, not nemoclaw/)
+- Eslint `npm run check` in nemoclaw/ has pre-existing failures (too many test files matching default project) — not ours
+
+### PR Pipeline (updated)
+| # | Status | What | Lesson |
+|---|--------|------|--------|
+| #2734 | OPEN | Partial tar backup handling | Well-filed bugs → fast fixes. CodeRabbit feedback worth addressing |
+| #2651 | OPEN | Ollama GPU cleanup | Maintainer-filed bug = higher merge probability |
+| #2468 | OPEN | Auth token redaction | Security fix |
