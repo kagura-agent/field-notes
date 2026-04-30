@@ -60,3 +60,9 @@ GBrain: v0.8.1（search quality）→ v0.9.x（security）→ v0.10.x（GStack m
 
 ## Tags
 #agent-skills #architecture #trend #packaging
+
+## 2026-04-30 更新：APM 分发信号
+
+**mizchi/skills** (113⭐) — well-known Japanese developer distributing skills via "APM" (Agent Package Manager). Nix-based packaging. Another independent convergence point toward skills-as-packages, distinct from the YAML-frontmatter approach.
+
+**GodModeSkill** (167⭐) — [[godmode-skill]] is a "System Skill" distributed via git clone with bash binaries + Claude Code slash command. Shows that complex multi-tool skills need more than just SKILL.md — they need install scripts, config templates, and runtime dependencies (tmux, inotify-tools). This pushes the "package" metaphor further: skills may need `postinstall` hooks, not just file drops.
