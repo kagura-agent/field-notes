@@ -1,145 +1,131 @@
-# brain — Git-Backed Long-Term Memory for AI Coding Agents
+---
+title: "brain — Git-backed Agent Memory"
+repo: codejunkie99/brain
+stars: 26
+created: 2026-04-27
+last_checked: 2026-04-30
+status: new-project
+tags: [memory, git, rust, mcp, cli]
+---
 
-**Repo**: https://github.com/codejunkie99/brain
-**Stars**: 22 (2026-04-29)
-**Created**: 2026-04-27 (2 days old)
-**Language**: Rust
-**License**: Apache 2.0
-**Author**: codejunkie99 (@Av1dlive)
+# brain — Git-backed Long-term Memory for AI Coding Agents
 
 ## What It Is
 
-A local-first, git-backed memory system for AI coding agents. Each memory event is a JSON blob committed to `~/.brain` as a git commit. SQLite FTS5 index is rebuilt from git — it's a cache, not source of truth. MCP server, CLI, and TUI included.
+A Rust CLI + MCP server that gives Claude Code, Cursor, Codex, OpenClaw, and Hermes a **shared local memory** stored as git commits in `~/.brain`. Each memory event = one JSON blob = one commit. SQLite FTS5 index for search.
 
-Multi-agent compatible: adapters for Claude Code, Cursor, Codex, OpenClaw, Hermes. `brain onboard --agents all` wires them up.
+**Repo:** <https://github.com/codejunkie99/brain>  
+**Language:** Rust (workspace: 6 crates)  
+**License:** Apache-2.0  
 
-## Why It's Interesting
+## Architecture
 
-### 1. Git as Event Log
+```
+brain-cli (CLI)  ←→  brain-app (LocalBrain)  ←→  brain-store (BrainRepo: git2)
+brain-mcp (MCP)  ↗                              ↘  brain-index (SQLite FTS5)
+brain-tui (TUI)  ↗                                  brain-types (shared types)
+```
 
-Most agent memory systems use databases. brain treats git as an append-only event log. Each event = one JSON file + one commit. The git history IS the audit trail.
+### Storage Model: Git as Event Log
 
-**Tradeoff**: Git isn't designed for this workload (thousands of tiny commits). But it gives you: free sync (`push`/`pull`), free audit (`git log`), free backup, and human-inspectable history. Clever for personal-scale memory.
+The core insight: **each memory event is a git commit** in `~/.brain/events/`. Not files-in-git (like our `memory/*.md`), but **commits-as-events** — the commit itself IS the record.
 
-### 2. Bitemporal Model
+- Events stored as JSON blobs under `events/` tree
+- One commit per `append_event` — no batching (v0.1 simplicity)
+- UUID v7 event IDs (time-sortable)
+- `git2` (libgit2) for all git ops — no shell `git` dependency
+- Dir perms tightened to 0o700 on Unix
 
-Every event has two timestamps:
-- `time_observed` — when the fact happened in reality
-- `time_recorded` — when the system learned about it
+### Typed Event System
 
-This distinction matters. "The server was down at 3am" (observed) vs "I learned about the outage at 8am" (recorded). Enables queries like "what did I know at time T?" — though full point-in-time reads are deferred.
+Strong typing via Rust enums (not freeform JSON):
 
-Our system has no equivalent. Daily memory entries are recorded in order, but we don't distinguish between event time and recording time.
+| EventType | Purpose |
+|---|---|
+| Observe | Raw observation/note |
+| Claim | Durable belief (supersession chains via `chain_id`) |
+| Lesson | Learned insight |
+| Pref | User preference |
+| SkillEdit | Skill modification |
+| Verify / Archive / Redact | Lifecycle management |
+| Import / Audit | Maintenance |
 
-### 3. Typed Event Taxonomy
+### Memory Layers (à la cognitive science)
 
-Not just "notes" — 10 distinct event types:
-- **Observe** — raw observations (equivalent to our `memory/YYYY-MM-DD.md` entries)
-- **Claim** — assertions that can be superseded (chain_id links supersession chains)
-- **Lesson** — learned lessons (equivalent to our `beliefs-candidates.md`)
-- **Pref** — preferences
-- **SkillEdit** — skill modifications
-- **Verify** — evidence for/against a claim
-- **Archive/Redact** — lifecycle management
-- **Import/Audit** — administrative events
+```rust
+enum Layer { Working, Episodic, Semantic, Personal, Skill, Protocol }
+```
 
-The **Claim supersession chain** is particularly smart: when you learn something new that invalidates an old claim, the new claim links to the old one via `chain_id`. You can trace how your understanding evolved.
+Maps to a [[memory-architecture]] model where different types of memory have different durability and retrieval patterns. Compare with [[hermes-memory-skills]] 4-dimensional scoring.
 
-### 4. Memory Layers (Cognitive Science)
+### Bitemporal Queries
 
-Six layers mapping to cognitive models:
-- **Working** — active context
-- **Episodic** — specific events/experiences
-- **Semantic** — general knowledge/facts
-- **Personal** — identity/preferences
-- **Skill** — procedural knowledge
-- **Protocol** — rules/guidelines
+Two time axes:
+- **Event-time** (`time_observed`): when the fact happened
+- **Transaction-time** (`time_recorded`): when it was written down
 
-Our system has informal equivalents (SOUL.md = Personal, AGENTS.md = Protocol, wiki/cards = Semantic, memory/*.md = Episodic) but no formal layer model.
+This lets you ask "what did I know at time T?" — though v0.1 doesn't do full point-in-time reads (archive/redact evaluated at current state, not at T).
 
-### 5. Authority Model
+### Search
 
-Events carry an authority source and optional score (0-100):
-- Regulator, Doctor, Lawyer, SeniorEngineer, Agent, Intern, User, System
+SQLite FTS5 with BM25 ranking. `unicode61` tokenizer + prefix indexing (2/3/4 chars). Auto-appends `*` to bare words. Power-user syntax passthrough (`"exact phrase"`, AND/OR/NOT).
 
-Not all memories should be trusted equally. A human correction should outweigh an agent's guess. We don't have this — all our wiki entries are treated as equal authority.
+### Multi-Agent Integration
 
-### 6. Secret Prefilter
+**Adapter per agent** via onboarding:
+- Claude Code → `mcp_servers.json` + `CLAUDE.md`
+- Cursor → `.cursor/mcp.json` + `rules/brain.mdc`
+- Codex → `config.toml` + `AGENTS.md`
+- OpenClaw → `BRAIN.md` (CLI shelling, no MCP)
+- Hermes → `AGENTS.md`
 
-RegexSet scan over serialized JSON BEFORE git commit. Covers: API keys (OpenAI, Anthropic, GitHub, AWS), database URIs with credentials, private keys, JWTs. Event is rejected — the secret never enters git history.
+Uses `BRAIN:START` / `BRAIN:END` markers for managed prompt blocks — re-runs don't duplicate.
 
-Our wiki-lint.py does similar scanning (25 patterns, added 04-28) but post-hoc. brain's approach is better — prevent vs detect.
+### Sync
 
-## Architecture Comparison: brain vs [[stash]] vs Kagura
+Explicit: `brain remote add origin <url>` + `brain push/pull`. No auto-sync, no cloud. Pure local-first.
 
-| Dimension | brain | [[stash]] | Kagura |
-|-----------|-------|-----------|--------|
-| Storage | Git + SQLite FTS5 | Postgres + pgvector | Markdown + memex BM25 |
-| Consolidation | None (raw events) | 9-stage LLM pipeline | Manual (study loop) |
-| Search | BM25 (FTS5) | Vector (pgvector) | BM25 (memex) |
-| Event typing | 10 types, strongly typed | Episodes + Facts | Untyped markdown |
-| Memory layers | 6 formal layers | Namespaces | Informal (SOUL/AGENTS/wiki) |
-| Authority model | Yes (source + score) | No | No |
-| Bitemporal | Yes | No | No |
-| Secret scanning | Pre-commit (prevent) | No | Post-hoc (detect) |
-| LLM dependency | None for storage | High (consolidation) | None |
-| Human readability | Medium (JSON) | Low (SQL) | High (markdown) |
-| Portability | ✅ Git push/pull | ❌ DB export | ✅ Git push/pull |
-| Multi-agent | ✅ 5 agent adapters | ✅ MCP | ❌ OpenClaw only |
+## Key Design Decisions
 
-## Key Insights
+1. **Git as source of truth, SQLite as read index** — events survive index corruption. `brain doctor --deep` rebuilds from git.
+2. **Idempotency keys on all writes** — retries collapse into single events. Critical for agent tool calls that may retry.
+3. **Actor + Authority model** — each event records WHO wrote it (agent/human/system) and with what authority level (0-100 score). Enables trust-weighted retrieval.
+4. **Classification** — events can be Private. Enables future access control.
+5. **No network requirement** — works entirely offline. Git remote is opt-in.
 
-### brain = "Git for Memory" vs Stash = "Database for Memory"
+## Comparison with Our Memory System
 
-Two opposing bets on the same problem:
-- **brain**: Memory should be version-controlled, human-inspectable, portable. Git is the right abstraction because memories, like code, evolve over time.
-- **[[stash]]**: Memory should be queryable, consolidatable, vector-searchable. Postgres is the right abstraction because memories are structured data.
+| Aspect | brain | Our system (OpenClaw) |
+|---|---|---|
+| Storage | Git commits (structured JSON) | Markdown files in git |
+| Schema | Strongly typed Rust enums | Freeform markdown |
+| Search | SQLite FTS5 + BM25 | memex semantic search / grep |
+| Multi-agent | MCP server + CLI adapters | Single agent (OpenClaw only) |
+| Event model | Typed events with layers | Daily logs + curated MEMORY.md |
+| Sync | Git push/pull (explicit) | Git push (semi-automated) |
+| Bitemporal | Yes (event-time + record-time) | No (file modification time only) |
+| Idempotency | Built-in (keys) | None |
 
-Both are right for different use cases. brain for individual developers/agents with deep audit needs. Stash for fleet deployment where automated consolidation matters more than transparency.
+## Relevance to Our Direction
 
-### Authority and Bitemporality Are Missing from Most Systems
+### Worth Borrowing
+- **Idempotency keys** — our memory writes can duplicate on retry/re-run. A dedup mechanism would help.
+- **Actor tagging** — when subagents write memory, we don't track WHO wrote it. Useful for trust scoring.
+- **Typed event layers** (Episodic/Semantic/Skill) — our flat `memory/*.md` + `MEMORY.md` is a 2-tier approximation. The layer model is more principled.
+- **Bitemporal queries** — "what did I know at time T?" is genuinely useful for debugging and reflection.
 
-brain is the first agent memory system I've seen with both authority scoring and bitemporal timestamps. These are database concepts from the 1990s, but nobody in the agent space seems to have applied them until now.
+### Not Worth Adopting
+- **Git-as-event-log** architecture — overkill for our volume. One commit per note means thousands of commits. Our markdown-in-git is simpler and human-readable.
+- **Full MCP server** — OpenClaw's tool system is already richer than MCP tool calls. No need to add another protocol layer.
+- **Rust complexity** — 6 crates for what we do with a few markdown files + grep. The engineering is solid but the problem doesn't demand it.
 
-**For us**: We should at minimum add `source:` metadata to beliefs-candidates entries (human correction vs self-observation vs study finding). Different sources should have different graduation thresholds.
+### Strategic Assessment
+brain targets the "cross-agent memory" problem — one memory shared by Claude Code, Cursor, Codex, etc. This is a real pain point for multi-tool users. For us (single-agent OpenClaw), the cross-agent value is limited, but the architecture patterns (especially typed events + actor authority + bitemporal) are good reference designs.
 
-### The Prevention > Detection Pattern
+**Watch or Adopt?** Watch. The project is 3 days old, 26 stars, single author. Architecture is thoughtful but unproven at scale. Revisit if it gains traction or if we decide to support cross-agent memory.
 
-brain's secret prefilter scans BEFORE commit. Our wiki-lint scans AFTER write. The lesson generalizes: for anything that's hard to undo (git commits, sent messages, published PRs), validate before the action, not after.
-
-### No Consolidation = Feature, Not Bug
-
-brain deliberately has NO LLM-driven consolidation. Events stay as-is. The search layer (FTS5 BM25) finds relevant events; the consuming agent does its own synthesis in-context.
-
-This is the anti-[[stash]] position: consolidation is risky because LLMs hallucinate, and once you consolidate wrong, you've corrupted your memory. Better to keep raw events and let each query do fresh synthesis.
-
-Our system is actually closest to this philosophy — we keep raw memory entries and curate manually into wiki cards.
-
-## What We Could Adopt
-
-1. **Authority source on beliefs-candidates entries** — trivial to add `source: human|self|study|review` field
-2. **Claim supersession chains** — when updating a wiki card, link to the previous version's reasoning
-3. **Pre-commit validation pattern** — extend our existing checks to run before `git add`, not just in lint
-4. **Bitemporal awareness** — at minimum, distinguish "when something happened" from "when I learned about it" in memory entries
-
-## Applied to Kagura (2026-04-29)
-
-1. **`source:` field added to beliefs-candidates.md** — each gradient entry now carries authority metadata (`human|self|study|review|env`) with differentiated graduation thresholds. Human corrections graduate at 2x (highest trust); self/study/review/env at 3x.
-2. **Pre-commit secret scanning hooks installed** — workspace repo and wiki repo both have git pre-commit hooks running 12 high-signal regex patterns (OpenAI, Anthropic, GitHub, AWS, Google, Slack, private keys, age keys). Prevention > detection pattern directly applied.
-3. **Supersession chains** — not yet implemented (wiki cards don't have a linking mechanism for "this replaces that"). Deferred.
-4. **Bitemporal awareness** — not yet implemented. Current memory format doesn't distinguish event time from recording time. Lower priority.
-
-## Growth Signal
-
-22⭐ in 2 days with no HN front page. Rust + clean architecture + multi-agent onboarding. Worth watching. The codebase quality is high — proper error handling, security considerations, well-structured crates.
-
-**Revisit**: 05-06 to check if development continues and community forms.
-
-## Related
-
-- [[stash]] — the "database approach" counterpoint
-- [[claude-code-memory-architecture]] — Anthropic's 4-layer system
-- [[wiki-as-compiled-knowledge]] — our compilation philosophy
-- [[hermes-memory-skills]] — memory hygiene for Hermes
-- [[agent-memory-landscape-202603]] — broader landscape survey
-- [[confidence-decay-design]] — Stash-inspired decay concept
+## See Also
+- [[memory-architecture]] — general agent memory design patterns
+- [[hermes-memory-skills]] — 4-dim scoring (Novelty/Durability/Specificity/Reduction)
+- [[stash]] — competing approach (Postgres-backed, episode/fact/context model)
+- [[agent-session-resume]] — cross-agent session continuity (complementary problem)

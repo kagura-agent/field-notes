@@ -813,3 +813,7 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - endless-toil: 178⭐ (was 177, flat)
 - agent-session-resume: 153⭐ (was 150, flat)
 - future-agi: 723⭐ (was 703, +20)
+
+## 2026-04-30 Quick Scan additions
+- codejunkie99/brain: 26⭐, Git-backed long-term memory for coding agents. 值得深入 — git as memory backend, relevant to our memory design
+- ez-lbz/APIMitmHack: 39⭐, 恶意中转攻击工具 targeting OpenClaw/Claude Code/OpenCode. 安全警示 — awareness only, no deep read needed
