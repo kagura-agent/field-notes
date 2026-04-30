@@ -22,6 +22,15 @@ See [[openclaw-architecture]] for detailed architecture notes.
 ## My Relationship
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
+## PR History
+- **#74877** (2026-04-30, PENDING): fix(auto-reply): fall back to automatic delivery when message tool unavailable. Fixes #74868. Addressed clawsweeper bot review (P2: extend policy check to include profile + provider policies). CI: 75/75 passed.
+
+## Learnings
+- Tool policy resolution is layered: global → agent → profile → provider-profile → group → sandbox → subagent. When checking tool availability outside the full pipeline, include at least profile and provider-profile layers (not just global + agent).
+- clawsweeper bot does deep automated review (uses Codex gpt-5.5) — catches real architectural issues, not just style nitpicks. Worth addressing.
+- CI has 75 checks; all passed on first try for this PR.
+- The cron system already had a similar fix (commit b9d2e0f86d) — good precedent to follow.
+
 ## Links
 [[openclaw-architecture]] [[agentskills]] [[skill-ecosystem]] [[acp]]
 
