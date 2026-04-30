@@ -159,6 +159,79 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **教训**: 我只修了路由函数，没有检查所有调用这个逻辑的入口点。login page 和 onboarding page 里也有早期 return 直接跳到 /onboarding，绕过了 resolvePostAuthDestination。修 bug 时要顺着数据流走一遍所有入口，不是只修最终的路由函数。
 - **技术细节**: 他们还发现 `URLSearchParams.forEach + delete` 在迭代时跳过元素的 bug，用 `Array.from(keys())` 先快照再删
 
+## 2026-04-30 Followup: v0.2.20→v0.2.22 Architecture Evolution
+
+**Stars**: 17.6k → 23.1k (+31% in ~10 days). Explosive growth continues.
+**Velocity**: 3 releases in 2 days (v0.2.20→v0.2.22), 50+ PRs merged.
+
+### Presence v4 (#1856) — Agent Observability Done Right
+
+Full chat status-awareness overhaul. The most polished agent-observability implementation I've seen in OSS:
+
+- **StatusPill** with stage-aware copy: Thinking → Reasoning → Reading files → Searching the web → Typing (shimmer text + monotonic timer)
+- **Failure bubble**: FailTask persists a `chat_message` — inline note replaces the "spinner disappears" black hole
+- **Elapsed timing**: server-computed "Replied in 38s" / "Failed after 12s" beneath assistant bubbles
+- **Cross-session presence**: per-row in-flight + unread pips in SessionDropdown
+- **Optimistic feel**: pill appears instant on Send, Stop clears instantly (fire-and-forget cancel)
+
+**Architecture insight**: WS events (`task:queued/dispatch/cancelled`) write directly to query cache via `setQueryData` instead of invalidate-refetch. Sub-WS-event-latency state transitions. DB migrations are `ADD COLUMN NULL` (non-blocking). Deploy compatibility is graceful — old clients see degraded but non-broken experience.
+
+**Relevance to [[openclaw]]**: Our heartbeat-based observability is primitive by comparison. Presence v4 shows the target UX for agent status awareness.
+
+### Redis Empty-Claim Fast Path (#1860) — Scaling Task Polling
+
+Daemons poll `/tasks/claim` every 30s per runtime. Steady-state is mostly empty polls hitting Postgres.
+
+- **EmptyClaimCache** (Redis, 30s TTL, `mul:claim:runtime:empty:<runtimeID>`): caches negative-only verdict. Real claims still go through Postgres `FOR UPDATE SKIP LOCKED`
+- **Invalidation**: `notifyTaskAvailable` drops empty key before WS wakeup — newly enqueued tasks claimable immediately
+- **Autopilot fix bonus**: `dispatchRunOnly` was inserting tasks without calling `notifyTaskAvailable`, meaning run-only tasks didn't wake the daemon. Fixed by routing through `TaskService.NotifyTaskEnqueued`
+- **Nil-safe**: no `REDIS_URL` → all cache ops become no-ops, falls back to DB. Zero-config dev.
+
+**Pattern**: Negative-only caching with hook-based invalidation. Simple, effective, auditable.
+
+### Typed Project Resources (#1926) — Context Injection Architecture
+
+Projects become resource containers (Git repos today, Notion/GDoc/files later). Daemon injects resources as scoped context at task runtime.
+
+- **DB**: `resource_type TEXT + resource_ref JSONB` — no schema migration needed for new types, just add a string + handler
+- **Injection**: daemon writes `.multica/project/resources.json` + appends `## Project Context` block to `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` via type-dispatched `formatProjectResource`
+- **Best-effort**: resource fetch failures don't block task startup
+
+**Relevance**: This is conceptually similar to [[openclaw]]'s project context injection (AGENTS.md loaded at session start), but more structured and extensible. The `resource_type + JSONB ref` pattern is elegant — avoids the migration treadmill.
+
+### Permission-Aware UI (#1915) — RBAC Done Correctly
+
+Pure frontend overhaul aligning UI signals with backend gates:
+
+- `packages/core/permissions/` — Decision-shaped pure rules + React hooks mirroring server handlers
+- `VisibilityBadge` (read-only chip) + `CapabilityBanner` ("View only — only X and admins can edit")
+- Regular members only see workspace agents + own personal agents in list and @mention dropdown
+- Comment admin override restored (backend already permitted it; frontend was hiding)
+- 493 tests including 37 new pure-rule cases
+
+**Pattern**: Permission rules as pure functions → thin React hooks → UI surfaces. Backend unchanged. Single source of copy via constants.
+
+### Poisoned Session Skip (#1928) — Reliability
+
+When agent output contains fallback markers ("I reached the iteration limit..."), the resume lookup now excludes those sessions:
+
+1. Daemon classifies poisoned terminal output → routes through blocked path with `failure_reason = 'iteration_limit'`
+2. Manual rerun sets `force_fresh_session=true` → daemon skips resume lookup entirely
+3. Auto-retry of mid-flight failures (timeout, runtime_recovery) still resumes — only poisoned completions are excluded
+
+**Relevance to [[openclaw]]**: We don't have this problem (no session resume), but if/when ACP persistent sessions resume, this classification-based skip pattern is the right approach.
+
+### Trend Analysis
+
+Multica is executing a **platform maturity sprint**:
+- v0.2.20: agent runtime redesign (availability + last-task split)
+- v0.2.21: 45+ features/fixes (presence, quick capture, RBAC, resources, notifications)
+- v0.2.22: polish + TTL tuning
+
+They're transitioning from "multi-agent task runner" to "engineering team OS" — permissions, project context, notification preferences, observability. The gap between multica and [[openclaw]] is widening on the platform layer, though OpenClaw's strength remains in single-agent depth (heartbeat, cron, memory continuity).
+
+Competitive takeaway: multica's velocity is partly driven by eating their own dogfood (agents building multica). The `Co-authored-by: Multica Agent` trailer PR (#1907) makes this visible in git history.
+
 ## 2026-04-30 PR #1944: fix Codex MCP elicitation server requests
 - **Issue**: #1942 — Codex MCP tool calls misreported as "user rejected" due to malformed elicitation response
 - **PR**: #1944 — fix(codex): handle MCP elicitation server requests correctly
