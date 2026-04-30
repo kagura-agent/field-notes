@@ -823,3 +823,14 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - Legacy system → executable specifications for AI coding agents
 - Why interesting: directly relevant to coding-agent workflow — how to make complex codebases agent-comprehensible
 - Priority: medium — worth a deep read when doing "apply" mode
+
+## 2026-04-30 PM Quick Scan
+
+| Project | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| alash3al/stash | 570 | 已跟踪 | Was 514 on 04-29, +56/day — accelerating |
+| stainlu/hermes-labyrinth | 229 | 已有笔记 | Observability for hermes-agent |
+| sandeco/reversa | 182 | 观望 | Legacy→executable specs for agents. Novel concept but niche |
+| 99xAgency/GodModeSkill | 167 | **已深入** | Multi-LLM cross-review. See wiki/projects/godmode-skill.md |
+| mizchi/skills | 113 | 值得关注 | APM-distributed skills by well-known JP dev. Skill ecosystem signal |
+| laguerric/Oneira | 71 | 太小 | Autonomous dreaming agent — fun concept |
