@@ -70,4 +70,13 @@ Anthropic's system is **simpler** than ours but more effective because:
 2. Clear separation of concerns (4 layers, each with one job)
 3. Maintenance is built-in (Auto Dream), not bolted on
 
-Links: [[self-evolving-agent-landscape]], [[dependency-vs-association]], [[retrieval-is-the-bottleneck]], [[mechanism-bootstrapping-paradox]]
+## 2026-04-30: Cross-reference with brain's 6-Layer Model
+
+[[brain-git-memory]] introduces a finer-grained layer model: Working / Episodic / Semantic / Personal / Skill / Protocol (vs Claude Code's 4 layers). Key differences:
+- **Working** layer (ephemeral, in-session) — Claude Code has no explicit equivalent (implicit in context window)
+- **Personal** layer — separates user preferences from domain knowledge. Claude Code conflates these in CLAUDE.md
+- **Protocol** layer — system-level rules. Maps to Claude Code's scoped rules (.claude/rules/)
+
+brain also adds **actor authority** (who wrote it, trust score 0-100) and **bitemporal queries** — design patterns absent from Claude Code's model. These enable "what did I know at time T?" debugging.
+
+Links: [[self-evolving-agent-landscape]], [[dependency-vs-association]], [[retrieval-is-the-bottleneck]], [[mechanism-bootstrapping-paradox]], [[brain-git-memory]]
