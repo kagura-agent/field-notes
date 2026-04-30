@@ -97,3 +97,5 @@ Our quality gate operates at **upgrade time** (beliefs-candidates → DNA). Stas
 - Heuristic: "Will this specific detail matter 3 sessions from now?"
 
 Our system has no equivalent input filter — anything can go into beliefs-candidates or memory files. The quality gate only fires during daily-review. Gap: noisy entries waste review time even if they're correctly filtered at upgrade. Consider adding a lightweight input filter (analogous to Stash's trash filter) to beliefs-candidates writing.
+
+**Update 2026-04-30**: Trash Filter **implemented** in beliefs-candidates.md — 7-category ban list + "3 sessions from now" heuristic. See [[memory-trash-filter]] for full design. Gap closed.
