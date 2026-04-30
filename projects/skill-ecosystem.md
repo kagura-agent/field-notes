@@ -38,6 +38,16 @@ The SKILL.md format is now used beyond behavioral/persona skills:
 - Builds on [[agentskills-io-standard]] as the format layer; APM is the distribution layer
 - Key innovation: **compilation** step transforms same primitives into per-client output (AGENTS.md for Copilot, CLAUDE.md for Claude, etc.)
 - Marketplace model: curated `marketplace.json` in git repos (no central registry)
+
+## Lifecycle management layer (2026-04-30)
+
+**[[mapick]]** (14⭐) is the first third-party skill lifecycle manager built for [[openclaw]]:
+- Privacy layer: regex-based PII redaction on all outbound payloads (fail-closed)
+- Zombie detection: identifies skills idle 30+ days, bloating context window
+- Security grading: A/B/C safety scores per skill (backend + local pattern scan fallback)
+- Recommendation engine: personalized suggestions based on installed skills
+- Key insight: the problem isn't skill discovery — it's **overpermission by default**. Every installed skill runs inside conversation context. 40 skills = 40 pairs of eyes
+- Signals a maturing ecosystem layer: format → distribution → activation → **governance**
 - The landscape now has three layers: **format** (agentskills.io) → **distribution** (APM, ClawHub, vercel-skills) → **activation** (per-agent runtime loading)
 - APM's enterprise play (policy governance, supply-chain security) is where ClawHub has a gap
 
