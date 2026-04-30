@@ -1,7 +1,7 @@
 # GenericAgent
 
 > Self-evolving agent framework — grows skill tree from 3.3K-line seed
-> GitHub: lsdefine/GenericAgent | ⭐ 7,626 (2026-04-27) | arXiv: 2604.17091
+> GitHub: lsdefine/GenericAgent | ⭐ 8,401 (2026-04-30) | arXiv: 2604.17091
 > Created: 2026-01-16 | Language: Python | License: MIT
 
 ## 核心理念
@@ -231,3 +231,17 @@ nanobot (41,316⭐) 同期也在做 subagent 治理：`_sync_subagent_runtime_li
 - 两者互补，我们目前只有 nanobot 式的超时机制，无 supervisor 式质性监控
 
 See [[supervisor-pattern]], [[self-evolving-agent-landscape]]
+
+## Update 2026-04-30
+
+⭐ 7,626 → 8,401 (+775, steady growth). Recent commits (04-28~04-29):
+
+1. **Removed NextWillSummary**: Pruned a feature that pre-summarized the next step. Suggests the team found it added noise rather than value — the supervisor pattern makes pre-summary redundant since the supervisor already watches each step.
+2. **Streaming fence protection fix**: Hardened streaming output parsing. Likely edge cases from tool_use outputs containing markdown fences.
+3. **Backtick sanitization in code_run output**: Prevents LLM from misinterpreting shell output as markdown.
+4. **Deduplicated `_parse_mixed_response`**: Reusing `_parse_text_tool_calls` instead of duplicate parsing logic.
+5. **Unified stream retry**: Both mixin and non-mixin paths now retry on mid-stream disconnects.
+6. **DingTalk adapter**: Exponential reconnect backoff and token fetch retry (PR #210).
+7. **Telegram polish** (PR #214): Community contribution.
+
+The codebase is in a maturation phase — cleanup, hardening, adapter expansion. No new architectural features, but the supervisor_sop pattern added on 04-29 is the most significant conceptual addition since the skill evolution system.
