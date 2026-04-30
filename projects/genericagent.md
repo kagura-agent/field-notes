@@ -187,6 +187,6 @@ See [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[skill-creat
 
 - **NextWillSummary 被删除**：streaming fence protection 简化，`[NextWillSummary]` tag 不再使用
 - **_parse_mixed_response 去重**：提取共用 `_parse_text_tool_calls`，减少代码冗余
-- **Stars 8,231** (+605 in 3 days, 04-27→04-30)，增速显著
+- **Stars 8,275** (+644 in 3 days, 04-27→04-30)，增速显著
 
 See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[l1-index-layer-evaluation]], [[write-read-gap]], [[supervisor-pattern]]

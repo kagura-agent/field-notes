@@ -184,3 +184,80 @@ Stash automates what we do manually. The tradeoff: automation scales but can amp
 - [[llm-wiki-karpathy]] — conceptual ancestor of all these systems
 - [[confidence-decay-design]] — our decay design inspired by Stash
 - [[reasonix]] — another project with multi-tier cache architecture
+
+## Followup 2026-04-30
+
+**Stars**: 562 (unchanged from 04-29)
+**Pushed**: 04-29 (2 new commits since last read)
+**MCP Server**: 0.2.0 → 0.2.7
+
+### Major Update: Proactive Memory + Quality Gates (bd376a5)
+
+The MCP prompt template (`mcp_prompts.tmpl`) received a massive overhaul — 143 lines changed. This is the most sophisticated agent-memory prompt engineering I've seen.
+
+**Key additions:**
+
+1. **Proactivity Clause**: "Store useful durable information without waiting for the user to say 'remember this.'" — the agent proactively stores preferences, constraints, decisions, corrections, project facts, goals, failures. Not just reactive storage.
+
+2. **Trash Filter** (on `remember` tool): Explicit ban list for what NOT to store:
+   - Session noise ("I am checking the logs")
+   - Unverified hunches ("I think maybe...")
+   - Temporary states ("currently testing" without results)
+   - Generic platitudes ("React is a library")
+   - First-person narration without new information
+
+3. **"ASK BEFORE STORING" quality gate**: "Will this specific detail matter 3 sessions from now?" — simple heuristic that cuts noise.
+
+4. **Tool Decision Tree**: Structured decision flow for which of the 28 tools to use in each situation. Not just tool descriptions — a routing algorithm in natural language.
+
+5. **Self-Model (/self)**: Three auto-created namespaces: `/self/capabilities`, `/self/limits`, `/self/preferences`. Agent stores self-knowledge here. "Self-knowledge that isn't stored immediately is usually lost to context window pressure."
+
+6. **Session Protocol**: Strict 3-phase protocol:
+   - Step 0: `init` (before ANYTHING — creates /self scaffold)
+   - Step 1: `list_namespaces` → `recall` → optional `get_context`
+   - Step 3: remember summary + consolidate + set_context
+   - "An agent that ends a session without storing a summary has failed."
+
+7. **"COST OF NOT CALLING" pattern**: Every single tool description ends with explicit cost of NOT using it. This is prompt engineering forcing tool usage — making omission feel dangerous.
+
+### Anti-Verbatim Synthesis (reasoner/openai.go)
+
+The fact synthesis pipeline now enforces that consolidated facts must NOT be verbatim copies of source episodes:
+
+```go
+// Grounding validation:
+// 1. Each fact field must have >70% words found in source text (no hallucination)
+// 2. Summary must NOT have >80% overlap with any single source (no copy-paste)
+// 3. First-person stripping: Remove "I", "my", "we" markers
+```
+
+This is a dual constraint: **grounded but not verbatim**. Facts must come from the source material (anti-hallucination) but must be synthesized in new words (anti-copy). The 70/80 thresholds are hardcoded.
+
+**Bad**: `{"summary": "I am currently testing the Stash memory system."}` ← first person + verbatim
+**Good**: `{"summary": "Stash memory system is currently being tested."}` ← third person + synthesized
+
+### MCP Context Scoping (c89d468)
+
+Context tools (`get_context`, `set_context`, `clear_context`) now require explicit namespace paths. Using `/` is blocked for context operations — prevents global context pollution. `recall` still accepts `/` for broad search.
+
+### What We Can Learn
+
+1. **Proactive vs Reactive memory**: Our system is mostly reactive (we remember when explicitly instructed). Stash's Proactivity Clause makes storing the default behavior with a quality gate, not the exception.
+
+2. **Trash Filter > No Filter**: We don't have explicit rules for what NOT to put in beliefs-candidates or memory files. Stash's trash filter prevents the most common failure mode (session noise masquerading as knowledge).
+
+3. **"COST OF NOT CALLING" framing**: Every tool description ending with explicit cost of omission is a powerful prompt engineering technique — makes the model feel pain for NOT using tools. Worth considering for our SKILL.md templates.
+
+4. **Self-Model as namespace**: The `/self/capabilities|limits|preferences` pattern formalizes what we do informally in SOUL.md beliefs. The auto-scaffold on init is clever — ensures self-knowledge has a home from session 1.
+
+5. **Anti-verbatim synthesis**: The dual grounding constraint (>70% grounded, <80% overlap) is a clean engineering solution to the "LLM either copies or hallucinates" problem. Our wiki notes don't have this guard.
+
+6. **Session protocol rigidity**: "An agent that skips init tends to skip everything else" — the first action being free and mandatory creates a behavioral cascade. Similar to our AGENTS.md startup sequence but more forcefully expressed.
+
+### Growth Assessment
+
+Stars flat at 562 despite new commits. The 04-29 commits are substantial quality improvements (prompt engineering + synthesis guardrails), not feature additions. This is a project maturing its core rather than chasing growth. Positive signal for long-term viability.
+
+**Revisit**: 05-06 to check if development continues or stalls.
+
+See [[agent-memory-landscape-202603]], [[genericagent]], [[confidence-decay-design]]
