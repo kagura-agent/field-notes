@@ -94,11 +94,19 @@ source: GitHub jarrodwatts/claude-hud
 - **Note**: `npm install` can hang with proxy env vars — always `unset http_proxy https_proxy all_proxy`
 - **node_modules**: Can get corrupted; `rm -rf node_modules && npm install` fixes
 
-## 外部 PR Review 模式 (2026-04-14 观察)
-- **maintainer**: jarrodwatts，基本只 merge 自己和 dependabot 的 PR
-- **最近外部 merge**: 2026-04-05 @Yimaha #381，极少
-- **结论**: 外部 PR review 率极低，不值得继续投入
-- **行动**: 关闭 #396 和 #402，保留 #410 短期观察后也关
+## 外部 PR Review 模式 (2026-04-14 观察, 2026-04-30 更新)
+- **maintainer**: jarrodwatts，近期外部 merge 率大幅提升
+- **最近 10 天 merge**: linziyanleo, SvenMeyer, YoYoSenRan, Coiggahou2002, zelinewang, cheats1314, harrisonaedwards 等 12+ 外部 PR
+- **结论**: 生态转好，值得继续投入
+
+## 2026-04-30 PR #517 — split showFileStats into showInlineDiff/showFileList
+- **Issue**: #506 — split showFileStats into two independent toggles
+- **Status**: PENDING (CI ✅ Node 18.x + 20.x)
+- **Changes**: +109/-8 across config.ts, project.ts, tests
+- **Pattern**: 新增 config key + mergeConfig fallback + render guard + 4 新测试
+- **Legacy 兼容**: showFileStats 保留为 umbrella fallback，新 key 优先
+- **测试**: 515 pass, 0 fail
+- **Note**: 手动实现比 acpx exec 更快（代码改动 <20 行，3 文件）
 
 ## PR 被 Supersede 复盘 (2026-04-20)
 
