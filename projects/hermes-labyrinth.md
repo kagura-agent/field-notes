@@ -97,3 +97,17 @@ Our existing analysis concluded we don't need external observability yet (trajec
 - [[hermes-hudui]] — web dashboard (real-time monitoring angle)
 - [[cron-observability-metrics]] — our observability evaluation
 - [[agentic-stack]] — data-layer skill comparison
+
+## Applied: FlowForge Stats (2026-04-30)
+
+Applied the guidepost pattern to [[FlowForge]]:
+- Built `flowforge stats` command — workflow summary, per-node breakdown, anomaly detection
+- Three anomaly types: low completion rate, slow nodes (>10min avg), stalled/abandoned nodes
+- Also shows top branch choices for decision pattern visibility
+- All read-only on existing history DB (1105 instances, 5436 history records)
+
+Key insights from running stats on real data:
+- `study` workflow: 509 runs, 99.6% completion, avg 17.2 min — the `apply` node is slowest (14.7 min avg)
+- `evolve` and `daily-audit` workflows have very long avg durations (1300-1500 min) because instances aren't always completed in the same session
+- `workloop-night → done` node averaging 76.7 min suggests the done/reflect steps often sit uncompleted
+- The stall data (💀) shows which nodes get abandoned — useful for workflow design improvement
