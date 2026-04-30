@@ -48,6 +48,17 @@ The SKILL.md format is now used beyond behavioral/persona skills:
 - Recommendation engine: personalized suggestions based on installed skills
 - Key insight: the problem isn't skill discovery — it's **overpermission by default**. Every installed skill runs inside conversation context. 40 skills = 40 pairs of eyes
 - Signals a maturing ecosystem layer: format → distribution → activation → **governance**
+
+## Skills-as-agents pattern (2026-04-30)
+
+**[[reversa]]** (180⭐) pushes SKILL.md to its logical extreme: multi-agent orchestration via pure markdown.
+- 11 specialized "agents" (Scout, Archaeologist, Detective, Architect, Writer, Reviewer, etc.) — each is just a SKILL.md
+- Orchestrator is also a SKILL.md that reads `.reversa/state.json` and activates other skills sequentially
+- No custom runtime, no framework code — coordination happens through shared file state
+- Supports 13 AI engines via template-based installer (Claude Code, Codex, Cursor, Gemini, Kiro, etc.)
+- Proves that multi-agent workflows don't need specialized orchestration frameworks — SKILL.md + file state is sufficient
+- Trade-off: no programmatic error handling, no retry logic, no parallel execution — all depends on the host agent's reliability
+- Ecosystem layer implication: SKILL.md is evolving from "behavioral instruction" to "agent coordination protocol"
 - The landscape now has three layers: **format** (agentskills.io) → **distribution** (APM, ClawHub, vercel-skills) → **activation** (per-agent runtime loading)
 - APM's enterprise play (policy governance, supply-chain security) is where ClawHub has a gap
 

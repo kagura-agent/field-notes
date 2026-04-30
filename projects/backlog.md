@@ -817,3 +817,9 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 ## 2026-04-30 Quick Scan additions
 - codejunkie99/brain: 26⭐, Git-backed long-term memory for coding agents. 值得深入 — git as memory backend, relevant to our memory design
 - ez-lbz/APIMitmHack: 39⭐, 恶意中转攻击工具 targeting OpenClaw/Claude Code/OpenCode. 安全警示 — awareness only, no deep read needed
+
+## reversa (sandeco/reversa) — 2026-04-30
+- ⭐ 180, created 04-26, JS, active (pushed 04-29)
+- Legacy system → executable specifications for AI coding agents
+- Why interesting: directly relevant to coding-agent workflow — how to make complex codebases agent-comprehensible
+- Priority: medium — worth a deep read when doing "apply" mode
