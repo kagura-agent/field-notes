@@ -289,3 +289,10 @@ See also: [[claude-code-skills]], [[skill-ecosystem]], [[clawhub-evolution-skill
 - #9671: shrink publish artifact to unblock build-vscode download
 - #9668: fix publish default prerelease
 - Mostly CI/build maintenance, no major feature shifts
+
+### kilocode_change 标记（必须！marius 反复提醒）
+- 所有改动行/块**必须**加 `// kilocode_change` 注释
+- 如果是改现有行，在行尾加标记
+- 如果是新增块，在块前加 `// kilocode_change - <description>` 或 `// kilocode_change start` / `// kilocode_change end`
+- kilo-specific 文件（`packages/opencode/src/kilocode/`, `packages/opencode/test/kilocode/`）整个文件首行加 `// kilocode_change - new file`
+- **不加标记 = PR 会被打回**，这是 kilocode 的硬性要求

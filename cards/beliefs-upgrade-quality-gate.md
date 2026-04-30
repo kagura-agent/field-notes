@@ -99,3 +99,15 @@ Our quality gate operates at **upgrade time** (beliefs-candidates → DNA). Stas
 Our system has no equivalent input filter — anything can go into beliefs-candidates or memory files. The quality gate only fires during daily-review. Gap: noisy entries waste review time even if they're correctly filtered at upgrade. Consider adding a lightweight input filter (analogous to Stash's trash filter) to beliefs-candidates writing.
 
 **Update 2026-04-30**: Trash Filter **implemented** in beliefs-candidates.md — 7-category ban list + "3 sessions from now" heuristic. See [[memory-trash-filter]] for full design. Gap closed.
+
+## 2026-04-30: Beever Atlas Fact Quality Scoring — Complementary Framework
+
+[[beever-atlas]] uses a 3-dimension quality scoring for memory fact extraction:
+- **Specificity** (0-1): vague generality → precise, quantified, named claim
+- **Actionability** (0-1): pure trivia → directly drives a decision or next step
+- **Verifiability** (0-1): unverifiable opinion → objectively checkable
+- quality_score = (specificity + actionability + verifiability) / 3, drop below 0.5
+
+Their "6-Month Test": "Would a new team member joining in 6 months need this?" This maps to our Durability dimension from [[harmonist]].
+
+**Comparison with our 4-dimension gate**: Their framework operates at **extraction time** (during ingestion), ours at **upgrade time** (during daily-review). Both are complementary — theirs filters what enters memory, ours filters what enters DNA. The key gap our system still has: no quality scoring at extraction time for beliefs-candidates entries. The trash filter is binary (accept/reject); Beever Atlas scores on a continuum.
