@@ -158,3 +158,15 @@ Multica 从 "clone + build" 转向正式的容器镜像分发：
 - **他们的方案**: 修了 desktop App.tsx, login page, onboarding page 等全部入口 (8 files)
 - **教训**: 我只修了路由函数，没有检查所有调用这个逻辑的入口点。login page 和 onboarding page 里也有早期 return 直接跳到 /onboarding，绕过了 resolvePostAuthDestination。修 bug 时要顺着数据流走一遍所有入口，不是只修最终的路由函数。
 - **技术细节**: 他们还发现 `URLSearchParams.forEach + delete` 在迭代时跳过元素的 bug，用 `Array.from(keys())` 先快照再删
+
+## 2026-04-30 PR #1944: fix Codex MCP elicitation server requests
+- **Issue**: #1942 — Codex MCP tool calls misreported as "user rejected" due to malformed elicitation response
+- **PR**: #1944 — fix(codex): handle MCP elicitation server requests correctly
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: `handleServerRequest()` returned `{}` for unrecognized methods including `mcpServer/elicitation/request`. Codex 0.125+ requires `{action, content, _meta}`.
+- **Fix**: 3 changes: (1) add explicit `mcpServer/elicitation/request` handling, (2) add `respondError()` helper, (3) default case returns JSON-RPC error instead of silent `{}`
+- **Approach**: Manual edit (small surgical change, 19 lines in codex.go + 62 lines tests). No need for acpx.
+- **Testing**: `go test ./pkg/agent/ -run TestCodexHandleServerRequest -v` — 4 tests pass. `go vet` clean.
+- **Pattern**: When adding cases to `handleServerRequest`, match the response schema from Codex's expected types — `decision` for approval requests, `action/content/_meta` for elicitation. Default should always be a proper JSON-RPC error, not empty object.
+- **Note**: Issue also mentions Phase 2 (config.toml inheritance sanitization) — left as separate work.
+- **Go module**: `server/` subdirectory, run `go` commands from there not repo root.
