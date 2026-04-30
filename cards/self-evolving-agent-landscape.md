@@ -172,6 +172,20 @@ See [[wanman-skill-evolution]] for deep read.
 - Differentiators shrinking to: language choice, surface coverage, memory strategy, identity/avatar
 - **Our moat**: real daily use (production tested), broad channel coverage, wiki-as-memory (curation over automation)
 
+## 2026-04-30 更新：Quality Control Layer Emerging
+
+### GenericAgent supervisor_sop — 新的质量层
+- GenericAgent 引入独立 supervisor agent，实时监控 worker 执行质量
+- 两种干预：`_intervene`（纠正已犯错误）和 `_keyinfo`（预注入即将到来步骤的约束）
+- 核心原则："沉默为主，一句话干预"——像用户一样简短直接
+- **新维度：Quality/Oversight 层** — 从"agent 怎么做事"到"谁来确保做对了"
+- 不同于 unit test/CI：这是 runtime 语义级监控，理解"跳步""断言无据"等高层错误
+
+### 生态信号
+- GenericAgent: 8,231⭐ (+605/3d)，supervisor pattern 是其对 multi-agent 方向的回答
+- Dirac: 1,001⭐ (crossed 1k)，但仍是 reliability iteration，无新架构
+- **收敛方向**：runtime 层在碎片化，但 quality/oversight 需求在聚集
+
 Related orphan concepts:
 - [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
 - [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
@@ -179,3 +193,4 @@ Related orphan concepts:
 - [[two-evolution-paths]] — top-down design vs bottom-up emergence
 - [[decentralized-evolution-validation]] — who validates that evolution is good?
 - [[genericagent]] — GenericAgent deep read
+- [[supervisor-pattern]] — real-time agent quality control
