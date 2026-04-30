@@ -149,4 +149,23 @@ No new patterns to borrow for OpenClaw this round.
 
 ---
 
-*Deep read: 2026-04-28. Followup: 2026-04-29, 2026-04-30. Source: GitHub repo + API.*
+## Update: v0.3.8 (2026-04-30 followup #2)
+
+⭐ 1,004 (crossed 1k). Growth: 665→1,004 in ~2 days. Still sole maintainer (Max Trivedi), ~10 commits/day.
+
+### Changes since last check
+
+- **ChatGPT 5.5 support**: Added `supportsImages` passthrough to OpenAI-compatible providers, 256k default context window for unknown models
+- **Responses API revert still holds**: Dynamic switching remains reverted — confirms the format gap between Chat Completions and Responses API is real across providers
+- **Stability**: Path length limit in execute, reduced hook/write timeouts, DeepSeek compatibility fix
+- **Community**: Still minimal external contributions (typo fixes only). No contributor funnel beyond that
+
+### Assessment
+
+Firmly in "reliability iteration" phase. No new architectural innovations. The Responses API revert is the most interesting signal — even a developer heavily invested in OpenAI compatibility found it wasn't ready for universal switching. Growth is organic (TerminalBench leaderboard visibility).
+
+Connection to [[conciseness-accuracy-paradox]]: Dirac's thesis (less context = better reasoning) continues to be validated by growth, but the approach is mechanical (AST tools, hash anchors) rather than learned (no feedback loop to improve context selection over time). Compare with [[agent-experience-capitalization]].
+
+---
+
+*Deep read: 2026-04-28. Followup: 2026-04-29, 2026-04-30 (x2). Source: GitHub repo + API.*

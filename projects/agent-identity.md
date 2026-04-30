@@ -30,5 +30,27 @@
 4. 安装复杂度
 5. 社区活跃度
 
+## 进展
+
+### Phase 1: 工具选型 ✅ (2026-04-23)
+- 评估 pass / gopass / sops / Bitwarden CLI / age
+- 结论：**pass** (GPG + git) 管日常凭证 + **sops** (age) 管配置文件加密
+- 详见 PR #5
+
+### Phase 2: 部署 ✅ (2026-04-23)
+- pass 安装，GPG key 生成（无密码，agent 专用）
+- 35 个 secret 迁入（openclaw/, hermes/, github/, ssh/）
+- Issue #4 closed
+
+### Phase 3: 加固 ✅ (2026-04-28)
+- Age key 备份到 pass
+- 旧 GPG key 清理（2 个移除，剩 2 个活跃）
+- 轮换策略文档化（policy/rotation.md, PR #7）
+- password-store 私有 git remote 备份上线
+- Issue #6 closed
+
+### Deferred
+- **openclaw.json sops 加密** — 需要 OpenClaw 上游支持 sops config 读取，当前无法本地解决
+
 ## 状态
-🔍 调研中
+✅ 核心功能完成，进入维护期

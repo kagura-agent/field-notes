@@ -1193,3 +1193,23 @@ Transport ABC 标志着 Hermes 从"大 monolith 函数"向"可插拔架构"转�
 - **CI**: `check-attribution` always fails for external contributors (email mapping). Nix builds, e2e, supply chain scan all pass. `test` job queued long.
 - **Pattern**: This is the same circuit breaker pattern as my earlier PR #14842 (tool retry limit in run_agent). hermes-agent uses circuit breakers at multiple layers.
 - **Note**: Claude Code timed out on this task (~5 min) but completed all file edits before kill. For 1300+ line files with moderate changes, acpx exec works but is borderline on timeout.
+
+### Followup (2026-04-30): TUI polish + ComfyUI built-in
+
+⭐ 125,226 (+2k since 04-29 check).
+
+**Key changes (04-29→04-30):**
+
+1. **`/compress` async refactor (PR #17661)**: Session compaction now runs in a long-handler pool instead of inline on the JSON-RPC loop. Before: other RPCs blocked during LLM compaction call. After: returns immediately, concurrent pings work. Shows live braille spinner with message count + token estimate, then multi-line summary. Good UX pattern — any long-running agent operation should be non-blocking with live progress.
+   - Connection to [[OpenClaw]]: Our session compaction is similar — worth checking if any blocking path exists.
+
+2. **ComfyUI skill → built-in (PR #17631)**: Moved from `optional-skills/` to `skills/creative/`. Signal: **image generation is becoming a first-class agent capability**, not an afterthought. The skill is markdown + scripts (comfy-cli install is user-initiated), so no heavy unconditional deps.
+   - Connection: We already have [[kagura-canvas]] with local ComfyUI. Hermes validating the same direction.
+
+3. **TUI polish**: Precision scroll on modifier-held wheel, word-wrap composer, reasoning panel visibility, details mode persistence. The TUI is getting serious investment — ~8 merged PRs in 2 days, all TUI.
+
+4. **Profile management**: `profile create --clone-all` now excludes `profiles/` dir (prevents recursive clone). Minor but shows profile system maturation.
+
+**Assessment**: Heavy TUI investment phase. The `/compress` async pattern is the most transferable insight — pattern: move any LLM-calling slash command off the main event loop, show live progress, return structured result. ComfyUI promotion confirms image gen as core agent capability trend.
+
+No new PRs from us this round.
