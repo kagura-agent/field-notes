@@ -39,13 +39,15 @@
 
 ## 2026-04-29 Update: Open Design as design-domain instance
 
-[[open-design]] (nexu-io/open-design, ⭐1900+ in 24h) is a clean instance of this pattern for design artifacts:
+[[open-design]] (nexu-io/open-design, ⭐6,005 as of 04-30, 3x in 48h) is a clean instance of this pattern for design artifacts:
 - **Thin harness**: daemon is ~300 lines (agents.js adapters + server.js), does only: detect agent CLI on PATH, spawn one-shot, pipe stdio, serve preview iframe
 - **Fat skills**: 29 SKILL.md files carry all design intelligence — layout rules, self-critique checklists, brand-asset protocols, discovery question forms
 - **Resolver equivalent**: `od.mode` frontmatter field routes skills to UI categories (prototype/deck/template). Less explicit than GBrain's RESOLVER.md but functional
 - **Novel extension**: `od.design_system.sections` field prunes injected context to only relevant sections — a token-saving pattern applicable beyond design
 
 Notable: OD's adapter layer is even thinner than GBrain's — each adapter is just bin name + buildArgs function + stream format hint (~10 lines). All intelligence lives in the prompt stack (discovery.ts) and skill files.
+
+**2026-04-30 update**: OD now supports 10 agent CLIs (added Pi, Hermes, Kimi, Copilot CLI) and speaks ACP JSON-RPC natively (`acp.ts`). The daemon is becoming a universal agent adapter layer — thin enough to stay ~20 lines per adapter, thick enough to normalize all streaming formats into a unified event model. 721 forks and 166+ merged PRs in 2 days suggest the thin-harness pattern enables rapid community contribution (low barrier to adding adapters).
 
 ## 2026-04-29 Update: Empirical validation (Augment study)
 
