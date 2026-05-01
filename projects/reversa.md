@@ -73,5 +73,6 @@ Addresses a real gap: most agent tooling assumes greenfield development or well-
 
 ## Tracking
 
-- Revisit 05-07: check star growth, contributor activity, test addition
+- 05-01 update: 180→341⭐ (+89% in 1 day), 164 forks. v1.2.14. English CLI translation added, video demo, removed Chronicler/Tracer agents. Still single contributor, still no tests.
+- Revisit 05-07: check contributor diversification, test addition
 - Drop if: still single contributor, no tests, stars plateau
