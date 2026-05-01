@@ -1,78 +1,104 @@
 # Reversa
 
-**Repo:** sandeco/reversa
-**Stars:** 180 (2026-04-30)
-**Language:** JavaScript (Node.js 18+)
-**Created:** 2026-04-26
-**License:** MIT
+Specification reverse-engineering framework for legacy systems. Installs as Agent Skills and coordinates specialized AI agents to analyze existing code → executable specifications.
 
-## What it does
+- **Repo**: sandeco/reversa (360★, 2026-05-01)
+- **License**: MIT
+- **Author**: sandeco (Brazilian dev, active YouTube channel)
+- **Language**: JavaScript (installer/CLI only — agents are pure SKILL.md prompts)
+- **Created**: 2026-04-26 (5 days old, fast growth)
+- **Status**: v1.0.0, active (pushed 04-30)
 
-Reverse-engineering framework that transforms legacy codebases into executable specifications for AI coding agents. You install it in a legacy project, run `/reversa`, and it coordinates a team of specialized AI agents to analyze the code and produce formal specs.
+## What It Solves
 
-## Architecture — Multi-Agent Pipeline
+Legacy systems have accumulated knowledge (business rules, architectural decisions, implicit contracts) trapped in code. AI coding agents need specs to work safely. Reversa bridges the gap: analyze code → produce "operational contracts" agents can use.
 
-5-phase pipeline with 7 specialized agents + 3 independent agents:
+**Not documentation for humans** — specs for agents.
+
+## Architecture: Multi-Agent Pipeline
 
 ```
-Phase 1: Reconnaissance (Scout)
-Phase 2: Excavation (Archaeologist) — one module per session
-Phase 3: Interpretation (Detective + Architect)
-Phase 4: Generation (Writer)
-Phase 5: Review (Reviewer)
-
-Independent: Visor (screenshots), Data Master (DDL/ORM), Design System (CSS/UI)
+Reconnaissance → Excavation → Interpretation → Generation → Review
+    Scout       Archaeologist    Detective       Writer     Reviewer
+                                  Architect
 ```
 
-Each agent is a SKILL.md file — plain markdown instructions, no code. The orchestrator (`reversa` skill) reads state from `.reversa/state.json` and activates agents sequentially.
+Independent agents (run at any phase): **Visor**, **Data Master**, **Design System**, **Tracer**
 
-## Key Design Decisions
+### Key: Agents Are Pure SKILL.md Files
 
-1. **Skills-as-agents**: Each "agent" is just a SKILL.md. No custom runtime, no framework dependency. Works with any agent that reads skill files (Claude Code, Codex, Cursor, Gemini CLI, Kiro, etc.)
+No runtime code — each agent is a SKILL.md with:
+- Role description and constraints
+- Input: what to read (`.reversa/context/`, previous agent outputs)
+- Process: step-by-step analysis instructions
+- Output: what to write (always to `.reversa/` or `_reversa_sdd/`)
+- Checkpoint: what to report back to orchestrator
 
-2. **State checkpoint system**: `.reversa/state.json` tracks phase, module progress, doc_level. Enables resume across sessions — critical for context-window-limited agents.
+The orchestrator (reversa/SKILL.md) sequences them, manages state.json checkpoints, and handles resume.
 
-3. **Confidence scale**: Every generated spec statement is tagged:
-   - 🟢 CONFIRMED — extracted directly from code
-   - 🟡 INFERRED — based on patterns, may be wrong
-   - 🔴 GAP — requires human validation
+### Agent Roles
 
-4. **Immutability guarantee**: Agents write ONLY to `.reversa/` and `_reversa_sdd/`. Never touch existing project files. Safety-first for legacy codebases.
+| Agent | Role | Phase |
+|-------|------|-------|
+| Scout | Surface mapping: folders, languages, frameworks, entry points | Reconnaissance |
+| Archaeologist | Deep per-module analysis: algorithms, control flow, data structures | Excavation |
+| Detective | Implicit knowledge: business rules, ADRs from git, state machines, RBAC | Interpretation |
+| Architect | C4 diagrams, ERD, integration map, technical debt | Interpretation |
+| Writer | Executable specs with code traceability | Generation |
+| Reviewer | Cross-reference verification, confidence scoring | Review |
 
-5. **Doc level choice**: User picks essential/complete/detailed after Scout phase. Controls which artifacts each agent generates. Prevents over-documentation for simple projects.
+## Design Patterns Worth Noting
 
-6. **Engine-agnostic installer**: Detects 13 AI engines (Claude Code, Codex, Cursor, Gemini, Windsurf, Kiro, Copilot, Cline, Roo Code, Amazon Q, Aider, Antigravity, OpenCode). Copies skills to the right location for each.
+### 1. Confidence Scale
+```
+🟢 CONFIRMED — extracted directly from code
+🟡 INFERRED — based on patterns, may be wrong
+🔴 GAP — requires human validation
+```
+Every generated spec uses this scale. Explicit uncertainty handling.
 
-## What's Interesting
+### 2. Doc Level Tiers
+User chooses scope: Essential (quick) → Complete (recommended) → Detailed (enterprise). Each agent's output matrix varies by level. Smart scope control.
 
-### Multi-agent orchestration via pure markdown
-No code orchestration layer — the orchestrator itself is a SKILL.md that reads state and activates other skills. This is the [[skill-ecosystem]] pattern taken to its logical conclusion: agents coordinating agents through shared file state.
+### 3. Strict Immutability
+Never modifies existing project files. Writes only to `.reversa/` and `_reversa_sdd/`. Similar to hermes-labyrinth's read-only principle.
 
-### Confidence-tagged specs
-The 🟢/🟡/🔴 scale is a practical solution to the hallucination problem in reverse engineering. Instead of pretending every inference is fact, it makes uncertainty explicit and actionable. Similar concept to [[stash]] episode confidence scoring, but applied to specification artifacts.
+### 4. Checkpoint/Resume
+`state.json` tracks current phase, completed tasks, user preferences. `reversa` in new session = resume from last checkpoint. FlowForge-like state persistence.
 
-### Legacy-to-agent bridge
-Addresses a real gap: most agent tooling assumes greenfield development or well-documented codebases. Legacy systems — where AI agents could add the most value — are the hardest for agents to work with because the knowledge is implicit. Reversa makes that knowledge explicit and structured.
+### 5. Skills as Distribution
+`npx reversa install` copies SKILL.md files into the project. Works with any agent that supports Agent Skills. No runtime dependency — the intelligence is in the prompts.
 
-## Limitations
+### 6. Git Archaeology
+Detective agent mines git history for ADRs (Architectural Decision Records). Commits, reverts, hotfixes as evidence of business decisions. Novel use of git as knowledge source.
 
-- **No tests at all** — zero test files in the repo
-- **No code logic** — the installer is ~200 lines, everything else is markdown templates
-- **Portuguese-first docs** — most docs are in Portuguese, English is secondary
-- **Single contributor** — sandeco only
-- **Young project** — 4 days old, unclear if it will sustain momentum
-- **Token-heavy** — running all 5 phases on a large codebase would consume enormous context
+## Ecosystem Position
 
-## Relation to Our Direction
+- **Category**: Agent-assisted reverse engineering (niche but growing need)
+- **Competitors**: None direct — most "code analysis" tools are static analyzers, not agent-orchestrated
+- **Complementary to**: Any coding agent (Claude Code, Codex, Cursor) — Reversa produces specs, agents consume them
+- **Similar pattern**: veniceai/skills (skills as distribution), but Reversa is a coordinated multi-agent workflow, not individual skills
 
-**Complementary to [[coding-agent]] workflow.** When we contribute to unfamiliar repos, we manually read code to understand structure. Reversa automates this discovery phase. The confidence scale pattern could inform how we tag our own wiki notes.
+## Relevance to Us
 
-**Skill orchestration pattern** is notable: it proves that multi-agent coordination can work with just files + SKILL.md, no custom runtime needed. Validates the [[skill-ecosystem]] approach we're already using with [[flowforge]] and [[clawhub]].
+### Transferable Insights
+1. **Confidence scale** (🟢/🟡/🔴) — could adopt for wiki notes and audit outputs
+2. **Pure SKILL.md agents** — validates that complex multi-agent workflows can be built with just prompt files + state management. No code needed for the agents themselves.
+3. **Git as knowledge source** — Detective's git archaeology pattern could enrich our study/audit workflows
+4. **Scope tiers** — doc_level pattern applicable to any variable-depth analysis
 
-**Not a contribution target** — too young, no tests, single maintainer, Portuguese-primary. But the architecture patterns are worth watching.
+### Not Directly Useful For Us
+- We don't do legacy reverse engineering
+- The specific agent prompts are Portuguese-first and domain-specific
+- 170 forks in 5 days suggests lots of cloning but unclear real usage
 
-## Tracking
+### Watch Signals
+- Fast growth (0→360★ in 5 days) but possibly hype-driven
+- Brazilian dev community amplification (YouTube video)
+- Quality of generated specs unknown — no public examples of output
+- Fork-to-star ratio (170/360 = 47%) is high, could indicate tutorial followers
 
-- 05-01 update: 180→341⭐ (+89% in 1 day), 164 forks. v1.2.14. English CLI translation added, video demo, removed Chronicler/Tracer agents. Still single contributor, still no tests.
-- Revisit 05-07: check contributor diversification, test addition
-- Drop if: still single contributor, no tests, stars plateau
+## See Also
+- [[hermes-labyrinth]] — read-only observability (similar immutability principle)
+- [[agent-skill-ecosystems]] — skills as distribution format
+- [[flowforge]] — checkpoint/resume state management (similar pattern)

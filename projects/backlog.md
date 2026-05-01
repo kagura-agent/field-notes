@@ -927,6 +927,10 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 | endless-sky-team/ai-trading-agent | 158 | 不相关 | Crypto bot |
 | Julpygo/Claude-Code-AI-Design | 157 | 跳过 | SEO spam |
 | hacktivist123/agent-session-resume | 155 | 已跟踪 | Flat growth, stalled |
+| stainlu/hermes-labyrinth | 242 | 值得深入 | Read-only observability for Hermes Agent — relevant since we contribute to hermes |
+| nexu-io/open-design | 10k | 值得关注 | Local-first Claude Design alt, 19 skills, explosive growth |
+| GENEXIS-AI/chromex | 719 | 值得关注 | Codex-powered Chrome side-panel assistant |
+| sandeco/reversa | 359 | 值得关注 | Legacy systems → executable specs for coding agents |
 | tiangolo/library-skills | 152 | 值得关注 | FastAPI creator's agent skills — quality signal |
 | h9-tec/llm-systems-engineering-roadmap | 116 | 不相关 | Roadmap doc |
 | millionco/spawn-agent | 107 | 跳过 | Weekend project |

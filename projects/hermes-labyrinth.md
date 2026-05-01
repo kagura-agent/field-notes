@@ -2,7 +2,7 @@
 
 Read-only observability plugin for [[hermes-agent]].
 
-- **Repo**: stainlu/hermes-labyrinth (210★, 2026-04-25)
+- **Repo**: stainlu/hermes-labyrinth (242★, 2026-05-01; was 210★ on 04-25)
 - **License**: MIT
 - **Author**: stainlu (hackathon build)
 - **Language**: Python backend (FastAPI) + vanilla React frontend (no bundler)
