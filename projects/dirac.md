@@ -174,7 +174,7 @@ Connection to [[conciseness-accuracy-paradox]]: Dirac's thesis (less context = b
 
 ## Followup 2026-05-01
 
-⭐ 1,027 (+23 since 04-30). Growth slowing from peak but still healthy.
+⭐ 1,038 (+34 since 04-30). Growth slowing from peak but still healthy.
 
 ### v0.3.10 → v0.3.11 (same day, 04-30)
 

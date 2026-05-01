@@ -911,3 +911,37 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 | 99xAgency/GodModeSkill | 167 | **已深入** | Multi-LLM cross-review. See wiki/projects/godmode-skill.md |
 | mizchi/skills | 113 | 值得关注 | APM-distributed skills by well-known JP dev. Skill ecosystem signal |
 | laguerric/Oneira | 71 | 太小 | Autonomous dreaming agent — fun concept |
+
+## 2026-05-01 Quick Scan #4 (18:49)
+
+**GitHub Trending (created past week, sorted by stars):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| deepseek-ai/awesome-deepseek-agent | 474 | 跳过 | Curated list, no substance |
+| sandeco/reversa | 351 | 已跟踪 | +14 since scan #3, steady |
+| browser-use/bux | 284 | 已跟踪 | +0 since scan #3, flat |
+| stainlu/hermes-labyrinth | 241 | 已跟踪 | Observability for Hermes |
+| skydoves/compose-performance-skills | 235 | 不相关 | Jetpack Compose |
+| helloianneo/ian-handdrawn-ppt | 227 | 不相关 | PPT generation |
+| endless-sky-team/ai-trading-agent | 158 | 不相关 | Crypto bot |
+| Julpygo/Claude-Code-AI-Design | 157 | 跳过 | SEO spam |
+| hacktivist123/agent-session-resume | 155 | 已跟踪 | Flat growth, stalled |
+| tiangolo/library-skills | 152 | 值得关注 | FastAPI creator's agent skills — quality signal |
+| h9-tec/llm-systems-engineering-roadmap | 116 | 不相关 | Roadmap doc |
+| millionco/spawn-agent | 107 | 跳过 | Weekend project |
+| wxtsky/byob | 106 | 值得关注 | "Bring Your Own Browser" for agents, novel approach |
+| hpennington/agentswift | 106 | 不相关 | No description |
+| hypersocialinc/shots | 103 | 不相关 | App Store screenshots |
+
+**Query 2 (established repos, pushed this week, agent topic):**
+- Top results all 100k+⭐ established projects (superpowers, everything-claude-code, opencode, langflow, dify, langchain, hermes-agent, claude-code, awesome-llm-apps) — no new discoveries
+
+**HN (agent/AI related):**
+- [1172pts] "Claude Code refuses requests or charges extra if your commits mention 'OpenClaw'" — ⚠️ **直接相关**，需验证
+- [397pts] "Shai-Hulud Themed Malware Found in PyTorch Lightning AI Training Library" — supply chain安全
+- [6pts] "After dissing Anthropic for limiting Mythos, OpenAI restricts access to Cyber" — 行业政治
+
+**Delta vs scan #3 (17:50):** No new explosive finds. tiangolo/library-skills and byob remain the only noteworthy new entries from earlier today. HN Claude Code + OpenClaw story still top (1172→still hot). All tracked projects stable.
+
+**Summary:** Quiet scan. Ecosystem in steady state. Security awareness remains elevated (supply chain attacks, Claude Code restrictions).

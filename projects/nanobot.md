@@ -289,3 +289,56 @@ PR #3077 的方案 vs OpenClaw `tool-loop-detection.ts` 对比后发现：
 - **#3099/#3094 Log noise reduction** — auto-compact `archived=0, summary=False` 不再产生日志输出。跟 OpenClaw 的 "reduce plugin registration log noise" (#65680) 同天同方向
 
 **Pattern**: nanobot 在做 provider 兼容性的 last mile — 不同 provider (Zhipu/DashScope/DeepSeek) 对 message 格式有不同要求，`_enforce_role_alternation()` 是统一适配层但需要精细化处理。这类 edge case 只有实际接入多 provider 后才会暴露
+
+## Cross-Session State Isolation Fix (2026-05-01)
+
+**PR #3576** — bugfix for #3571: `ReadFileTool` was saying "File unchanged since last read" across different sessions.
+
+### Root Cause
+
+Module-level `_state: dict[str, ReadState]` was shared across all sessions in the same process. When session A reads `foo.py`, session B's subsequent read of the same file gets the dedup stub instead of full content.
+
+### Fix: `FileStates` class + `contextvars.ContextVar`
+
+**Before**: Single global dict at module level.
+
+**After**: `FileStates` class owns its own `_state` dict. Active session bound via Python's `contextvars.ContextVar`:
+```python
+_current_file_states: ContextVar[FileStates | None] = ContextVar("_current_file_states", default=None)
+
+def bind_file_states(fs: FileStates) -> Token:
+    return _current_file_states.set(fs)
+
+def reset_file_states(token: Token) -> None:
+    _current_file_states.reset(token)
+```
+
+Agent loop binds at session start, resets in `finally`. Shared tool instances read from the context var, getting session-scoped state automatically.
+
+**Backward compat**: Module-level `_default = FileStates()` preserved for existing code that doesn't bind.
+
+### Architecture Insight
+
+This is the classic **shared-process multi-session state leak** pattern:
+1. Agent framework runs multiple sessions in one process (for efficiency)
+2. Tool state stored at module level (natural Python pattern)
+3. Cross-session contamination creates confusing bugs
+
+The `ContextVar` pattern is the async-safe equivalent of `threading.local` — works correctly with `asyncio` task switching. This is cleaner than:
+- Passing state through every function call (invasive)
+- Per-session tool instances (wasteful)
+- Thread-local storage (broken with async)
+
+### Relevance
+
+- OpenClaw runs multiple sessions per process too (cron, heartbeat, subagents). Our tool state (e.g., file read caching in browser skill) should be audited for similar leaks.
+- The `bind → try → finally reset` pattern using ContextVar is a reusable recipe. See [[session-state-isolation]].
+- +307/-124 lines — significant refactor, well-tested (61 new test lines, explicit cross-session isolation test).
+
+### Other 05-01 Changes
+
+- **#3574 Native AWS Bedrock Converse support** (+1226 lines) — full Bedrock provider: streaming, tool calling, usage mapping. Expanding provider matrix.
+- **#3539 Upgrade wizard skill** — two-phase: builtin `update-setup` wizard generates a personalized update skill in user's workspace. Self-service upgrade pattern.
+- ⭐ 41,423 (steady growth, +252 since 04-28)
+
+*Followup: 2026-05-01. Source: GitHub API + PR diffs.*
