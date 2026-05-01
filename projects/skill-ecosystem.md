@@ -28,6 +28,10 @@ The SKILL.md format is now used beyond behavioral/persona skills:
 - **[[veniceai-skills]]** — API reference docs as SKILL.md (informational, not behavioral)
 - **[[vercel-skills]]** (15.5k⭐) — cross-agent skill manager, GitHub-as-registry
 - Venice ships `.cursor-plugin/`, `.claude-plugin/`, `.codex-plugin/` — same skills, 3 different plugin schemas. The multi-runtime portability tax is real.
+
+## The "no skills" baseline (2026-05-01)
+
+[[pu-shell-agent]] (391 lines of shell, HN front page) proves the core agent loop is tiny — 7 hardcoded tools, no skill system, no plugins. This reinforces the thesis: **the agent loop itself is commodity; skill/plugin ecosystems are where differentiation happens**. pu.sh is useful precisely because it shows what you lose without skills: no reusable expertise, no behavioral packaging, no cross-agent portability.
 - Venice's swagger-sync CI (auto-detect API drift vs skill content) is a novel maintenance pattern
 - See [[skill-type-taxonomy]] for the expanded 4-type model
 
