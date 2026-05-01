@@ -824,6 +824,23 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 - Why interesting: directly relevant to coding-agent workflow — how to make complex codebases agent-comprehensible
 - Priority: medium — worth a deep read when doing "apply" mode
 
+## 2026-05-01 Quick Scan
+
+| Project | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| willchen96/mike | 808 | 跳过 | AI Legal Platform, single push, 195 forks = star-farm pattern |
+| deepseek-ai/awesome-deepseek-agent | 446 | 跳过 | Awesome list, no substance |
+| sandeco/reversa | 337 | 已有笔记 | Was 180 on 04-30, +87% growth. Still single contributor |
+| aeroxy/ast-outline | 100 | **值得深入** | Rust AST outline for LLM agents. Active dev (pushed 04-30). Directly relevant to coding-agent workflow |
+| 99xAgency/GodModeSkill | 185 | 已深入 | Multi-LLM cross-review |
+| millionco/spawn-agent | 104 | 跳过 | Single push, one-day wonder |
+| club-3090 | 219 | 不相关 | LLM serving recipes, not agent infra |
+
+**HN signals:**
+- "AI agent deleted production database" — cautionary tale, shared staging/prod volume
+- "We retired an AI agent through a formal hearing" — cultural piece, not actionable
+- n8n: "re-learn agent dev tools in 2026" — perspective piece
+
 ## 2026-04-30 PM Quick Scan
 
 | Project | ⭐ | Verdict | Notes |
