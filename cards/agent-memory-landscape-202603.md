@@ -47,3 +47,10 @@ created: 2026-03-25
 4. 跟进 ICLR 2026 MemAgents Workshop (4/27)
 5. 评估 openclaw-auto-dream 的 dream cycle
 6. 关注 Hindsight AMB
+
+## Update 2026-05-01
+
+生态进展：
+- **Stash** (606⭐): 9-stage consolidation pipeline 成熟，但开发节奏放缓。核心价值在于参考实现（confidence decay、anti-verbatim synthesis、checkpoint safety）
+- **Mercury** (1839⭐): Second Brain 从 FTS5 升级，但仍未到 embedding 级别。结构化记忆类型 + 自动提取 + 生命周期管理是亮点
+- 整体趋势：agent memory 从 "nice-to-have" 完成了向 "must-have" 的转变。市场注意力分流到两个方向：**全自动管道**（Stash）vs **soul-driven 手动策展**（Mercury/OpenClaw）
