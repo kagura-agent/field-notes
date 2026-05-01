@@ -67,3 +67,12 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **What**: Ollama thinking level fix — closed by steipete, superseded by db40ec404a
 - **Lesson**: Don't introduce module-level state in providers. Pass metadata through function params even if it means a bigger diff. steipete values stateless providers.
 - **steipete pattern**: Will do larger refactors (30+ files) to maintain architectural principles rather than accept smaller but architecturally impure fixes
+
+## PR #75637 (2026-05-01, PENDING)
+- **Issue**: #75624 — Misleading "sqlite-vec unavailable" warning when embedding provider is the actual problem
+- **Fix**: Distinguish sqlite-vec load failure (uses `loadError`) from missing embedding provider (no dimensions resolved) in `logMemoryVectorDegradedWrite` and CLI `runMemoryIndex`
+- **Files**: `manager-vector-warning.ts`, `manager-vector-warning.test.ts`, `cli.runtime.ts`, `CHANGELOG.md`
+- **clawsweeper review**: Required CHANGELOG entry (P3) — addressed in follow-up commit
+- **CI notes**: Several check shards fail (check-dependencies, check-prod-types, check-test-types) but unrelated to my changes — pre-existing CI issues. Targeted test (manager-vector-warning.test.ts) passes 3/3.
+- **Pattern**: Small warning message fixes are good low-risk entry points for openclaw contributions
+- **Lesson**: Always check CHANGELOG.md requirements — clawsweeper enforces this for user-facing changes
