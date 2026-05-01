@@ -1,10 +1,10 @@
 # Open Design (nexu-io/open-design)
 
 - **Repo**: https://github.com/nexu-io/open-design
-- **Stars**: 6,005 (2026-04-30, was 1,902 on 04-29 — 3x in 1 day)
+- **Stars**: 9,204 (2026-05-01, was 6,005 on 04-30, was 1,902 on 04-29)
 - **Language**: TypeScript (Next.js 16 App Router frontend + Node daemon)
 - **License**: Apache-2.0
-- **Last checked**: 2026-04-30
+- **Last checked**: 2026-05-01
 
 ## What it is
 
@@ -125,11 +125,70 @@ i18n PRs flooding in (Russian, Persian/Farsi, Brazilian Portuguese). Design syst
 
 OD's daemon is becoming a standardized layer between web UIs and any coding agent CLI. The adapter definition is minimal (~10-20 lines per agent), and the heavy lifting is in the shared infrastructure (session management, artifact storage, permission handling, stream normalization). This is the same insight behind [[thin-harness-fat-skills]] but applied to the invocation layer rather than the skill layer.
 
+## Update 2026-05-01: 9.2k⭐, Desktop App, 11 Agents
+
+### Growth: 6,005 → 9,204⭐ in 24h
+
+Sustained explosive growth. 89 open issues. Pushed today (05-01T06:42 UTC). Not a one-day spike — this is genuine sustained adoption.
+
+### Agent count: 10 → 11 CLIs
+
+- **Kiro CLI** added (PR #185) — uses ACP v2025-01-01 over stdio JSON-RPC, same as Hermes and Kimi. Single `AGENT_DEFS` entry with zero new parsing code.
+- **Pi** (PR #117) — `--mode rpc` JSON-RPC protocol, distinct from ACP but mapped to same internal event model via `pi-rpc.ts`.
+
+Total: Claude Code, Codex, Gemini, OpenCode, Hermes, Kimi, Cursor Agent, Qwen Code, GitHub Copilot CLI, Pi, Kiro. Plus BYOK proxy for keyless agents.
+
+### Four stream format taxonomy
+
+The daemon now handles 4 distinct agent communication protocols, all normalized to the same internal event model:
+
+| Format | Agents | Protocol |
+|--------|--------|----------|
+| `claude-stream-json` | Claude Code | Line-delimited JSON from `--output-format stream-json` |
+| `acp-json-rpc` | Hermes, Kimi, Kiro | ACP v2025-01-01 JSON-RPC over stdio |
+| `pi-rpc` | Pi | Pi's own `--mode rpc` JSON-RPC |
+| `plain` | Codex, Gemini, OpenCode, Cursor, Qwen, Copilot | Raw stdout, forwarded chunk-by-chunk |
+
+**Insight**: ACP is becoming the de facto structured protocol for agent CLIs that aren't Claude Code. Three out of four structured formats (ACP x3 agents) speak ACP — it's winning the multi-agent protocol race by adoption, not by design.
+
+### Mac Desktop App (PR #170)
+
+`apps/desktop/` — Electron shell with sidecar IPC:
+- **DesktopRuntime** exposes: STATUS, EVAL, SCREENSHOT, CONSOLE, CLICK, SHUTDOWN
+- Sandboxed renderer + sidecar IPC for daemon/web sidecars
+- `tools-pack` CLI for build/install/start/stop/logs/uninstall
+- Beta release automation with signed/unsigned mac artifacts
+- `tools-dev inspect desktop screenshot` for E2E testing
+
+This is architecturally interesting: the desktop shell is essentially a **browser automation layer for design artifacts**. The agent generates an artifact → Electron renders it → SCREENSHOT/EVAL/CLICK let the agent inspect and interact with its own output. Self-verification loop.
+
+### Anthropic-Compatible Proxy (PR #180)
+
+`POST /api/proxy/anthropic/stream` — routes third-party Anthropic-compatible BYOK endpoints through the daemon proxy. Keeps official Anthropic path unchanged. Prevents Anthropic-style base URLs from being misrouted through the OpenAI-compatible proxy.
+
+This means OD now has three BYOK layers: OpenAI-compatible, Anthropic-compatible, and direct agent CLI. Full model-agnostic stack.
+
+### SVG Artifact Viewer (PR #177)
+
+First-class SVG rendering in the artifact viewer. Part of the ongoing expansion from "HTML-only artifacts" to a proper artifact platform with pluggable renderers (HTML, decks, Markdown, SVG, React).
+
+### Community Dynamics
+
+i18n explosion: Japanese, German, Spanish, Russian, Persian, Portuguese locales. Community contributions account for majority of recent PRs. The project is absorbing community energy at a remarkable rate — the adapter pattern makes it easy for anyone to add their favorite agent.
+
+### Relevance to OpenClaw
+
+1. **ACP validation**: 3 out of 11 supported agents use ACP as their wire protocol. OD's implementation validates ACP as the emerging standard for structured agent communication.
+2. **Stream normalization pattern**: OD's 4-format taxonomy is a clean reference for how to build a universal agent adapter layer. OpenClaw's ACP runtime does similar work but could learn from OD's minimalist adapter definitions (~10-20 lines per agent).
+3. **Desktop self-verification loop**: The Electron SCREENSHOT/EVAL/CLICK pattern for artifact inspection is a novel approach to agent self-verification. Could inspire similar patterns in OpenClaw for visual output validation.
+4. **Contribution opportunity**: OD is actively merging community PRs. Adding an OpenClaw adapter or improving existing integrations could be a high-impact contribution.
+
 ## Tracking
 
-- Revisit 05-07: check if growth sustains past the initial spike
-- Watch for: ACP adapter maturity, artifact platform skill types, community skill marketplace
+- Revisit 05-07: check if growth sustains past 10k
+- Watch for: ACP adapter maturity, artifact renderer expansion, desktop app adoption
 - Compare: OD's ACP implementation vs OpenClaw's — are they protocol-compatible?
+- Potential: contribute OpenClaw adapter or improve ACP integration
 
 ## Links
 
