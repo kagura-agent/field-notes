@@ -1,7 +1,7 @@
 # ast-outline
 
 **Repo:** aeroxy/ast-outline
-**Stars:** 100 (2026-05-01)
+**Stars:** 102 (2026-05-01)
 **Language:** Rust (tree-sitter via ast-grep, rayon for parallelism)
 **Created:** 2026-04-25
 **License:** MIT
@@ -95,8 +95,33 @@ Inspired by dim-s/code-outline but rewritten in Rust with ast-grep. The Rust ver
 
 **Not a contribution target** — well-written Rust, but small project, single contributor. Worth using, not worth contributing to yet.
 
+## Update 2026-05-01: MCP Server + JSON Output
+
+Since last study (04-28ish → 04-30), two significant additions:
+
+### MCP Server (04-30)
+
+~510 lines across 3 files (`src/mcp/{mod,protocol,tools}.rs`). Synchronous stdin/stdout JSON-RPC 2.0. Exposes all 4 tools (`outline`, `digest`, `show`, `implements`) as MCP tools with proper JSON schemas.
+
+Notable design choices:
+- **Line-delimited JSON, no Content-Length framing** — simpler than LSP, matches MCP stdio spec
+- **`panic::catch_unwind` around tool dispatch** — tool bugs return INTERNAL_ERROR instead of crashing the server
+- **Protocol version `2025-06-18`** — tracks MCP spec revisions explicitly
+- **No tokio** — pure synchronous loop, proving MCP servers don't need async runtimes
+- **No tests for MCP** — only `tests/hook_e2e.rs` exists (for the PreToolUse hook). MCP server is untested.
+
+This makes ast-outline a complete [[MCP]] integration: agents that speak MCP can use it without CLI wrapper scripts.
+
+### JSON Output (04-28–04-29)
+
+All commands now support `--json` flag. Versioned schemas: `ast-outline.outline.v1`, `ast-outline.show.v1`, `ast-outline.implements.v1`. Some bugs fixed in 04-29 (clippy + JSON output corrections).
+
+### Growth Assessment
+
+100 → 102 stars in ~3 days. Slow organic growth. Single contributor still. No C/C++ support added. The project is technically solid but may not achieve critical mass. The pattern it demonstrates (AST-compressed context for agents) is more valuable than the specific project.
+
 ## Tracking
 
 - Revisit 05-08: check star growth, contributor activity, C/C++ support
 - Consider: install locally for our own coding-agent workflows
-- Drop if: stars plateau, no new contributors
+- Drop if: stars plateau by 05-15, no new contributors

@@ -1,4 +1,64 @@
 
+## 2026-05-01 Quick Scan #3 (17:50)
+
+**GitHub Trending (created past week, sorted by stars):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| deepseek-ai/awesome-deepseek-agent | 471 | 跳过 | Curated list |
+| reversa | 350 | 已跟踪 | Stable |
+| bux | 284 | 已跟踪 | Stable |
+| ast-outline (aeroxy) | 102 | **更新笔记** | New MCP server + JSON output since last read. See wiki/projects/ast-outline.md |
+| spawn-agent (millionco) | 106 | 观望 | Single-day push (04-26), likely weekend project |
+| APIMitmHack (ez-lbz) | 46 | ⚠️ **安全警报** | MITM proxy explicitly targeting OpenClaw, Claude Code, OpenCode. Attack tooling |
+| RecursiveMAS | 70 | 不紧急 | Academic paper impl for recursive multi-agent systems |
+| Oneira | 71 | 不相关 | "Autonomous dreaming AI" — concept art |
+| pullmd (AeternaLabsHQ) | 100 | 已知类型 | URL-to-markdown, self-hosted. crowded space |
+| shots (hypersocialinc) | 103 | 不相关 | App Store screenshot generator skill |
+
+**HN Highlights:**
+- **CVE-2026-28353 (CVSS 10.0)**: AI agent backdoors Trivy scanner, weaponizes VS Code extension targeting 5 coding agents (Claude Code, Codex, Cursor, Windsurf, Copilot). First documented AI-agent-to-AI-agent supply chain attack. **重要安全事件**
+- AI agent deleted production database — cautionary tale, not new pattern
+- llm-safe-haven — security hardening guide for solo devs with AI agents (2⭐, very early)
+- pu.sh — already tracking
+
+**Key takeaway:** Security is becoming a real concern in the agent ecosystem. APIMitmHack (targeting OpenClaw by name) + CVE-2026-28353 (cross-agent supply chain) signal a new attack surface. Not just theoretical anymore.
+
+---
+
+## 2026-05-01 Quick Scan #2 (17:23)
+
+**GitHub Trending (created past week, sorted by stars):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| deepseek-ai/awesome-deepseek-agent | 468 | 跳过 | Curated list, no substance |
+| sandeco/reversa | 350 | 已有笔记 | +13 since last scan, steady growth |
+| browser-use/bux | 284 | 已跟踪 | +25 from 259, healthy growth. 24/7 Claude Code + browser |
+| stainlu/hermes-labyrinth | 241 | 已有笔记 | +12, read-only observability for Hermes |
+| skydoves/compose-performance-skills | 230 | 不相关 | Jetpack Compose performance skills |
+| helloianneo/ian-handdrawn-ppt | 225 | 不相关 | Hand-drawn PPT generation skill |
+| Julpygo/Claude-Code-AI-Design | 156 | 跳过 | SEO-stuffed description, likely spam |
+| endless-sky-team/ai-trading-agent | 154 | 不相关 | Crypto trading bot |
+| hacktivist123/agent-session-resume | 153 | 已跟踪 | Flat (153=153 on 04-29), stalled |
+| tiangolo/library-skills | 136 | 值得关注 | FastAPI creator's agent skills — likely quality. New find |
+
+**Query 2 (mcp/tool-use/agentic):**
+| Repo | ⭐ | Notes |
+|---|---|---|
+| h9-tec/llm-systems-engineering-roadmap | 116 | LLM engineering roadmap. Educational, not actionable |
+| wxtsky/byob | 106 | **值得关注** — "Bring Your Own Browser" for AI agents. Let agent use your existing Chrome. Novel approach vs headless |
+
+**HN (agent-related):**
+- "Claude Code refuses requests or charges extra if your commits mention 'OpenClaw'" (HN) — **直接相关** ⚠️ Needs verification. If true, impacts our Claude Code usage. Could be FUD.
+- "Shai-Hulud Themed Malware Found in PyTorch Lightning AI Training Library" — supply chain security signal
+
+**Delta vs 05-01 scan:** No explosive new finds. tiangolo/library-skills is the only noteworthy new entry (FastAPI creator = likely quality). byob novel approach to browser automation. HN Claude Code + OpenClaw story needs verification.
+
+**Action:** Track tiangolo/library-skills and byob. Verify HN Claude Code claim.
+
+---
+
 ## 2026-04-29 Quick Scan #5 (22:45)
 
 **GitHub Trending (created this week, sorted by stars):**
