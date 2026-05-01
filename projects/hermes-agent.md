@@ -1301,3 +1301,17 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **Langfuse observability plugin**: bundled, not optional
 
 **Assessment**: v0.12.0 is Hermes' "self-maintenance" release. The Curator + improved self-improvement loop + tool-loop guardrails form a coherent story: the agent maintains its skills, reviews its learning, and detects when it's stuck. This is the most complete self-evolving agent implementation in production. Our equivalent pieces exist (beliefs-candidates, FlowForge reflect, nudge hooks) but are more manual and fragmented.
+
+## PR History — Usage Pricing Fix (2026-05-01)
+
+**PR #18340**: fix(pricing): resolve provider/model aliases in usage cost estimation
+- **Issue**: #18304 — usage cost always 0 even when tokens are recorded
+- **Root cause**: Two lookup mismatches in `agent/usage_pricing.py`:
+  1. Provider mismatch: Hermes uses "gemini" internally but pricing dict uses "google"
+  2. Model mismatch: Users use short names ("claude-sonnet-4") but dict has versioned names ("claude-sonnet-4-20250514")
+- **Fix**: Added provider aliases in `resolve_billing_route()` + prefix-based fallback in `_lookup_official_docs_pricing()`
+- **Status**: PENDING review
+- **CI notes**: `check-attribution` requires email in `scripts/release.py` AUTHOR_MAP — added in follow-up commit
+- **Test**: `pytest tests/agent/test_usage_pricing.py` (12 tests), full suite 18719 pass
+- **Key file**: `agent/usage_pricing.py` — contains all pricing logic (PricingEntry dict, billing route resolution, cost estimation)
+- **Pattern**: Manual fix was more efficient than acpx for this surgical 2-file change (<20 lines)
