@@ -333,3 +333,27 @@ v0.12:    Multi-modal（tldraw canvas）
 **Status**: Project has settled into post-release calm after the rapid v0.9-v0.12 sprint (4 releases in 3 days). Community engagement ongoing but no new PRs or issues.
 
 **Growth trajectory**: 154(04-17) → 401(04-18) → 510(04-19) → 584(04-20) → 1462(04-23) → 1676(04-27) → 1740(04-29). Growth decelerating from explosive to steady ~2%/day. Healthy for a tool project.
+
+## Followup 2026-05-01
+
+**Stars**: 1,740 → 1,778 (+38, steady ~2%/day)
+**Pushed_at**: 2026-04-30 (active again after post-v0.12 calm)
+
+### PR #34: CJK Memory Search Fix (merged)
+
+FTS5 `unicode61` tokenizer misses short CJK substring searches (e.g., `中文` not matching `中文优先`). Fix:
+- Added `CJK_RE` regex detector for CJK characters
+- FTS5 path first (fast), then LIKE `%query%` fallback if CJK detected and FTS returns empty
+- Includes regression tests for short CJK, mixed EN/CJK, and deleted-file rebuilds
+
+**Relevance**: Our memex uses FTS5 too. If we hit similar CJK issues, this LIKE fallback pattern is the simplest fix. Worth noting for [[memex]] development.
+
+### PR #11: tldraw Visual Memory (merged into v0.12.0)
+
+Feature flag gated opt-in tldraw skill with local snapshot store. Already noted in v0.12.0 followup — confirmed merged via PR.
+
+### Assessment
+
+Slow but steady iteration. CJK fix shows the codebase is being used by non-English speakers. Growth has stabilized around +30-40/day — healthy plateau for a tool project. No architectural surprises.
+
+See [[agentic-stack]], [[memex]]

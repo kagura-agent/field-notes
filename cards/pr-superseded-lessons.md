@@ -244,3 +244,9 @@ Added to pre-PR checklist:
 - **Their approach** (#2511 by @laitingsheng): Same approach (downgrade to warn + skip) + added dedicated test file `test/onboard-brave-validation.test.ts`.
 - **Why theirs won**: Pure timing race. Both PRs were opened for the same issue; maintainer (@jyaunches) made a "direction call" between them. The winning PR included a test file.
 - **Pattern**: **Always include tests when fixing bugs.** Even when the code fix is trivial, a test file demonstrates thoroughness and gives maintainers confidence. In a tie, tests tip the scale.
+
+## 2026-04-30: openclaw #74877 — auto-reply fallback
+- **My approach**: Added `messageToolAvailable` option at dispatch level, computed availability in auto-reply dispatcher
+- **Maintainer's approach**: Fixed the resolution function (`resolveSourceReplyDeliveryMode`) directly — when `requested: "message_tool"` but tool unavailable, fall back to `"automatic"` right in the resolver
+- **Pattern**: Fix at the lowest possible level. If a resolution function returns a mode that can't be fulfilled, the resolution function itself should handle the fallback, not the caller.
+- **Positive**: steipete credited in CHANGELOG, code was largely correct just needed restructuring. The issue identification and fix direction were good.

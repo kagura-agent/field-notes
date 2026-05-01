@@ -168,4 +168,36 @@ Connection to [[conciseness-accuracy-paradox]]: Dirac's thesis (less context = b
 
 ---
 
-*Deep read: 2026-04-28. Followup: 2026-04-29, 2026-04-30 (x2). Source: GitHub repo + API.*
+*Deep read: 2026-04-28. Followup: 2026-04-29, 2026-04-30 (x2), 2026-05-01. Source: GitHub repo + API.*
+
+---
+
+## Followup 2026-05-01
+
+⭐ 1,027 (+23 since 04-30). Growth slowing from peak but still healthy.
+
+### v0.3.10 → v0.3.11 (same day, 04-30)
+
+**Major cleanup: Provider consolidation**
+- **Sunset `hicap`**: Removed entire custom provider (114 lines). hicap was a custom model hosting layer.
+- **Sunset `sapaicore`**: Another custom provider removed.
+- Both replaced by LiteLLM passthrough — consolidating to a single routing layer instead of per-provider implementations.
+- Signal: Dirac is narrowing its surface area to focus on the coding agent core, not provider plumbing.
+
+**Toolcall examples in failure feedback** — new `tool-examples.ts` file:
+- When LLM calls a tool with missing parameters, the error response now includes a concrete JSON example of correct usage.
+- This is a simple but effective error recovery pattern: `missingToolParameterError(paramName, example)` — show the model *what right looks like* instead of just saying *what went wrong*.
+- 22 tools mapped to example payloads. Each example is one-line JSON, minimal but complete.
+- **Borrowable pattern**: When our subagents or tools fail on missing params, including a concrete example in the error would reduce retry loops.
+
+**Custom headers support**: Allow arbitrary headers in API requests — enterprise/proxy use case.
+
+### Assessment
+
+Consolidation phase. Two signals:
+1. **Narrowing scope** (removing providers) — good sign for long-term maintainability
+2. **Self-healing patterns** (toolcall examples) — incremental improvement in LLM error recovery
+
+No architectural innovations. Still single maintainer. Next check: 05-07.
+
+See [[conciseness-accuracy-paradox]], [[model-native-vs-model-agnostic]]

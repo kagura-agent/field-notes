@@ -245,3 +245,15 @@ See [[supervisor-pattern]], [[self-evolving-agent-landscape]]
 7. **Telegram polish** (PR #214): Community contribution.
 
 The codebase is in a maturation phase — cleanup, hardening, adapter expansion. No new architectural features, but the supervisor_sop pattern added on 04-29 is the most significant conceptual addition since the skill evolution system.
+
+## Followup 2026-05-01
+
+**Stars**: 8,401 → 8,480 (+79/day, growth sustained but slowing from +200/day peak)
+
+### Status: Maturation Phase
+
+No new commits since 04-29. The codebase is digesting the supervisor_sop addition and cleaning up technical debt. Community contributions continue (DingTalk, Telegram, plan_sop refactor), but the core architecture is stable.
+
+### Signal: L1 Rule Discipline Still Tightening
+
+The memory_management_sop.md反例 pattern ("括号内只写场景触发词 2-4字") confirms an ongoing theme — L1 gets progressively tighter through usage. Our [[l1-index-layer-evaluation]] should expect similar refinement cycles for `wiki/L1.md`.

@@ -1,5 +1,46 @@
 # 自进化管线观察日志
 
+## 🔬 自进化观察日报 2026-04-30 (Day 13)
+
+### 管线活跃度
+- **beliefs-candidates**: 5 条新增（04-30 dated），含 1 条架构改进（Trash Filter section）。总量 328 行 / 123 条 dated entries / ~11 条已升级/毕业。新增 pattern 类型多样：被动等推动(1)、看错代码基准(1)、隧道视野诊断(1)、贡献前做功课(1)、及时止损(1)
+- **DNA 变更**: 有（主动）。1 commit 改动 beliefs-candidates.md — 新增 Trash Filter section（输入端质量门），来源于 Stash prompt engineering 学习。无 SOUL.md/AGENTS.md 变更
+- **nudge 触发**: 0 次（连续第 13 天。memory 中 nudge 仅出现在分析性讨论中，无实际触发记录）
+- **dreaming**: Light Sleep 运行 ✅，产出 ~30 条 staged candidates（均 confidence 0.58）。REM Sleep 运行 ✅，产出 1 条 reflection（confidence 0.77）。confidence 仍无差异化（Issue #6）
+
+### 闭环追踪
+- **完整闭环**: 2 个
+  1. Stash study → Trash Filter 概念 → 写入 beliefs-candidates.md → commit 7f2ea06 → wiki card 更新 ✅（学习→应用闭环）
+  2. kilocode PR 困境 → Luna 指导"搞不定就退" → gradient 写入 → PR 关闭/退出 ✅（反馈→行为改变闭环）
+- **断裂处**:
+  1. nudge 仍然 0 触发（Issue #5 持续 13 天未修复，无进展）
+  2. dreaming confidence 仍 0.58 无差异化（Issue #6 持续未修复）
+  3. `content-before-code` pattern 标记 ✅ 已升级 → wiki/cards/，但升级是在 04-29 完成的，并非系统化流程驱动
+
+### 今日发现
+
+1. **Trash Filter 是架构级进化**: 今天最重要的改动不是新增 gradient，而是给 beliefs-candidates 加了输入端质量门（Trash Filter）。这是管线架构改进——从"什么都写进来，靠升级门筛"变成"先过入口筛，再进升级管线"。来源于 Stash prompt engineering study 的 apply 阶段，是学习→应用的完整闭环
+
+2. **gradient 来源多样化**: 5 条新增来自 3 个不同场景（kilocode PR 退出、OpenClaw 代码诊断、Luna 直接指导），覆盖 3 个 MAP-Elites 维度（O-社交、V-验证、C-工程）。对比 Day 12 的 4 条全来自同一项目（moltbook），今天更均衡
+
+3. **Luna 两条 gradient 指向同一 pattern**: "贡献前做功课"和"及时止损"本质上是同一个问题的两面（准备不足 + 不知道退出）。如果继续积累，可能合并为一个更高层的 pattern
+
+4. **nudge 是确认死亡的**: 连续 13 天 0 触发。Issue #5 的诊断早已完成，但修复一直没执行。这本身就是"观测无闭环"的实例——发现 nudge 不工作 → 开了 issue → 然后没有修复行动。**这是管线最大的结构性缺陷**
+
+5. **dreaming 产出量上升但质量未变**: 今天 dreaming 产出约 30 条（比 Day 12 的 14 条翻倍），但 confidence 从 0.62 降到 0.58，全部无差异化。数量增长可能只是 memory 文件变长了（2167 行），不代表提取质量提升
+
+6. **PR 反馈转化为 gradient 的速度加快**: kilocode 的 maintainer 反馈当天就转化为 2 条 gradient，不再是之前的"被 supersede 后才反思"模式。这是进步
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 1 commit (7f2ea06, Trash Filter)
+- `git log --since="2026-04-30 00:00" --all --oneline`: 5 commits (study tracking + Trash Filter + TODO)
+- `grep -c nudge memory/2026-04-30.md`: 5 mentions, all analytical (no actual trigger)
+- `beliefs-candidates.md`: 328 行, 123 条 dated entries, 5 条 04-30 新增
+- `memory/2026-04-30.md`: 2167 行
+- dreaming: Light Sleep ~30 staged (conf 0.58), REM 1 reflection (conf 0.77)
+
+---
+
 ## 🔬 自进化观察日报 2026-04-29 (Day 12)
 
 ### 管线活跃度
