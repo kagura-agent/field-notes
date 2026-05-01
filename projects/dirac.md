@@ -201,3 +201,20 @@ Consolidation phase. Two signals:
 No architectural innovations. Still single maintainer. Next check: 05-07.
 
 See [[conciseness-accuracy-paradox]], [[model-native-vs-model-agnostic]]
+
+---
+
+## Applied: Toolcall Example Pattern → FlowForge (2026-05-01)
+
+Borrowed Dirac's "show correct usage in error messages" pattern and applied to [[FlowForge]] error handling:
+
+1. **Branch out of range**: Now shows all valid branches with their conditions/targets + example command (`flowforge next --branch 1`)
+2. **Workflow not found**: Now lists all known workflow names so the user can self-correct
+3. **No active instance**: Now lists available workflows with example `flowforge start` command
+
+Before: `Branch must be between 1 and 2` (bare constraint, no help)
+After: `Branch 5 out of range (1-2). Valid branches:\n  1. success → done\n  2. retry → start\n\nExample: flowforge next --branch 1`
+
+All 74 FlowForge tests pass. Pattern is simple (5-line change per error site) but eliminates a common retry loop where the agent/user guesses the right input.
+
+This validates Dirac's approach: **corrective examples > constraint-only errors** for LLM-facing tool interfaces.
