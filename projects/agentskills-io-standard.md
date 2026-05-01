@@ -77,7 +77,21 @@ skill-name/
 4. **标准统一在加速** — 从各自为政到向 agentskills.io 收敛
 5. **生态位**：agentskills.io 解决 skill 格式标准化，不解决 skill 发现和分发——这正是 ClawHub 的机会，做 agent skill 的 npm registry
 
+## 2026-05-01 library-skills (tiangolo)
+
+FastAPI 作者 tiangolo 发布 [[library-skills]]（166⭐），实现了 agentskills.io 标准的 **供给侧分发**：
+
+- 库作者在 npm/PyPI 包内嵌入 `.agents/skills/*/SKILL.md`
+- `uvx library-skills` / `npx library-skills` 扫描已安装依赖，symlink 到项目 `.agents/skills/`
+- **FastAPI 已率先采纳**，在包内部署 `fastapi/.agents/skills/fastapi/SKILL.md`
+- Symlink 机制意味着 `pip install --upgrade` 时 skill 自动更新，零维护
+
+这填补了 agentskills.io 生态的关键缺口——之前标准只定义了格式，分发靠 `npx skills add` 或手动复制。library-skills 引入第三种分发模型：**包内嵌入 + 包管理器分发 + symlink 激活**。
+
+与 ClawHub 的关系：互补。library-skills 解决 "库教 agent 怎么用自己"，ClawHub 解决 "agent 获取通用能力"。
+
 ## 链接
 
 - [[agent-skill-standard-convergence]] — 三层标准化趋势
 - [[mercury-agent]] — 采纳 agentskills.io 的 soul-driven agent
+- [[library-skills]] — tiangolo 的 library-embedded skill 工具
