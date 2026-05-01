@@ -44,3 +44,4 @@ Agent runtimes typically save the full turn (user + assistant messages) at the e
 - [[nanobot]] — Session Resilience Sprint section
 - [[loop-detection-comparison]] — Related nanobot safety mechanisms
 - [[startup-credential-guard]] — Another defensive pattern from the agent framework ecosystem
+- [[session-state-isolation]] — Complementary pattern: isolating mutable tool state across concurrent sessions
