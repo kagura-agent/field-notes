@@ -260,4 +260,15 @@ Stars flat at 562 despite new commits. The 04-29 commits are substantial quality
 
 **Revisit**: 05-06 to check if development continues or stalls.
 
+## Followup 2026-05-01
+
+**Stars**: 606 (+44 from 562 on 04-30). Modest but steady growth.
+**Pushed**: 04-29 (no new commits since last read).
+
+Development pace slow — substantial architecture is there but no new features in 5 days. Author likely moved on or doing internal work. The core value (9-stage consolidation pipeline, anti-verbatim synthesis, confidence decay) remains the best reference implementation for automated agent memory consolidation.
+
+**Ecosystem context**: Mercury-agent (1839⭐) grew past Stash by doing MORE (full agent with soul/skills/daemon), while Stash stays focused on the memory layer only. Both validate different aspects of the agent memory thesis. Stash's MCP-server-only approach means it can slot into any agent, which is a stronger distribution strategy long-term.
+
+**Revisit**: 05-10
+
 See [[agent-memory-landscape-202603]], [[genericagent]], [[confidence-decay-design]]

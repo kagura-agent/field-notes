@@ -66,5 +66,19 @@ The SKILL.md format is now used beyond behavioral/persona skills:
 - The landscape now has three layers: **format** (agentskills.io) → **distribution** (APM, ClawHub, vercel-skills) → **activation** (per-agent runtime loading)
 - APM's enterprise play (policy governance, supply-chain security) is where ClawHub has a gap
 
+## Mega-skills wave (2026-05-01)
+
+Skill stars are reaching previously unthinkable levels:
+- **huashu-design** (10,765⭐) — HTML-native design skill, 高保真原型/幻灯片/动画/MP4导出
+- **garden-skills** (1,921⭐) — ConardLi's curated collection (web design, knowledge retrieval, image gen)
+- **agent-sprite-forge** (1,400⭐) — 2D sprite sheet + animated GIF generation skill
+- **gpt_image_2_skill** (1,094⭐) — GPT Image 2 prompt gallery and skill
+- **cc-design** (663⭐) — high-fidelity HTML design skill (ZeroZ-lab)
+- **oh-story-claudecode** (626⭐) — 网文写作 skill, covers 扫榜/拆文/写作/去AI味/封面图全流程
+
+The pattern: **creative skills** (design, art, writing) are the star magnets. Infrastructure/coding skills don't hit these numbers. The skill ecosystem is being pulled by consumer-creative use cases, not developer tooling.
+
+Related: [[claude-code]], [[agentskills-io-standard]], [[microsoft-apm]]
+
 ## First seen
 2026-04-10, study #58 scout

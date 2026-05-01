@@ -208,6 +208,42 @@ Mercury 是一个**精简版 OpenClaw**——同样的 soul 文件 + 权限 + sk
 
 ⭐830（从 757 继续回升）。平台期后恢复增长，Agent Skills 生态扩大是助力。
 
+## 跟进 2026-05-01: ⭐1839 持续增长 + v1.1.4
+
+⭐1839（从 830 on 04-25，+122% in 6 days）。增长重新加速，远超平台期预期。
+
+### v1.1.0-v1.1.4 变化（04-26 ~ 04-30）
+
+1. **DeepSeek v4 专用 provider**（v1.1.0）：从 OpenAI-compatible workaround 升级到 `@ai-sdk/deepseek` 原生集成，支持 reasoning mode（`thinking: { type: 'enabled' }`）
+2. **AI SDK v4 → v6 迁移**（v1.1.0）：`parameters → inputSchema`、`maxSteps → stopWhen: stepCountIs()`、`args → input` 等全面升级。说明维护者跟进上游积极。
+3. **小米 MiMo provider**（v1.1.2, PR #22）：中国市场友好信号
+4. **Ollama Cloud 迁移**（v1.1.3）：从自定义 API 迁移到 OpenAI-compatible Chat API
+5. **Generic OpenAI-compatible provider**（v1.1.4）："OpenAI Compilations" — 任意自托管 LLM 的统一接入。Setup wizard 自动发现模型列表。
+6. **Docusaurus 文档站**（04-29）：从 README 文档升级到完整文档网站 + Plausible analytics
+
+### 增长曲线完整回顾
+```
+04-20: 0⭐ (created)
+04-21: 232⭐ (+232, launch spike)
+04-22: 349⭐ (+117)
+04-23: 556⭐ (+207, v1.0.0 Second Brain)
+04-24: 613⭐ (+57, plateau)
+04-25: 830⭐ (+217, recovery)
+05-01: 1839⭐ (+1009, sustained growth)
+```
+11 天 1839⭐，平均 167⭐/天。从「爆发→平台期→二次加速」的增长曲线异常健康。
+
+### 战略意义
+
+Mercury 证明了 "soul-driven 24/7 personal agent" 是一个**成立且持续增长的品类**。不是一次性 HN spike。
+
+关键竞争力对比更新：
+- **Mercury 新增优势**：generic provider support（任意 LLM 接入）、中国市场友好（MiMo）、完整文档站
+- **OpenClaw 仍领先**：多 channel（5+ vs CLI+Telegram）、ACP/subagent 编排、memex 语义搜索、gateway 架构、成熟 skill 生态
+- **差距在缩小**：Mercury 的 provider 生态和文档正在追赶
+
+**Revisit**: 05-07
+
 ### 生态同期对比
 - [[karpathy-llm-wiki]] (615★) — wiki > RAG 理念主流化（HN 首页），级联更新 + lint 管线值得借鉴
 - Claude Code Skills 爆发：6000+★ 的 HTML 设计 skill、4000+★ 的技术图表 skill
