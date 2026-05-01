@@ -186,6 +186,22 @@ See [[wanman-skill-evolution]] for deep read.
 - Dirac: 1,001⭐ (crossed 1k)，但仍是 reliability iteration，无新架构
 - **收敛方向**：runtime 层在碎片化，但 quality/oversight 需求在聚集
 
+## 2026-05-01 更新：Memory Layer — Event-Sourced Git Memory
+
+### brain (codejunkie99) — Git + SQLite Event Store
+- **Event-sourced agent memory**：不是存文档，是存 typed events（Note/Claim/Preference/Redact/Verify）
+- **Bitemporal queries**：time_observed vs time_recorded，支持 "what did I know at T?" 时间推理
+- **Supersession chains**：Claim A → Claim B 自动替代，materialized view 只显示 chain tip
+- **Git as source of truth, SQLite as derived index**：跟我们 wiki+memex 的模式同构，但粒度是 event 而非 file
+- Multi-agent adapters (Claude Code, Cursor, Codex, OpenClaw, Hermes) via MCP
+- 32⭐, 很早期，但架构设计成熟
+- See [[brain-git-memory]] for deep read
+
+### Memory 层新信号
+- **Event-sourced > Document** 成为新辩论：brain 和 [[hermes-memory-skills]] 都主张结构化事件而非自由文本
+- **Bitemporal** 是下一代 agent memory 的共识方向——"什么时候知道的" vs "什么时候发生的" 对 belief revision 至关重要
+- **Git-backed memory** 正在被多个项目独立重新发明（brain, Fullerenes, caura-memclaw）——验证我们 wiki git 的方向
+
 Related orphan concepts:
 - [[agent-brain-portability]] — can an agent's learned state transfer to a new runtime?
 - [[agent-lifecycle-fsm]] — modeling agent states (boot, learn, evolve, sleep)
