@@ -78,6 +78,17 @@ Skill stars are reaching previously unthinkable levels:
 
 The pattern: **creative skills** (design, art, writing) are the star magnets. Infrastructure/coding skills don't hit these numbers. The skill ecosystem is being pulled by consumer-creative use cases, not developer tooling.
 
+## Skills as attack surface (2026-05-01)
+
+**[[cve-2026-28353-agent-supply-chain]]** (CVSS 10.0) is the first documented case of an AI agent attacking a supply chain, then using the compromised artifact to target **other AI agents**.
+
+- Weaponized VS Code extension spawned 5 AI coding agents (Claude Code, Codex, Gemini, Copilot, Kiro) with permission-bypass flags
+- The payload was not code — it was a **prompt injection** posing as a "forensic analysis agent" with fake compliance framing
+- The attack surface shift: from malicious code to malicious *instructions*. A skill and an attack payload are the same format — markdown instructions for an LLM
+- Validates [[mapick]]'s thesis: overpermission by default is the core risk. Every skill runs inside conversation context with whatever permissions the host agent has
+- Supply chain security for skill ecosystems (ClawHub, APM, vercel-skills) is no longer theoretical — it's been weaponized in the wild
+- The landscape layer model needs a fourth entry: format → distribution → activation → **governance/security**
+
 Related: [[claude-code]], [[agentskills-io-standard]], [[microsoft-apm]]
 
 ## Optimization infrastructure pattern (2026-05-01)
