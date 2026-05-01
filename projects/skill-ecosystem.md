@@ -80,5 +80,15 @@ The pattern: **creative skills** (design, art, writing) are the star magnets. In
 
 Related: [[claude-code]], [[agentskills-io-standard]], [[microsoft-apm]]
 
+## Optimization infrastructure pattern (2026-05-01)
+
+**[[ast-outline]]** (100⭐) introduces a new skill category: **skills that make other skills more efficient**.
+- Intercepts agent Read tool calls via PreToolUse hooks, substitutes full file content with AST outlines (5-10× token reduction)
+- Transparent to the agent — it doesn't know the file was compressed
+- Installs into 7+ agents (Claude Code, Gemini, Cursor, Codex, Copilot, Aider, Tabnine)
+- Also exposes MCP server for tool-native integration
+- Pattern: optimization layer that sits between agent and filesystem, no skill changes needed
+- Ecosystem implication: a **fourth layer** emerging — format → distribution → activation → **optimization** (infrastructure skills that improve all other skills' efficiency without modifying them)
+
 ## First seen
 2026-04-10, study #58 scout
