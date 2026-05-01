@@ -162,3 +162,4 @@ For coding agents, creating a git worktree per task and showing patches in a sep
 - [[self-evolving-agent-landscape]] — positions in the ecosystem
 - [[agent-lifecycle-fsm]] — event-driven agent state machines
 - [[self-portrait]] — avatar/identity expression
+- [[oh-my-kimichan]] — similar multi-agent orchestration (Node.js, Kimi-specific), adds ensemble voting pattern that cadis lacks
