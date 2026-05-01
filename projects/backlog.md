@@ -1,4 +1,41 @@
 
+## 2026-05-01 Quick Scan #4 (21:45)
+
+**GitHub Trending (created past week, sorted by stars):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| deepseek-ai/awesome-deepseek-agent | 501 | 跳过 | Curated list, was 471 earlier today |
+| sandeco/reversa | 362 | 已跟踪 | Stable growth |
+| bux | 286 | 已跟踪 | Stable |
+| hermes-labyrinth | 242 | 已深读 | Done |
+| compose-performance-skills | 237 | 不相关 | Android Jetpack Compose, not agent infra |
+| **tiangolo/library-skills** | **178** | **⭐值得深读** | **FastAPI creator's agent skill project. Python. Active (pushed today). Directly relevant to skill ecosystem research** |
+| Claude-Code-AI-Design | 165 | 垃圾 | SEO spam repo |
+| ai-trading-agent | 160 | 不相关 | Trading bot |
+| agent-session-resume | 155 | 已跟踪 | Was 150 on 04-29, slow growth |
+| spawn-agent | 107 | 观望 | Single-day push (04-26), weekend project |
+| agentswift | 107 | 不明 | No description |
+| byob | 107 | 已有笔记 | |
+| shots | 104 | 不相关 | App Store screenshots |
+| ast-outline | 103 | 已跟踪 | |
+
+**Memory/Agent-Memory search:**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| codejunkie99/brain | 32 | 观望 | Git-backed memory, Rust+SQLite+MCP. Created 04-27, last push 04-28 (stalled?). Revisit 05-07 |
+| hermes-local-memory | 22 | 不紧急 | Local SQLite for Hermes |
+| hermes-memory-skills | 19 | 已深读 | |
+| Fullerenes | 16 | 观望 | Persistent memory |
+| caura-memclaw | 14 | 观望 | Memory for agent fleets |
+
+**HN:** Spec-driven dev workflows and parallel coding agents discussions. Nothing new for us.
+
+**Key finding:** tiangolo/library-skills — from FastAPI creator, directly relevant to our skill ecosystem direction. Active development. Worth deep read.
+
+---
+
 ## 2026-05-01 Quick Scan #3 (17:50)
 
 **GitHub Trending (created past week, sorted by stars):**

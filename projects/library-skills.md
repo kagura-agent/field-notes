@@ -1,7 +1,7 @@
 # library-skills (tiangolo)
 
 **Repo**: tiangolo/library-skills
-**Stars**: 166 (2026-05-01, created 04-26)
+**Stars**: 178 (2026-05-01 21:45, created 04-26, was 166 earlier today)
 **Language**: Python + TypeScript (dual implementation)
 **Status**: Active, pushed daily
 

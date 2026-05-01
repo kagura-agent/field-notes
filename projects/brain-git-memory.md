@@ -1,131 +1,113 @@
----
-title: "brain — Git-backed Agent Memory"
-repo: codejunkie99/brain
-stars: 26
-created: 2026-04-27
-last_checked: 2026-04-30
-status: new-project
-tags: [memory, git, rust, mcp, cli]
----
+# brain (codejunkie99/brain)
 
-# brain — Git-backed Long-term Memory for AI Coding Agents
+**Repo**: codejunkie99/brain
+**Stars**: 32 (2026-05-01)
+**Language**: Rust
+**Created**: 2026-04-27, last push 04-28
+**License**: Apache-2.0
 
-## What It Is
+## What It Does
 
-A Rust CLI + MCP server that gives Claude Code, Cursor, Codex, OpenClaw, and Hermes a **shared local memory** stored as git commits in `~/.brain`. Each memory event = one JSON blob = one commit. SQLite FTS5 index for search.
+Git-backed long-term memory for AI coding agents. CLI + TUI + MCP server. Notes stored as git commits in `~/.brain`, indexed in SQLite for search, available to Claude Code, Cursor, Codex, OpenClaw, Hermes via adapters.
 
-**Repo:** <https://github.com/codejunkie99/brain>  
-**Language:** Rust (workspace: 6 crates)  
-**License:** Apache-2.0  
+## Architecture — Why It's Interesting
 
-## Architecture
+### 1. Event-Sourced, Not Document-Based
 
-```
-brain-cli (CLI)  ←→  brain-app (LocalBrain)  ←→  brain-store (BrainRepo: git2)
-brain-mcp (MCP)  ↗                              ↘  brain-index (SQLite FTS5)
-brain-tui (TUI)  ↗                                  brain-types (shared types)
-```
+Memory is a stream of **typed events** (Note, Claim, Preference, Redact, Verify), not markdown files. Each event has:
+- UUID v7 (time-sortable)
+- `SubjectRef` (what entity/concept this is about)
+- `Actor` (which agent or human wrote it)
+- `EventPayload` (typed content)
+- `Authority` (provenance: source_kind, score, attested_by)
+- `Classification`, `SignatureState`
+- `idempotency_key` (retries don't duplicate)
+- `chain_id` / `parent_event_id` (supersession chains — Claim A → Claim B replaces A)
+- Schema versioning
 
-### Storage Model: Git as Event Log
+This is way more structured than typical "memory is a text file" approaches. Agents produce discrete facts, not documents — the event model is a better fit.
 
-The core insight: **each memory event is a git commit** in `~/.brain/events/`. Not files-in-git (like our `memory/*.md`), but **commits-as-events** — the commit itself IS the record.
+### 2. Git as Source of Truth, SQLite as Derived Index
 
-- Events stored as JSON blobs under `events/` tree
-- One commit per `append_event` — no batching (v0.1 simplicity)
-- UUID v7 event IDs (time-sortable)
-- `git2` (libgit2) for all git ops — no shell `git` dependency
-- Dir perms tightened to 0o700 on Unix
+Events stored as JSON blobs in git (`events/` subtree), one commit per append. SQLite is a **derived projection** rebuilt from git via `brain doctor --deep`.
 
-### Typed Event System
+Why this matters:
+- Git gives you immutable audit trail, versioning, and sync (push/pull) for free
+- SQLite gives you structured queries without being the source of truth
+- If index corrupts → rebuild from git. If git corrupts → game over, but git is resilient
 
-Strong typing via Rust enums (not freeform JSON):
-
-| EventType | Purpose |
-|---|---|
-| Observe | Raw observation/note |
-| Claim | Durable belief (supersession chains via `chain_id`) |
-| Lesson | Learned insight |
-| Pref | User preference |
-| SkillEdit | Skill modification |
-| Verify / Archive / Redact | Lifecycle management |
-| Import / Audit | Maintenance |
-
-### Memory Layers (à la cognitive science)
-
-```rust
-enum Layer { Working, Episodic, Semantic, Personal, Skill, Protocol }
-```
-
-Maps to a [[memory-architecture]] model where different types of memory have different durability and retrieval patterns. Compare with [[hermes-memory-skills]] 4-dimensional scoring.
-
-### Bitemporal Queries
+### 3. Bitemporal Queries
 
 Two time axes:
-- **Event-time** (`time_observed`): when the fact happened
-- **Transaction-time** (`time_recorded`): when it was written down
+- `time_observed` — when did the fact happen in reality?
+- `time_recorded` — when was it recorded in brain?
 
-This lets you ask "what did I know at time T?" — though v0.1 doesn't do full point-in-time reads (archive/redact evaluated at current state, not at T).
+Enables "what did I know at time T?" queries. Crucial for debugging stale beliefs and temporal reasoning. Not a full bitemporal implementation (no "as known at T" snapshot queries yet) but the foundation is there.
 
-### Search
+### 4. FTS5 Search (Agent-Optimized)
 
-SQLite FTS5 with BM25 ranking. `unicode61` tokenizer + prefix indexing (2/3/4 chars). Auto-appends `*` to bare words. Power-user syntax passthrough (`"exact phrase"`, AND/OR/NOT).
+- 3 FTS columns: title / body / tags (weighted differently via BM25)
+- `unicode61` tokenizer, no Porter stemming (would destroy recall on identifiers like `fastapi-users`)
+- Prefix indexing on 2/3/4 chars — agents type fragments, not full words
+- Auto-appends `*` to bare words at query time (`fast` → `fast*` → matches `fastapi`)
+- Power-user syntax preserved: `"exact phrase"`, `AND/OR/NOT`, `title:foo`
 
-### Multi-Agent Integration
+### 5. Multi-Agent Adapters
 
-**Adapter per agent** via onboarding:
-- Claude Code → `mcp_servers.json` + `CLAUDE.md`
-- Cursor → `.cursor/mcp.json` + `rules/brain.mdc`
-- Codex → `config.toml` + `AGENTS.md`
-- OpenClaw → `BRAIN.md` (CLI shelling, no MCP)
-- Hermes → `AGENTS.md`
+Onboarding writes config files for each agent:
+- Claude Code: `~/.claude/mcp_servers.json` + `CLAUDE.md`
+- Cursor: `.cursor/mcp.json` + rules
+- Codex: `~/.codex/config.toml` + `AGENTS.md`
+- OpenClaw: `~/.openclaw/workspace/BRAIN.md`
+- Hermes: `AGENTS.md`
 
-Uses `BRAIN:START` / `BRAIN:END` markers for managed prompt blocks — re-runs don't duplicate.
+Uses `BRAIN:START` / `BRAIN:END` markers so re-runs don't duplicate content.
 
-### Sync
+### 6. Supersession Chains
 
-Explicit: `brain remote add origin <url>` + `brain push/pull`. No auto-sync, no cloud. Pure local-first.
+Claims form chains via `chain_id`. When a fact is updated (e.g., "auth uses JWT" → "auth uses PKCE"), the new Claim supersedes the old one. `claim_current` materialized view shows only chain tips. Clean way to handle evolving knowledge.
 
-## Key Design Decisions
+## Rust Crate Structure
 
-1. **Git as source of truth, SQLite as read index** — events survive index corruption. `brain doctor --deep` rebuilds from git.
-2. **Idempotency keys on all writes** — retries collapse into single events. Critical for agent tool calls that may retry.
-3. **Actor + Authority model** — each event records WHO wrote it (agent/human/system) and with what authority level (0-100 score). Enables trust-weighted retrieval.
-4. **Classification** — events can be Private. Enables future access control.
-5. **No network requirement** — works entirely offline. Git remote is opt-in.
+```
+crates/
+  brain-types/   — Event, EventDraft, SubjectRef, Actor, enums
+  brain-store/   — BrainRepo (git2-based write/read)
+  brain-index/   — SQLite FTS5 index + queries
+  brain-mcp/     — MCP server
+  brain-cli/     — CLI binary
+  brain-tui/     — Terminal UI
+  brain-app/     — App orchestration
+```
 
-## Comparison with Our Memory System
+## Comparison to OpenClaw Memory
 
-| Aspect | brain | Our system (OpenClaw) |
+| | OpenClaw | brain |
 |---|---|---|
-| Storage | Git commits (structured JSON) | Markdown files in git |
-| Schema | Strongly typed Rust enums | Freeform markdown |
-| Search | SQLite FTS5 + BM25 | memex semantic search / grep |
-| Multi-agent | MCP server + CLI adapters | Single agent (OpenClaw only) |
-| Event model | Typed events with layers | Daily logs + curated MEMORY.md |
-| Sync | Git push/pull (explicit) | Git push (semi-automated) |
-| Bitemporal | Yes (event-time + record-time) | No (file modification time only) |
-| Idempotency | Built-in (keys) | None |
+| Storage | Markdown files (MEMORY.md + memory/YYYY-MM-DD.md) | JSON events in git |
+| Query | grep / memex search | SQLite FTS5 + structured SQL |
+| Versioning | Git (manual) | Git (built-in per-event commits) |
+| Multi-agent | Single agent reads/writes | Multi-agent via MCP + adapters |
+| Temporal | Date-based files | Bitemporal (observed vs recorded) |
+| Readability | Human-readable, editable | Machine-optimized, less readable |
+| Overhead | Zero (plain files) | Rust binary + SQLite |
 
-## Relevance to Our Direction
+## Key Insights
 
-### Worth Borrowing
-- **Idempotency keys** — our memory writes can duplicate on retry/re-run. A dedup mechanism would help.
-- **Actor tagging** — when subagents write memory, we don't track WHO wrote it. Useful for trust scoring.
-- **Typed event layers** (Episodic/Semantic/Skill) — our flat `memory/*.md` + `MEMORY.md` is a 2-tier approximation. The layer model is more principled.
-- **Bitemporal queries** — "what did I know at time T?" is genuinely useful for debugging and reflection.
+1. **Event-sourced > document for agent memory** — agents produce facts, not documents. But document format (our approach) wins on human readability and editability.
+2. **Bitemporal is right for beliefs** — "when did I learn X?" vs "when did X happen?" is exactly what beliefs-candidates needs. We could add observed/recorded timestamps to candidate entries.
+3. **Supersession chains solve belief revision** — our beliefs-candidates uses manual "graduated" markers. brain's chain model automates it.
+4. **Git + SQLite separation of concerns** — validates our approach of git-backed markdown + separate search index (memex). Same pattern, different granularity.
 
-### Not Worth Adopting
-- **Git-as-event-log** architecture — overkill for our volume. One commit per note means thousands of commits. Our markdown-in-git is simpler and human-readable.
-- **Full MCP server** — OpenClaw's tool system is already richer than MCP tool calls. No need to add another protocol layer.
-- **Rust complexity** — 6 crates for what we do with a few markdown files + grep. The engineering is solid but the problem doesn't demand it.
+## Status Assessment
 
-### Strategic Assessment
-brain targets the "cross-agent memory" problem — one memory shared by Claude Code, Cursor, Codex, etc. This is a real pain point for multi-tool users. For us (single-agent OpenClaw), the cross-agent value is limited, but the architecture patterns (especially typed events + actor authority + bitemporal) are good reference designs.
+- 32⭐, 2 days of pushing then stopped. Could be a weekend project that's done, or could be abandoned.
+- Architecture is overengineered for 32 stars but the design is solid
+- Worth revisiting 05-07 to see if development resumes
+- **Not a contribution target** (too early, unclear if maintained)
 
-**Watch or Adopt?** Watch. The project is 3 days old, 26 stars, single author. Architecture is thoughtful but unproven at scale. Revisit if it gains traction or if we decide to support cross-agent memory.
+## Related
 
-## See Also
-- [[memory-architecture]] — general agent memory design patterns
-- [[hermes-memory-skills]] — 4-dim scoring (Novelty/Durability/Specificity/Reduction)
-- [[stash]] — competing approach (Postgres-backed, episode/fact/context model)
-- [[agent-session-resume]] — cross-agent session continuity (complementary problem)
+- [[agent-session-resume]] — another cross-agent memory approach (session-level vs event-level)
+- [[hermes-memory-skills]] — memory hygiene (dreaming/consolidation) rather than storage
+- [[skill-ecosystem]] — brain is memory infrastructure, complementary to skill distribution
