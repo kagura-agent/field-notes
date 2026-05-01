@@ -38,6 +38,14 @@
 - #1502 (skip prek hook): merged by cv ✅
 - #1703 (enabledChannels → messagingChannels): rebased on main 2026-04-11, aligned with upstream naming
 - #1723 (ARM64 health): wscurran approved ✅, waiting merge
+- #2833 (stale onboard.lock #2765): pending review. Fix malformed lock files blocking onboard. CI passed, CodeRabbit clean.
+
+## Build & Test Notes (2026-05-01)
+- Root `npm install --include=dev --ignore-scripts` needed to get vitest (devDep)
+- `npx tsc -p tsconfig.src.json` compiles src/ → dist/ (test imports from dist/)
+- May need `git config --unset-all core.hooksPath` to avoid prek install failures
+- `nemoclaw/` subdirectory has its own build (`cd nemoclaw && npm run build`), separate from root tsconfig.src.json
+- Root tsconfig.src.json may show oclif import errors — these are pre-existing (oclif migration in progress), don't affect onboard-session compilation
 - #1726 (dco-check skip): cv approved ✅, GPG signed 2026-04-11
 - #1770 (debug tarball exit code): submitted 2026-04-11, CI pass, CodeRabbit nitpick adopted
 
