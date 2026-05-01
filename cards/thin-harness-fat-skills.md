@@ -49,6 +49,8 @@ Notable: OD's adapter layer is even thinner than GBrain's — each adapter is ju
 
 **2026-04-30 update**: OD now supports 10 agent CLIs (added Pi, Hermes, Kimi, Copilot CLI) and speaks ACP JSON-RPC natively (`acp.ts`). The daemon is becoming a universal agent adapter layer — thin enough to stay ~20 lines per adapter, thick enough to normalize all streaming formats into a unified event model. 721 forks and 166+ merged PRs in 2 days suggest the thin-harness pattern enables rapid community contribution (low barrier to adding adapters).
 
+**2026-05-01 update**: 11 CLIs now (added Kiro via ACP). 4 distinct stream formats all normalized to one internal event model. Also shipped Mac Electron desktop app — the desktop runtime (SCREENSHOT/EVAL/CLICK) creates a self-verification loop where the agent can inspect its own generated artifacts. 9.2k⭐. The thin adapter pattern continues to prove out: adding Kiro was a single `AGENT_DEFS` entry with zero new parsing code because it speaks ACP like Hermes and Kimi.
+
 ## 2026-04-29 Update: Empirical validation (Augment study)
 
 [[augment-agents-md-study]] provides first data-backed evidence this pattern works:

@@ -18,6 +18,16 @@ Protocol for inter-agent communication in OpenClaw and broader agent ecosystems.
 ACP is becoming the de facto transport layer for coding agent interop:
 - **Native ACP**: Cursor (`agent acp`), Copilot, Gemini CLI, OpenCode, Factory Droid, Pi
 - **Shim-based**: Claude Code (`@agentclientprotocol/claude-agent-acp`), Codex (`@zed-industries/codex-acp`)
+
+### Adoption evidence: open-design daemon (2026-05-01)
+
+[[open-design]] (9.2k⭐) now supports 11 agent CLIs with 4 stream formats. 3 out of 4 structured protocols are ACP:
+- `acp-json-rpc`: Hermes, Kimi, Kiro
+- `pi-rpc`: Pi (own JSON-RPC, not ACP)
+- `claude-stream-json`: Claude Code (proprietary)
+- `plain`: 6 agents (raw stdout)
+
+ACP is winning the structured agent communication race by adoption. Any CLI that implements ACP gets multi-platform support (OpenClaw, open-design, multica) for free.
 - **Wrappers**: [[spawn-agent]] uses ACP to expose any agent as a Vercel AI SDK provider
 - **Runtimes**: OpenClaw `sessions_spawn` with `runtime: "acp"` for gateway-managed agent sessions
 
