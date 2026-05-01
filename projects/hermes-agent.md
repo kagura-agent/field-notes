@@ -1213,3 +1213,91 @@ Transport ABC 标志着 Hermes 从"大 monolith 函数"向"可插拔架构"转�
 **Assessment**: Heavy TUI investment phase. The `/compress` async pattern is the most transferable insight — pattern: move any LLM-calling slash command off the main event loop, show live progress, return structured result. ComfyUI promotion confirms image gen as core agent capability trend.
 
 No new PRs from us this round.
+
+### Followup (2026-05-01): v0.12.0 "The Curator Release" + Tool-Call Loop Guardrails
+
+⭐ 126,934 (+1.7k since 04-30). **1,096 commits · 550 merged PRs · 213 community contributors** since v0.11.0.
+
+This is one of the most architecturally significant releases — two features directly relevant to [[self-improving]] agents.
+
+#### 1. Autonomous Curator — background skill maintenance
+
+Hermes now has a **background agent that maintains the skill library autonomously**:
+- Runs on gateway cron ticker (7-day cycle default, configurable `interval_hours`)
+- Inactivity-triggered: only fires after `min_idle_hours` (default 2h) of no user interaction
+- **Responsibilities**: grade skills by usage, consolidate related skills, prune dead ones, archive (never delete)
+- Per-run reports: `logs/curator/run.json` + `REPORT.md`
+- `hermes curator status` ranks skills by usage (most/least used)
+- Unified under `auxiliary.curator` — uses auxiliary model, never touches main session's prompt cache
+- **Defense-in-depth**: only touches agent-created skills (not bundled/hub), pinned skills bypass all auto-transitions
+- Lifecycle states: `DEFAULT_STALE_AFTER_DAYS = 30`, `DEFAULT_ARCHIVE_AFTER_DAYS = 90`
+- Archived skills classified as consolidated-vs-pruned via model + heuristic
+
+**Architecture insight**: The curator is a **forked AIAgent** — it spawns a full agent instance scoped to memory+skills toolsets only. This is significant: Hermes treats skill maintenance as an agent task, not a rule-based job. The model decides what to consolidate/archive, guided by usage data.
+
+**Connection to [[self-evolution-as-skill]]**: This validates the pattern where the agent maintains its own capability library. Our [[beliefs-candidates]] pipeline is manual (3-trigger threshold → promote to DNA/workflow/wiki). Hermes automates the equivalent for skills with usage-based scoring.
+
+**Connection to [[conservative-skill-editing]]**: The curator's pinning mechanism + archive-only policy mirrors our caution about destructive skill edits. Key invariant: **never auto-delete, only archive**. Archive is recoverable.
+
+#### 2. Tool-Call Loop Guardrails — circuit breaker for agent loops
+
+New `agent/tool_guardrails.py` (381 lines) implements a **per-turn controller** for repeated tool failures:
+
+**Design principles:**
+- **Pure, side-effect free**: Controller tracks observations and returns decisions. Runtime code decides how to act.
+- **Warning-first by default**: `hard_stop_enabled = False` out of the box. Warnings never prevent execution.
+- **Three detection axes**:
+  1. **Exact failure repeat**: same tool + same args + failed → warn after 2, block after 5
+  2. **Same-tool failure**: same tool name (varying args) + failed → warn after 3, halt after 8
+  3. **Idempotent no-progress**: read-only tool returns identical result → warn after 2, block after 5
+- **Signature hashing**: `ToolCallSignature` uses SHA-256 of canonical JSON args (sorted keys, no raw args in metadata → no secret leakage)
+- **Smart failure classification**: `classify_tool_failure()` checks exit codes for terminal, memory fullness for memory tool, generic error/failed JSON keys
+- **Reset on success**: A successful call resets the exact-signature failure streak
+- **Configurable via config.yaml**: `tool_loop_guardrails.warn_after.*` and `.hard_stop_after.*`
+
+**Key code patterns:**
+```python
+# Pre-call check (only blocks when hard_stop_enabled)
+decision = controller.before_call(tool_name, args)
+if decision.action == "block":
+    return toolguard_synthetic_result(decision)
+
+# Post-call observation
+decision = controller.after_call(tool_name, args, result, failed=failed)
+if decision.action in {"warn", "halt"}:
+    result = append_toolguard_guidance(result, decision)
+```
+
+**Tool classification**:
+- `IDEMPOTENT_TOOL_NAMES`: read_file, search_files, web_search, browser_snapshot, etc. (16 tools)
+- `MUTATING_TOOL_NAMES`: terminal, execute_code, write_file, patch, todo, memory, etc. (16 tools)
+- Tools not in either set: treated as non-idempotent (no no-progress detection)
+
+**Connection to [[OpenClaw]]**: OpenClaw doesn't have tool-loop guardrails. Our agents can (and do) get stuck in retry loops — we've seen this in coding-agent runs. This is a concrete, well-designed pattern to adopt:
+- Warning-first is the right default for interactive sessions
+- The three-axis detection (exact repeat, same-tool, no-progress) covers the common failure modes
+- The pure controller pattern makes it testable without runtime coupling
+
+**Connection to [[tool-execution-policy-enforcement]]**: This is a different layer — policy enforcement is about authorization (can this tool run?), guardrails are about loop detection (should this tool keep running?).
+
+#### 3. Self-improvement loop — substantial upgrade
+
+- **Class-first skill-review prompt**: rubric-based grading (not free-form "should this update")
+- **Active-update bias**: prefers updating the skill the agent just loaded — reduces orphan skill sprawl
+- **Fork inherits parent runtime**: provider, model, credentials propagate (previously broken)
+- **Scoped toolsets**: review fork restricted to memory+skills only (no shell, no web)
+- **Clean context**: prior-turn tool messages excluded from review summary
+
+This makes the review fork more disciplined — it can't wander off into web browsing or code execution during self-reflection.
+
+#### 4. Other notable changes
+
+- **Pluggable gateway platforms**: gateway is now a plugin host, Teams is first plugin-shipped platform
+- **Tencent Yuanbao**: 18th messaging platform
+- **LM Studio first-class provider**: dedicated auth, doctor checks, reasoning transport
+- **TTS provider registry + Piper local TTS**: pluggable `tts.providers` — similar to our ElevenLabs `sag` setup
+- **Cold-start performance -57%**: lazy imports, mtime-cached config, memoized tool definitions
+- **Secret redaction OFF by default**: patch-corruption incidents from false positives. Pragmatic decision.
+- **Langfuse observability plugin**: bundled, not optional
+
+**Assessment**: v0.12.0 is Hermes' "self-maintenance" release. The Curator + improved self-improvement loop + tool-loop guardrails form a coherent story: the agent maintains its skills, reviews its learning, and detects when it's stuck. This is the most complete self-evolving agent implementation in production. Our equivalent pieces exist (beliefs-candidates, FlowForge reflect, nudge hooks) but are more manual and fragmented.
