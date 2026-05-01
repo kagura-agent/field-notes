@@ -61,3 +61,15 @@ Our config (`openclaw.json`) already enables MMR + temporal decay on top of defa
 
 ---
 *Created: 2026-04-22*
+
+## CJK Fallback Pattern (2026-05-01)
+
+agentic-stack PR #34 found that FTS5 `unicode61` tokenizer misses short CJK substrings (e.g., `中文` not matching `中文优先`). Their fix: CJK regex detection → LIKE `%query%` fallback when FTS5 returns empty.
+
+This is simpler than our CJK bigram approach. Two patterns:
+- **Bigram tokenization** (our approach via query-expansion.ts): catches more cases but more complex
+- **LIKE fallback** (agentic-stack): zero-complexity escape hatch for the long tail
+
+The LIKE fallback is a good safety net regardless of tokenizer sophistication — worth evaluating if we see CJK recall gaps in practice.
+
+See [[memex]], [[agentic-stack]]
