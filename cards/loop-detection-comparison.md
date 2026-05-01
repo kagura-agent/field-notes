@@ -75,6 +75,36 @@ However, Workshop could benefit from a **cron-level stagnation detector**: if th
 - nanobot: PR #3077 (read 2026-04-13)
 - OpenClaw issues: #34574 (exec loop), #64500 (ping-pong circuit breaker)
 
+## Hermes Agent v0.12.0 Guardrails (2026-05-01 追加)
+
+**Architecture:** Per-turn controller (`agent/tool_guardrails.py`, 381 lines). Pure, side-effect free — returns decisions, runtime acts on them.
+
+**Three detection axes:**
+| Detector | What it catches | Warn | Block/Halt |
+|---|---|---|---|
+| Exact failure repeat | Same tool + same args + failed | 2 | 5 |
+| Same-tool failure | Same tool (varying args) + failed | 3 | 8 |
+| Idempotent no-progress | Read-only tool returns identical result | 2 | 5 |
+
+**Key design choices vs OpenClaw/nanobot:**
+- **Warning-first**: `hard_stop_enabled = False` by default. Warnings append guidance to tool result, never prevent execution. Hard stop is opt-in.
+- **Signature hashing**: SHA-256 of canonical JSON args (like OpenClaw), but args never appear in metadata → no secret leakage risk.
+- **Tool classification**: Explicit `IDEMPOTENT_TOOL_NAMES` (16) and `MUTATING_TOOL_NAMES` (16) sets. No-progress detection only applies to idempotent tools.
+- **Result hashing for idempotent**: Hashes canonical JSON result to detect repeated identical outputs — **this addresses the gap both OpenClaw and nanobot had**.
+- **Reset on success**: Exact-signature failure streak resets on successful call.
+- **Configurable**: Full config via `tool_loop_guardrails` in config.yaml, with nested `warn_after` and `hard_stop_after` sections.
+
+**What Hermes adds that others lack:**
+1. **Three-axis detection** covers exact repeat (nanobot), result similarity (our proposed solution), and same-tool-different-args failures — first system to combine all three.
+2. **Pure controller pattern** makes it trivially testable (142 unit tests + 202 runtime tests).
+3. **Graduated response**: allow → warn → block/halt is more nuanced than OpenClaw's warn/critical or nanobot's hard error.
+
+**Still missing (across all three):**
+- Ping-pong detection (A-B-A-B alternation) — OpenClaw has this, Hermes doesn't
+- Cross-turn tracking — all three reset per turn/run
+
 ## See Also
 - [[tool-stagnation-detection]] — nanobot-specific deep read
 - [[cron-observability-metrics]] — related: monitoring cron behavior
+- [[hermes-agent]] — v0.12.0 deep read with full guardrails analysis
+- [[tool-execution-policy-enforcement]] — different layer: authorization vs loop detection
