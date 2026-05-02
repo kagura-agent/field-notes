@@ -295,3 +295,21 @@ The `plain-text-task.ts` module (+116 lines) reveals how Dirac handles subagent 
 Next check: 05-07.
 
 See [[conciseness-accuracy-paradox]], [[model-native-vs-model-agnostic]], [[agent-brain-portability]]
+
+## Update: v0.3.9→v0.3.17 (2026-04-28 to 05-02)
+
+**Stars**: 665 → 1,060 (+60% in 4 days). Rapid growth phase.
+
+**8 releases in 3 days** — single author velocity.
+
+Key changes:
+- **Subagent completion verification**: Uses `attempt_completion` tool, hard timeout with "absolute last turn" prompt injection, empty response retry with max retries
+- **Toolcall example in failure feedback**: When a tool call fails, the error response includes a correct example JSON — simple LLM self-correction mechanism
+- **OpenAI search API**: Native `search` tool support (non-OpenAI endpoints excluded)
+- **Provider sunset**: Removed hicap and sapaicore providers (consolidation)
+- **File operations robustness**: Bug fixes in read/write/edit flows
+- **Strict parameter validation**: Fixed 0-length parameter skipping
+
+**Phase assessment**: Entering maturity — provider consolidation, error handling hardening, subagent refinement. No new architectural innovations.
+
+*Field note: 2026-05-02*

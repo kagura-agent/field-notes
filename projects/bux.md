@@ -92,3 +92,21 @@ bux validates the "agent-on-a-box-controlled-via-chat" pattern. The forum-topics
 Links: [[openclaw]], [[coding-agent]], [[byob-browser]], [[orb]]
 
 *Field note: 2026-05-02. Source: GitHub repo + API + code reading.*
+
+## Update: 2026-05-02
+
+**Stars**: 292 (was 265 on 04-30, +10%)
+
+**15 commits in one day** — massive burst.
+
+New features:
+- **Composio MCP cloud proxy**: Cloud-hosted MCP endpoint proxies Composio tool calls using box's `project_id` as Composio `entity_id`. OAuth done on cloud side (browser-use.com), boxes get tool access with zero per-box setup. Pattern: **centralized auth + distributed execution via MCP**.
+- **/terminal mode**: Persistent bash PTY via Telegram. `/terminal` spawns bash, all subsequent messages become stdin, output streams back with ANSI stripping and buffered flush (2500 bytes or 0.8s quiet). `/exit` returns to agent mode.
+- **/compact command**: Context compaction on demand
+- **Slash command registration**: TG shows tooltips on `/`
+- **Thinking emoji pool**: 72 random thinking emoji per turn (UX polish)
+- **Token footer**: Category-count breakdown tucked in collapsed steps
+
+**Architecture note**: Composio MCP proxy is the most interesting pattern — solves the "how do you give managed agents access to user's SaaS integrations without per-box credential management" problem. Each box identifies via project_id, cloud handles OAuth token rotation.
+
+*Field note: 2026-05-02*
