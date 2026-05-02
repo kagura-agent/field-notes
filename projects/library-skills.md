@@ -74,3 +74,19 @@ OpenClaw skills use the same `SKILL.md` + frontmatter pattern but are loaded dif
 - Active community PRs (#60 interactive picker UX, #61 copy-friendly commands)
 - **Trajectory**: becoming the de facto library-embedded skill distribution tool. tiangolo (FastAPI creator) credibility + [[agentskills-io-standard]] alignment + zero-infrastructure design driving adoption
 - **Signal**: this growth rate suggests skill-via-package-manager may become the dominant distribution pattern for library-specific skills, complementing marketplace models like [[clawhub]]
+
+## Followup 2026-05-02 15:50
+
+- **Stars: 281** (was 271 yesterday — sustained +10/day growth)
+- **Releases**: v0.0.5 (05-01). Now 55 merged PRs in 6 days since creation (04-26)
+- **Key changes since last check**:
+  - PEP 832 `.venv` redirect file support (#55) — handles modern Python venv layouts
+  - npx fix (#54) — TypeScript CLI now works correctly
+  - TypeScript publishing improvements (#50, #52) — dual runtime parity achieved
+- **Open PRs**: Interactive picker UX (#60), copy-friendly commands (#61) — community contributing UX polish
+- **Creator docs**: Added "Create Library Skills" guide for library authors (how to embed `.agents/skills/` in your package)
+- **Assessment**: Functionally complete for v1 use case. Growth driven by tiangolo credibility + zero-infrastructure design + [[agentskills-io-standard]] alignment. The "skill as package dependency" model is proving out.
+- **Key insight for us**: library-skills doesn't replace [[clawhub]] — they're complementary layers:
+  - library-skills = supply-side ("library teaches agent how to use it")
+  - ClawHub = demand-side ("user discovers/installs agent capabilities")
+  - OpenClaw should eventually scan `.agents/skills/` alongside its own skill loading (but low priority — our users aren't library authors)
