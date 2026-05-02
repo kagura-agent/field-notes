@@ -23,11 +23,15 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#76054** (2026-05-02, PENDING): feat(agents): allow per-agent contextInjection override in agents.list[]. Fixes #76046. CI: 81/81 passed after fixing type contract + lint.
 - **#74877** (2026-04-30, PENDING): fix(auto-reply): fall back to automatic delivery when message tool unavailable. Fixes #74868. Addressed clawsweeper bot review (P2: extend policy check to include profile + provider policies). CI: 75/75 passed.
 
 ## Learnings
 - Tool policy resolution is layered: global → agent → profile → provider-profile → group → sandbox → subagent. When checking tool availability outside the full pipeline, include at least profile and provider-profile layers (not just global + agent).
 - clawsweeper bot does deep automated review (uses Codex gpt-5.5) — catches real architectural issues, not just style nitpicks. Worth addressing.
+- **Schema changes need 3 artifacts**: Zod schema (`zod-schema.agent-runtime.ts`), TypeScript type (`types.agents.ts`), and generated baseline (`schema.base.generated.ts` via `generate-base-config-schema.ts` + `generate-config-doc-baseline.ts`). Missing any one causes CI failures.
+- **Lint uses `curly` rule**: all `if` bodies need braces, even single-return statements.
+- **Per-agent config override pattern**: Add field to `AgentEntrySchema` → add to `AgentConfig` type → update resolver to accept `agentId` and do `config.agents.list.find(a => a.id === agentId)` → update callers → add schema help/labels → regenerate. Precedent: `contextTokens` (ed03d91ae0).
 - CI has 75 checks; all passed on first try for this PR.
 - The cron system already had a similar fix (commit b9d2e0f86d) — good precedent to follow.
 
