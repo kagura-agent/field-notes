@@ -61,5 +61,7 @@ Notable: OD's adapter layer is even thinner than GBrain's — each adapter is ju
 
 This validates our SKILL.md model: AGENTS.md is the thin discovery layer, SKILL.md files are the fat on-demand references.
 
+**2026-05-02 update**: v0.1.0 GA release. Headless server deployment landed (PR #222) — `OD_HOST=0.0.0.0` + `--prod` flag enables remote access. Smart security: web server binds to configurable host, but web→daemon proxy always uses `127.0.0.1` (daemon never directly exposed). 12k⭐. The thin-harness pattern enables a clean local→server transition: the adapter layer doesn't care where it runs, all complexity stays in the skill files and prompt stack.
+
 ## Tags
 #architecture #agent-skills #design-pattern #self-evolving
