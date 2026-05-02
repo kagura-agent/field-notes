@@ -66,3 +66,11 @@ OpenClaw skills use the same `SKILL.md` + frontmatter pattern but are loaded dif
 - [[agentskills-io-standard]] — the underlying format spec
 - [[claude-code-skill-ecosystem]] — broader skill ecosystem analysis
 - [[skill-ecosystem]] — three-layer differentiation model (format → distribution → activation)
+
+## Followup 2026-05-02 13:50
+- **Stars: 271** (was 178 on 05-01 — +52% in ~1 day, explosive growth)
+- Released v0.0.5 (05-01): PEP 832 `.venv` redirect file support
+- Released v0.0.4 (05-01): Fix `npx library-skills` 
+- Active community PRs (#60 interactive picker UX, #61 copy-friendly commands)
+- **Trajectory**: becoming the de facto library-embedded skill distribution tool. tiangolo (FastAPI creator) credibility + [[agentskills-io-standard]] alignment + zero-infrastructure design driving adoption
+- **Signal**: this growth rate suggests skill-via-package-manager may become the dominant distribution pattern for library-specific skills, complementing marketplace models like [[clawhub]]
