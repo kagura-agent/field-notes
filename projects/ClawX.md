@@ -129,3 +129,14 @@ See [[debug-check-state-file-first]] — same lesson: look at the actual data fl
 - **Test pattern**: They use vitest + mocked host API. Tests in tests/unit/. Mock setup in test file directly, not a shared fixture.
 - **Merge rate**: 87% — good odds
 - **package-lock.json**: Not in repo, add to .gitignore if accidentally generated
+
+### PR #967 — HTTP-first ClawHub search/explore fallback (2026-05-02)
+- **Status**: Pending review, CI check+build+comms pass, E2E pending
+- **Issue**: #960 — Skills marketplace search returns 404 with cn-mirror source
+- **Root cause**: `cn.clawhub-mirror.com` is a static HTML mirror, doesn't serve JSON API endpoints
+- **Fix**: Added `httpFetchResults()` helper in `ClawHubService` that tries `clawhub.ai` API first with 5s AbortController timeout, falls back to CLI on any failure
+- **Bot review**: chatgpt-codex-connector flagged missing timeout → addressed with AbortController in follow-up commit
+- **Test pattern**: 7 vitest tests mocking `global.fetch` and `child_process.spawn`, covers HTTP success, HTML fallback, network error, 5xx, abort/timeout, and explore variants
+- **Architecture note**: `ClawHubService` (electron/gateway/clawhub.ts) → called by API route (electron/api/routes/skills.ts) → called by zustand store (src/stores/skills.ts)
+- **Pre-existing CI failures**: 11 test files fail due to missing `@testing-library/dom` peer dep — not our issue
+- **Lesson**: Bot reviews can have actionable points (timeout missing) — worth reading even if they're bots
