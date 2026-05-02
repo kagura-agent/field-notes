@@ -1315,3 +1315,13 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **Test**: `pytest tests/agent/test_usage_pricing.py` (12 tests), full suite 18719 pass
 - **Key file**: `agent/usage_pricing.py` — contains all pricing logic (PricingEntry dict, billing route resolution, cost estimation)
 - **Pattern**: Manual fix was more efficient than acpx for this surgical 2-file change (<20 lines)
+
+### PR #18695 — fix(tui): drop corrupted SGR mouse fragments (2026-05-02)
+
+- **Issue**: #18658 — SGR mouse escape sequences leaking into composer under heavy render in tmux
+- **Status**: PENDING review (CI: e2e ✅, nix ✅, test pending/queued)
+- **Fix**: Added `CORRUPTED_SGR_FRAGMENT_RE` + early-exit in `parseTextWithSgrMouseFragments()` — if text is entirely `[0-9;Mm]` chars with event-boundary pattern `\d[Mm]\d`, silently drop as corrupted mouse fragments
+- **Key insight**: Existing fix (71b685aee, ded011c5a) only caught fragments with explicit `[<`/`<` prefix or multi-fragment bursts. Single corrupted/concatenated fragments leaked through.
+- **Test runner**: `cd ui-tui && npx vitest run packages/hermes-ink/src/ink/parse-keypress.test.ts` (NOT jest — uses vitest workspace)
+- **Pattern**: Claude Code + manual verification was efficient. The fix is 5 lines + 18 lines of tests. Small, surgical.
+- **Risk**: Regex false positive is mitigated by requiring BOTH all-SGR-chars AND boundary signature. The `(?!.*\d{4})` lookahead prevents matching strings with 4+ digit runs that can't be mouse coords (0-255).
