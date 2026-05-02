@@ -52,6 +52,7 @@
 | PR | Issue | 状态 | 备注 |
 |---|---|---|---|
 | #14723 | #14721 | PENDING | fix audio/mp4 ftyp detection at byte offset 4 |
+| #14928 | #14925 | PENDING | fix @ai-sdk/mcp resource_link content type |
 
 ## 踩坑补充 (2026-04-23)
 
@@ -71,3 +72,10 @@
 - Tests cover both direct model ID and cross-region prefixed variants
 - Changeset added per CONTRIBUTING.md requirements
 - CI: Vercel deploy needs maintainer auth (expected for external PRs), Socket + Agent Review pass
+
+### PR #14928 (2026-05-02) — PENDING
+- Fix: add `resource_link` content type to `CallToolResultSchema` and `PromptMessageSchema`
+- Issue #14925: MCP spec defines `resource_link` variant, missing from zod union → hard reject with zod ≥4.4.x
+- Clean additive fix: new schema + union additions, no test changes needed
+- Changeset added, Socket Security passed, Vercel deploy awaiting maintainer auth
+- Pattern: MCP spec compliance fixes are good targets — clear spec reference, mechanical fix, high value
