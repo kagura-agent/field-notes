@@ -35,4 +35,28 @@ The `_keyinfo` preventive injection is the most novel element — injecting cons
 
 Our [[flowforge]] workflow node descriptions serve a similar pre-briefing function, but without an independent monitor verifying execution. Our nudge system operates post-hoc. If subagent quality becomes a recurring issue, a lightweight supervisor mode could be valuable.
 
-See [[genericagent]], [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]]
+---
+
+## Update: Dirac Subagent Verifier (2026-05-02)
+
+[[dirac]] (v0.3.14+) adds a narrow but significant variant: **completion verification subagent**.
+
+Unlike GenericAgent's always-on supervisor, Dirac spawns a verifier *only at completion time*:
+- Fresh `SubagentRunner` with role "verifier", no shared conversation history
+- Has full tool access (can run `execute_command` to test)
+- Returns binary verdict: "VERIFICATION: SUCCESS" or "VERIFICATION: FAILED" + details
+- Falls back to inline self-check if disabled
+
+**Key difference from GenericAgent**: not continuous monitoring, but **single-point verification at the claim boundary**. Much cheaper (one extra agent call vs continuous polling), targets the highest-risk moment (premature completion is the most common agent failure mode).
+
+**Tradeoff**: catches false completion but can't prevent mid-task drift. Complementary to GenericAgent's in-flight monitoring, not a replacement.
+
+**Positioning in the landscape:**
+
+| Approach | Timing | Cost | Catches |
+|----------|--------|------|--------|
+| Supervisor (GenericAgent) | Continuous | High | Drift, skips, mistakes |
+| Verifier (Dirac) | Completion only | Low | Premature completion |
+| Nudge (OpenClaw) | Post-session | Minimal | Session-level patterns |
+
+See [[genericagent]], [[dirac]], [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]]
