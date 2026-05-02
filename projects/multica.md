@@ -243,3 +243,14 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Pattern**: When adding cases to `handleServerRequest`, match the response schema from Codex's expected types — `decision` for approval requests, `action/content/_meta` for elicitation. Default should always be a proper JSON-RPC error, not empty object.
 - **Note**: Issue also mentions Phase 2 (config.toml inheritance sanitization) — left as separate work.
 - **Go module**: `server/` subdirectory, run `go` commands from there not repo root.
+
+## 2026-05-02 PR #1995: fix CLI login --token flag
+- **Issue**: #1994 — `multica login --token "mul_xxx"` ignores the token value and prompts anyway
+- **PR**: #1995 — fix(cli): accept token value directly in `login --token <value>`
+- **Status**: PENDING (CI ✅ backend + frontend pass)
+- **Root cause**: `--token` was defined as `Bool` flag in cobra. Users pass `--token mul_xxx` expecting it to be a String, but cobra treats it as a boolean switch → value silently discarded.
+- **Fix**: Change to `String` flag + `NoOptDefVal = "__prompt__"`. Three modes: value provided → use directly; no value → prompt; flag absent → browser OAuth.
+- **Testing**: Added `TestLoginTokenFlag` with 3 subtests. `go build` clean.
+- **Pattern**: Cobra's `NoOptDefVal` is the right way to make "optional value" flags (like `--verbose` vs `--verbose=debug`). Combined with `cmd.Flags().Changed()` for detecting flag presence vs absence.
+- **Speed**: Very fast loop — simple surgical fix, manual edit, no need for coding agent. ~15 min from study to PR.
+- **Note**: This is PR #5 for multica — hit the limit now. Wait for merges before picking new issues.
