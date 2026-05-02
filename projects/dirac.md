@@ -218,3 +218,66 @@ After: `Branch 5 out of range (1-2). Valid branches:\n  1. success → done\n  2
 All 74 FlowForge tests pass. Pattern is simple (5-line change per error site) but eliminates a common retry loop where the agent/user guesses the right input.
 
 This validates Dirac's approach: **corrective examples > constraint-only errors** for LLM-facing tool interfaces.
+
+---
+
+## Followup: Subagent Verification Pattern (2026-05-02)
+
+**Stars:** 1,055 (was 1,004 on 04-30, +5% in 2 days)
+**Versions:** 0.3.12→0.3.16 in 48h — rapid iteration phase
+
+### Key Change: Completion Verification via Subagent
+
+The biggest architectural change: `AttemptCompletionHandler` (+300/-135 lines) now uses a **separate subagent** to verify task completion instead of self-verification.
+
+**Before (v0.3.13 and earlier):**
+- Agent calls `attempt_completion`
+- If `doubleCheckCompletion` enabled, it returns a verification checklist prompt to the *same* agent
+- Agent re-verifies itself and calls `attempt_completion` again
+- Problem: **self-verification bias** — the same model that wrote the code evaluates it
+
+**After (v0.3.14+):**
+- Agent calls `attempt_completion`
+- If `subagentsEnabled`, spawns a fresh `SubagentRunner` with role "verifier"
+- Verifier gets: original task, completion result, 6-point checklist
+- Verifier has full tool access (can run tests via `execute_command`)
+- Returns "VERIFICATION: SUCCESS" or "VERIFICATION: FAILED" + details
+- On success → proceed; on failure → feed report back to main agent
+
+**Architectural insight:**
+```typescript
+const runner = new SubagentRunner(config, "verifier")
+const subagentPrompt = `You are the verifier of a given solution...
+<initial_task>${taskPreview}</initial_task>
+<completion_result>${result}</completion_result>
+<verification_checklist>...</verification_checklist>
+If passes → "VERIFICATION: SUCCESS"
+Else → "VERIFICATION: FAILED" + details`
+
+const runResult = await runner.run(subagentPrompt, callback, 300, undefined, false)
+```
+
+**Why this matters:**
+1. **Addresses self-evaluation bias** — fresh context evaluates without sunk cost of having written the solution
+2. **Independent tool access** — verifier can actually *run tests*, not just read code
+3. **Cost tradeoff** — doubles API calls for completion but catches premature completion early (far more expensive in user time)
+4. **Graceful degradation** — falls back to inline checklist if `subagentsEnabled=false`
+
+**Relevance to OpenClaw:**
+- Our coding-agent skill delegates to Claude Code which has its own completion detection. But for FlowForge workflows or multi-step tasks, a similar "verify before declare done" pattern could reduce false completions.
+- The `SubagentRunner` interface (`run(prompt, callback, timeout, maxTurns, includeHistory)`) is clean and reusable — minimal API surface for spawning verification agents.
+
+### Other Changes (0.3.12→0.3.16)
+
+- **OpenAI Search API support** (0.3.13)
+- **Strict parameter validation** (0.3.14) — no longer skips for 0-length params
+- **Anthropic API updates** (0.3.16)
+- **Improved tool logging** — differentiate tool errors from verification messages
+
+### Assessment
+
+Moving from "efficiency optimization" into "reliability/trust" phase. Subagent verification is the signal: solved "do it cheaper", now solving "do it right." Still single maintainer, shipping fast.
+
+Next check: 05-07.
+
+See [[conciseness-accuracy-paradox]], [[model-native-vs-model-agnostic]], [[agent-brain-portability]]

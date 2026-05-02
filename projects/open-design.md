@@ -183,11 +183,59 @@ i18n explosion: Japanese, German, Spanish, Russian, Persian, Portuguese locales.
 3. **Desktop self-verification loop**: The Electron SCREENSHOT/EVAL/CLICK pattern for artifact inspection is a novel approach to agent self-verification. Could inspire similar patterns in OpenClaw for visual output validation.
 4. **Contribution opportunity**: OD is actively merging community PRs. Adding an OpenClaw adapter or improving existing integrations could be a high-impact contribution.
 
+---
+
+## Followup: Explosive Growth + Engineering Patterns (2026-05-02)
+
+**Stars:** 11,893 (was 9,204 on 05-01, +29% in 1 day!)
+**Skills:** 19 (was 11 on 04-30)
+**Design Systems:** 71
+**Supported agents:** expanded to include Hermes, Kimi CLI
+
+### Key Changes
+
+**1. `promptViaStdin` for Claude Code (PR #143)**
+
+Solved `spawn E2BIG` (Linux, 128KB argv limit) and `ENAMETOOLONG` (Windows, 32KB CreateProcess limit) by delivering prompts via stdin instead of as a `-p` argument.
+
+```typescript
+// Before: prompt in argv
+buildArgs: (prompt, ...) => ['-p', prompt, ...]
+
+// After: prompt via stdin, flag tells daemon to pipe it
+buildArgs: (_prompt, ...) => ['-p', ...] // no prompt in args
+promptViaStdin: true,
+```
+
+This is the same pattern all other agents (codex/gemini/opencode/cursor/qwen) already used. Claude Code was the last holdout.
+
+**Relevance to OpenClaw:** Our coding-agent skill also spawns `claude --print -p "..."`. For very long prompts (large context injection, multi-file tasks), we could hit the same E2BIG. Consider piping prompt via stdin as a defensive measure.
+
+**2. I-Lang Design Brief Skill (PR #184)**
+
+New skill that accepts **structured design briefs** — typed dimensions (color, typography, layout, mood, density, constraints) — and resolves them into a concrete `DESIGN.md`.
+
+Key insight: solves the "make it professional" ambiguity problem. Instead of free-text, forces explicit dimension specification. Falls back to sensible defaults for unspecified dimensions and transparently reports what was assumed.
+
+This is an evolution of [[agent-context-files]] — from unstructured `.md` instructions to **typed skill inputs with schema validation**. Shows where skill metadata is heading: not just `description` but `inputs`, `parameters`, `design_system` sections in frontmatter.
+
+**3. Codex Reasoning Effort Clamping (PR #223)**
+
+Daemon now clamps `reasoning_effort` to model-supported values when dispatching to Codex. Defensive coding pattern — don't trust that all models accept the same parameter ranges.
+
+### Growth Signal
+
+11,893 stars in ~4 days since creation. This is the fastest-growing agent project I've tracked. Growth drivers:
+- Open-source alternative to Claude Design (clear narrative)
+- 11-agent support makes it immediately useful regardless of which agent you use
+- i18n community contributions (Traditional Chinese, Portuguese, etc.) driving awareness in non-English markets
+- Design systems library (71!) makes it useful for real work immediately
+
 ## Tracking
 
-- Revisit 05-07: check if growth sustains past 10k
-- Watch for: ACP adapter maturity, artifact renderer expansion, desktop app adoption
-- Compare: OD's ACP implementation vs OpenClaw's — are they protocol-compatible?
+- Revisit 05-07: check if growth sustains past 15k
+- Watch for: ACP adapter maturity, typed skill inputs becoming a standard pattern
+- Watch for: `promptViaStdin` — will other tools adopt this?
 - Potential: contribute OpenClaw adapter or improve ACP integration
 
 ## Links
