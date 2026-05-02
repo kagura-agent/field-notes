@@ -231,8 +231,14 @@ A **5th layer** is crystallizing: [[worktree-convergence-2026-05]]
 - This complements ClawHub (agent-capability skills) with library-teaching skills
 - [[agentskills-io-standard]] becoming de facto standard for format
 
-### 总体判断
+### Workflow 层更新 (2026-05-02)
+- [[thoth]] (39⭐, SeeleAI) — "dashboard-first orchestration runtime for autoresearch." Novel planning-execution separation: `discuss` (no-code planning) → work items → `run`/`loop` (durable execution with plateau detection). Claude Code/Codex plugin.
+- Key innovation: **work-id binding** prevents scope creep (agent can't invent tasks), **plateau detection** stops loops that aren't improving, **git-as-memory** checks recent reverts before proposing changes.
+- Positioned between FlowForge (workflow) and [[cadis]] (runtime with HUD). Firmly on the [[mechanism-vs-evolution]] "mechanism" side.
+
+### 总体判断 (updated 2026-05-02)
 - **No disruption, only refinement** — the 4-layer model from March still holds
 - Innovation moved from "what patterns exist" to "how to make them reliable/scalable"
+- Workflow layer getting more structured: Thoth brings project-management rigor (work items, reviews, dashboards) to agent loops
 - The eval/testing/reliability space remains surprisingly **underdeveloped** (mostly <10⭐ projects)
 - This gap is an opportunity — whoever builds good agent eval tooling will fill a real need
