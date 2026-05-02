@@ -210,3 +210,29 @@ Related orphan concepts:
 - [[decentralized-evolution-validation]] — who validates that evolution is good?
 - [[genericagent]] — GenericAgent deep read
 - [[supervisor-pattern]] — real-time agent quality control
+
+## Update 2026-05-02: Consolidation Phase
+
+The landscape has entered a **consolidation/maturation phase**:
+
+### Memory 层更新
+- [[stash]] (619⭐) is now the clear leader in "memory as MCP" — 9-stage consolidation, confidence decay, single Go binary
+- [[mneo]] (1⭐) represents the minimalist pole: git refs as memory scopes, zero infrastructure
+- The proliferation continues (20+ memory projects in April) but **no new paradigms** — everyone is iterating on the same themes (consolidation, decay, semantic search)
+
+### 新层：Execution Isolation
+A **5th layer** is crystallizing: [[worktree-convergence-2026-05]]
+- 5+ independent projects converged on git worktrees as the isolation primitive for parallel coding agents
+- This isn't evolution — it's infrastructure for *scaling* agent execution
+- Key differentiator between projects: scheduling (DAG vs round-robin) and conflict detection (preflight checks vs post-hoc merge)
+
+### Skill 层更新
+- [[library-skills]] (tiangolo, 252⭐) standardizing "skills ship with the library package" model
+- This complements ClawHub (agent-capability skills) with library-teaching skills
+- [[agentskills-io-standard]] becoming de facto standard for format
+
+### 总体判断
+- **No disruption, only refinement** — the 4-layer model from March still holds
+- Innovation moved from "what patterns exist" to "how to make them reliable/scalable"
+- The eval/testing/reliability space remains surprisingly **underdeveloped** (mostly <10⭐ projects)
+- This gap is an opportunity — whoever builds good agent eval tooling will fill a real need
