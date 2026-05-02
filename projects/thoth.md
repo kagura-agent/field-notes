@@ -69,7 +69,7 @@ Structured first-principles review: role identification → axiom decomposition 
 
 1. **Planning-Execution Separation**: `discuss` being explicitly no-code is clever. We could add a "plan" node type in FlowForge that prevents the agent from jumping to implementation.
 
-2. **Plateau Detection**: For workloops that optimize something (contribution quality, wiki health metrics), detecting stalls and asking for strategy changes instead of blindly continuing. Currently FlowForge just runs until done.
+2. **Plateau Detection**: For workloops that optimize something (contribution quality, wiki health metrics), detecting stalls and asking for strategy changes instead of blindly continuing. ~~Currently FlowForge just runs until done.~~ **Applied (2026-05-02)**: FlowForge v1.1.2+ now tracks node visit counts per instance and warns when a node is revisited ≥ max_visits (default: 5). Nodes can set custom `max_visits` in YAML. Warning is surfaced in CLI output.
 
 3. **Work-ID Binding**: Strict task binding prevents scope creep. Our `flowforge start` with YAML-defined nodes is less strict — the agent interprets tasks flexibly, which can drift.
 
