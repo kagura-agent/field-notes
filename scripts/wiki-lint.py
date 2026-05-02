@@ -12,6 +12,7 @@ Checks:
   8. Link density stats
   9. Secret scanning
   10. Staleness / confidence decay (last_verified)
+  11. Unicode injection detection (hidden chars, bidi overrides)
 
 Usage: python3 scripts/wiki-lint.py [wiki_dir]
 """
@@ -461,6 +462,108 @@ else:
     if len(stale_files) > 30:
         info(f"  ... and {len(stale_files) - 30} more")
     info("Update content + set 'last_verified: YYYY-MM-DD' in frontmatter to clear")
+
+# ── 11. Unicode Injection Detection ──
+# Inspired by microsoft/apm's content security scanner (CVE-2026-28353).
+# Detects hidden Unicode that could be used for prompt/supply-chain injection:
+#   - Tag characters (U+E0001-E007F): invisible ASCII encoding
+#   - Bidi overrides (U+202A-202E, U+2066-2069): text direction manipulation
+#   - Zero-width chars (U+200B-200F, U+2060, U+FEFF): invisible content
+#   - Variation selectors (U+FE00-FE0F, U+E0100-E01EF): glyph manipulation
+#   - Confusable homoglyphs in code contexts (future extension)
+print("\n═══════════════════════════════════════════════════════")
+print(" 11. UNICODE INJECTION DETECTION")
+print("═══════════════════════════════════════════════════════")
+
+# Ranges of suspicious Unicode characters
+UNICODE_SUSPICIOUS = [
+    # Tag characters — invisible ASCII encoding (Glassworm attack vector)
+    (0xE0001, 0xE007F, 'Tag character'),
+    # Bidi overrides — text direction manipulation
+    (0x202A, 0x202E, 'Bidi override'),
+    (0x2066, 0x2069, 'Bidi isolate'),
+    # Zero-width characters — invisible content
+    (0x200B, 0x200B, 'Zero-width space'),
+    (0x200C, 0x200C, 'Zero-width non-joiner'),
+    (0x200D, 0x200D, 'Zero-width joiner'),
+    (0x200E, 0x200F, 'LTR/RTL mark'),
+    (0x2060, 0x2060, 'Word joiner'),
+    (0xFEFF, 0xFEFF, 'Zero-width no-break space / BOM'),
+    # Variation selectors — glyph manipulation
+    (0xFE00, 0xFE0F, 'Variation selector'),
+    (0xE0100, 0xE01EF, 'Variation selector supplement'),
+    # Interlinear annotation — invisible wrapping
+    (0xFFF9, 0xFFFB, 'Interlinear annotation'),
+    # Object replacement / replacement char used to hide content
+    (0xFFFC, 0xFFFC, 'Object replacement character'),
+]
+
+def classify_unicode_char(cp):
+    """Return category name if codepoint is suspicious, else None."""
+    for start, end, name in UNICODE_SUSPICIOUS:
+        if start <= cp <= end:
+            return name
+    return None
+
+unicode_findings = []
+
+for fpath in all_files:
+    try:
+        content = open(fpath, 'r', errors='replace').read()
+    except Exception:
+        continue
+    for line_no, line in enumerate(content.splitlines(), 1):
+        for i, ch in enumerate(line):
+            cp = ord(ch)
+            category = classify_unicode_char(cp)
+            if category:
+                # BOM at start of file is normal, skip
+                if cp == 0xFEFF and line_no == 1 and i == 0:
+                    continue
+                # Zero-width joiner in emoji sequences is normal
+                if cp == 0x200D:
+                    # Check if surrounded by emoji (simple heuristic)
+                    if i > 0 and ord(line[i-1]) > 0x1F000:
+                        continue
+                # Variation selectors after emoji are normal (emoji presentation)
+                if 0xFE00 <= cp <= 0xFE0F:
+                    if i > 0:
+                        prev_cp = ord(line[i-1])
+                        # Common emoji ranges: Miscellaneous Symbols, Dingbats,
+                        # Emoticons, Transport, Supplemental, etc.
+                        if (prev_cp > 0x1F000 or
+                            0x2600 <= prev_cp <= 0x27BF or  # Misc symbols + Dingbats
+                            0x2300 <= prev_cp <= 0x23FF or  # Misc Technical
+                            0x2190 <= prev_cp <= 0x21FF or  # Arrows
+                            0x25A0 <= prev_cp <= 0x25FF or  # Geometric shapes
+                            0x2702 <= prev_cp <= 0x27B0 or  # Dingbats
+                            0x2000 <= prev_cp <= 0x206F or  # General punctuation
+                            0x20D0 <= prev_cp <= 0x20FF or  # Combining marks
+                            0x2100 <= prev_cp <= 0x214F or  # Letterlike symbols
+                            0xFE00 <= prev_cp <= 0xFE0F or  # Chained variation selectors
+                            prev_cp == 0x200D):              # After ZWJ
+                            continue
+                context = line[max(0,i-15):i+16].strip()
+                unicode_findings.append((fpath, line_no, i+1, category, f'U+{cp:04X}', context))
+
+if not unicode_findings:
+    ok("No suspicious Unicode characters detected")
+else:
+    # Deduplicate: count per file + category
+    from collections import Counter
+    by_file_cat = Counter((f, cat) for f, _, _, cat, _, _ in unicode_findings)
+    total = len(unicode_findings)
+
+    # Show as warnings (not errors) since some may be intentional
+    warn(f"{total} suspicious Unicode character(s) in {len(by_file_cat)} file/category groups:")
+    warnings -= 1  # counted once above
+    shown = 0
+    for (fpath, line_no, col, category, codepoint, context) in unicode_findings[:20]:
+        warn(f"  {fpath}:{line_no}:{col} [{category}] {codepoint} near: {context[:50]}")
+        shown += 1
+    if total > 20:
+        info(f"  ... and {total - 20} more")
+    info("Review these — some may be intentional (emoji, RTL text). Tag characters are almost always suspicious.")
 
 # ── Summary ──
 print("\n═══════════════════════════════════════════════════════")
