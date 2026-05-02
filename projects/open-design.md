@@ -249,7 +249,48 @@ Growth drivers:
 - Watch for: ACP adapter maturity, typed skill inputs becoming a standard pattern
 - Watch for: `promptViaStdin` — will other tools adopt this?
 - Watch for: headless multi-user patterns emerging
+- Watch for: multi-user auth/session isolation on headless deployment
 - Potential: contribute OpenClaw adapter or improve ACP integration
+
+## Update 2026-05-02: v0.1.0 GA + Headless Architecture
+
+**Stars:** 12,042 (was 11,944 yesterday). Growth stabilizing ~50-100/day after viral peak.
+
+### v0.1.0 GA Release (May 1)
+
+First stable release. Came with beta.6 the same day. Rapid stabilization cycle.
+
+### Headless Server Deployment (PR #222, merged May 2)
+
+The most architecturally interesting change this cycle. Four small changes that enable deploying OD on a headless server:
+
+1. **Lazy-load `electronBinaryPath`**: Changed from eager `resolveElectronBinaryPath()` call to a cached getter. Without this, `tools-dev` crashes on any headless server where Electron isn't installed — even if you only want daemon+web. Classic "pay for what you use" fix.
+
+2. **`--prod` flag**: `tools-dev run --prod` sets `NODE_ENV=production`, `OD_WEB_PROD=1`, `OD_WEB_OUTPUT_MODE=server`. UX win — users don't need to discover 3 env vars.
+
+3. **`OD_HOST` env var**: Both daemon and web server hardcoded `127.0.0.1`. Now configurable via `OD_HOST=0.0.0.0`.
+
+4. **Skip `distDir` override in production**: Production server uses `.next` instead of temp dev directory.
+
+**Security pattern worth noting**: Web server binds to `OD_HOST` (configurable, e.g. `0.0.0.0`), but **web-to-daemon proxy always uses `127.0.0.1`** (`DAEMON_HOST` constant). This means the daemon is never directly exposed to the network — all external access goes through the web server's proxy layer. Clean separation of external-facing vs internal-only services.
+
+**Input validation**: `OD_HOST` is validated against `/^[a-zA-Z0-9._\-:[\]@]+$/` to prevent injection. Simple but effective.
+
+**Signal**: This transitions OD from "local dev tool" toward "team infrastructure." Headless deployment + remote access = shared design daemon for teams. Watch for multi-user session isolation and auth to follow.
+
+### Other changes (batch)
+
+- **Port 0 fix** (#240): Daemon URL was using port 0 instead of the actual allocated port. Quick bugfix.
+- **Windows path fixes** (#231, #232): Junction links instead of dir symlinks, quoted agent bin paths. Windows support maturing.
+- **Turkish locale** (#233): i18n contributions continue.
+
+### Tracking item batch update (2026-05-02)
+
+Checked all overdue tracking items alongside this follow-up:
+- obscura: 9,312⭐ (+2,112 from 04-28) but no push since 04-27 — star growth without dev activity is suspicious
+- garden-skills: 2,028⭐ (+316 from 04-29) — significant growth for a skill collection
+- CubeSandbox: 4,877⭐ (+477) — active, Tencent-backed
+- OpenChronicle: 1,986⭐ (+328) — growing but no push since 04-26
 
 ## Links
 
