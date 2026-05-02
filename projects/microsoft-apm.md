@@ -88,7 +88,7 @@ Treats prompt text as executable (because it is). The content scanner blocks Uni
 ## What we could adopt
 
 - [ ] File-level scoping for skill activation (like `applyTo` globs)
-- [ ] Content security scanning on `clawhub install` (Unicode injection detection)
+- [x] Content security scanning — Unicode injection detection added to wiki-lint.py section 11 (2026-05-02). Covers tag chars, bidi overrides, zero-width, variation selectors. ClawHub-level scanning deferred until marketplace grows.
 - [ ] Compilation step that renders skills differently per target agent
 - [ ] Policy file concept for org-level governance of allowed skills
 
