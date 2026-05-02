@@ -25,9 +25,23 @@ source: GitHub jarrodwatts/claude-hud
   - 加了测试，267 全过
   - 状态：pending
 
+## 我的 PR（续）
+- **#520** (2026-05-02): feat: migrate data directory to $CLAUDE_PLUGIN_DATA (fixes #519)
+  - 用 `$CLAUDE_PLUGIN_DATA` 作为首选数据目录，fallback 到旧路径
+  - 加了 `getLegacyHudPluginDir()` + `migrateDataDirIfNeeded()` 一次性迁移
+  - 8 个新测试覆盖：env 优先级、空值处理、tilde 展开、迁移各场景
+  - CI 通过（Node 18.x + 20.x），状态：pending
+
 ## 踩的坑
 - claude-hud #313（空 lock 文件 bug）在 #288 中被整体移除了（usage-api.ts 删了）
   - 教训：报 bug 的版本可能已被新版本解决，先检查代码是否还存在
+
+## 架构笔记
+- `getHudPluginDir()` in `src/claude-config-dir.ts` 是所有数据路径的 single source of truth
+- 所有模块（config, transcript, speed-tracker, context-cache, version）都通过这个函数获取路径
+- 改这一个函数就能影响全部数据路径——很干净的架构
+- `dist/` 被 git track 但 PR 不应修改它（CI 自动构建后 commit）
+- 测试用 `node:test` + `node:assert/strict`，从 `dist/` import
 - npm ci 必须先跑，否则 tsc 找不到 @types/node
 
 ## 下次注意
