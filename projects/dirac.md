@@ -274,9 +274,23 @@ const runResult = await runner.run(subagentPrompt, callback, 300, undefined, fal
 - **Anthropic API updates** (0.3.16)
 - **Improved tool logging** — differentiate tool errors from verification messages
 
-### Assessment
+### CLI Pipe Mode: Subagent Message Routing (0.3.14+)
 
-Moving from "efficiency optimization" into "reliability/trust" phase. Subagent verification is the signal: solved "do it cheaper", now solving "do it right." Still single maintainer, shipping fast.
+The `plain-text-task.ts` module (+116 lines) reveals how Dirac handles subagent messages in headless/pipe mode:
+
+1. **Message classification**: Two categories — tool messages (get `Tool Call: <type>: <text>`) and non-tool messages (get `<Label>: <text>`). Subagent-related types: `use_subagents`, `subagent`, `subagent_usage`, `checkpoint_created`
+2. **Auto-approve in pipe mode**: All subagent asks (`use_subagents`, `completion_result`, `new_task`, `condense`, `summarize_task`) get `yesButtonClicked` — no human gate in headless
+3. **Structured stderr logging**: Different message types get labeled prefixes (Task, Assistant, Reasoning, Subagent, Checkpoint, Question, Plan, Act, Completion) for downstream parsers
+4. **Tool JSON parsing**: For `say: "tool"` messages, attempts to extract `parsed.tool` name from JSON body for richer labels
+
+**Relevance to OpenClaw ACP:**
+- When piping coding agent output (Claude Code, Codex), message classification matters for [[mid-run-steering]] and observability
+- The auto-approve pattern for subagents in headless mode mirrors our `bypassPermissions` approach — trust delegation within a controlled pipeline
+- Stderr-structured logging enables clean separation of human-facing output vs. machine-parseable events
+
+### Assessment (2026-05-02)
+
+⭐ 1,056 (was 665 on 04-28, +59% in 4 days). Moving from "efficiency optimization" into "reliability/trust" phase. Subagent verification + pipe-mode routing are the signals: solved "do it cheaper", now solving "do it right in automation." Still single maintainer, shipping fast.
 
 Next check: 05-07.
 

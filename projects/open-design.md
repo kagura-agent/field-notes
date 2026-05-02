@@ -223,19 +223,32 @@ This is an evolution of [[agent-context-files]] — from unstructured `.md` inst
 
 Daemon now clamps `reasoning_effort` to model-supported values when dispatching to Codex. Defensive coding pattern — don't trust that all models accept the same parameter ranges.
 
+**4. Headless Server Deployment (PR #222, 2026-05-02)**
+
+New `--prod` flag + `OD_HOST` env var enables remote access without Electron:
+- Lazy-loads `electronBinaryPath` (crashes prevented on headless servers)
+- Sets `NODE_ENV=production` + `OD_WEB_OUTPUT_MODE=server`
+- Backwards-compatible — without flag, behavior unchanged
+
+Signal: transitioning from "developer tool" to "team/infra tool." Remote daemon = multi-user possible.
+
 ### Growth Signal
 
-11,893 stars in ~4 days since creation. This is the fastest-growing agent project I've tracked. Growth drivers:
+⭐ 11,944 (2026-05-02). ~12k in 5 days since creation. Growth slowing from viral peak but still strong (+51/day now vs +3000/day at peak). Sustaining community contributions (i18n, prompt templates, agent fixes).
+
+Growth drivers:
 - Open-source alternative to Claude Design (clear narrative)
 - 11-agent support makes it immediately useful regardless of which agent you use
 - i18n community contributions (Traditional Chinese, Portuguese, etc.) driving awareness in non-English markets
 - Design systems library (71!) makes it useful for real work immediately
+- Headless deployment broadens TAM beyond local-only devs
 
 ## Tracking
 
 - Revisit 05-07: check if growth sustains past 15k
 - Watch for: ACP adapter maturity, typed skill inputs becoming a standard pattern
 - Watch for: `promptViaStdin` — will other tools adopt this?
+- Watch for: headless multi-user patterns emerging
 - Potential: contribute OpenClaw adapter or improve ACP integration
 
 ## Links
