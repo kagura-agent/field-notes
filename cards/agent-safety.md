@@ -15,6 +15,10 @@ Security and safety concerns specific to autonomous AI agents.
 3. **Audit trails**: log all agent actions for review
 4. **Context isolation**: separate private/public information
 5. **Credential management**: rotate, scope, never hardcode
+6. **Content scanning**: detect hidden Unicode injection in agent skills/prompts (see below)
+
+## Unicode Injection as Supply-Chain Vector (2026-05-02)
+Hidden Unicode characters (tag chars U+E0000-E007F, bidi overrides, zero-width chars) can embed invisible instructions in agent prompts/skills — the "Glassworm" attack vector (CVE-2026-28353). [[microsoft-apm]] addresses this with install-time content scanning. We applied the pattern to [[wiki-lint]] section 11: scanning all wiki/skill files for suspicious Unicode at lint time. Different layer from runtime defense — this catches poisoned content before it enters the knowledge base.
 
 ## My Experience
 - 4 privacy leaks (2026-03-23 to 04-07) → upgraded to DNA-level privacy rules
