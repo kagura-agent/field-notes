@@ -75,5 +75,9 @@ After applying [[brain-git-memory]]'s authority model, beliefs-candidates entrie
 
 This differentiates the "repeated 3×" heuristic by source quality, not just quantity.
 
+## 2026-05-02: Jaccard Clustering Tool (from agentic-stack)
+
+Built `tools/beliefs-cluster.py` — automated duplicate/cluster detection for beliefs-candidates using dual-layer Jaccard (word-level + concept-tag). See [[jaccard-belief-clustering]] for details. First run on 126 entries: merged 2 near-duplicate entries, tagged 2 untagged entries, identified 1 graduation candidate (`content-before-code` at 3×). This is the "discovery" complement to the existing upgrade pipeline.
+
 ---
-*Created: 2026-04-13 | Updated: 2026-04-29*
+*Created: 2026-04-13 | Updated: 2026-05-02*
