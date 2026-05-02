@@ -183,7 +183,7 @@ See [[wanman-skill-evolution]] for deep read.
 
 ### 生态信号
 - GenericAgent: 8,231⭐ (+605/3d)，supervisor pattern 是其对 multi-agent 方向的回答
-- Dirac: 1,001⭐ (crossed 1k)，但仍是 reliability iteration，无新架构
+- Dirac: 1,056⭐, subagent verification + pipe-mode routing = reliability phase deepening
 - **收敛方向**：runtime 层在碎片化，但 quality/oversight 需求在聚集
 
 ## 2026-05-01 更新：Memory Layer — Event-Sourced Git Memory
