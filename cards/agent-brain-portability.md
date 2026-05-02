@@ -43,3 +43,23 @@ Expands the portability spectrum:
 | Cross-harness, structured storage | gbrain/reflexio | High (service layer) |
 
 The Dirac case validates that even intra-tool portability is non-trivial enough to need a migration system (versioned, folder-by-folder copy).
+
+## Update: agentic-stack Transfer Wizard (2026-05-02)
+
+First real **brain migration tool** shipped. `agentic-stack transfer` exports/imports portable `.agent` bundles:
+
+- **Security-first**: secret scanning blocks exports with private keys/API tokens
+- **Merge semantics**: preferences appended (not overwritten), lessons deduplicated by ID
+- **Scope control**: core (preferences, lessons, skills) vs sensitive (episodic, candidates, data_layer) with explicit confirmation
+- **Immutable boundaries**: permissions.md never transferred — security boundary stays local
+- **Audit trail**: per-import JSON records
+
+This is the **first implementation** validating the cross-harness brain portability thesis. See [[agentic-stack]] for full deep-read.
+
+Updated spectrum:
+
+| Level | Example | Implementation | Status |
+|-------|---------|----------------|--------|
+| Same tool, different surfaces | Dirac VSCode↔CLI | File migration | Shipped |
+| Cross-harness, file bundles | agentic-stack transfer | Export/import with merge | **Shipped (05-02)** |
+| Cross-harness, structured storage | gbrain/reflexio | Service layer | Concept only |

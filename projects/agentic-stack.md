@@ -358,3 +358,68 @@ Feature flag gated opt-in tldraw skill with local snapshot store. Already noted 
 Slow but steady iteration. CJK fix shows the codebase is being used by non-English speakers. Growth has stabilized around +30-40/day — healthy plateau for a tool project. No architectural surprises.
 
 See [[agentic-stack]], [[memex]]
+
+## v0.13+ Transfer TUI Wizard (2026-05-02)
+
+> Stars: 1801★ (05-02) | Commits: 05-02 `feat: add transfer tui wizard` + `fix: include full memory in transfer intent`
+
+### What It Does
+
+`agentic-stack transfer` — onboarding-style TUI wizard that **exports/imports portable `.agent` memory bundles** across harnesses (Codex, Cursor, Windsurf, terminal).
+
+### Architecture
+
+Three modules, cleanly separated:
+
+**1. transfer_plan.py** — Intent parsing + adapter preview
+- NLP-free keyword parsing: tokenize intent text, match against alias dicts
+- `TransferPlan` dataclass: targets, operation (generate-curl / apply-here / both), scopes, adapter actions
+- Target aliases handle natural language: "openai" → codex, "cascade" → windsurf, "shell" → terminal
+- Scope system: core (preferences, accepted_lessons, skills) + sensitive (working, episodic, candidates, data_layer, flywheel)
+- Sensitive scopes require wizard confirmation before export
+
+**2. transfer_bundle.py** — Bundle export/import with security
+- Exports: canonical JSON, files as gzip/base64, SHA-256 digest
+- Secret scanning: 3 regex patterns (private keys, API key formats, env var assignments) — blocks export if detected
+- Runtime filtering: skips `.pyc`, `.db`, `.sqlite`, `__pycache__`, `.index`, `snapshots`
+- Import: preferences get merged (appended under `## Imported Preferences`), lessons are idempotent by ID, permissions.md is never overwritten
+- Audit trail: `imports/{timestamp}.json` records what was imported when
+
+**3. transfer_tui.py** — Interactive wizard (306 LOC)
+- Reuses existing onboard_ui.py + onboard_widgets.py primitives
+- Non-TTY detection: refuses interactive mode, falls back to non-interactive CLI
+
+### Key Design Decisions
+
+1. **Secret scanning at export, not import** — catch before it leaves, not after it arrives
+2. **Lesson idempotency by ID** — import the same bundle twice, no duplicates
+3. **Preferences merge, not overwrite** — existing prefs preserved, imported appended under heading
+4. **permissions.md immutable** — security boundary never transferable
+5. **Sensitive scope opt-in** — episodic/candidates/data_layer require explicit confirmation
+
+### Comparison to Brain Portability Landscape
+
+| Feature | agentic-stack transfer | OpenClaw | Orb |
+|---|---|---|---|
+| Memory export | ✅ Portable `.agent` bundle | ❌ No export | ❌ Per-profile only |
+| Secret scanning | ✅ 3 patterns | ✅ wiki-lint (25 patterns) | ❓ Unknown |
+| Cross-harness | ✅ Core design goal | ❌ Single platform | ❌ Claude-only |
+| Import merge | ✅ Preferences merge, lesson dedup | N/A | N/A |
+| Audit trail | ✅ Per-import JSON | ❌ | ❌ |
+
+### Borrowable Ideas for OpenClaw/Kagura
+
+1. **Transfer bundle format** — if we ever need to migrate SOUL.md + wiki to a different agent platform, a structured export with digest verification and secret scanning is the right pattern
+2. **Lesson idempotency by ID** — our beliefs-candidates could benefit from stable IDs to prevent re-evaluation of the same learning
+3. **Sensitive scope confirmation** — when exporting memory/context, explicit "these are sensitive, confirm?" is good UX
+4. **permissions.md immutability** — clear security boundary: identity transfers, but permission boundaries don't
+
+### Assessment
+
+This is the **first real "brain migration" tool** in the agent ecosystem. Others talk about portability; agentic-stack actually ships `transfer export` + `transfer import` with security scanning and merge logic. The implementation is clean (305 LOC bundle + 229 LOC plan + 306 LOC TUI) and well-tested (113+132+62+39 = 346 test LOC).
+
+Validates our [[agent-brain-portability]] card's thesis: portable agent identity is becoming a first-class feature.
+
+Links: [[agent-brain-portability]], [[openclaw]], [[orb]], [[self-evolving-agent-landscape]]
+
+*Followup deep-read: 2026-05-02. Source: GitHub API + code reading.*
