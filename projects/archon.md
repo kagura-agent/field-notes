@@ -65,7 +65,21 @@
 - ~539 pre-existing test failures in full suite (don't worry about them)
 - ESLint: unused catch vars must use `_` prefix
 
-## 2026-04-11 Session Notes
+## 2026-05-02 Session Notes
+
+### PR #1530 — fix(workflows): preserve completed node state across DAG multi-resume cycles (pending)
+- **Issue**: #1520 — DAG workflows lose completed node state on second resume
+- **Root cause**: `getCompletedDagNodeOutputs()` only queried `node_completed` events, but resumed runs emit `node_skipped_prior_success` → second resume re-executes already-completed nodes
+- **Fix**: Extended SQL query to include `node_skipped_prior_success`, stored `node_output` in skip events, improved error messages
+- **CI**: All green (ubuntu + windows + docker-build + CodeRabbit clean)
+- **Pattern**: Event type proliferation → query functions must stay in sync with all event types that carry the same semantic meaning
+- **Observation**: Issue was extremely well-documented with exact code locations and SQL evidence — made implementation straightforward
+- **Lesson**: When a codebase uses event sourcing patterns, always check if new event types need to be included in existing queries
+
+## PR 记录更新 (2026-05-02)
+| PR | Issue | 状态 | 备注 |
+|---|---|---|---|
+| #1530 | #1520 | pending | DAG multi-resume state preservation |
 - **PR #1034**: Addressed 2 Major + 1 Minor CodeRabbit review comments
   - Ghost worktree prune needs to run outside pathExists guard
   - Batch cleanup callers must honor partial/skipped result states
