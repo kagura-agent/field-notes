@@ -272,3 +272,14 @@ Development pace slow — substantial architecture is there but no new features 
 **Revisit**: 05-10
 
 See [[agent-memory-landscape-202603]], [[genericagent]], [[confidence-decay-design]]
+
+## Followup 2026-05-02
+
+**Stars**: 619 (+13 from 606 on 05-01). Still growing steadily.
+**Pushed**: 04-29 (no new commits in 4 days).
+
+Development appears stalled — author hasn't pushed since the 04-29 prompt engineering overhaul. Stars still accumulating from organic discovery. The 9-stage consolidation architecture and anti-verbatim synthesis remain the best reference implementation in the space.
+
+**Ecosystem position**: Stash is now clearly the #1 open-source "memory layer as MCP" project. Competitors (hermes-local-memory 22⭐, caura-memclaw 14⭐, mcp-agent-memory 2⭐) are far behind. The main alternative paradigm is file/git-based ([[mneo]], OpenClaw/memex) which trades query power for portability.
+
+**Revisit**: 05-10 (check if dev resumes or project enters maintenance mode)

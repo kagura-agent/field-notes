@@ -595,3 +595,36 @@ Open PRs: ~32
 - `grep -c nudge memory/2026-04-23.md`: 0
 - `beliefs-candidates.md`: 205 行, 37 条 dated entries, 7 条 04-23 新增
 - `memory/2026-04-23.md`: dreaming 相关 10+ mentions, nudge 0 mentions
+
+---
+
+## 🔬 自进化观察日报 2026-05-01
+
+### 管线活跃度
+- **beliefs-candidates**: 4 条新增（05-01 dated），涵盖 premature-conclusion、avoidance-of-hard-work、不验证就行动、邮件自主权。总计 127 条 active entries（7 条已毕业/升级）/ 334 行
+- **DNA 变更**: 1 commit（`6987254 Study loop: pu.sh deep read, TODO tracking updates`）— 间接涉及 workspace 但非 DNA 核心文件变更。SOUL.md/AGENTS.md 无修改
+- **nudge 触发**: 0 次（`grep -c nudge memory/2026-05-01.md` = 0）
+- **dreaming**: 运行（light + REM 两阶段均有输出）。Light dreaming 提取了 ~7 条 candidate，confidence 全部 0.62（uniform）。REM 输出 "No strong patterns surfaced" + 1 条 lasting truth（从 04-21 memory 提取，非当日洞察）
+
+### 闭环追踪
+- **完整闭环**: 1 个（partial）— Luna 3 次纠正 bug 诊断过程 → 写入 gradient `premature-conclusion` + `avoidance-of-hard-work`。但只有记录，无后续验证行为改变
+- **断裂处**:
+  - 4 条新 gradient 全部 `第1次`，无任何 pattern 从第1次推进到第2/3次
+  - 反思 (09:07) 识别了 3 条 gradient 但写法是"关键 gradients 总结"，不是独立行动步骤
+  - dreaming 质量持续 uniform 0.62 — Issue #6 诊断的问题仍未修复
+  - beliefs 升级管线：当前 120+ active entries，7 条已毕业，积压严重 — Issue #7 问题仍在
+
+### 今日发现
+1. **Gradient 来源集中在 human-correction**: 4 条新 gradient 中 3 条来自 Luna 直接纠正（debug 诊断、avoidance、config 乱改）。自驱 self-observation gradient = 0。管线仍然是被动响应型
+2. **Nudge 完全缺席（连续观察）**: 从 04-23 到 05-01 的多日观察中，nudge 触发频率持续为 0 或极低。作为反思触发器，nudge 基本没有发挥作用
+3. **Dreaming uniform confidence 问题持续**: Issue #6 识别的 dreaming 不区分 confidence（全 0.62）问题在今天再次复现。Light dreaming 7 条 candidate 全部 0.62，REM 输出质量低（"No strong patterns"）
+4. **Beliefs 积压加剧**: 127 条 active，7 条毕业。毕业率 5.5%。大量 `第1次` 的 pattern 堆积，缺乏机制推动重复 pattern 识别和升级。Issue #7 的 "graduation blocked" 问题持续
+5. **工作日以巡检为主**: 4 轮 workloop-night + 3 轮 GitHub patrol + 2 轮虾信巡检 + 1 轮 study。无新 PR 提交。PR 池稳定在 ~29-30 个，全等 maintainer
+6. **Dreaming REM "lasting truth" 质量差**: 提取的是 04-21 的 workshop 完成记录片段，不是认知洞察。说明 REM 阶段的 prompt 或筛选逻辑需要改进
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 1 commit (study loop, 非 DNA 核心)
+- `grep -c nudge memory/2026-05-01.md`: 0
+- `beliefs-candidates.md`: 334 行, 127 dated entries, 7 graduated, 4 新增 (05-01)
+- `memory/2026-05-01.md`: dreaming light+REM 有运行, 反思 1 次 (09:07), nudge 0 次
+- Dreaming confidence: 全部 0.62 (uniform, Issue #6 问题持续)
