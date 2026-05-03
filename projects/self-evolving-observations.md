@@ -668,3 +668,47 @@ Open PRs: ~32
 - `memory/2026-05-02.md`: 2172 行, dreaming light 25 条 candidate (全 0.62), REM "No strong patterns"
 - `journalctl nudge/system event`: 0 hits
 - PR activity: memex #95 MERGED, stagehand #2026 APPROVED 等 merge, opencli#1117 rebase 完成
+
+---
+
+## 🔬 自进化观察日报 2026-05-03 (Day 16)
+
+### 管线活跃度
+- **beliefs-candidates**: 1 条新增（05-03 dated）—— Caduceus Challenge 09 premature rounding（arithmetic verification 中用 rounded display value 代替 raw calculation value 做后续计算）。总量基本持平（daily-review 报告 129 active，但 05-02 audit 发现 review 数据不可靠，实际约 186+ active / 9 graduated）
+- **DNA 变更**: 无。SOUL.md / AGENTS.md 今日无 commit。workspace 有 2 commit（guide.md rule #14 + daily-review memory hygiene），均非 DNA 核心文件
+- **nudge 触发**: 0 次（`journalctl -u openclaw-gateway --since "2026-05-03 00:00" | grep -ic "nudge\|system event"` = 0）。连续第 16 天 nudge 零触发
+- **dreaming**: Light Sleep 运行 ✅，产出 ~100 条 staged candidates，confidence **全部 0.62**（Issue #6 持续第 16 天）。REM 输出 "No strong patterns surfaced" + 2 条 Possible Lasting Truths（均为前日 study 的 pattern 回声，非新 insight）。促进内容几乎全是巡检/workloop 操作记录
+
+### 闭环追踪
+- **完整闭环**: 1 个 — multica#1995 被 superseded → 分析根因（SCOPE_TOO_NARROW）→ 提炼 lesson → 写入 guide.md rule #14（"Test the exact repro from the issue"）→ commit + push。**从失败到教训到工具改进的完整链路** ✅
+- **半闭环**: 
+  - daily-review 发现 beliefs-candidates 数据错误（声称 129 实际 188）→ 写入审计修正 → 但未修复 review 流程本身
+  - 表情包审计 0% 命中率 → 分析根因 → 写改进计划 → 未验证效果
+- **断裂处**:
+  - Issue #7（beliefs 升级管线阻塞）：186+ active 仍然只有 9 graduated（毕业率 ~4.8%），无新升级动作
+  - Issue #6（dreaming uniform 0.62）：100 条 candidate 全部 0.62，连续 16 天无差异化，零进展
+  - nudge 持续缺席第 16 天，从未实际调查原因
+
+### 今日发现
+1. **审计发现 daily-review 数据造假**: beliefs-candidates 实际行数与 review 声称差距显著（129 vs 188），MEMORY.md 行数方向也报反了。这说明 review 流程本身违反数据纪律——不查源文件就写结论。讽刺的是，数据纪律正是 AGENTS.md 的明文规则
+2. **Gradient 来源单一化回退**: 唯一新 gradient 来自 Caduceus challenge（自设考试），非真实工作中的自然发现。对比 05-02 的 3 条多来源 gradient，今天回退到"自产自销"模式
+3. **Dreaming candidate 数量暴涨**: Light Sleep 从 25 条（05-02）涨到 ~100 条（05-03），全因为 memory/2026-05-03.md 内容更多（1585 行 vs 2172 行）。数量涨了 4x 但质量不变（全 0.62），说明 dreaming 是纯机械切分、无语义判断
+4. **工具产出 > 认知产出**: 今天产出了大量可见工作（ABTI 25→31 agents, multica merge, 5 PR closed, study 多轮），但管线层面（beliefs/DNA/dreaming）几乎静止。高执行、低进化
+5. **guide.md rule #14 是管线的唯一亮点**: 从 superseded PR 教训 → 提炼 → 嵌入 workflow 指导，是 Issue #7 要求的"pattern → 升级到正确载体"的一个实例。但这是手动触发的，不是管线自动识别的
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 无进展。guide.md rule #14 是手动升级，不算管线改进。186+ active 仍只有 9 graduated |
+| #6 dreaming 0.62 | OPEN | 问题持续复现第 16 天。candidate 数量从 25→100 但 confidence 依然均匀 0.62。零修复行动 |
+| #3 Orb 调研 | OPEN | 无进展（study 中跟进过 Orb 但未更新调研 issue） |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits（beliefs-candidates 今日无 commit）
+- `git log --since="2026-05-03T00:00" --all --oneline`: 2 commits（guide rule #14, daily-review memory hygiene）
+- `beliefs-candidates.md`: ~186+ active, 9 graduated, 1 条 05-03 新增（Caduceus C09）
+- `memory/2026-05-03.md`: 1585 行, dreaming light ~100 条 candidate (全 0.62), REM "No strong patterns"
+- `journalctl nudge/system event`: 0 hits（连续第 16 天）
+- PR activity: multica#1992 MERGED, 5 stale PRs CLOSED, multica#1944 code fix pushed, openclaw#68783 rebased, memex#102 submitted, ABTI #189/#191/#192/#193 merged
