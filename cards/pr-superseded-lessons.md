@@ -250,3 +250,22 @@ Added to pre-PR checklist:
 - **Maintainer's approach**: Fixed the resolution function (`resolveSourceReplyDeliveryMode`) directly — when `requested: "message_tool"` but tool unavailable, fall back to `"automatic"` right in the resolver
 - **Pattern**: Fix at the lowest possible level. If a resolution function returns a mode that can't be fulfilled, the resolution function itself should handle the fallback, not the caller.
 - **Positive**: steipete credited in CHANGELOG, code was largely correct just needed restructuring. The issue identification and fix direction were good.
+
+## 2026-05-03: NemoClaw #2468 → superseded by #2900 (ericksoa)
+- **Issue**: Dashboard URL token leakage — `#token=<auth-token>` printed in startup logs
+- **My approach**: Wired existing `redact()` utility through all `console.log(url)` call sites (3 sites in agent-onboard.ts + onboard.ts). Minimal diff, reused existing function.
+- **Their approach**: Completely removed token from displayed URLs. Added `gateway-token --quiet` CLI retrieval command as separate step. Updated docs + shell script + test assertions. Token never appears in any log or output — user must explicitly retrieve it.
+- **Why theirs won**: Stronger security posture. Redacting (masking with `****`) still exposes token structure/prefix. Complete removal + separate retrieval channel is more secure for credentials. Also: docs + shell script changes = comprehensive fix vs my code-only fix.
+- **Pattern**: **REDACT_VS_REMOVE** — for security-sensitive data (tokens, passwords), complete removal from output > redaction/masking. Redaction leaks structure (length, prefix). Provide a separate retrieval path (CLI command) rather than masking inline.
+
+## 2026-05-03: NemoClaw #2833 → superseded by #2890 (ericksoa + cv)
+- **Issue**: Stale malformed onboard.lock files blocking subsequent runs after abnormal exit
+- **My approach**: Cleanup stale lock files at onboard start
+- **Their approach**: Same core fix (replayed) + extended to cover PID reuse detection via `process.kill(pid, 0)`. More robust staleness detection.
+- **Pattern**: Continuation of FIX_AND_EXTEND — maintainer replayed my fix with additional robustness. ericksoa credited me explicitly. Positive outcome despite superseding.
+
+## 2026-05-03: multica #1995 → superseded by #2017 (Bohan-J)
+- **Issue**: `multica login --token mul_xxx` ignored supplied token, prompted interactively
+- **My approach**: (unclear from diff — PR closed before detailed review)
+- **Their approach**: Fixed the root cause — `--token` flag was registered as `Bool` instead of `String`, so pflag parsed `--token` as `true` and the actual token fell into unused positional args. Also handled space-separated form.
+- **Pattern**: Fix the flag type definition, not the consumption logic. When a CLI flag misbehaves, check if the flag is declared correctly before adding workarounds.
