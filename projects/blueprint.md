@@ -57,3 +57,16 @@ Discovered alongside:
 - **Trend**: Money and attention flowing into **skill packaging and distribution**, not just agent runtimes
 
 See also: [[skill-ecosystem]], [[self-evolving-agent-landscape]]
+
+## Applied (2026-05-03)
+
+Adopted plan-then-code separation into [[FlowForge]] workloop. Added `plan` node between `study` and `implement`:
+- Produces structured change list, edge cases, test strategy, risk points before dispatching to Claude Code
+- Scales with complexity: one-line fixes get 2-3 sentence plans, multi-file changes get detailed file-by-file specs
+- Escape hatch: if planning reveals the issue is worse than expected, can retreat to `find_work`
+
+Also fixed pre-existing YAML parse error in workloop.yaml (study node's double-quoted multiline string had broken line continuations; converted to `|` block scalar).
+
+Key insight validated: our previous `study→implement` flow had an implicit planning gap. The copilot-gateway #10 incident (04-27, "急着提 PR") was exactly the failure mode this addresses.
+
+Commit: `fef0639` in kagura-agent/flowforge.
