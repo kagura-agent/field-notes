@@ -205,3 +205,5 @@ Orb has moved from "architecturally interesting Claude Code wrapper" to "mature 
 Links: [[openclaw]], [[coding-agent]], [[clawhub]], [[skill-ecosystem]], [[self-evolving-agent-landscape]], [[agent-brain-portability]]
 
 *Deep read: 2026-05-02. Source: GitHub repo + API + release notes.*
+
+*Followup: 2026-05-03. No new activity since v0.4.0 deep read (05-02). Next revisit: 05-09 for v0.5.0.*

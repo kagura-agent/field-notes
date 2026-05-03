@@ -18,7 +18,7 @@
 | spawn-agent | 122 | 观望 | +15, slow growth |
 | agentswift | 107 | 不明 | No description |
 | AeternaLabsHQ/pullmd | 105 | 观望 | Self-hosted URL-to-Markdown + MCP + Claude Code skill. Relevant to tooling |
-| RunbookHermes | 103 | 观望 | AIOps incident response agent |
+| RunbookHermes | 177 | 观望 | AIOps incident response agent |
 | clawd.rip | 102 | 跳过 | Meta-critique of Claude failures |
 
 **HN highlights:**
@@ -78,7 +78,7 @@
 | ast-outline (aeroxy) | 102 | **更新笔记** | New MCP server + JSON output since last read. See wiki/projects/ast-outline.md |
 | spawn-agent (millionco) | 106 | 观望 | Single-day push (04-26), likely weekend project |
 | APIMitmHack (ez-lbz) | 46 | ⚠️ **安全警报** | MITM proxy explicitly targeting OpenClaw, Claude Code, OpenCode. Attack tooling |
-| RecursiveMAS | 133 | 不紧急 | Academic paper impl for recursive multi-agent systems |
+| RecursiveMAS | 138 | 不紧急 | Academic paper impl for recursive multi-agent systems |
 | Oneira | 71 | 不相关 | "Autonomous dreaming AI" — concept art |
 | pullmd (AeternaLabsHQ) | 100 | 已知类型 | URL-to-markdown, self-hosted. crowded space |
 | shots (hypersocialinc) | 103 | 不相关 | App Store screenshot generator skill |
