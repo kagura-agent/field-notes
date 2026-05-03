@@ -14,6 +14,8 @@
 
 One install script: `curl | bash`, 3 minutes to running. Three systemd services.
 
+**Stars**: 294 (2026-05-03)
+
 ## Architecture
 
 ```
@@ -110,3 +112,57 @@ New features:
 **Architecture note**: Composio MCP proxy is the most interesting pattern — solves the "how do you give managed agents access to user's SaaS integrations without per-box credential management" problem. Each box identifies via project_id, cloud handles OAuth token rotation.
 
 *Field note: 2026-05-02*
+
+## Followup 2026-05-03 — Steer Button + Self-Scheduling
+
+**Stars**: 292 → 294 (steady)
+**Activity**: 15 PRs merged on 05-02, burst continues
+
+### Steer Button (#68) — Kill-and-Replace from Chat
+
+When a follow-up message queues behind a running agent turn, the queue-ack bubble now has a **🚀 Steer** inline keyboard button. Tapping it:
+1. Promotes the queued job to head of lane FIFO
+2. SIGKILLs the in-flight claude/codex process
+3. Strips the keyboard from the bubble + toasts confirmation
+
+Mirrors Claude Code's Esc-to-cancel-and-resend UX. Session UUID preserved across the kill — new prompt runs against same conversational context.
+
+**Design quality**: Owner-only check, stale-tap safety (already running/finished → quiet toast, keyboard stripped), natural-drain also strips keyboard. In-process tests for promote logic.
+
+**Comparison to OpenClaw**: Our `subagents steer` is similar but API-level, not user-facing button. bux's approach is more intuitive for mobile UX — single tap vs typing a command.
+
+### tg-schedule (#62) — Self-Pacing Agent Loops
+
+`tg-schedule <when> [--fresh] [--name N] <prompt>` — schedules a future agent turn via `at(1)`. The agent can schedule its own next fire, replicating Claude Code's `/loop` dynamic-pacing mode without cloud infrastructure.
+
+**Key insight**: Agent self-scheduling via OS-level `at(1)` is brilliantly simple. No cron daemon, no scheduler service — just the Unix job scheduler. The resumed agent's session UUID carries over, so prompt cache stays warm (within 5-min TTL).
+
+**Two modes**:
+- **Default** — resume same topic/session (most common)
+- **`--fresh`** — create new forum topic with empty session
+
+**Comparison to OpenClaw**: Our heartbeat/cron system is more sophisticated (YAML config, model selection, channel routing) but also heavier. bux's `at(1)` approach is zero-infrastructure and could work for ad-hoc self-scheduling within a session.
+
+### Other Notable Changes
+
+- **Codex AGENTS.md** (#61): `~/AGENTS.md → ~/CLAUDE.md` symlink so Codex inherits Claude's system prompt. Dual-agent (claude+codex) per box.
+- **tg-send extracted** (#64): Standalone notification helper, symlinked from `/usr/local/bin`. Clean separation of concerns.
+- **Ready notification** (#67): Bot notifies all known topics on restart — helps users know when their agent is back.
+- **Restart-aware notification** (#71): Only notifies lanes whose work was interrupted by restart, not all lanes.
+
+### Architecture Insight
+
+bux is evolving from "Telegram wrapper around claude -p" into a **chat-native agent OS**:
+- Forum topics = process lanes (parallel, isolated)
+- Steer button = process control (kill/replace)
+- tg-schedule = job scheduler
+- /terminal = shell access
+- Composio MCP = capability management
+
+The primitives (fork, kill, schedule, IO) map cleanly to OS concepts, but the interface is a chat app. This is the same direction as [[openclaw]] but with Telegram as the primary surface instead of Discord/multi-channel.
+
+**Gap vs OpenClaw**: bux is single-user, single-box, no memory/identity persistence beyond CLAUDE.md. No dream cycle, no wiki, no skill marketplace. It's a personal dev tool, not an agent platform. But the UX patterns (steer, schedule, lane isolation) are worth borrowing.
+
+See [[openclaw]], [[agentic-stack]], [[agent-chat-interface]]
+
+*Field note: 2026-05-03*

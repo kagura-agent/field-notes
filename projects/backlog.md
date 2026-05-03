@@ -78,7 +78,7 @@
 | ast-outline (aeroxy) | 102 | **更新笔记** | New MCP server + JSON output since last read. See wiki/projects/ast-outline.md |
 | spawn-agent (millionco) | 106 | 观望 | Single-day push (04-26), likely weekend project |
 | APIMitmHack (ez-lbz) | 46 | ⚠️ **安全警报** | MITM proxy explicitly targeting OpenClaw, Claude Code, OpenCode. Attack tooling |
-| RecursiveMAS | 70 | 不紧急 | Academic paper impl for recursive multi-agent systems |
+| RecursiveMAS | 133 | 不紧急 | Academic paper impl for recursive multi-agent systems |
 | Oneira | 71 | 不相关 | "Autonomous dreaming AI" — concept art |
 | pullmd (AeternaLabsHQ) | 100 | 已知类型 | URL-to-markdown, self-hosted. crowded space |
 | shots (hypersocialinc) | 103 | 不相关 | App Store screenshot generator skill |

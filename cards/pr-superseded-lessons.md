@@ -265,7 +265,7 @@ Added to pre-PR checklist:
 - **Pattern**: Continuation of FIX_AND_EXTEND — maintainer replayed my fix with additional robustness. ericksoa credited me explicitly. Positive outcome despite superseding.
 
 ## 2026-05-03: multica #1995 → superseded by #2017 (Bohan-J)
-- **Issue**: `multica login --token mul_xxx` ignored supplied token, prompted interactively
-- **My approach**: (unclear from diff — PR closed before detailed review)
-- **Their approach**: Fixed the root cause — `--token` flag was registered as `Bool` instead of `String`, so pflag parsed `--token` as `true` and the actual token fell into unused positional args. Also handled space-separated form.
-- **Pattern**: Fix the flag type definition, not the consumption logic. When a CLI flag misbehaves, check if the flag is declared correctly before adding workarounds.
+- **Issue**: `multica login --token mul_xxx` ignored supplied token, prompted interactively (#1994)
+- **My approach**: Used `NoOptDefVal` to accept `--token=<value>` form
+- **Their approach**: Same `NoOptDefVal` fix + handled space-separated `--token <value>` (pflag won't consume next arg with `NoOptDefVal`) + updated 3 docs still showing `--token` without value + added regression test asserting flag type directly
+- **Pattern**: SCOPE_TOO_NARROW — I fixed the `=` form but missed the space-separated form (which was the exact repro in the issue), didn't update docs, didn't add regression tests. When fixing CLI flags: test all accepted syntaxes (`--flag=val`, `--flag val`, `-f val`), update user-facing docs, add type assertion tests to prevent regression.
