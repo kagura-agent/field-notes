@@ -1016,3 +1016,31 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 **Delta vs scan #3 (17:50):** No new explosive finds. tiangolo/library-skills and byob remain the only noteworthy new entries from earlier today. HN Claude Code + OpenClaw story still top (1172→still hot). All tracked projects stable.
 
 **Summary:** Quiet scan. Ecosystem in steady state. Security awareness remains elevated (supply chain attacks, Claude Code restrictions).
+
+## Scout #6 (2026-05-03 18:11) — Deep Scout
+
+**GitHub API search (created past week, sorted by stars):**
+
+| Repo | ⭐ | 判断 | 备注 |
+|------|-----|------|------|
+| codejunkie99/brain | 37 | **已深读** | Rust rewrite of agentic-stack memory → git+SQLite+MCP. See wiki/projects/brain-rust.md |
+| mapick-ai/mapick | 22 | 值得关注 | Privacy layer + skill advisor for OpenClaw. ClawHub 57k+ skills now. v0.0.24 |
+| dmae97/oh-my-kimichan | 36 | 值得关注 | Multi-agent orchestration for Kimi Code CLI. Worktree team runtime + DAG planning |
+| imbue-ai/blueprint | 39 | 值得关注 | Planning copilot for coding agents. From well-funded Imbue lab. Very new (1 day commits) |
+| millionco/agent-install | 37 | 值得关注 | Install agent skills and MCPs with one API |
+| OpenMonoAgent | 104 | 跳过 | C#/.NET local-LLM agent, niche |
+| AeternaLabsHQ/pullmd | 104 | 跳过 | URL-to-markdown, commodity |
+| moor (varandrew) | 81 | 值得关注 | Local MCP control plane for Mac |
+| OpenAgentLock | 4 | 值得关注 | Firewall for AI coding agents, YAML policy + Merkle ledger |
+
+**Web search (agent security trend):**
+- CVE-2026-26268: Cursor IDE git hook arbitrary code execution
+- CVE-2026-28353: First agent-to-agent supply chain attack (CVSS 10.0) — already noted in scan #5
+- CSA report: 35 CVEs in March 2026 from AI coding tools, est 5-10x hidden
+- VentureBeat: Six teams exploited Claude Code, Copilot, Codex, Vertex AI runtime credentials
+
+**Trend signals:**
+1. **Memory as standalone infrastructure** — brain split from agentic-stack confirms memory is its own product category
+2. **Agent security is exploding** — CVEs, firewalls (OpenAgentLock), privacy layers (mapick) all emerging
+3. **Skill ecosystem management** — mapick (advisor), agent-install (one-API install), ClawHub 57k+ skills = scale problems arriving
+4. **Multi-agent orchestration diversifying** — oh-my-kimichan shows Kimi Code ecosystem growing alongside Claude Code/Codex
