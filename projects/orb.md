@@ -1,7 +1,8 @@
 # Orb — Claude Code Wrapper Framework
 
-**Repo:** https://github.com/KarryViber/Orb (⭐52, created 2026-04-16)
+**Repo:** https://github.com/KarryViber/Orb (⭐54, 2026-05-02; was 52 at last check)
 **Language:** JavaScript/Node.js
+**Latest:** v0.4.0 (2026-05-02) — Reliability + System-Scope Skills
 
 ## What It Does
 Multi-profile messaging shell around Claude Code CLI. Routes messages from Slack to per-profile Claude Code workers, with:
@@ -107,15 +108,9 @@ Links: [[openclaw]], [[coding-agent]], [[byob-browser]], [[self-evolving-agent-l
 - v0.3.0 not yet tagged as a release (latest release still v0.2.0)
 - **Status: stable between releases**, existing deep read analysis is current
 
-## Followup 2026-05-02 13:50
-- **No new commits** since Apr 25 — full week of silence after v0.3.0 burst
-- Stars: 51 (slight dip from 52-53 range)
-- v0.3.0 still not tagged as a release (latest release still v0.2.0)
-- **Status: dormant post-v0.3.0**, possibly regrouping for next feature
-
 ## Deep Read: v0.4.0 — Reliability + System-Scope Skills (2026-05-02)
 
-**Stars:** 53 (recovered) | **Status:** Active again — 6+ commits today
+**Stars:** 54 | **Status:** Active again — v0.4.0 released today, 6+ commits
 
 Major release after a week of silence. Three significant new patterns:
 

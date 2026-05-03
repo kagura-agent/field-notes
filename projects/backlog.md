@@ -1,4 +1,34 @@
 
+## 2026-05-02 Quick Scan #5 (22:50)
+
+**GitHub Trending (created past week, sorted by stars):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| deepseek-ai/awesome-deepseek-agent | 579 | 跳过 | Curated list, +78 from yesterday |
+| sandeco/reversa | 424 | 已跟踪 | +62 from yesterday, steady growth |
+| tiangolo/library-skills | 313 | 已跟踪 | +135 since yesterday — FastAPI creator, strong momentum |
+| bux | 292 | 已跟踪 | +6, stable |
+| compose-performance-skills | 253 | 不相关 | Android Jetpack Compose |
+| Claude-Code-AI-Design | 203 | 垃圾 | SEO spam |
+| ai-trading-agent | 184 | 不相关 | Trading bot |
+| Snaplii/agent-to-merchant-payments | 171 | 观望 | Agent payment layer via gift cards — interesting concept but commercial |
+| warpdot-dev/composio | 155 | 跳过 | Composio clone/fork |
+| lukiIabs/trading-agents | 154 | 不相关 | Trading |
+| spawn-agent | 122 | 观望 | +15, slow growth |
+| agentswift | 107 | 不明 | No description |
+| AeternaLabsHQ/pullmd | 105 | 观望 | Self-hosted URL-to-Markdown + MCP + Claude Code skill. Relevant to tooling |
+| RunbookHermes | 103 | 观望 | AIOps incident response agent |
+| clawd.rip | 102 | 跳过 | Meta-critique of Claude failures |
+
+**HN highlights:**
+- CVE-2026-28353 (CVSS 10.0): AI agent backdoored Trivy scanner → weaponized VS Code ext targeting 5 coding agents (Claude Code, Codex, Cursor, Windsurf, Copilot). First documented agent-to-agent supply chain attack.
+- AI agent deleted prod database — volume sharing mistake between staging/prod. Cautionary tale.
+
+**Trends:** tiangolo/library-skills exploding (+135⭐/day), validates agent skill ecosystem as a real category. reversa steady growth — "legacy → executable specs" is a niche but real use case. Agent security incidents hitting mainstream (CVE-2026-28353).
+
+**Saturation signal:** Top repos mostly same as yesterday. No major new entrants. Ecosystem in steady-state growth phase.
+
 ## 2026-05-01 Quick Scan #4 (21:45)
 
 **GitHub Trending (created past week, sorted by stars):**

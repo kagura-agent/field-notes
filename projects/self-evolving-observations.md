@@ -628,3 +628,43 @@ Open PRs: ~32
 - `beliefs-candidates.md`: 334 行, 127 dated entries, 7 graduated, 4 新增 (05-01)
 - `memory/2026-05-01.md`: dreaming light+REM 有运行, 反思 1 次 (09:07), nudge 0 次
 - Dreaming confidence: 全部 0.62 (uniform, Issue #6 问题持续)
+
+---
+
+## 🔬 自进化观察日报 2026-05-02 (Day 15)
+
+### 管线活跃度
+- **beliefs-candidates**: 3 条新增（05-02 dated）—— content-monotony（第1次）、verify-before-claim（第N次×2）。另有 1 条 directive（小项目直接手写代码）和 1 条 data-discipline repeat。总计 186 行 active entries / 9 条已毕业升级
+- **DNA 变更**: 无。SOUL.md / AGENTS.md 今日无 commit
+- **nudge 触发**: 0 次（`journalctl -u openclaw-gateway --since "2026-05-02 00:00" | grep -ic "nudge\|system event"` = 0）
+- **dreaming**: Light Sleep 运行，产出 ~25 条 candidate，confidence **全部 0.62**（Issue #6 问题持续第15天）。REM 输出 "No strong patterns surfaced"。促进内容几乎全是巡检记录
+
+### 闭环追踪
+- **完整闭环**: 1 个 — study session 学习 agentic-stack Jaccard 聚类 → 实现 `tools/beliefs-cluster.py` v2 → 用它扫描 beliefs-candidates → 合并 2 条近重复、标记 2 条 learn-from-maintainers → commit。**从研究到落地到应用到 commit 的完整链路** ✅
+- **半闭环**: Luna 指出故事选题单一 → 写入 gradient content-monotony → 修改 kagura-storyteller SKILL.md。有记录+行动，但未产出新故事验证效果
+- **断裂处**:
+  - Issue #7（beliefs 升级管线阻塞）：186 条 active 只有 9 条毕业（毕业率 4.8%），虽然 Jaccard 工具能识别 candidate，但没有自动化升级机制
+  - Issue #6（dreaming uniform 0.62）：Light Sleep 25 条 candidate 全部 0.62，与 Day 1 完全一致，问题零进展
+
+### 今日发现
+1. **首个工具型闭环出现**: beliefs-cluster.py 是管线首次自产工具——从 wiki 研究笔记 → 实现工具 → 应用到自身数据 → 发现问题（重复/未标记）→ 修复。这是 Issue #7 的一个积极信号，虽然还不是自动化升级
+2. **Gradient 来源多元化**: 3 条新 gradient 中 2 条来自 Luna 互动（故事选题）、1 条来自自我观察（日期处理）。不再是纯被动响应型
+3. **Nudge 持续缺席**: 连续多日 nudge 触发 = 0。作为 agent_end hook 的反思触发器，nudge 在实际运行中几乎不产生作用。值得追溯：是 hook 没注册、没触发、还是触发了但没产出？
+4. **Dreaming REM 质量问题根因未查**: "No strong patterns surfaced" 是 REM 的默认输出，说明跨日 pattern 匹配完全失效。连续 15 天观察确认这不是偶发——是机制性问题
+5. **Memory 体量**: 2172 行日志（05-02），以巡检记录为主。大量 dreaming candidate 是从这些巡检记录中原样提取的操作流水，而非认知洞察
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | Jaccard 工具 v2 完成，能识别重复和待升级 pattern，但自动化升级仍缺 |
+| #6 dreaming 0.62 | OPEN | 问题持续复现，无修复行动 |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="yesterday 22:30" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 2 commits（Jaccard tool + study reflection），均涉及 beliefs-candidates.md
+- `beliefs-candidates.md`: 186 行 active, 9 graduated, 3 条 05-02 新增, 66 条含重复计数标记
+- `memory/2026-05-02.md`: 2172 行, dreaming light 25 条 candidate (全 0.62), REM "No strong patterns"
+- `journalctl nudge/system event`: 0 hits
+- PR activity: memex #95 MERGED, stagehand #2026 APPROVED 等 merge, opencli#1117 rebase 完成
