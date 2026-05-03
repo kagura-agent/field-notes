@@ -51,12 +51,30 @@ GBrain: v0.8.1（search quality）→ v0.9.x（security）→ v0.10.x（GStack m
 - **seed skill** 模式：内置 skill（data-layer, data-flywheel, tldraw）作为模板，可被社区 fork/扩展
 - 确认趋势：**四个独立项目**（gbrain, skillclaw, OpenClaw, agentic-stack）趋同于 SKILL.md + YAML/JSON 元数据 + 文件系统原生的 skill 标准
 
+## 2026-05-03 追加：`.agents/skills/` 成为事实标准
+
+[[microsoft-apm]] #1103 将 `.agents/skills/` 设为 5 个 client 的统一 skill 部署目录（Copilot, Cursor, OpenCode, Codex, Gemini），Claude 保留 `.claude/skills/`。agentskills.io spec 将其列为跨 client 惯例。
+
+这意味着 **skill 包的文件系统布局已经标准化**：
+```
+.agents/skills/<package-name>/
+├── SKILL.md
+├── resource1.md
+└── resource2.md
+```
+
+关键信号：从"多个项目独立趋同"→"一个主流工具强制执行"——标准收敛已越过临界点。
+
+对 [[clawhub]] 的直接影响：安装 skill 时应默认写入 `.agents/skills/`，而非 OpenClaw 特定目录。
+
 ## 关联
 - [[thin-harness-fat-skills]] — 架构基础
 - [[skill-ecosystem]] — 生态视角
 - [[gbrain]] — 主要证据来源
 - [[skillclaw]] — 另一个独立趋同的证据
 - [[agentic-stack]] — 第四个独立趋同的证据（adapter.json + seed skill）
+- [[microsoft-apm]] — 第五个证据，且是强制执行标准的工具
+- [[agent-skill-standard-convergence]] — 标准收敛趋势的宏观视角
 
 ## Tags
 #agent-skills #architecture #trend #packaging

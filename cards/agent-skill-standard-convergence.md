@@ -96,8 +96,30 @@ Skill 生态规模进一步爆发，头部项目星数级变：
 
 **对三层标准化框架的影响**：格式层已定、分发层竞争白热化、信任层刚开始。ClawHub 的竞争对手不再只是 npm/git clone，而是专门的 skill 发现/审计服务。
 
+## 2026-05-03 更新：`.agents/skills/` 文件系统标准确立
+
+[[microsoft-apm]] #1103 将 `.agents/skills/` 设为 5 个主流 client 的统一 skill 部署目录。这是收敛从"多项目趋同"到"工具强制执行"的转折点。
+
+**分发层不再碎片化** —— 至少在文件系统布局上，标准已定：
+- Copilot, Cursor, OpenCode, Codex, Gemini → `.agents/skills/`
+- Claude → `.claude/skills/`（唯一例外）
+
+修正四层标准化表：
+
+| 层 | 标准 | 状态 |
+|---|------|------|
+| Agent 定义 | GAP | 有 |
+| Skill 格式 | SKILL.md | 共识 |
+| Skill 布局 | `.agents/skills/` | **新：5/6 client 统一** |
+| Skill 分发 | APM / ClawHub / npm / skills.sh | 竞争中 |
+| **Skill 信任** | STSS / Skillpub / Gen Trust Hub | 爆发中 |
+
+另一个增强信号：[[library-skills]] 从 185→350⭐ in 2 days（05-01~03），tiangolo 的 library-embedded skill 分发模式正在爆发增长。
+
 ## 链接
 
 - [[agents-md]] — 另一个 file-based agent config 标准
 - [[mercury-agent]] — memory 层的标准化尝试
 - [[huashu-design]] — 第一个爆发级 skill 案例
+- [[microsoft-apm]] — `.agents/skills/` 标准的执行者
+- [[skills-as-packages]] — 包级元数据和分发机制

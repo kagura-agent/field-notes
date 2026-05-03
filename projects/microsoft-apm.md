@@ -92,7 +92,56 @@ Treats prompt text as executable (because it is). The content scanner blocks Uni
 - [ ] Compilation step that renders skills differently per target agent
 - [ ] Policy file concept for org-level governance of allowed skills
 
+## 2026-05-03 Update: Cross-Client Skill Convergence
+
+APM has shipped the most significant architectural change since creation: **`.agents/skills/` as the unified skill directory**.
+
+### Key changes (04-30 to 05-03)
+
+| PR | What | Why it matters |
+|---|---|---|
+| #1103 | `.agents/skills/` cross-client convergence | 5 clients (Copilot, Cursor, OpenCode, Codex, Gemini) now share ONE skill directory. Claude retains `.claude/skills/`. Closes 4 issues. |
+| #1104 | Claude Code as MCP install target | First-class `.mcp.json` + `~/.claude.json` writes. MCP coverage is now 7/7 major runtimes. |
+| #1066 | Windsurf target | 8th client adapter. Maps APM primitives → `.windsurf/rules/`, `.windsurf/skills/`, `.windsurf/workflows/`. |
+| #1088 | Global instructions in AGENTS.md/CLAUDE.md | Compilation maturity — instructions without `applyTo` were silently dropped. |
+| #1098/#1099 | Local bundle install + lockfile-embedded plugin packs | Air-gapped/enterprise support. |
+| #1097 | Meta-packages + collections/ subpaths | More complex package composition. |
+
+### `.agents/skills/` convergence detail
+
+**Per-client fact check (from upstream docs):**
+
+| Client | `.agents/skills/` documented? |
+|---|---|
+| Copilot | ✅ |
+| Cursor | ✅ (alias takes precedence) |
+| OpenCode | ✅ |
+| Codex | ✅ (already wired) |
+| Gemini | ✅ (preferred over `.gemini/skills/`) |
+| Claude | ❌ (`.claude/skills/` only) |
+
+**Migration approach**: Auto-migrate on first install (lockfile-driven, not glob). `--legacy-skill-paths` opt-out. Foreign-skill protection via `apm.lock.yaml.deployed_files` ownership check. Collision detection via sha256.
+
+**Design decisions:**
+- Flip default + auto-migrate over opt-in flag (reject: "would leave 4-copy duplication as default forever")
+- Lockfile-bounded deletion (never glob `.agents/skills/` directory)
+- Claude exempted because its docs don't list the alias
+
+### Implications for us
+
+1. **`.agents/skills/` is now the de facto cross-client standard** — agentskills.io spec names it as convention, 5/6 major clients document it, APM enforces it. This is the strongest convergence signal yet.
+2. **Claude is the last holdout** — ironic given that Claude Code pioneered SKILL.md. Expect Anthropic to add `.agents/skills/` alias eventually.
+3. **APM's client adapter count is now 8** (Copilot, Claude, Cursor, OpenCode, Codex, Gemini, Windsurf, VS Code) — becoming the universal agent config compiler.
+4. **For [[clawhub]]**: skill installation should target `.agents/skills/` by default. Current approach of placing skills in the OpenClaw-specific directory is becoming non-standard.
+5. **Compilation as moat is widening** — each new client adapter is a maintenance cost that discourages competition.
+
+### Star trajectory
+- 04-29: 2,145⭐
+- 05-03: 2,199⭐ (+54, +2.5%)
+- Commits: 15+ in 3 days, PRs in 1000s range
+- Very healthy open-source project with strong Microsoft backing
+
 ## Tracking
 
-- **Activity**: Very active, daily pushes
-- **Revisit**: 05-06 (check v1.0 progress, community adoption metrics)
+- **Activity**: Very active, daily pushes, 8 client adapters
+- **Revisit**: 05-09 (check v1.0 progress, `.agents/skills/` adoption feedback)
