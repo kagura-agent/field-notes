@@ -84,3 +84,21 @@ Applied [[claude-mem]]'s Defender/Tolerator lens to FlowForge error handling. Fo
 Also fixed stale data: two broken symlinks in `~/.flowforge/workflows/` (workloop.yaml, workloop-night.yaml) pointing to old path. The new warning surfaced them immediately — **the fix validated itself on first run.**
 
 **Remaining Tolerator** (not fixed, acceptable): `engine.start()` auto-closing stale instances. The `console.warn` from 04-27 already makes this visible. Auto-close is the right UX for CLI — forcing confirmation would break non-interactive use.
+
+## Workflow Packaging Evaluation (2026-05-04)
+
+**Question**: Can FlowForge YAML workflows be distributed as packageable skills (like [[evanflow]]'s process-skill pattern)?
+
+**Comparison with evanflow (161⭐)**:
+- evanflow = 16 SKILL.md files + 2 subagents, zero runtime dependency. Drop into `.claude/skills/` and it works.
+- FlowForge = single YAML, requires `flowforge` CLI runtime. More powerful (branching, state, instances) but less portable.
+
+**Distribution options evaluated**:
+1. **ClawHub package** (YAML + flowforge dependency) — only works in [[openclaw]] ecosystem, marketplace is empty
+2. **Transpile YAML → multi-skill** (like evanflow) — loses programmatic flow control, gains portability
+
+**Verdict: NOT NOW.**
+- Our workflows are personal (study, workloop, reflect) not generalizable to others
+- The ecosystem isn't mature enough to warrant building distribution tooling
+- If we ever want to share, the evanflow multi-skill pattern is more portable without building anything new
+- FlowForge's value is in *structured self-discipline* for one agent, not in being a shareable framework
