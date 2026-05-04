@@ -183,6 +183,44 @@ Solved a UX friction: after initial setup-token bind, the bot rejected all new c
 
 Monotonic attempt counter to prevent stale PTY fd reuse across login attempts. Linux fd recycling after close() caused stray keystrokes into fresh PTY. Neat defensive pattern for any PTY-based agent launcher.
 
+### PR #76: Sub-agent Report Bubbles + TG_OWNER_ID + private/ (merged today)
+
+Three features bundled:
+
+**1. Sub-agent Report Bubbles** — Most architecturally interesting.
+
+Problem: When Claude Code's orchestrator dispatches sub-agents (Agent/Task tool_use), their return values are consumed internally. The user only sees the orchestrator's synthesis, which may truncate or paraphrase. For research-heavy turns, the actual sub-agent findings are lost.
+
+Solution: Parse the streaming events to:
+1. On `assistant` event with `tool_use` type "task"/"agent" → capture the `description` field, keyed by `tool_use_id`
+2. On `user` event with `tool_result` matching a known sub-agent `tool_use_id` → extract text content and send as a separate "🤖 sub-agent: <description>" Telegram bubble
+
+Implementation details:
+- Idempotent per `tool_use_id` (set tracking prevents double-post)
+- Truncated to fit Telegram's message cap (reserves room for header)
+- Separate bubble below orchestrator's main message
+- Graceful failure (try/except around send)
+
+**Relevance to OpenClaw**: We have the same problem — subagent outputs are synthesized by the parent session. Our `sessions_spawn` returns results to the parent which then summarizes. bux's approach of surfacing raw sub-agent reports verbatim alongside the synthesis is a UX pattern worth considering. Could implement as optional "verbose mode" or per-channel setting.
+
+**2. TG_OWNER_ID** — Install-time identity pinning. Prevents first-message-wins race (stranger claiming box owner identity). Priority: env var > persisted state > legacy derived. Backwards compatible.
+
+**3. private/ drop zone** — Convention for personal context files:
+- Tracked folder (`.gitkeep`), `.gitignore` blocks contents
+- For human-managed context too sensitive for public repo
+- Distinct from agent-managed memory (`.claude/projects/...`)
+- README explains the contract clearly
+
+Pattern: **human-managed vs agent-managed memory separation**. bux now has two layers:
+- `private/` → human puts context here (skills, notes, config)
+- `.claude/projects/.../memory/` → agent manages its own memory
+
+This mirrors our wiki/ (human-curated) vs memory/ (agent-daily-logs) split in [[openclaw]].
+
 ### Activity level
 
 Still daily commits, Claude Opus 4.7 co-authored. This is essentially a dogfooding project for browser-use.com's cloud product — explains the sustained velocity.
+
+**Next revisit: 05-09**
+
+*Field note: 2026-05-04*
