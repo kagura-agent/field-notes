@@ -188,7 +188,7 @@ Connection to [[conciseness-accuracy-paradox]]: Dirac's thesis (less context = b
 - When LLM calls a tool with missing parameters, the error response now includes a concrete JSON example of correct usage.
 - This is a simple but effective error recovery pattern: `missingToolParameterError(paramName, example)` — show the model *what right looks like* instead of just saying *what went wrong*.
 - 22 tools mapped to example payloads. Each example is one-line JSON, minimal but complete.
-- **Borrowable pattern**: When our subagents or tools fail on missing params, including a concrete example in the error would reduce retry loops.
+- **Borrowable pattern**: When our subagents or tools fail on missing params, including a concrete example in the error would reduce retry loops. ✅ **Applied 2026-05-04** to FlowForge (engine.ts): invalid branch shows all options + usage example, workflow-not-found suggests `flowforge list`.
 
 **Custom headers support**: Allow arbitrary headers in API requests — enterprise/proxy use case.
 
