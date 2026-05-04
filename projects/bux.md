@@ -166,3 +166,23 @@ The primitives (fork, kill, schedule, IO) map cleanly to OS concepts, but the in
 See [[openclaw]], [[agentic-stack]], [[agent-chat-interface]]
 
 *Field note: 2026-05-03*
+
+---
+
+## Update 2026-05-04
+
+**Stars**: 296 (steady growth)
+
+### PR #75: Auto-allow multi-chat (merged today)
+
+Solved a UX friction: after initial setup-token bind, the bot rejected all new chats the owner added it to. Now tracks `box_owner` (the human who redeemed setup token) and auto-allows any chat where that user adds the bot.
+
+**Pattern worth noting**: "trust anchor" identity — one human identity (`box_owner.user_id`) propagates trust across all surfaces. Similar to OpenClaw's account-level allowlists but more dynamic (membership events as triggers vs. static config).
+
+### PR #72-73: Claude login race fix
+
+Monotonic attempt counter to prevent stale PTY fd reuse across login attempts. Linux fd recycling after close() caused stray keystrokes into fresh PTY. Neat defensive pattern for any PTY-based agent launcher.
+
+### Activity level
+
+Still daily commits, Claude Opus 4.7 co-authored. This is essentially a dogfooding project for browser-use.com's cloud product — explains the sustained velocity.

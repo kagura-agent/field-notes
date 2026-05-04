@@ -38,7 +38,7 @@
 - #1502 (skip prek hook): merged by cv ✅
 - #1703 (enabledChannels → messagingChannels): rebased on main 2026-04-11, aligned with upstream naming
 - #1723 (ARM64 health): wscurran approved ✅, waiting merge
-- #2833 (stale onboard.lock #2765): pending review. Fix malformed lock files blocking onboard. CI passed, CodeRabbit clean.
+- #2833 (stale onboard.lock #2765): **SUPERSEDED by #2890**. My malformed-lock age check replayed + PID reuse detection added. ericksoa credited.
 
 ## Build & Test Notes (2026-05-01)
 - Root `npm install --include=dev --ignore-scripts` needed to get vitest (devDep)
@@ -152,12 +152,10 @@
 - **Pattern**: Simple fix — downgrade optional integration failure from fatal to warning. Same return-null pattern already used for missing BRAVE_API_KEY.
 - **Lesson**: `process.exit(1)` in library code for optional features is a smell — should always be a graceful fallback
 
-## PR #2468 — Dashboard URL token redaction (2026-04-25)
+## PR #2468 — Dashboard URL token redaction (2026-04-25) — SUPERSEDED by #2900
 - **Issue**: #2467 — fix(security): route dashboard URL output through redact() (CWE-532)
-- **Status**: PENDING, CI pass, CodeRabbit clean ("no actionable comments")
-- **Scope**: 3 files (onboard.ts, agent-onboard.ts, test/redact-dashboard-urls.test.ts), 34 additions / 6 deletions
-- **Root cause**: printDashboard() and printDashboardUi() used raw console.log() for URLs containing `#token=<hex>`, bypassing centralized redact()
-- **Fix**: Import and wrap all URL outputs with redact() in both files
-- **Tests**: 3 new vitest tests (token URL redacted, non-token URL unchanged, query param token redacted)
-- **Key learning**: onboard.ts uses CommonJS-style `const { redact } = require('./runner')` re-export, while agent-onboard.ts uses ESM `import { redact } from './runner'` — both work because runner.ts re-exports from redact.ts
-- **Pattern**: Simple security fixes that wire existing infrastructure into missed paths are ideal contributions — low risk, high value, clear scope
+- **Status**: CLOSED (superseded by #2900)
+- **My approach**: Wired existing redact() into console.log() sites. 3 files, 34 additions.
+- **Their approach** (#2900 by ericksoa): Completely removed token from displayed URLs + `gateway-token --quiet` retrieval + docs + shell scripts + tests. 7 files, 71 additions.
+- **Maintainer feedback**: "This was the right security direction and gave us the concrete starting point."
+- **Lesson**: REDACT_VS_REMOVE — for credentials, complete removal > masking. Provide separate retrieval path.

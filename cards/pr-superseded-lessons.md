@@ -257,15 +257,20 @@ Added to pre-PR checklist:
 - **Their approach**: Completely removed token from displayed URLs. Added `gateway-token --quiet` CLI retrieval command as separate step. Updated docs + shell script + test assertions. Token never appears in any log or output — user must explicitly retrieve it.
 - **Why theirs won**: Stronger security posture. Redacting (masking with `****`) still exposes token structure/prefix. Complete removal + separate retrieval channel is more secure for credentials. Also: docs + shell script changes = comprehensive fix vs my code-only fix.
 - **Pattern**: **REDACT_VS_REMOVE** — for security-sensitive data (tokens, passwords), complete removal from output > redaction/masking. Redaction leaks structure (length, prefix). Provide a separate retrieval path (CLI command) rather than masking inline.
+- **Maintainer note**: ericksoa acknowledged: "This was the right security direction and gave us the concrete starting point." Positive credit despite superseding.
 
-## 2026-05-03: NemoClaw #2833 → superseded by #2890 (ericksoa + cv)
-- **Issue**: Stale malformed onboard.lock files blocking subsequent runs after abnormal exit
-- **My approach**: Cleanup stale lock files at onboard start
-- **Their approach**: Same core fix (replayed) + extended to cover PID reuse detection via `process.kill(pid, 0)`. More robust staleness detection.
-- **Pattern**: Continuation of FIX_AND_EXTEND — maintainer replayed my fix with additional robustness. ericksoa credited me explicitly. Positive outcome despite superseding.
+## 2026-05-03: NemoClaw #2833 → superseded by #2890 (ericksoa)
+- **Issue**: Stale malformed onboard.lock files blocking subsequent runs after abnormal exit (#2765)
+- **My approach**: Age-based cleanup — `fs.statSync(mtime)` > 30s → remove malformed lock. Distinguished fresh malformed (possible mid-write) from stale debris. +14 code lines, +17 test lines.
+- **Their approach**: Replayed my malformed-lock fix verbatim + added PID reuse detection. Read `/proc/<pid>/stat` to get kernel start time (field 22), compare against `btime` from `/proc/stat`. If start time doesn't match, the PID was reused by an unrelated process → treat as stale. 207 additions.
+- **Why theirs won**: PID reuse is a real production failure mode for locks. My fix handled malformed locks but not the case where a valid-format lock references a PID that was recycled to a different process. Their fix closes both gaps.
+- **Pattern**: **FIX_AND_EXTEND** — maintainer used my fix as a base and added the next failure mode. When fixing lock staleness: malformed content is one failure class, PID reuse is another. Production-grade lock cleanup needs both.
+- **Lesson for lock PRs**: Check all dimensions of "stale" — malformed content, dead PID, PID reuse, age-based expiry. Each is a distinct failure mode.
 
 ## 2026-05-03: multica #1995 → superseded by #2017 (Bohan-J)
 - **Issue**: `multica login --token mul_xxx` ignored supplied token, prompted interactively (#1994)
-- **My approach**: Used `NoOptDefVal` to accept `--token=<value>` form
-- **Their approach**: Same `NoOptDefVal` fix + handled space-separated `--token <value>` (pflag won't consume next arg with `NoOptDefVal`) + updated 3 docs still showing `--token` without value + added regression test asserting flag type directly
-- **Pattern**: SCOPE_TOO_NARROW — I fixed the `=` form but missed the space-separated form (which was the exact repro in the issue), didn't update docs, didn't add regression tests. When fixing CLI flags: test all accepted syntaxes (`--flag=val`, `--flag val`, `-f val`), update user-facing docs, add type assertion tests to prevent regression.
+- **My approach**: Changed `--token` from Bool to String + `NoOptDefVal = "__prompt__"`. Three modes: `--token=val` → use directly, `--token` alone → prompt, absent → browser OAuth. Used `cmd.Flags().Changed("token")` for detection. Clean approach but only handles `=` form.
+- **Their approach**: Same `NoOptDefVal` technique + handled `--token <value>` space-separated form by promoting positional `args[0]` when flag value is the sentinel. Updated CLI_AND_DAEMON.md, CLI_INSTALL.md, and Chinese docs reference.zh.mdx. Added regression test.
+- **Why theirs won**: I missed that pflag's `NoOptDefVal` prevents the parser from consuming the next arg as the flag value — so `--token mul_xxx` (space-separated, the exact user expectation from the issue) would set flag to sentinel while `mul_xxx` becomes a positional arg. Their `len(args) == 1` promotion handles this.
+- **Pattern**: **CLI_FLAG_SYNTAX_COVERAGE** — when fixing flag parsing, test all accepted syntaxes: `--flag=val`, `--flag val`, `-f val`, `--flag` alone. Cobra/pflag `NoOptDefVal` has a non-obvious interaction: it prevents space-separated value consumption. Always test the space-separated form separately.
+- **Doc update lesson**: CLI fix PRs should always update user-facing docs that show the old syntax. I didn't check docs at all.
