@@ -116,8 +116,27 @@ Skill 生态规模进一步爆发，头部项目星数级变：
 
 另一个增强信号：[[library-skills]] 从 185→350⭐ in 2 days（05-01~03），tiangolo 的 library-embedded skill 分发模式正在爆发增长。
 
+## 2026-05-04 更新：完整 skill marketplace 出现
+
+[[autoloops-upskill]] (17⭐, created 05-03) 是第一个"完整"的 skill marketplace 实现——同时具备：registry + 3-tier trust (verified/reviewed/community) + feedback loop (report success/failure → ranking shift) + security layer (secret scanning, version-pinning) + CLI + web UI。
+
+**关键设计选择**：
+- 默认最严（verified-only），用户 opt-UP 到 looser tiers
+- 自我传播机制：SKILL.md 指令 agent 在 AGENTS.md/.cursorrules 注入"always consult upskill"规则
+- 闭源后端，开源 CLI
+
+**对标准化格局的影响**：
+- 分发层从"碎片化竞争"进入"功能完整竞争"阶段
+- 但信任仍是 org whitelist 而非 cryptographic（STSS 方向）
+- 反馈循环是真正的新增价值——其他竞争者（ClawHub, library-skills, APM）都没有
+
+同期信号：
+- **openagentd** (64⭐) 自称"agent OS"，添加 OpenClaw 迁移支持——竞品在 positioning 层面开始正面对抗
+- **oh-my-kimichan** (46⭐) 把 multi-agent worktree 模式带到 Kimi Code——pattern 跨 LLM 扩散
+
 ## 链接
 
+- [[autoloops-upskill]] — 完整 skill marketplace（registry + trust + feedback）
 - [[agents-md]] — 另一个 file-based agent config 标准
 - [[mercury-agent]] — memory 层的标准化尝试
 - [[huashu-design]] — 第一个爆发级 skill 案例
