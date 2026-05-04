@@ -72,6 +72,14 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Lesson**: Don't introduce module-level state in providers. Pass metadata through function params even if it means a bigger diff. steipete values stateless providers.
 - **steipete pattern**: Will do larger refactors (30+ files) to maintain architectural principles rather than accept smaller but architecturally impure fixes
 
+## PR #77247 (2026-05-04, PENDING)
+- **Issue**: #77241 — resolvePluginContractApiPath does not search dist/ subdirectory for npm channel plugins
+- **Fix**: Add `dist/` as additional search directory in `resolvePluginContractApiPath`, matching existing patterns in `public-surface-runtime.ts` and `bundled-channel-runtime.ts`
+- **Files**: `channel-contract-api.ts`, `channel-contract-api.external.test.ts`, `CHANGELOG.md`
+- **CI**: 79/83 passed; 4 failures all upstream (video/image provider registry tests, test-types Model<Api> mismatch) — unrelated to my changes
+- **Pattern**: Following the existing `dist/` search pattern from other plugin modules is a good approach for plugin-related fixes
+- **Lesson**: Check `git log` for recent changes to the target file before starting — PR #76449 had already rewritten the function but missed the `dist/` case. Issue was filed AFTER that fix, confirming the gap.
+
 ## PR #75637 (2026-05-01, PENDING)
 - **Issue**: #75624 — Misleading "sqlite-vec unavailable" warning when embedding provider is the actual problem
 - **Fix**: Distinguish sqlite-vec load failure (uses `loadError`) from missing embedding provider (no dimensions resolved) in `logMemoryVectorDegradedWrite` and CLI `runMemoryIndex`
