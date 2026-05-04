@@ -136,3 +136,11 @@ Found via `gh search repos "agent" --language TypeScript --stars "1000..10000"` 
 **Decision**: **DEPRIORITIZE phantom**. Do not submit new PRs. Let existing 5 PRs age. If any merge within 2 weeks, reconsider. Reallocate effort to higher-merge-rate repos ([[NemoClaw]]: 3 merges, [[Archon]]: 2 merges).
 
 **Anti-pattern identified** → see [[maintainer-merge-pattern]] — checking external merge history before investing in a repo is critical. Stars ≠ merge-friendliness.
+
+### 2026-05-04: PR #126 — Memory dedup fix (issue #125)
+
+- **Issue**: `SemanticStore.store()` has no exact-duplicate dedup — identical-text facts accumulate across sessions because `findContradictions()` explicitly excludes same-object facts, and `extractFactsFromSession` generates new UUIDs each run
+- **Fix**: Added `findExactDuplicate()` method using Qdrant scroll with keyword match filter on `subject` + `object` + `valid_until is null`. When duplicate found, merges `source_episode_ids` and returns early. Added `object` keyword payload index.
+- **Status**: PENDING review
+- **Tests**: 7/7 semantic tests pass, full suite 2368 pass (7 pre-existing failures same on main)
+- **Note**: Submitted despite DEPRIORITIZE status because issue is clearly aligned (memory/vector store dedup), well-scoped, and had no competition. truffle-dev (who filed it) may review. Worth monitoring — if this merges, phantom's external-merge gate may have reopened.
