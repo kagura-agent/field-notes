@@ -98,6 +98,24 @@ Detective agent mines git history for ADRs (Architectural Decision Records). Com
 - Quality of generated specs unknown — no public examples of output
 - Fork-to-star ratio (170/360 = 47%) is high, could indicate tutorial followers
 
+## Update 2026-05-04 — v1.2.21, Stabilization Phase
+
+**Stars**: 509 (was 499 on 05-04 prior check, was 360 on initial note)
+
+4 releases in one day (v1.2.18→v1.2.21). Changes:
+- **Feature folder organization**: Specs now organized by feature folders (not flat), with post-doc_level menu navigation
+- **Context overflow prevention**: Explicit pauses between analysis stages to prevent token exhaustion
+- **Cleanup**: Removed embedded video from README, removed specs from git tracking (`.gitignore`)
+- **UX fix**: Don't show `/clear` + `/reversa` menu after session resume
+
+**Phase assessment**: Stabilization. No new architectural features, focused on UX polish and preventing failure modes (context overflow is the classic long-agent-run killer). Growth slowing from initial hype spike — settling into steady state.
+
+**Commit language**: Still Portuguese (PT-BR). Single-author project (sandeco). No community PRs visible.
+
+**Our takeaway**: The "pause between stages" anti-overflow pattern is worth noting. For any multi-stage agent workflow (like FlowForge), explicit checkpoints serve dual purpose: (1) state save for resume, (2) context budget management. FlowForge already does this by design (each node = fresh context).
+
+*Field note: 2026-05-04*
+
 ## See Also
 - [[hermes-labyrinth]] — read-only observability (similar immutability principle)
 - [[agent-skill-ecosystems]] — skills as distribution format

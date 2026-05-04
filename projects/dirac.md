@@ -395,3 +395,26 @@ Key changes:
 **Phase assessment**: Entering maturity — provider consolidation, error handling hardening, subagent refinement. No new architectural innovations.
 
 *Field note: 2026-05-02*
+
+---
+
+## Update: v0.3.19 (2026-05-03)
+
+**Stars**: 1,085 (steady, +25 from 1,060)
+
+**Key changes (05-02 to 05-03)**:
+- **Proper diff review mechanics** — Accept/reject/save flow for CLI and VSCode. New SVG icons, DiffView refactored (-58/+38 lines), ChatView major expansion (+116/-32). This is the transition from "agent makes edits, human approves blindly" to "human reviews diffs with proper UX."
+- **Provider picker CLI** — Multi-provider selection at runtime (previously config-only)
+- **Symbol index perf** — "massively improve" per commit msg. AST-based indexing is their context curation differentiator
+- **CommandPermissionController** rewrite — +230 lines. permissions.json support, fine-grained command gating
+- **Cost/ctx fix** — context and cost counters were zeroing when task interrupted mid-stream
+
+**Phase assessment**: UX maturity. Moving from "powerful but raw" to "polished developer tool." The diff review UI is significant — it's the approval flow that makes agents trustworthy in practice. Dirac is betting that the quality of the human review interface determines whether developers trust agent-written code.
+
+**Architectural insight**: The 230-line permissions controller suggests they're adding granular tool-gating (similar to OpenClaw's tool policy, but command-level). `permissions.json` per-project = developers can restrict what the agent is allowed to do in different repos.
+
+**Relation to us**: Dirac's diff review + permission model is what a "serious coding agent" needs. OpenClaw's approach is different (trust boundary at channel/tool level, not per-edit). But the UX insight applies: the quality of the review interface determines adoption.
+
+See [[supervisor-pattern]], [[model-native-vs-model-agnostic]], [[agent-brain-portability]]
+
+*Field note: 2026-05-04*
