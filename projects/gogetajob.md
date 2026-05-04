@@ -136,3 +136,21 @@ From periodic self-audit (inspecting own code for anti-patterns):
 **submit.ts — 3-level try/catch cascade**: The "check if changes exist" logic was: try upstream ahead-count → catch → try total-commit-count → catch → fallback. Simplified to a flat 2-step: try upstream check, then fall through to commit-count check. Same behavior, half the nesting. Pattern: cascading try/catch usually means the control flow wants to be `if/else` with explicit null checks, not exception-driven.
 
 Both relate to [[error-handling-in-cli]] — CLI tools should log warnings, not silence errors, and use structured flow control over exception cascades.
+
+## Pre-PR Safety Checks Enhancement (2026-05-04)
+
+Applied accumulated lessons from [[pr-superseded-lessons]] into the `check` command. Three new automated checks:
+
+1. **Open PR count** — warns when I have ≥2 open PRs in a repo (skip at >3). Pattern: ACCUMULATED_OPEN_PR — maintainers deprioritize new PRs from contributors with a backlog.
+
+2. **External merge rate** — queries recent merged PRs and checks `author_association`. If 0% external merges with ≥5 total → skip (MAINTAINER_MERGE_GATE_CLOSED). If <20% → caution. Uses `gh api repos/{owner}/{repo}/pulls` with association field instead of guessing from username.
+
+3. **Maintainer issue activity** — checks if OWNER/MEMBER/COLLABORATOR commented on the issue within 3 days → caution (CHECK_MAINTAINER_ACTIVITY). Catches the pattern where maintainers are already investigating and will fix it themselves.
+
+**Implementation**: 3 new functions in `github.ts` (sync, try/catch with safe defaults) + verdict integration in `check.ts`. All checks fire after existing checks (linked PRs, merge rate, CLA, staleness).
+
+**Validation**: Tested against openclaw/openclaw — correctly detected 3 open PRs (caution) and 50% external merge rate (no flag). TypeScript types pass.
+
+**Pattern**: wiki card → tool code is the strongest form of knowledge application. The checklist in [[pr-superseded-lessons]] existed as human-readable text for weeks; now it's automated and runs every time `gogetajob check` is called.
+
+Links: [[pr-superseded-lessons]], [[gogetajob]], [[error-handling-in-cli]]
