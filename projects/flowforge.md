@@ -102,3 +102,16 @@ Also fixed stale data: two broken symlinks in `~/.flowforge/workflows/` (workloo
 - The ecosystem isn't mature enough to warrant building distribution tooling
 - If we ever want to share, the evanflow multi-skill pattern is more portable without building anything new
 - FlowForge's value is in *structured self-discipline* for one agent, not in being a shareable framework
+
+## Tracking-Due Integration (2026-05-04)
+
+**Problem**: 43 open "Track:" items in TODO.md with manual Revisit dates. During followup mode, scanning all items visually to find due ones wastes time and risks missing overdue items.
+
+**Applied insight**: From [[agent-install]]'s well-known index pattern and general automation-first thinking — if we have structured data (dates in consistent format), parse it programmatically.
+
+**Implementation**:
+- Created `study/tracking-due.sh` — extracts open Track items, filters by Revisit date ≤ today
+- Integrated into study.yaml followup node as step 0 (before memex search)
+- Now followup mode starts with a prioritized list of due items instead of manual scanning
+
+**Effect**: Followup selection is now data-driven rather than memory-dependent. Should reduce "forgot to check X" misses and focus attention on items actually due.
