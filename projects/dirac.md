@@ -418,3 +418,21 @@ Key changes:
 See [[supervisor-pattern]], [[model-native-vs-model-agnostic]], [[agent-brain-portability]]
 
 *Field note: 2026-05-04*
+
+---
+
+## Update: v0.3.20 (2026-05-04)
+
+**Stars**: 1,095 (steady, +10)
+
+**Key changes**:
+- **"Maintainability refactor of index.ts before the storm"** — Ominous commit message. Suggests a major architectural change is imminent. The refactor is prep work.
+- **VSCode fixes** — better-sqlite3 bundling issue, settings panel refactor
+- **Approval flow bug** — "reduce ugliness in chatview + fix a bug in the approval flow"
+- **Scrollback preserved** — "do not prevent scrollback" (UX regression fix)
+
+**"Before the storm" signal**: The commit message explicitly signals a big change is coming. Combined with the v0.3.19 diff review UI, permissions controller, and provider picker, this could be a v0.4.0 with significant architecture changes. Worth watching.
+
+**Phase assessment**: Pre-major-release cleanup. The steady star growth (~10/day) suggests organic adoption, not hype-driven. Active daily commits maintained.
+
+*Field note: 2026-05-04 (followup)*

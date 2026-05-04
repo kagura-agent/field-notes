@@ -96,6 +96,46 @@ Stands on four open-source projects:
 - Core innovation is the multi-agent adapter + skill frontmatter — not the design output itself
 - Real test: does it sustain commits + community after the launch spike?
 
+## Update 2026-05-04
+
+**Stars**: 21,736 (was 16,170 on 05-03 — +34% in one day!)
+
+### PR #435: Skill Resource CWD Aliasing (Merged)
+
+**Problem**: Skill side files (assets/, references/) need to be readable by the agent. But different CLIs handle directory access differently:
+- Claude Code has `--add-dir` but permission policies can still block
+- Codex, Gemini, OpenCode, Qwen, Kimi etc. have NO `--add-dir` equivalent
+- Result: skill preambles advertise absolute paths that half the supported agents can't open
+
+**Solution**: Copy active skill into `<cwd>/.od-skills/<folder>/` before spawning the agent. Preamble advertises both:
+1. CWD-relative `.od-skills/<id>/...` (primary — works for ALL agents)
+2. Absolute path (fallback — for Claude/Copilot via `--add-dir`)
+
+**Design evolution** (3 rounds of review):
+- Round 1: Symlink → **rejected** (write-amplification: agent writes through symlink mutate source)
+- Round 2: `fs.cp` per-project copy + safety validation (path traversal prevention, safe segment policy)
+- Round 3: Unified `effectiveCwd` to fix no-project-mode edge case, Windows junction fixtures
+
+**Key details**:
+- Only stages the *active* skill (1-3 MB), not all skills
+- Uses `dereference: true` so no symlinks leak into the copy
+- `stat()` not `lstat()` on source (follows symlinked SKILLS_DIR)
+- Unsafe segment policy: no separators, no dot segments, no absolute, no null bytes
+- Legacy symlink auto-upgrade (replaces old symlinks with real dirs)
+- 17 test cases including write-barrier regression test
+
+**Relevance to OpenClaw**: Our skill system also has side files. When skills need to provide resources to different agent backends (Claude Code, Codex, etc.), this cwd-relative staging pattern solves the "universal resource access" problem without requiring each agent CLI to support a special flag.
+
+See [[skill-ecosystem]], [[thin-harness-fat-skills]]
+
+### Other Changes
+- PR #434: French localization
+- PR #428: Skill renaming (editorial-collage → open-design-landing), kami skills, deprecated skill ID aliasing
+- PR #429: Preview blob export isolation
+
+### Growth Signal
+21.7k stars in 6 days is remarkable. Still actively maintained with multi-round PR reviews (3 rounds on #435). The commit quality is high — detailed commit messages with rationale. Using `looper 0.4.0` (automated fixer agent) for multi-commit PRs.
+
 ## Tracking
 
 - Revisit 05-10: check commit velocity, community PR merge rate, whether star growth sustains

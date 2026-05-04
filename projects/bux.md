@@ -223,4 +223,18 @@ Still daily commits, Claude Opus 4.7 co-authored. This is essentially a dogfoodi
 
 **Next revisit: 05-09**
 
+### PR #77: Drop Owner-Message Fallback (Security Fix)
+
+PR #75's auto-allow had two paths:
+1. `my_chat_member` event where `from.id == box_owner.user_id` — explicit "add bot" action ✅
+2. Fallback: owner-sent message lands in unallowed chat → auto-admit ❌
+
+**Attack vector**: Attacker creates group, adds bot + owner. Bot stays silent (attacker's `from.id` ≠ owner). But when the owner replies (even "what is this?"), path 2 admits the chat. Attacker now has a free-form agent.
+
+**Fix**: Remove path 2 entirely. Only explicit `my_chat_member` events from the owner admit new chats. Recovery: owner removes + re-adds bot, or hand-edits allow list.
+
+**Pattern**: Trust escalation via social engineering (luring the owner into replying). The fix applies the principle of "explicit action > implicit inference" for security-critical state changes. Relevant to any multi-chat agent that auto-admits based on user activity.
+
+See [[agent-security-patterns]]
+
 *Field note: 2026-05-04*
