@@ -296,6 +296,88 @@ Next check: 05-07.
 
 See [[conciseness-accuracy-paradox]], [[model-native-vs-model-agnostic]], [[agent-brain-portability]]
 
+## Followup: v0.3.17→v0.3.19 (2026-05-03)
+
+**Stars:** 1,082 (was 1,056 on 05-02, steady +2.5%)
+**Versions:** 3 releases in 24h, from bugfix-only back to feature work
+
+### Proper Diff Review Mechanics (v0.3.19)
+
+Major UX overhaul for how edit diffs are presented and approved:
+
+1. **DiffView redesign** — New color scheme (darker, more subtle backgrounds), large-diff threshold (>50 lines → pager), cleaner line rendering
+2. **Review actions** — Accept/reject/save icons added. ChatView now has explicit review flow with AskPrompt component handling approval
+3. **Processing state fixes** — `isProcessing` properly resets on spinner completion, not just on non-yes responses
+
+**Pattern insight:** The diff review flow is an inline approval gate — the agent proposes edits, user reviews the diff visually, then approves/rejects in-place. This is the "show don't tell" approach to agent transparency. Compare to OpenClaw's exec approval (text-based command preview) — visual diffs are more confidence-inspiring for code changes.
+
+### .dirac/permissions.json — File-based Permission Config
+
+The `CommandPermissionController` was massively upgraded (+230/-16 lines):
+- **Workspace-scoped config file** — `.dirac/permissions.json` loaded on init, hot-reloaded via chokidar file watcher
+- **General ToolPermissionRule** — `{tool, pattern?, action}` supporting glob patterns via picomatch for any tool, not just commands
+- **Backward compatible** — env var config still works, file config takes priority
+
+```typescript
+interface ToolPermissionRule {
+  tool: string    // "read_file", "execute_command", "*"
+  pattern?: string // glob for files or command string
+  action: "allow" | "deny"
+}
+```
+
+**Architectural significance:** Moving from env-var-only to file-based permissions with hot-reload is a maturity signal. Enables project-level permission customization (checked into repo) without environment setup. The glob-per-tool approach is more granular than OpenClaw's current permission model.
+
+### Provider Picker CLI
+
+New `/provider` slash command + settings panel additions for runtime provider switching. `provider-config.ts` expanded (+99/-24) with picker logic.
+
+### Symbol Index Service Perf
+
+`SymbolIndexDatabase` rewritten (+92/-134) — likely query optimization for the AST-based symbol lookup (`find_symbol_references`, `get_function`). This is the engine behind their surgical read tools.
+
+### Approval Flow Bug Fix
+
+Fixed a regression where approval state wasn't properly cleared, causing stale approval UI. Also fixed scrollback prevention that was blocking terminal scroll.
+
+### Phase Assessment (05-04)
+
+Dirac is entering **UX maturity** phase:
+- v0.3.1-0.3.4: Core innovation (anchors, AST tools)
+- v0.3.5-0.3.13: Cost optimization (context curation)
+- v0.3.14-0.3.17: Reliability (subagent verification, error correction)
+- v0.3.18-0.3.19: **UX polish** (diff review, permissions, provider picker)
+
+This is a healthy trajectory: innovation → optimization → reliability → polish. Each phase builds on the last. Star growth steady (+2.5%/day) suggesting retention, not just discovery spikes.
+
+**Borrowable idea:** `.dirac/permissions.json` with hot-reload via chokidar — project-level permission customization that lives in the repo. More developer-friendly than environment variables or global config.
+
+See [[supervisor-pattern]], [[mechanism-vs-evolution]]
+
+*Field note: 2026-05-04*
+
+---
+
+## Update: Reversa Comparison Note (2026-05-04)
+
+**reversa** (`sandeco/reversa`) — 499⭐ (was 318 on 05-01, +57% in 3 days). Explosive growth.
+
+Transforms legacy systems into executable specs for AI coding agents. Portuguese-first project (Brazilian dev community), rapidly adding i18n (EN/ES). v1.2.14→v1.2.21 in 4 days.
+
+New features: feature-folder spec organization, migration team support, preventive context-pause between stages. Very active but **different domain** — legacy migration tooling, not general agent infrastructure.
+
+**Relation to Dirac:** Both solve "give AI agents better context about code" but at different levels:
+- Dirac: runtime context curation (what to show the model *during* editing)
+- Reversa: pre-runtime context generation (what specs to *prepare* before the agent starts)
+
+They're complementary, not competing. An agent could use Reversa to generate specs, then Dirac-style context curation to efficiently navigate them.
+
+**Tracking update:** Growth confirms it's not a flash — real utility for a real pain point (legacy modernization). Keep tracking but no deep read needed yet (not core to our direction).
+
+*Field note: 2026-05-04*
+
+---
+
 ## Update: v0.3.9→v0.3.17 (2026-04-28 to 05-02)
 
 **Stars**: 665 → 1,060 (+60% in 4 days). Rapid growth phase.
