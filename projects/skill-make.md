@@ -2,10 +2,10 @@
 title: SKILL.make
 type: project
 created: 2026-05-03
-last_verified: 2026-05-03
+last_verified: 2026-05-04
 status: evaluated
-stars: 54
-repo: Teaonly/SKILL.make
+stars: 79
+repo: Teaonly/SKILL.mk (renamed from SKILL.make)
 tags: [skill-format, agent-skills, makefile, DAG]
 ---
 
