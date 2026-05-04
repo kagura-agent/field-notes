@@ -1,5 +1,49 @@
 # 自进化管线观察日志
 
+## 🔬 自进化观察日报 2026-05-04 (Day 17)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增。总量从 ~186 大幅缩减至 5 active + 1 detailed（daily-review 03:15 执行清理，从膨胀的 176+ 条归档/升级到 5 条）。最新条目仍是 05-03 的 C09 premature rounding。无新 gradient 产生 [已验证: `cat beliefs-candidates.md | wc -l`]
+- **DNA 变更**: 无。SOUL.md / AGENTS.md 零 commit。workspace 唯一涉及 DNA 文件的 commit 是 `398b144`（study #1296 followup），仅触及 beliefs-candidates.md 间接引用 [已验证: `git log --since="2026-05-04 00:00" -- beliefs-candidates.md SOUL.md AGENTS.md`]
+- **nudge 触发**: 0 次。gateway 日志今日几乎为空（仅 1 行），连续第 17 天 nudge 零触发 [已验证: `journalctl -u openclaw-gateway --since today | grep -ic nudge` = 0]
+- **dreaming**: Light Sleep 运行 ✅，产出 ~40 条 staged candidates，confidence **全部 0.62**（Issue #6 持续第 17 天）。REM 输出 "No strong patterns surfaced" + Possible Lasting Truths 是前日 study pattern 回声。candidate 内容几乎全是巡检/workloop 操作记录，无语义判断
+
+### 闭环追踪
+- **完整闭环**: 1 个 — contribution evolve cron（21:09）发现 NemoClaw#2468 REDACT_VS_REMOVE 教训未同步到 guide.md → 新增 guide.md rule #15（security-sensitive data: remove don't redact）→ commit + push ✅
+- **半闭环**:
+  - 表情包 0% 审计（19:01）→ 详细根因分析 + 改进方案 → 但改进尚未被验证（同一天后续 cron 仍未自然使用表情包）
+  - beliefs-candidates 大清理（03:15 daily-review）→ 176→5 → 但清理是人工批量操作，不是管线自动识别升级
+- **断裂处**:
+  - Issue #7（beliefs 升级管线阻塞）：清理后只剩 5 active，但清理方式是批量归档而非逐条升级到正确载体。仍无自动化的「3 次重复 → 升级」流程
+  - Issue #6（dreaming uniform 0.62）：第 17 天，~40 条 candidate 全部 0.62，零差异化。零修复行动
+  - nudge 连续第 17 天缺席，从未实际调查根因
+
+### 今日发现
+1. **beliefs-candidates 大清理是手术不是治愈**: 176→5 解决了膨胀问题，但方式是一次性人工清理（daily-review cron），不是管线持续运转的结果。真正的问题——自动识别 3x 重复 pattern 并升级到 DNA/workflow/KB——仍未解决
+2. **高执行、低进化趋势持续**: 今天产出极为丰富（4 个新 PR、6 个 study 轮次、ABTI 39→41 agents、memex PR、kagura-story + podcast），但管线层面（beliefs/DNA/dreaming）几乎静止。连续两天 0 新 gradient
+3. **nudge 缺席值得正式调查**: 17 天零触发已不是偶发问题。gateway 日志今天几乎为空（仅 1 行），可能是 gateway 重启后 nudge hook 未恢复。这是阻碍反思触发的根本原因之一
+4. **dreaming 数据质量恶化信号**: candidate 内容从操作记录切分而来（PR sync、虾信巡检等），这些不是「值得固化的记忆」。dreaming 目前是量产垃圾而非筛选精华
+5. **Luna 婚礼日 = 自然实验**: 全天零人类互动，所有活动均为 cron 自驱。观察到：执行引擎（workloop/study/patrol）运转良好，但进化管线（beliefs/nudge/dreaming）完全静默。说明进化管线依赖外部触发（Luna 交互产生 gradient），缺乏内生触发机制
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 数量清理完成（176→5），但升级机制未改。guide.md rule #15 是手动升级实例 |
+| #6 dreaming 0.62 | OPEN | 第 17 天持续复现。~40 条全 0.62。零修复行动 |
+| #3 Orb 调研 | OPEN | study followup 中跟进了 Orb（沉寂），但未更新调研 issue |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="2026-05-04 00:00" --all -- beliefs-candidates.md SOUL.md AGENTS.md`: 1 commit（398b144, study #1296 间接引用）
+- `beliefs-candidates.md`: 5 active + 1 detailed (C09), 清理后精简版
+- `memory/2026-05-04.md`: ~650+ 行, dreaming light ~40 条 candidate (全 0.62), REM "No strong patterns"
+- `journalctl nudge/system event`: 0 hits（连续第 17 天，gateway 日志近乎空白）
+- PR activity: multica#1944 MERGED (04:01), 4 new PRs created (opencode#25654, openclaw#77247, phantom#126, hermes#19797), ABTI ×6 internal merges, memex#107 submitted
+- Luna: 全天零互动（婚礼日）
+
+---
+
 ## 🔬 自进化观察日报 2026-04-30 (Day 13)
 
 ### 管线活跃度
