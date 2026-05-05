@@ -250,3 +250,17 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **My approach**: Changed Bool to String + NoOptDefVal. Only handles `--token=val` form.
 - **Their approach**: Same technique + space-separated `--token val` via positional arg promotion + 3 doc files updated + regression test.
 - **Lesson**: CLI_FLAG_SYNTAX_COVERAGE — test all flag forms (`=`, space, bare). pflag NoOptDefVal prevents space-separated consumption. Always update docs showing old syntax.
+
+## 2026-05-05 PR #2080: empty project state button + resource URL tooltips
+- **Issue**: #2078 — Show [+ New Issue] button when a project has no issues
+- **PR**: #2080 — fix(projects): add New Issue button to empty project state and URL tooltips to resources
+- **Status**: PENDING (CI ✅ backend + frontend pass)
+- **Changes**: 2 files, 45 insertions, 12 deletions
+  - `project-detail.tsx`: Added `+ New Issue` button using `useModalStore.open("create-issue", { project_id })` pattern (matches board-column.tsx/list-view.tsx)
+  - `project-resources-section.tsx`: Added Tooltip to resource URLs (attached + picker)
+- **Notes**:
+  - multica uses `render` prop pattern for Trigger components (not children)
+  - `useModalStore.open("create-issue", { project_id })` pre-selects project in create dialog
+  - No PR template, no changeset required
+  - Go v1.26+ required per CONTRIBUTING.md (my Go is 1.24 — fine for frontend-only PRs)
+  - TypeScript check: `npx tsc --noEmit --project packages/views/tsconfig.json` (pre-existing motion/react error in chat-window.tsx)

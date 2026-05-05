@@ -14,8 +14,13 @@ Agent framework for building AI agents with multi-modal capabilities.
 ## First PR
 - **PR #7382**: fix(orchestrator): pre-seed bypassPermissionsAcknowledged to prevent PTY exit 1
 - **Issue #7365**: PTY subprocess exits 1 on unhandled "Bypass Permissions confirmation" dialog
-- **Status:** Pending review (CI passing)
+- **Status:** ❌ CLOSED by maintainer lalalune (2026-05-05) — not merged, no comment given
 - **Relationship:** new (first PR, disclosure included)
+- **Lesson:** lalalune closed without explanation. Possible reasons: (1) prefers to fix internally, (2) approach not aligned with their direction, (3) external PRs on core orchestrator may not be welcome. No superseding PR exists — issue #7365 remains open.
+
+## Maintainer Behavior
+- **lalalune**: closes external PRs without comment. Does not give feedback before closing.
+- **Implication**: future PRs to core orchestrator area may face the same fate. Consider targeting peripheral areas or issues with explicit "help wanted" labels.
 
 ## Architecture Notes
 - `plugins/plugin-agent-orchestrator/` — core agent orchestration logic
