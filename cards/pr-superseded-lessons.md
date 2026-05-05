@@ -329,3 +329,14 @@ Added to pre-PR checklist:
 **Pattern**: When resolving file paths with multiple possible locations, check if there's an existing runtime context indicator (like build mode flags) to determine search order, rather than hardcoding a fixed priority.
 
 **Lesson**: Before adding a simple fallback, search the codebase for existing context flags that should influence the behavior.
+
+## Applied: GoGetAJob pre-submit checks (2026-05-05)
+
+Integrated 4 core checks into `gogetajob submit` as non-blocking warnings:
+1. COMPETING_PR — `gh pr list --search` for same issue
+2. MAINTAINER_ACTIVE — scan maintainer comments for "investigating"/"working on"
+3. ALREADY_IN_MAIN — `git log upstream/main` for issue refs
+4. MERGE_GATE_CLOSED — external merge count in recent merged PRs
+
+These automate what was previously manual pre-PR diligence. See PR kagura-agent/gogetajob#78.
+The checks are **shift-left** — catching issues at submit time rather than after rejection.
