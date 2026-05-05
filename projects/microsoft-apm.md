@@ -135,13 +135,27 @@ APM has shipped the most significant architectural change since creation: **`.ag
 4. **For [[clawhub]]**: skill installation should target `.agents/skills/` by default. Current approach of placing skills in the OpenClaw-specific directory is becoming non-standard.
 5. **Compilation as moat is widening** — each new client adapter is a maintenance cost that discourages competition.
 
+### v0.12.2 — Integration Drift Detection (2026-05-05)
+
+`apm audit` now detects **integration drift** by default (PR #1137, 3750 additions / 30 files):
+- Replays `apm install` cache-only into scratch tree, diffs against working copy
+- Catches 3 cases: `.apm/` source added without re-install, hand-edited deployed files, orphan files after dependency removal
+- Read-only scan — nothing modified
+- `.apm-pin` cache marker prevents stale-cache false negatives
+- Closes #1071 and #898 (integration drift epic complete)
+
+**Implications**: This is the first automated drift detection in the agent skill ecosystem. As skill counts grow, manual tracking of "did I reinstall after updating source?" breaks down. The scratch-tree replay approach is clever — essentially a declarative "expected state" diff, similar to Terraform plan.
+
+**For OpenClaw/ClawHub**: If we ever build skill installation, drift detection should be table stakes from day 1, not an afterthought.
+
 ### Star trajectory
 - 04-29: 2,145⭐
-- 05-03: 2,199⭐ (+54, +2.5%)
-- Commits: 15+ in 3 days, PRs in 1000s range
+- 05-03: 2,199⭐ (+54)
+- 05-05: 2,232⭐ (+33)
+- Commits: daily, PRs in 1100+ range
 - Very healthy open-source project with strong Microsoft backing
 
 ## Tracking
 
-- **Activity**: Very active, daily pushes, 8 client adapters
-- **Revisit**: 05-09 (check v1.0 progress, `.agents/skills/` adoption feedback)
+- **Activity**: Very active, daily pushes, 8 client adapters, v0.12.2 released
+- **Revisit**: 05-12 (drift detection adoption, v0.13 planning)
