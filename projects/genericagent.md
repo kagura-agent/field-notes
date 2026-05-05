@@ -257,3 +257,77 @@ No new commits since 04-29. The codebase is digesting the supervisor_sop additio
 ### Signal: L1 Rule Discipline Still Tightening
 
 The memory_management_sop.md反例 pattern ("括号内只写场景触发词 2-4字") confirms an ongoing theme — L1 gets progressively tighter through usage. Our [[l1-index-layer-evaluation]] should expect similar refinement cycles for `wiki/L1.md`.
+
+## Followup 2026-05-05: Two-Tier History + CDP Bridge + Peer Hints
+
+**Stars**: 8,480 → 9,113 (+633/4d, growth re-accelerated after brief slowdown)
+
+### Three Significant Architecture Changes (05-02~05-05)
+
+#### 1. Two-Tier History Folding (`_fold_earlier` + `earlier_context`)
+
+The biggest change since supervisor_sop. History is now split into two tiers:
+
+| Tier | Window | Treatment |
+|------|--------|-----------|
+| Recent | Last 30 lines | Verbatim in `<history>` |
+| Earlier | Everything before | Folded: consecutive Agent turns collapsed to `"[Agent] (N turns)"` |
+
+**Key design decision**: User messages are kept as anchors, agent actions are summarized. This acknowledges that user intent matters more than agent execution details for context.
+
+Previous approach was a flat 40-line window. Now it's `<earlier_context>` (folded) + `<history>` (last 30, verbatim). The folded section caps at 150 lines after folding.
+
+**Why this matters for us**: Our sessions load full SOUL+AGENTS+SKILL every turn. GenericAgent's progressive compression preserves long-session coherence without proportional token cost. The "fold agent turns, keep user turns" heuristic is simple and effective — worth evaluating for [[flowforge]] long-running workflows.
+
+#### 2. CDP Bridge `contentSettings` Command
+
+New CDP bridge command for Chrome's `contentSettings` API:
+```js
+{"cmd": "contentSettings", "type": "automaticDownloads", "pattern": "https://*/*", "setting": "allow"}
+```
+
+Bypasses Chrome's "download multiple files" dialog that blocks all JS execution. `Browser.setDownloadBehavior` (the standard CDP approach) doesn't work in extensions — this is the workaround.
+
+Also added `management` command for extension listing/reload/disable/enable.
+
+**Pattern**: When standard CDP methods fail in extension context, fall back to Chrome's extension-specific APIs (`chrome.contentSettings`, `chrome.management`). The CDP bridge is becoming a full browser control surface, not just a cookie/tab manager.
+
+#### 3. Peer Hint Mechanism
+
+New `peer_hint` flag (default: True for interactive, False for subagent/reflect mode):
+```
+[Peer] 用户提及其他会话/后台任务状态时: temp/model_responses/ (只找近期修改的文件尾部)
+```
+
+This tells the agent how to check on sibling sessions — read their output files. Disabled for subagent/reflect modes (they shouldn't peek at peers).
+
+**Insight**: This is a minimal multi-session awareness mechanism. Rather than building complex inter-agent communication, they just tell the agent where to look for sibling state. File-based IPC continues to be GenericAgent's universal integration pattern ([[supervisor-pattern]]).
+
+### Other Changes
+
+- **Auto-inject summary**: When model outputs `thinking+tool_use` without text, auto-injects "直接回答了用户问题" as summary to maintain history consistency
+- **Resume prompt v5**: Simplified from regex-heavy technical instructions to natural language ("帮我看看最近有哪些会话可以恢复"). Trend: prompts getting more conversational, less procedural
+- **`compress_history_tags` now includes `earlier_context`**: The 5-round compression cycle covers the new folded section too
+- **Terminal QR for WeChat**: Terminal-based QR code display for headless WeChat login
+- **`_pending_tool_ids` cleanup**: Fixed orphan tool_result after `/new` command
+
+### Growth Analysis
+
+| Period | Stars | Rate |
+|--------|-------|------|
+| 04-27→04-30 | 7,626→8,306 | +227/d |
+| 04-30→05-01 | 8,306→8,480 | +174/d |
+| 05-01→05-05 | 8,480→9,113 | +158/d |
+
+Growth sustained at ~150-200/day. Community PRs continue (QT UI, WeChat QR, timeout fixes). 5 open community PRs.
+
+### Trend: From "Flat Context" to "Structured Memory Budget"
+
+GenericAgent's evolution path:
+1. **v1**: Fixed 40-line history window
+2. **v2** (now): Two-tier folded history (30 recent + compressed earlier)
+3. **Likely next**: Dynamic window sizing based on task complexity
+
+This parallels the broader ecosystem trend in [[context-budget-constraint]]: everyone is converging on "keep recent details, compress older context" rather than "stuff everything in a big window."
+
+See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[l1-index-layer-evaluation]]
