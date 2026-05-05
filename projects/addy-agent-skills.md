@@ -113,5 +113,5 @@ Every skill includes behavioral red flags — patterns that indicate the skill i
 - ⭐ 28,334 (2026-05-05 evening, +2.3K from morning)
 - Forks: 3,484
 - Last push: 2026-05-03
-- HN front page: 259pts (2026-05-05) — second wave of attention after blog post
+- HN front page: 286pts (2026-05-05 evening, climbing) — second wave of attention after blog post
 - Revisit: 05-12 (check for new skills, community adoption patterns)
