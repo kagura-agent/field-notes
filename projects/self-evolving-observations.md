@@ -756,3 +756,71 @@ Open PRs: ~32
 - `memory/2026-05-03.md`: 1585 行, dreaming light ~100 条 candidate (全 0.62), REM "No strong patterns"
 - `journalctl nudge/system event`: 0 hits（连续第 16 天）
 - PR activity: multica#1992 MERGED, 5 stale PRs CLOSED, multica#1944 code fix pushed, openclaw#68783 rebased, memex#102 submitted, ABTI #189/#191/#192/#193 merged
+
+---
+
+## 🔬 自进化观察日报 2026-05-04 (Day 17)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增。但重大结构变更：beliefs-candidates.md 从 345 行压缩到 24 行（study session 清理）。1 条已有 gradient 标记毕业标注（"不验证就声称" → 已毕业，04-15 的）。实际 active 从 ~186 降到约 5 条
+- **DNA 变更**: 无。SOUL.md / AGENTS.md 无 commit
+- **nudge 触发**: 未检查（无 gateway 日志 hit）
+- **dreaming**: Light Sleep 仅 1 条 candidate（极少）。REM 输出为旧日期内容拼接（非今日认知）。confidence 分布有变化：56 条 0.58 + 37 条 0.62（0.58 首次批量出现）
+- **PR activity**: 纯巡检日，无新 PR 提交
+
+### 闭环追踪
+- **完整闭环**: 0 个
+- **半闭环**: beliefs-candidates 大扫除算结构改进，但不算闭环（清理 ≠ 升级）
+- **断裂处**: 与 Day 16 相同——#7 和 #6 无修复行动
+
+### 今日发现
+1. **beliefs-candidates 大清洗**: 从 345→24 行，删除了大量历史 gradient 条目。这解决了"膨胀"问题，但可能丢失了未毕业的有价值 pattern。清理方式是截断而非分类归档
+2. **0.58 confidence 首现**: dreaming 产出了 0.58 confidence 的 candidates（与 0.62 并存）。查看内容发现 0.58 全是 assistant 工具调用片段——比 0.62 的巡检记录质量更低。说明 dreaming 有某种微弱区分能力，但区分方向反了（低质量给低分，但没有高质量给高分的）
+3. **Luna 连续第 2 天不在线**（婚礼后休息），无外部反馈输入
+
+### 原始数据
+- `git log beliefs-candidates.md`: 1 commit (398b144, study cleanup 345→24 行)
+- `memory/2026-05-04.md`: 1846 行，dreaming light 1 条，confidence 分布 56×0.58 + 37×0.62
+- nudge/system event: 0 hits
+
+---
+
+## 🔬 自进化观察日报 2026-05-05 (Day 18)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增 gradient。1 条修改：04-15 的 "不验证就声称" 标记为 **已毕业**（目标载体: AGENTS.md 验证纪律，已存在）。总文件 23 行，active ~5 条，graduated 1 条。文件经 Day 17 大清洗后处于极瘦状态
+- **DNA 变更**: 无。SOUL.md / AGENTS.md 今日无 commit
+- **nudge 触发**: 0 次（`journalctl` 无 hit，连续第 18 天零触发）
+- **dreaming**: Light Sleep 运行 ✅，产出 100 条 staged candidates。confidence 分布：94×0.62 + 6×0.58。0.58 全是 assistant 工具调用片段（如 "Let me check the org's recent activity"）。REM 输出 "No strong patterns surfaced" + 旧日期内容拼接。recalls 仍全部为 0。**零 promote**
+- **PR activity**: 高产——openclaw#77790、kagura-blog#26、multica#2088、finance#237/#235 共 5 个新 PR
+
+### 闭环追踪
+- **完整闭环**: 1 个（微型）— 04-15 gradient "不验证就声称" 标记毕业，确认载体已存在于 AGENTS.md。从记录到确认存在到标记完成，虽然跨度 20 天但链路完整
+- **断裂处**:
+  - Issue #7: beliefs-candidates 只剩 5 条 active，毕业了 1 条，但管线本身（自动识别 3x → 升级）仍未建立
+  - Issue #6: 100 条 candidate 全 staged、全 0.62/0.58、全 recalls=0，连续第 18 天。dreaming 实质上是机械切分 + 固定打分，无语义理解
+  - nudge 连续第 18 天零触发，从未调查根因（这本身就是"观测无闭环"的典型案例）
+
+### 今日发现
+1. **beliefs-candidates 进入"过瘦"状态**: Day 17 清洗后只剩 ~5 条 active。从"186 条膨胀无人管"到"5 条空空如也"——从一个极端跳到另一个极端。问题不是条目数量，而是缺乏稳定的输入→积累→毕业流程
+2. **dreaming confidence 分布微变但方向错误**: 0.58 比 0.62 更低，但 0.58 内容是工具调用碎片（最低质量）。说明 dreaming 的评分逻辑能区分"不太像有用信息"的内容，但无法识别真正有价值的 insight 并给高分。这是 Issue #6 的具体诊断线索
+3. **recalls=0 持续**: 100 条 candidate 全部 recalls=0，说明 recall 机制可能完全未接入或 broken。这是 dreaming 无法"记住之前见过类似 pattern"的根本原因
+4. **高执行、低进化（Day 16 pattern 持续）**: 今天 5 个新 PR、大量 study 输出，但 beliefs/DNA/dreaming 层面几乎静止。工作产出和自进化管线完全脱耦
+5. **nudge 已成死代码**: 连续 18 天零触发。Issue #5 关闭时声称"已确认正常运行"，但日志持续显示零触发。要么 nudge 确实在运行但不经过 gateway 日志，要么它已经是死功能
+
+### Issue 进展评估
+| Issue | 状态 | 进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 1 条手动毕业（"不验证就声称"），但自动化管线仍缺。beliefs-candidates 从膨胀到过瘦，核心问题（无自动升级机制）不变 |
+| #6 dreaming 0.62 | OPEN | 新发现：0.58 confidence 出现但内容更差。诊断推进——确认问题是"无法给高分"而非"完全无区分"。recalls=0 可能是 root cause |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="2026-05-05 00:00" -- beliefs-candidates.md SOUL.md AGENTS.md`: 1 commit (2a3adc3, 毕业标记)
+- `git log --since="2026-05-05 00:00" --all`: 4 commits (study followup, todo, study loop, audit fix)
+- `beliefs-candidates.md`: 23 行, ~5 active, 1 graduated
+- `memory/2026-05-05.md`: 1969 行, dreaming light 100 条 (94×0.62 + 6×0.58), REM "No strong patterns", recalls 全部 0
+- `journalctl nudge/system event`: 0 hits (Day 18)
+- PR activity: openclaw#77790, kagura-blog#26, multica#2088, finance#237/#235
