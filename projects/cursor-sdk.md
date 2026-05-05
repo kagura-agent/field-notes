@@ -2,9 +2,9 @@
 
 - **Repo**: https://github.com/cursor/cookbook (SDK examples + docs)
 - **npm**: `@cursor/sdk` v1.0.10
-- **Stars**: 2,214 (cookbook repo, created 2026-04-27)
+- **Stars**: 2,214 → 3,415 (cookbook repo, created 2026-04-27) — +54% in 5 days
 - **Language**: TypeScript
-- **Last checked**: 2026-04-30
+- **Last checked**: 2026-05-05
 
 ## What it is
 
@@ -77,8 +77,58 @@ This is Cursor going from "IDE with AI" to "AI agent platform with API." The clo
 - **Cloud sandbox pattern**: Cursor's cloud execution mode (clone repo → run in sandbox) is something OpenClaw could eventually support for remote coding tasks.
 - **Model routing**: Their `Cursor.models.list()` with variants is similar to our provider model catalog concept.
 
+## Update 2026-05-05: DAG Task Runner
+
+New addition: a **DAG task runner** skill + SDK example (PR #7, merged 05-01). Decomposes tasks into a JSON dependency graph, executes nodes as Cursor SDK subagents in topological rank order with `Promise.all` for same-rank parallelism.
+
+### Architecture
+
+```
+JSON DAG → parseDAG() → computeRanks() → for each rank: Promise.all(runTask(...))
+                                                ↓
+                                          CanvasWriter → .canvas.tsx (hot-reloads in IDE)
+```
+
+- **dag.ts**: Schema validation + cycle detection (iterative DFS) + topological ranking via Kahn's algorithm
+- **run_dag.ts** (~650 LOC): Core runner. Creates one `Agent` per task via Cursor SDK. Streams events, collects assistant text into a `BoundedTextBuffer` (capped). Stitches upstream task results into child prompts. Per-task timeout + stream idle timeout.
+- **canvas_writer.ts**: Debounced (200ms default) TSX writer. Inlines state as `const STATE = {...}` into a React component. IDE hot-compiles → live DAG visualization.
+
+### Key design decisions
+
+1. **Complexity-based model routing**: Tasks tagged HIGH/MED/LOW → maps to different models (gpt-5.3-codex / composer-2 / auto-low). Overridable per-DAG or via `--models-file`.
+2. **Upstream context stitching**: Parent task outputs are prepended to child prompts with "do not re-do this work" framing. Truncated at cap.
+3. **Fail-fast with skip propagation**: If a parent task fails, all downstream tasks are immediately skipped (not attempted). Clean error messages.
+4. **Canvas = observable state**: The `.canvas.tsx` file IS the monitoring UI. No separate dashboard — the IDE is the dashboard. Clever for Cursor's IDE-first model.
+5. **Defensive shutdown**: SIGINT/SIGTERM → finalize canvas → exit. Uncaught exceptions caught, unhandled rejections suppressed with logging.
+
+### Comparison with FlowForge
+
+| Aspect | Cursor DAG Runner | FlowForge |
+|---|---|---|
+| Execution model | Parallel (topological ranks) | Sequential (node-by-node) |
+| Agent coupling | Cursor SDK only | Agent-agnostic (human-in-loop) |
+| Visualization | IDE canvas (hot-reload TSX) | CLI status output |
+| DAG definition | JSON (tasks + depends_on) | YAML (nodes + branches) |
+| Human control | Fire-and-forget | Interactive (flowforge next) |
+
+FlowForge's strength is human-in-the-loop steering and agent-agnosticism. Cursor's DAG runner is purpose-built for automated fan-out within their SDK. Not competitors — different design philosophies.
+
+### Also new: Agent Kanban Board
+
+A Next.js web app (`sdk/agent-kanban/`) for viewing Cursor Cloud Agents grouped by status/repo, previewing artifacts, and creating new cloud agents. Introspection scripts (`introspect-agent-list.mjs`, `introspect-agent-details.mjs`) pull data from Cursor's API.
+
+Signal: Cursor is building management tooling around their agent API — moving from "run one agent" to "manage a fleet."
+
+### Relevance to OpenClaw
+
+- **DAG execution pattern**: We could add parallel node execution to FlowForge (ranks within a step). Currently all sequential.
+- **Canvas-as-monitoring**: Interesting for IDE-integrated agents. Not applicable to our Discord/Feishu channels, but the "state-as-file" pattern is worth noting.
+- **Model routing by complexity**: Similar to our provider selection but more explicit. Could inform [[skill-ecosystems]] metadata.
+
 ## Connections
 
 - [[spawn-agent]] — wraps Cursor (and others) as AI SDK providers via ACP
 - [[agent-client-protocol]] — Cursor's CLI also speaks ACP natively
 - [[coding-agent-ecosystem]] — Cursor joining the "agent-as-API" trend alongside Claude Code, Codex
+- [[flowforge]] — our workflow engine, sequential vs Cursor's parallel DAG
+- [[addyosmani-agent-skills]] — process-over-prose philosophy, both treating skills as structured specs
