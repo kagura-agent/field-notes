@@ -87,6 +87,7 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 | BREAKING_DEFAULT | 新行为 opt-in |
 | REDACT_VS_REMOVE | 凭证完全移除 |
 | BROAD_TOGGLE_VS_TARGETED_QUERY | 精准查询 > 大范围 toggle |
+| USE_RUNTIME_CONTEXT | 用已有 runtime flag 决定行为 > hardcode 固定顺序 |
 
 ## 相关
 - [[kagura-work-patterns]] - 工作模式总集(暂未合并)
