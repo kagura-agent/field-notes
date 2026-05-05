@@ -96,7 +96,7 @@ Every skill includes behavioral red flags — patterns that indicate the skill i
 
 ## Actionable Takeaways
 
-1. **Anti-rationalization tables** — add to our most-skipped workflow nodes (especially workloop study/reflect steps). The format is simple and effective.
+1. **Anti-rationalization tables** — ✅ APPLIED (2026-05-05). Added to study.yaml (note, reflect, scout, deep_read nodes) and workloop.yaml (reflect node). Commit 6e2f09b. Each table pairs common excuses with concrete rebuttals. Already rendering in flowforge output.
 2. **Red Flags sections** — complement to our AGENTS.md 讨好模式 / 观测闭环 checks. Could add per-skill.
 3. **"Process over prose"** — validates our FlowForge approach (workflow > instructions). Our skills that are mostly essays should be refactored into step-by-step workflows.
 4. **Parallel fan-out with merge** — the only multi-persona orchestration pattern they endorse. Interesting constraint — no router agents, only fan-out + merge. Relevant for [[team-lead]] skill design.
