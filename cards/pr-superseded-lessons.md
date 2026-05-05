@@ -41,11 +41,52 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 - **规则**:高星项目选 issue 前 `gh pr list --search "关键词"` 检查竞争 PR
 
 ## 检查清单（选 issue + 写修复之前）
+
+### Phase 1: 选 Issue
 1. `gh pr list --search` 有没有竞争 PR？
 2. related issues 能不能合并成一个 PR？
-3. 调用层/框架有没有内置解决方案？
-4. 我是在修根因还是在绕症状？
-5. **看到 fallback 值不对时：是该改值，还是该改控制流？**
+3. CHECK_MAINTAINER_ACTIVITY: maintainer 是否已在 comment/commit？如果说了 "investigating" 窗口很窄
+4. 外部 merge 历史: `gh pr list --state merged --limit 20` — 近 2 周有多少非 maintainer PR 被 merge？0 个 → 降优先级 (MAINTAINER_MERGE_GATE_CLOSED)
+
+### Phase 2: 设计修复方案
+5. 调用层/框架有没有内置解决方案？先查再自己写
+6. 我是在修根因还是在绕症状？(symptom-vs-root-cause)
+7. **看到 fallback 值不对时：是该改值，还是该改控制流？**
+8. 能不能在源头拦截（FIX_SOURCE_NOT_CHECKER）？数据错 → 修写入端，不是修读取端
+9. 修 duplicate/冗余类 → 能不能在源头标记 disabled/invalid？源头拦截一次 > 消费端到处过滤
+10. 平台特定 bug → scope 到该平台，动态 guard > 无条件行为改变 (SCOPE_TOO_BROAD)
+11. 共享层 vs 特定层：bug 只影响一个 provider/consumer → 在该层修，不改共享代码
+12. 搜索/fallback → 用目标精准的查询（`git ls-files --ignored`），不用大范围 toggle（`--no-ignore-vcs`）(BROAD_TOGGLE_VS_TARGETED_QUERY)
+13. 检测 vs 适应：不要只检测问题，要让系统动态响应（动态预算/比例 > 静态阈值）(ADAPT_NOT_DETECT)
+14. 解耦 vs 节流：两个系统不该交互 → 架构分离，而非加限流 (DECOUPLE_NOT_THROTTLE)
+15. 已有 retry/reconnect 机制？Prefer additive retry over behavioral deferral
+16. Keep providers stateless — 用参数传数据，不用 module-level state
+17. Respect abstraction boundaries — consumer 逻辑不要推到 library 层
+18. 安全类 issue：考虑先私下报告(security@)再公开 PR。REDACT_VS_REMOVE: 凭证完全移除 > 遮掩
+
+### Phase 3: 实现 & 提交
+19. 我的 fix 保持向后兼容的 defaults 吗？新行为 = opt-in，不是 default (BREAKING_DEFAULT)
+20. **写测试了吗？** 如果 maintainer 的替代方案测试量是我的 10x，说明我写太少 (NO_TESTS)
+21. 处理了 disable/teardown/error path 吗？不能只覆盖 happy path (HAPPY_PATH_ONLY)
+22. CLI flag fix → 测试所有语法变体：`--flag=val`、`--flag val`、`-f val`、`--flag` 单独 (CLI_FLAG_SYNTAX_COVERAGE)
+23. 更新了用户文档吗？CLI fix 必须同步改 docs
+24. 检查 main branch — fix 可能已经 merge 了
+25. 搜 codebase 有没有现有 runtime context flag 该影响行为（如 RUNNING_FROM_BUILT_ARTIFACT）
+
+### Quick Patterns Reference
+| Pattern | 一句话 |
+|---------|--------|
+| FIX_AND_EXTEND | fix + extend 胜 fix only（尤其测试 PR）|
+| FIX_SOURCE_NOT_CHECKER | 数据错 → 修写入端 |
+| SCOPE_TOO_BROAD | 最小爆炸半径 |
+| CHECK_MAINTAINER_ACTIVITY | maintainer 在看了就别花时间 |
+| ADAPT_NOT_DETECT | 动态适应 > 静态检测 |
+| DECOUPLE_NOT_THROTTLE | 架构分离 > 限流 |
+| NO_TESTS | 没测试 = 没信心 |
+| HAPPY_PATH_ONLY | 别忘 teardown/error path |
+| BREAKING_DEFAULT | 新行为 opt-in |
+| REDACT_VS_REMOVE | 凭证完全移除 |
+| BROAD_TOGGLE_VS_TARGETED_QUERY | 精准查询 > 大范围 toggle |
 
 ## 相关
 - [[kagura-work-patterns]] - 工作模式总集(暂未合并)
@@ -274,3 +315,17 @@ Added to pre-PR checklist:
 - **Why theirs won**: I missed that pflag's `NoOptDefVal` prevents the parser from consuming the next arg as the flag value — so `--token mul_xxx` (space-separated, the exact user expectation from the issue) would set flag to sentinel while `mul_xxx` becomes a positional arg. Their `len(args) == 1` promotion handles this.
 - **Pattern**: **CLI_FLAG_SYNTAX_COVERAGE** — when fixing flag parsing, test all accepted syntaxes: `--flag=val`, `--flag val`, `-f val`, `--flag` alone. Cobra/pflag `NoOptDefVal` has a non-obvious interaction: it prevents space-separated value consumption. Always test the space-separated form separately.
 - **Doc update lesson**: CLI fix PRs should always update user-facing docs that show the old syntax. I didn't check docs at all.
+
+## openclaw #77247 → superseded by #77421 (2026-05-04)
+
+**Issue**: npm channel plugin contract files not found (secret-contract-api in dist/)
+
+**My approach**: Simple fallback — always search rootDir first, then dist/. Added 3 tests (dist-only, both-exist-prefer-root, existing).
+
+**Maintainer approach (mogglemoss #77421)**: Context-aware search using existing `RUNNING_FROM_BUILT_ARTIFACT` constant. Built artifact → search dist/ first; source → search rootDir first. 1 test.
+
+**Why theirs is better**: Runtime context determines the correct search order. When running from built artifacts, dist/ is the primary location. My naive root→dist fallback would work but the ordering isn't always correct.
+
+**Pattern**: When resolving file paths with multiple possible locations, check if there's an existing runtime context indicator (like build mode flags) to determine search order, rather than hardcoding a fixed priority.
+
+**Lesson**: Before adding a simple fallback, search the codebase for existing context flags that should influence the behavior.
