@@ -238,3 +238,64 @@ PR #75's auto-allow had two paths:
 See [[agent-security-patterns]]
 
 *Field note: 2026-05-04*
+
+---
+
+## Followup 2026-05-05 — Agency Pivot + Setup Token Hardening
+
+**Stars**: 306 (steady from 296)
+**Activity**: 8 PRs merged 05-04~05-05 — another burst
+
+### Agency Architecture: Mini-App → Inline Buttons (PRs #78, #85, #87, #88, #89)
+
+Most architecturally instructive sequence of the week:
+
+1. **PR #78**: Built a full Tinder-style swipe mini-app (FastAPI + cloudflared + JS deck, 1587 lines)
+2. **PR #87**: Reverted it on day one — `web_app` inline buttons only render in **private** TG chats, not supergroup forum topics
+3. **PR #85**: Replaced with pure inline-keyboard buttons (4-button per suggestion, 208 lines)
+4. **PR #88**: UX polish — mark picked button with ✓ prefix via `editMessageReplyMarkup`, delete stale queued ack bubbles on job start
+5. **PR #89**: (open) SQLite persistence for suggestions — dedupe, decision recording, source tracking
+
+**Key lesson**: Platform constraints dictate UX architecture. bux's "forum topics as process lanes" design is load-bearing — when a new UX surface (WebApp) conflicts with it, the UX gets reverted, not the lane model. **The architecture won.**
+
+**Agency concept**: Proactive agent suggestions delivered as button cards. Agent recommends tasks → owner taps yes/no/different/rethink → agent executes or re-evaluates. The `different` and `rethink` buttons carry follow-up prompts — agent asks for context rather than treating as "no." This is sophisticated compared to simple yes/no approval flows.
+
+**Implicit dismissal rule**: "If I didn't respond to something, you can ignore it." Pending suggestion >48h = implicit no. This is similar to our heartbeat "stay quiet" principle but for proactive suggestions.
+
+**Comparison to OpenClaw**: Our presentation blocks (`buttons`, `select`) serve a similar purpose but are channel-agnostic. bux's agency pattern (proactive suggestions + button decisions + SQLite tracking) is more structured than ad-hoc approval flows. Worth considering: should our heartbeat/cron system generate structured suggestions with inline buttons instead of just sending text?
+
+### PR #90: Setup Token Race Fix (Security)
+
+**Before**: Any first message from a new chat would bind the bot, as long as `TG_SETUP_TOKEN` was non-empty. Knowing the bot handle = claiming the box.
+
+**Fix**: Bind only on `/start <token>` with `hmac.compare_digest` (constant-time compare). Silent drop for everything else — no reply, no leakage.
+
+**Key details**:
+- `_extract_start_payload` helper handles `/start@<botname>` group syntax
+- Strict-match follow-up: reviewer caught that `rest.split()[0]` still accepted trailing text. Fixed to reject any whitespace in payload
+- Token has exactly 2 copies: owner's TG client + box's `/etc/bux/tg.env`. Cloud doesn't store it
+- Single-use: burned by `_bind_chat` after successful match
+
+**Security pattern**: The "infrastructure was already there, we just weren't verifying" anti-pattern. Setup token existed, deep-link generated it, but the bind gate wasn't actually checking. **Shipped a lock, forgot to turn the key.** Common in rapidly-shipped features.
+
+**Strict-match lesson**: First fix accepted `/start <token> anything` — reviewer caught the bypass where trailing text could confuse audit logs or enable social engineering. Telegram restricts `?start=` payloads to `[A-Za-z0-9_-]`, so any whitespace means it didn't come from the deep-link. 12 test cases verified including 4 failure modes.
+
+### Evolution Signal
+
+bux is developing a **proactive agency layer** on top of its reactive chat-agent base:
+- Reactive: user messages → agent responds (existing)
+- Proactive: agent observes → generates suggestions → presents as button cards → tracks decisions (new)
+
+This mirrors the broader trend toward agents that don't just wait for instructions but actively propose work. See [[agent-proactivity]], [[openclaw]] heartbeat.
+
+### Other Changes
+
+- **PR #56**: `profileId` camelCase fix — `profile_id` was silently dropped by FastAPI's optional field handling. Cookies never persisted across browser rotations. A classic API field-name mismatch bug.
+- **PR #83**: Long TG message chunking (same solution as future-agi #218 — Slack's 50-block limit, TG's 4096-char limit).
+- **PR #81**: Restart notification scoped to interrupted lanes only.
+
+**Next revisit: 05-09** (unchanged, tracking items not yet due)
+
+See [[openclaw]], [[agent-security-patterns]], [[agent-proactivity]]
+
+*Field note: 2026-05-05*
