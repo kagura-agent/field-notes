@@ -120,8 +120,87 @@ All commands now support `--json` flag. Versioned schemas: `ast-outline.outline.
 
 100 → 102 stars in ~3 days. Slow organic growth. Single contributor still. No C/C++ support added. The project is technically solid but may not achieve critical mass. The pattern it demonstrates (AST-compressed context for agents) is more valuable than the specific project.
 
+## Update 2026-05-05: v0.5.0 → v1.0.0 (Massive Leap)
+
+From 100⭐ → 115⭐. Still single contributor (aeroxy), but **5 releases in 2 days** (v0.4.1 → v1.0.0). The project graduated from "structural outline" to **"code intelligence platform for agents."**
+
+### v0.4.0–v0.4.2: Code Search + Surface API
+
+- **`search`**: Hybrid semantic (ONNX embeddings) + BM25 code search with persistent index
+- **`find-related`**: Given a file, find semantically related code chunks
+- **`index`**: Build/refresh the search index
+- **`surface`**: True public API surface across Rust, Python, TS/JS, Scala 3 — not just outlines, but export-level API shape
+- **`digest`** format improvements, Rust adapter overhaul
+- MCP server grew from 4 tools → 8 tools
+
+### v0.5.0: Cross-Agent Install Modes (--mcp, --skills)
+
+The most ecosystem-relevant change. Two new install flags:
+
+**`--mcp`**: Registers ast-outline as MCP server in agent's native config format:
+- Claude Code: `~/.claude.json` / `.mcp.json` (JSON)
+- Cursor: `~/.cursor/mcp.json` (JSON)
+- Gemini: `~/.gemini/settings.json` (JSON)
+- Codex: `~/.codex/config.toml` (TOML via `toml_edit`, format-preserving)
+- Copilot: `.vscode/mcp.json` (project-only)
+- aider/tabnine: n/a
+
+**`--skills`**: Installs as SKILL.md file:
+- Claude Code: `~/.claude/skills/ast-outline/SKILL.md`
+- Codex: `~/.agents/skills/ast-outline/SKILL.md`
+- Others: n/a (different skill primitives)
+
+Key insight: **Every agent's config format is different** but the underlying capability is identical. ast-outline is now a live reference implementation of the [[skill-ecosystem]] cross-agent distribution problem. The format-preserving edits (JSON `preserve_order`, TOML `toml_edit`) show the engineering cost of multi-agent compatibility.
+
+### v1.0.0: Dependency Graph (Breaking)
+
+Four new subcommands:
+- **`deps <file>`**: Forward import traversal with depth control
+- **`reverse-deps <file>`**: "Blast radius" before refactoring — who imports this?
+- **`cycles`**: Tarjan SCC, CI-gate friendly (exit 3 = cycles found)
+- **`graph`**: Full dep graph in text/json/dot/**DSM** formats. Design Structure Matrix with red above-diagonal (architectural inversions) and green below-diagonal (clean imports)
+
+**Cross-language dep resolution** covers 9 languages via unified suffix-index resolver. One resolver, per-call language hints. Python `__init__.py` dir synonyms, Rust `crate::/self::/super::`, TS/JS tsconfig `paths` — all handled.
+
+**Breaking**: Bare `ast-outline <path>` → must use `ast-outline outline <path>`. Subcommand is now required.
+
+**find-related is dep-graph-aware**: When dep cache exists, chunks within depth 2 get 1.4× (direct) / 1.2× (depth-2) score boost. Semantic + structural relevance combined.
+
+MCP server: 8 → **12 tools**.
+
+### Architecture Evolution
+
+```
+v0.1: outline (AST → compressed text)
+v0.4: + search (embeddings + BM25) + surface (public API)
+v0.5: + multi-agent installer (MCP + skills)
+v1.0: + dependency graph (9-lang unified resolver) + DSM visualization
+```
+
+The trajectory is clear: **structural shape → semantic search → dependency graph → code intelligence platform**. Each layer builds on the previous (dep-graph boosts search relevance, search uses outline's adapter system).
+
+### What Changed for Us
+
+1. **Contribution assessment upgraded**: 115⭐, still solo, but velocity is impressive (5 releases/2 days). The quality bar is high (format-preserving config edits, cross-language unified resolver, 242 tests). If this reaches ~500⭐, contributing Rust adapters could be valuable
+2. **Install mode as reference**: The `--mcp`/`--skills` cross-agent install is the best working example of [[agentskills-io-standard]] distribution in practice. Validates that `.agents/skills/` is converging as universal path
+3. **DSM for architecture review**: The Design Structure Matrix output could be useful in our [[coding-agent]] workflow — quick architectural assessment before choosing where to contribute
+4. **dep-graph + semantic search hybrid**: The boost factor approach (dep proximity × semantic score) is a pattern worth noting for [[agent-memory-landscape-202603]] — structural relationships improve relevance ranking
+
+### Comparison: ast-outline v1.0 vs [[coding-agent]] context strategies
+
+| Approach | Token cost | Freshness | Depth |
+|---|---|---|---|
+| Full file read | 100% | Always fresh | Full |
+| ast-outline outline | 10-20% | Always fresh | Structure only |
+| ast-outline search | Variable | Needs index rebuild | Semantic + BM25 |
+| ast-outline deps | Minimal | Cached, mtime delta | Architectural |
+| Our current approach | 100% | Fresh | Full (wasteful) |
+
+We're still in the "read full files" camp. ast-outline offers 3 complementary layers of compression.
+
 ## Tracking
 
-- Revisit 05-08: check star growth, contributor activity, C/C++ support
-- Consider: install locally for our own coding-agent workflows
-- Drop if: stars plateau by 05-15, no new contributors
+- Revisit 05-12: check if v1.0 drives star acceleration, community contributors
+- Consider: local install for coding workflows (now much more capable)
+- Consider: contribution target if reaches 300⭐ (Rust adapter for missing languages)
+- Drop if: stars plateau by 05-20, no community
