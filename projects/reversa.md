@@ -116,6 +116,42 @@ Detective agent mines git history for ADRs (Architectural Decision Records). Com
 
 *Field note: 2026-05-04*
 
+## Update 2026-05-05 — v1.2.22, Kiro Native Skills Discovery
+
+**Stars**: 572 (was 509 yesterday, +63 in 1 day — growth reaccelerating)
+
+**Key change**: Kiro integration rewritten. Previously required `.kiro/steering/reversa.md` (a steering document that told the agent to look at skills). Now Kiro natively discovers skills from `.kiro/skills/` directory — no steering document needed. Reversa installs to both `.kiro/skills/` AND `.agents/skills/` for cross-engine compatibility.
+
+**What this tells us about the ecosystem**:
+
+Reversa's engine compatibility table is now the best single reference for agent skill directory convergence:
+
+| Engine | Entry File | Skills Directory |
+|--------|-----------|------------------|
+| Claude Code | AGENTS.md | .agents/skills/ |
+| Codex | AGENTS.md | .agents/skills/ |
+| Gemini CLI | GEMINI.md | .agents/skills/ |
+| Windsurf | .windsurfrules | .agents/skills/ |
+| Antigravity | AGENTS.md | .agents/skills/ |
+| Kiro | (none) | .kiro/skills/ + .agents/skills/ |
+| Cursor | .cursorrules | .agents/skills/ |
+| Cline | .clinerules | .agents/skills/ |
+| Roo Code | .roorules | .agents/skills/ |
+| GitHub Copilot | .github/copilot-instructions.md | .agents/skills/ |
+| Opencode | AGENTS.md | .agents/skills/ |
+| Aider | .aider.conf.yml | .agents/skills/ |
+
+**Pattern**: `.agents/skills/` is winning as the universal skills directory. Entry files (how you tell the agent about skills) vary, but the skills themselves live in the same place. Kiro's move to native discovery (no entry file needed) is the logical endpoint — skills should be discovered, not declared.
+
+**Relevance to OpenClaw**: Our `<available_skills>` injection + `SKILL.md` format already implements the "discovery without declaration" pattern. The convergence toward `.agents/skills/` as universal directory validates our approach. If we ever want cross-agent skill portability, `.agents/skills/` is the target directory.
+
+**Other changes** (v1.2.18-v1.2.21):
+- Feature folder organization for specs
+- Preventive inter-step pauses (context overflow prevention)
+- Removed video from README (cleanup phase)
+
+*Field note: 2026-05-05*
+
 ## See Also
 - [[hermes-labyrinth]] — read-only observability (similar immutability principle)
 - [[agent-skill-ecosystems]] — skills as distribution format

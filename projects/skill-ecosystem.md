@@ -110,5 +110,13 @@ Related: [[claude-code]], [[agentskills-io-standard]], [[microsoft-apm]]
 - Pattern: optimization layer that sits between agent and filesystem, no skill changes needed
 - Ecosystem implication: a **fourth layer** emerging — format → distribution → activation → **optimization** (infrastructure skills that improve all other skills' efficiency without modifying them)
 
+## Directory convergence update (2026-05-05)
+
+`.agents/skills/` confirmed as de facto universal skills directory. Evidence from [[reversa]] v1.2.22 engine compatibility matrix: 12 major agents all support `.agents/skills/` as skill location. Entry files (how agents learn about skills) still fragmented (AGENTS.md, GEMINI.md, .cursorrules, etc.), but the skills themselves converge on one directory.
+
+**Key evolution**: Kiro moved from "steering document points to skills" → "native discovery from `.kiro/skills/`". This is the direction: agents should discover skills by presence, not by declaration. OpenClaw already does this (skills registered in config, discovered at startup).
+
+**Fifth layer emerging**: format → distribution → activation → optimization → **discovery** (how agents find and load skills without explicit wiring)
+
 ## First seen
 2026-04-10, study #58 scout
