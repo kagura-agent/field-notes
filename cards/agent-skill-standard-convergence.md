@@ -9,6 +9,21 @@ created: 2026-04-25
 
 2026年4月观察到的关键趋势：agent skill 格式正在从各自为政向统一标准收敛。
 
+## 2026-05-05 Update: Skill Explosion Era
+
+The skill format convergence has triggered a **skill explosion**. Top new repos by stars (created after 2026-04-20) are dominated by skill packages:
+
+- **oh-story-claudecode** (774⭐) — novel-writing skill suite
+- **ian-handdrawn-ppt** (365⭐) — hand-drawn PPT skill
+- **library-skills** (432⭐, +3 from tracking) — tiangolo's reference implementation
+- **character-animation-creator** (121⭐) — game animation skill
+- **swiss-design-skill** (92⭐) — design system skill
+- **SKILL.mk** (89⭐) — Makefile-format skill spec
+
+New development: **[[openmelon]]** introduces **compilable skills** (Skill-Plus) — a deterministic compiler transforms skill YAML+Markdown into target-specific formats (openmelon JSON, skill-md, prompt-bundle, eval checklists, provenance templates). This adds a compilation layer between authoring and consumption that no other standard has.
+
+Signal: we're entering the "app store" phase. Format is settled; now it's about content volume, discoverability, and quality differentiation.
+
 ## 三层标准化
 
 | 层 | 标准 | 解决的问题 |
