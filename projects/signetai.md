@@ -2,7 +2,7 @@
 title: Signet AI
 type: project
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-04
 status: tracking
 stars: 135
 ---
@@ -14,7 +14,7 @@ stars: 135
 **Stars**: 135 (2026-05-03) — feels undervalued given scope
 **Language**: TypeScript (Bun), SQLite
 **License**: Apache 2.0
-**Version**: v0.109.22 (extremely rapid iteration — 109+ minor versions)
+**Version**: v0.111.3 (extremely rapid iteration — 111+ minor versions, 3 releases on 05-04 alone)
 **Created**: 2026-02-11
 
 ## What It Does
@@ -154,6 +154,20 @@ Massive scope: CLI, daemon, dashboard (Svelte), SDK, 8 harness connectors, brows
 2. **Checkpoint extraction pattern** — we should consider something similar for long-lived sessions
 3. **Knowledge graph approach** — if our wiki/memex ever needs structured retrieval beyond FTS, this is a reference implementation
 4. **Not a threat** — Signet enhances OpenClaw, doesn't compete with it. They explicitly list OpenClaw as supported.
+
+## 05-04 Followup: 140x Memory Recall Speedup
+
+PR #627 (`perf(daemon): speed up memory recall`) merged 2026-05-04:
+- **Before SQL fixes**: ~30.2s recall latency
+- **After FTS join-order fixes**: ~1.23s
+- **After graph/context index forcing**: ~188-212ms
+- **Final benchmark**: avg 218ms over 3 runs with real Ollama embeddings
+
+Key technique: FTS join-order optimization + forced index usage for graph traversal and context construction. This is the kind of performance work that separates production-grade memory from prototypes.
+
+Also released v0.111.1, v0.111.2, v0.111.3 on the same day — dependency bumps + the perf fix.
+
+**Relevance**: Our memex search is already fast (file-based FTS), but if we ever move to SQLite-backed memory, these join-order patterns are reference material.
 
 **Next revisit: 05-10** — check for v0.110+ features, community adoption signals
 
