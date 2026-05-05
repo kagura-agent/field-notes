@@ -1044,3 +1044,8 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 2. **Agent security is exploding** — CVEs, firewalls (OpenAgentLock), privacy layers (mapick) all emerging
 3. **Skill ecosystem management** — mapick (advisor), agent-install (one-API install), ClawHub 57k+ skills = scale problems arriving
 4. **Multi-agent orchestration diversifying** — oh-my-kimichan shows Kimi Code ecosystem growing alongside Claude Code/Codex
+
+## 2026-05-05 Quick Scan
+
+- **vercel-labs/deepsec** ⭐809 — Security harness for finding vulnerabilities in codebases via coding agents. Agent security testing is a real gap. Worth checking architecture when it matures.
+- **HN: "Lessons for Agentic Coding"** (48019025, 127pts) — design philosophy piece on code-is-cheap era. Read for framing, not implementation.
