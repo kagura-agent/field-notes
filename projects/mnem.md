@@ -1,127 +1,120 @@
-# mnem — Git for Knowledge Graphs
+# mnem (Uranid/mnem) — Deep Read Notes
 
-> Uranid/mnem | ⭐17 (2026-05-04) | Rust | Apache-2.0
-> "Content-addressed knowledge graph with hybrid GraphRAG retrieval, versioned commits, and deterministic ingest."
+> Uranid/mnem | 18★ (2026-05-05) | Rust | Apache 2.0 | v0.1.4
+> "Git for Knowledge Graphs": versioned agent memory with hybrid GraphRAG retrieval.
 
-## Core Architecture
+## What It Is
 
-### Content-Addressed Objects (DAG-CBOR + BLAKE3)
-- Every object (Node, Edge, Commit, View) has a CID derived from canonical DAG-CBOR encoding + BLAKE3 hash
-- Same content → same CID on any machine. Deduplication is free.
-- Embeddings stored in **per-commit sidecar** (not on the Node), so different embedders don't change NodeCid
-- Forward-compat: unknown fields land in `extra: BTreeMap` and survive round-trip
+Content-addressed knowledge graph with versioned commits, 3-way merge, and hybrid retrieval (HNSW + BM25/SPLADE + graph traversal via RRF). Single binary, no cloud, no LLM at ingest, compiles to `wasm32`. Surfaces via CLI, HTTP, MCP, and Python bindings.
 
-### Prolly Tree Data Structure
-- Core merge primitive borrowed from Dolt/IPFS world
-- Enables deterministic 3-way merge: two agents writing independently can reconcile without "last write wins"
-- Trees store nodes, edges, schema — all chunked and content-addressed
+**The thesis**: agent memory should be versioned like code (git semantics), content-addressed for determinism (DAG-CBOR + BLAKE3 → same content = same CID everywhere), and mergeable across agents without "last write wins".
 
-### Versioning Model (Git-like)
-- Commits chain by parent CID; branches, merge, log, diff, blame
-- Operations form a DAG (op-heads store)
-- On open: if >1 op-head exists, transparently 3-way merges, converging to single head
-- Merge is deterministic — concurrent readers produce byte-identical ops
+## Why This Matters
 
-### Hybrid Retrieval (3 Lanes + RRF)
-1. **Vector** — HNSW over per-commit sidecar embeddings
-2. **Sparse** — BM25 / SPLADE (feature-gated)
-3. **Graph** — n-hop traversal over authored edges, PPR-scored
-- Fused via Reciprocal Rank Fusion (k=60)
-- Greedy token-budget packing in RRF rank order
-- Returns `tokens_used`, `candidates_seen`, `dropped` — no silent truncation
+This is the most architecturally ambitious agent memory system I've seen. While [[brain-rust]] gives you git-backed event log with FTS5, and [[stash]] gives you 9-stage consolidation pipeline, mnem treats memory as a **full VCS problem** with:
 
-### GraphRAG (LLM-free)
-- Leiden community detection over adjacency index
-- Extractive centroid+MMR summarization (no LLM, reuses embedder)
-- Score calibration: per-query quantiles + distribution-shape labels for agent interpretation
+1. **Content-addressed identity** — every node/edge/commit/tree gets a CID from canonical serialization. Identical content collapses across machines. Not UUIDs that diverge.
+2. **3-way merge** — multiple agents writing offline reconcile via graph+embedding merge, not conflict markers. Op-heads store detects divergence, finds LCA, merges deterministically.
+3. **Token-budget transparency** — every retrieve returns `tokens_used`, `candidates_seen`, `dropped`. No silent truncation. No other memory system exposes this.
+4. **Prolly trees** — chunking strategy from Noms/Dolt databases adapted for knowledge graphs. Enables efficient diff between versions.
 
-### Ingest Pipeline (LLM-free, deterministic)
-- Parsers: Markdown (GFM), plain text, PDF (pure-Rust), conversation exports
-- Chunkers: Paragraph, Recursive (token-budgeted), Session (conversation)
-- Entity extraction: rule-based (capitalized phrases) + optional Ollama NER
-- Same bytes in → same CIDs out (auditable, reproducible)
+**Timing signal**: agent memory is fragmenting into layers — [[brain-rust]] (event log), [[stash]] (consolidation pipeline), mnem (versioned graph). Each took a different bet on what "persistent memory" means.
 
-## Crate Structure
+## Architecture
+
+### Crate Structure (17 crates)
 ```
-mnem-core        — format types, codec, prolly trees, repo, retrieval (no IO, no tokio, WASM-clean)
-mnem-backend-redb — embedded storage (redb key-value store)
-mnem-ingest      — parse + chunk + extract pipeline
-mnem-graphrag    — community detection + extractive summarization
-mnem-embed-providers — ONNX MiniLM (bundled), Ollama, OpenAI, Cohere
-mnem-cli         — CLI binary
-mnem-mcp         — MCP server
-mnem-http        — HTTP API
-mnem-ann         — ANN/KNN edge computation
-mnem-bench       — benchmark harness
+mnem-core          — graph model, retrieval, indexing, CIDs, Prolly trees (WASM-clean)
+mnem-cli           — single binary, all commands
+mnem-http          — HTTP JSON server
+mnem-mcp           — MCP server (stdio)
+mnem-py            — PyO3 Python bindings
+mnem-embed-providers — ONNX bundled, Ollama, OpenAI, Cohere
+mnem-sparse-providers — BM25, SPLADE-ONNX
+mnem-rerank-providers — Cohere, Voyage
+mnem-llm-providers — OpenAI, Anthropic, Ollama
+mnem-ingest        — parse + chunk + extract pipeline
+mnem-extract       — entity extraction (KeyBERT, statistical NER)
+mnem-graphrag      — community summarization, centroid + MMR
+mnem-ann           — HNSW wrapper
+mnem-backend-redb  — redb-backed persistent store
+mnem-transport     — CAR codec + remote framing
+mnem-bench         — benchmark harness
+mnem-core-testutils
 ```
 
-## Benchmarks (vs MemPalace)
+### Key Design Decisions
+
+1. **`mnem-core` has no async, no I/O, no `unsafe`** — everything behind `Blockstore` trait. This is what makes WASM work. Most competitors are Python + external DB.
+2. **LLM-free ingest** — parse + chunk + KeyBERT extraction is statistical. Deterministic: same bytes → same CIDs. Contrast with mem0/Graphiti that require LLM at write time.
+3. **Hybrid retrieval via RRF** — vector (HNSW) + sparse (BM25/SPLADE) + multi-hop graph, fused with Reciprocal Rank Fusion (k=60). GraphRAG is optional, triggered for multi-hop queries.
+4. **Ed25519 signing** — commits can be signed. Revocation lists for key management. Audit trail is cryptographically verifiable.
+
+### Agent API Surface
+```rust
+// Write
+tx.commit_memory("Note", "morning meeting with alice", props)?;
+tx.tombstone_node(&id)?; // soft delete with audit trail
+
+// Read
+repo.retrieve()
+    .label("Note")
+    .vector("openai:text-embedding-3-small", embedding)
+    .where_created_after(timestamp)
+    .token_budget(2000)
+    .execute()?;
+// Returns: items, tokens_used, candidates_seen, dropped
+```
+
+## Benchmarks (Claimed, Reproducible)
 
 | Benchmark | Metric | MemPalace | mnem | Δ |
 |-----------|--------|-----------|------|---|
 | LongMemEval | R@5 | 0.966 | 0.966 | ±0 |
 | LoCoMo | R@5 | 0.508 | **0.726** | +0.218 |
 | ConvoMem | avg recall | 0.929 | **0.976** | +0.047 |
-| MemBench simple | R@5 | 0.840 | **0.960** | +0.120 |
+| MemBench | R@5 | 0.840 | **0.960** | +0.120 |
 
-Reproducible: `bash benchmarks/harness/run_bench.sh` (30-50 min, 16-core box).
-
-## Key Design Decisions & Tradeoffs
-
-1. **Embeddings in sidecar, not on Node** — prevents nondeterministic embedding producers from perturbing NodeCid. Smart tradeoff: dedup is preserved even when switching embedders.
-2. **WASM-clean core** — no tokio, no filesystem, no println. Same retrieval logic compiles to wasm32. This is unusually principled for a 17⭐ project.
-3. **No LLM at ingest** — determinism trumps extraction quality. Optional Ollama NER is fallback-safe (fails to empty Vec, not error).
-4. **Labels for multi-tenancy** — simple string namespace instead of complex permission model.
-5. **Ed25519 signing** — commits are signed, enabling trust chains for federated scenarios.
-
-## "Skills as Graphs, not Markdown"
-
-mnem explicitly pitches itself as an alternative to flat SKILL.md files:
-> "Today, agent skills live in flat .md files — downloaded, pasted into prompts, hand-edited, never queried. mnem promotes them to a versioned, queryable, mergeable graph."
-
-This is a direct challenge to the OpenClaw/Claude Code skill model.
+Ships a full reproducible harness (`bash benchmarks/harness/run_bench.sh`). Proofs as JSONL artifacts.
 
 ## Relevance to Us
 
-### What mnem does better than our wiki/ approach
-- **3-way merge for multi-agent writes** — our wiki uses git (which also merges), but mnem's object-level merge is more granular (node-level, not file-level)
-- **Token-budget transparency** — we have no mechanism to report "I left stuff out because of context limits"
-- **Hybrid retrieval** — memex does vector search only; mnem adds BM25 + graph traversal + RRF fusion
-- **Deterministic replay** — same query same state = same result. Our memex search order isn't guaranteed.
+### Direct Parallels
+- Our memex/wiki is flat markdown + backlinks. mnem's "skills as graphs, not markdown" vision is the logical next step — queryable, versionable, mergeable skill knowledge.
+- Our `memory_search` does fuzzy text match. mnem's hybrid retrieval (vector + sparse + graph) is what proper agent memory retrieval should look like.
+- Our MEMORY.md + memory/YYYY-MM-DD.md has no versioning or merge. Two sessions writing simultaneously → last write wins.
 
-### Why we probably won't adopt it
-- 17 stars, single author — sustainability risk (same concern as mneme)
-- Rust-only core, no JS bindings yet — can't easily integrate into OpenClaw (Node.js)
-- Our wiki/ + memex approach is "good enough" and deeply integrated
-- Graph model is heavier than markdown — higher barrier to human editing
-- MCP server exists but doesn't solve the "skills in prompts" problem better than SKILL.md
+### What We Can Learn
+1. **Token-budget transparency** is brilliant. Every retrieve telling you "I had 50 candidates, used 2000/2000 tokens, dropped 12" eliminates the silent truncation problem in all current memory systems.
+2. **Deterministic ingest** (no LLM at write time) is a strong architectural choice. It means memory creation is fast, cheap, and reproducible. LLM-based consolidation (like [[stash]]) trades reproducibility for quality.
+3. **Content-addressed dedup** — same content → same CID → automatic dedup. We manually deduplicate via Jaccard in beliefs-candidates. A CID-based approach would be zero-cost.
 
-### Ideas worth stealing
-1. **Token-budget transparency in retrieval** — memex search should report how much was found vs returned
-2. **Sidecar embeddings** — keeping vector data separate from content identity is elegant
-3. **Deterministic ingest** — our wiki-lint could verify that same input produces same index
-4. **Score calibration** — per-query quantiles to interpret "is 0.7 good or bad for this query?"
-5. **Content-addressed dedup** — if we ever need to merge wiki branches, CID-based dedup would help
+### What We Probably Won't Adopt
+- Full graph model is heavy for our use case (markdown files + simple search works fine at our scale)
+- Rust single binary — our stack is Node.js. Integration would be via MCP or HTTP, not embedded.
 
-## Position in Agent Memory Ecosystem
+## Ecosystem Position
 
-```
-                    Flat files          Structured          Graph-native
-                    ─────────           ──────────          ────────────
-Read-time evolve    mneme               mem0                mnem ←
-Write-time govern   OpenClaw wiki       Letta               Graphiti
-Append-only         daily logs          Engram              —
-```
+| System | Approach | Strength | Weakness |
+|--------|----------|----------|----------|
+| mnem | Versioned KG | Determinism, merge, audit | Complexity, early (18★) |
+| [[brain-rust]] | Git event log | Simplicity, FTS5 | No graph, no embedding |
+| [[stash]] | 9-stage pipeline | Progressive consolidation | LLM-dependent, Postgres |
+| mem0 | Cloud memory | Ecosystem, funding | Lock-in, LLM at ingest |
+| [[invincat]] | Score/tier injection | Evidence-gating | Python, single-agent |
 
-mnem occupies a unique position: **graph-native + versioned + deterministic + LLM-free ingest**. No other project combines all four. Closest competitor is Graphiti (graph-native but LLM-dependent, no versioning).
+mnem is the "infrastructure bet" — if agent memory becomes important enough to need git-level versioning and crypto-level auditability, mnem is positioned uniquely. If memory stays "good enough with markdown files," mnem is over-engineered.
 
-## Risks & Watch Items
-- Single author, 17⭐ — may not sustain
-- No remote protocol yet (docs say "next phase")
-- Python bindings exist (`mnem-py` on PyPI) but JS/TS bindings absent
-- Benchmark numbers are self-reported, need independent verification
+## Scout Context (2026-05-05)
 
-## Verdict (2026-05-04)
-Architecturally the most rigorous agent memory system in the ecosystem. The WASM-clean core, content-addressing, and deterministic properties are genuinely novel in combination. However, adoption barrier is high (Rust, no JS), community is nascent, and our current approach works. **Track**, don't adopt. Revisit 05-11.
+Also found this round:
+- **paragents** (81★) — parallel agent sessions in one panel, permission-aware tools
+- **oh-my-kimi** (49★) — multi-agent harness for Kimi Code CLI, worktree teams + DAG planning
+- **OpenMonoAgent** (244★) — unlimited-token local coding agent in C#/.NET
+- **aide** (11★) — self-modifying agent in its own source code (TS)
+- **lazar** (19★) — minimalist self-evolving agent in Rust, one tool: `execute(command)`
+- **master-skill** (29★) — industry skill distiller for Claude Code / OpenClaw / Codex
 
-Links: [[mneme]], [[memory-reconsolidation]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[skills-as-packages]], [[deterministic-vs-llm-compression]], [[confidence-decay-design]]
+**Macro signal**: agent memory is becoming a product category. Three new entrants this week (mnem, brain spin-off, caura-memclaw). Meanwhile, self-evolution projects (aide, lazar) are appearing but staying small (10-20★). The market is betting on infrastructure (memory, orchestration) over autonomy.
+
+Links: [[brain-rust]], [[stash]], [[invincat]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[skills-as-packages]]
