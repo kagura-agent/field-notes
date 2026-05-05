@@ -31,6 +31,14 @@ Skill 之于 Agent ≈ npm package 之于 Node.js app
 - 分发平台 = npm registry
 - 目前有了格式标准，缺分发平台（ClawHub 的机会）
 
+## 2026-05-05 更新：格式实验继续但无颠覆
+
+[[skill-mk]] (85⭐, 3天) 提出用 Makefile 格式替代 SKILL.md。核心卖点是 target 间的 DAG 依赖关系。
+
+**判断**：DAG 依赖是好想法（解决 agent 跳步问题），但 Makefile 格式是错误载体。SKILL.md 共识依然稳固，所有主流框架都在用。格式碎片化继续但无收敛转向信号。
+
+**可偷的设计**：section 间依赖关系可以表达为 YAML frontmatter，不需要换格式。
+
 ## 战略含义
 
 - 不要重新发明 skill 格式——拥抱已有共识
