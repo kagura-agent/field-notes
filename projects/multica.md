@@ -264,3 +264,14 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
   - No PR template, no changeset required
   - Go v1.26+ required per CONTRIBUTING.md (my Go is 1.24 — fine for frontend-only PRs)
   - TypeScript check: `npx tsc --noEmit --project packages/views/tsconfig.json` (pre-existing motion/react error in chat-window.tsx)
+
+## 2026-05-05 PR #2088: include resources in project get response
+- **Issue**: #2087 — `multica project get` doesn't include resources, agents can't discover them
+- **PR**: #2088 — fix(server): include resources in project get response
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: `GetProject` handler only returned project fields without resources. Resources were on a separate endpoint `/api/projects/{id}/resources`.
+- **Fix**: Added `Resources []ProjectResourceResponse` to `ProjectResponse` (omitempty). In `GetProject` handler, call `ListProjectResources` and include in response. 1 file, +9/-2 lines.
+- **Approach**: Manual edit (trivial surgical change, no need for acpx)
+- **Testing**: `go vet ./internal/handler/...` passes clean. Go 1.24.4 works for vet.
+- **Pattern**: When an API returns an entity without its relations, check if the relation query already exists (it did — `ListProjectResources`) and reuse it. `omitempty` keeps backward compat.
+- **Note**: Additive API change — existing consumers unaffected (new field only appears when resources exist)
