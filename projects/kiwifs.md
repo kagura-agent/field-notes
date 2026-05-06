@@ -1,9 +1,9 @@
 ---
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-05-06
 type: project
 status: active
-stars: 415
+stars: 426
 repo: kiwifs/kiwifs
 language: Go
 license: BSL-1.1
@@ -101,4 +101,73 @@ Key deps: go-git, echo (HTTP), go-fuse, go-nfs, goldmark (markdown), mcp-go
 
 **future-agi** (819⭐, created 04-20) — Open-source eval/observability platform for agents. Apache 2.0, self-hostable. Growing fast.
 
-Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]]
+## Agent-Ready Infrastructure (2026-05-06, PR #38)
+
+KiwiFS is no longer just a knowledge filesystem — it's becoming an **agent task orchestration layer**. PR #38 (merged 05-06, +1353/-58 lines, 32 files, 58 adversarial tests) adds:
+
+### Claims System (Task Locking)
+- SQLite-backed lease/claim store with expiry goroutine
+- `kiwi_claim` / `kiwi_release` / `kiwi_eligible` MCP tools
+- REST: `POST /claim`, `DELETE /claim`, `GET /claims`
+- Conflict resolution: upsert-with-guard — claim succeeds only if expired or same holder
+- Lease range: 1min–24h, configurable per claim
+
+### Workflow State Machine
+- `ValidateTransition(path, oldStatus, newStatus) error` hook in write pipeline
+- Intercepts **both** `Write` and `Append` paths (and `BulkWrite`)
+- `ErrTransitionDenied` → HTTP 409, `ErrValidationFailed` → HTTP 422 (clean error semantics)
+- `OnTransition` callback fires after successful status change → webhook dispatch + dependency re-resolution
+
+### Dependency Tracking (`_blocked`)
+- `blocked-by` frontmatter field (array of paths)
+- `_blocked` computed field via SQL post-pass: checks if any blocker has non-terminal status
+- `ComputeBlockedStatus()` runs as `PostFlush` callback on async indexer → cross-row consistency
+- `OnDelete` cascade: when a blocker file is deleted, dependents get re-indexed
+- `kiwi_eligible` MCP tool returns `WHERE type = "task" AND status = "todo" AND _blocked = false`
+
+### Webhooks
+- HMAC-signed dispatch with standard-webhooks format
+- Glob matching on paths (e.g. `tasks/**`)
+- Retry with exponential backoff
+- Fires on transitions, enabling external orchestrators
+
+### Long-Polling
+- `GET /changes?feed=longpoll&since=<seq>&timeout=30s`
+- Enables polling-based agents without WebSocket complexity
+
+### Design Pattern: Files as Task Board
+
+The key insight: **markdown files with frontmatter ARE the task board**. No separate database for tasks — tasks are files, status is frontmatter, queries are DQL, concurrency is ETags + claims.
+
+```yaml
+# tasks/fix-login.md frontmatter
+type: task
+status: todo
+priority: 1
+blocked-by:
+  - tasks/setup-auth.md
+assignee: agent-kagura
+```
+
+This is essentially a **lightweight Linear/Jira built on markdown** — but native to agent workflows. The agent polls for eligible tasks, claims one, does the work, transitions status. No SDK, no API client, just `PUT` a file with new frontmatter.
+
+### Relevance to Us
+
+1. **Conceptual validation**: Our [[pulse-todo]] and [[taskflow]] solve similar problems but as standalone tools. KiwiFS proves the pattern of **task orchestration embedded in the knowledge layer** is viable.
+2. **Claims as coordination primitive**: Multi-agent claim/lease is something we'd need if we ever run multiple agents on shared workspaces. Their SQLite+upsert pattern is clean and steal-worthy.
+3. **`_blocked` computation**: Their SQL post-pass for dependency resolution is elegant — a computed field that auto-updates when dependencies change. This is better than manually tracking blockers.
+4. **Workflow in the write pipeline**: Intercepting writes to enforce state transitions means agents can't skip steps. This is governance-by-infrastructure, not governance-by-prompt — aligns with our [[mechanism-vs-evolution]] thinking.
+
+### Growth Signal
+
+415⭐ → 426⭐ in 2 days. Active development: PR #37 (ML/analytics, 10 features) and PR #38 (agent orchestration) merged within 48 hours. This is the most architecturally ambitious project in the agent knowledge space right now.
+
+## Also Scouted (2026-05-04)
+
+**SKILL.mk** (Teaonly, 80⭐, created 05-02) — Makefile-format agent skills with DAG structure + on-demand loading. Key insight: skill instructions as dependency graph, load only the relevant recipe target → 85% token reduction in probe mode. Novel but early (PoC stage). See [[agent-skill-standard-convergence]].
+
+**Skill ecosystem explosion** — Domain-specific skills proliferating: Swiss design (91⭐), Compose performance (295⭐), scientific plotting (36⭐), character animation (72⭐). We're in the "skill as content" phase — skills becoming the new blog posts.
+
+**future-agi** (819⭐, created 04-20) — Open-source eval/observability platform for agents. Apache 2.0, self-hostable. Growing fast.
+
+Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]]

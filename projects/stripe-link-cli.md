@@ -3,7 +3,7 @@ title: Stripe Link CLI — Agent Commerce Layer
 created: 2026-05-03
 source: https://github.com/stripe/link-cli
 stars: 403
-last-check: 2026-05-03
+last-check: 2026-05-06
 ---
 
 # Stripe Link CLI
@@ -64,3 +64,19 @@ The MPP protocol (HTTP 402) could become the standard for agent-to-service payme
 - Will other payment providers (PayPal, Square) build similar tooling?
 - How does this interact with multi-agent systems? (Agent A delegates shopping to Agent B — who approves?)
 - Rate of adoption: how many merchants support MPP?
+
+## Followup 2026-05-06
+
+**Stars**: 403 → 457 (+54 in 3 days, accelerating)
+**v0.4.3** released 05-05. Active: 4 PRs merged since 05-03.
+
+### Notable Changes
+
+1. **PR #67: Credential output to file** — agents can write payment credentials to a file instead of passing through context. Reduces context window pollution for long agent sessions. Small but practical UX improvement.
+2. **PR #51: Auth config file mode 0o600** — Security hardening. `Storage` class now restricts OAuth token files to owner-only. Previously inherited `conf`'s default (0o644), exposing tokens to other local users.
+3. **PR #68: Docs + skill improvements** — Totals schema type fix, copy improvements.
+4. **v0.4.2** (05-02): Claude marketplace.json and plugin improvements.
+
+**Assessment**: Credential-to-file output (PR #67) is the interesting signal — it shows they're thinking about agent context management, not just payment flow. The security fix (PR #51) is table-stakes but shows the project is maturing past MVP. Growth accelerating (+54 vs +20/day for agentic-stack) suggests strong developer interest in agent commerce.
+
+*Followup check: 2026-05-06*

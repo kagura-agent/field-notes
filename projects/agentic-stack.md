@@ -432,3 +432,22 @@ Links: [[agent-brain-portability]], [[openclaw]], [[orb]], [[self-evolving-agent
 **Assessment**: Transfer wizard is fully documented above. Growth stabilizing at ~20/day. Project entering a mature phase — feature velocity slowing, each release more polished. Next expected signal: community PRs building on transfer infrastructure, or v0.14 with new feature.
 
 *Followup check: 2026-05-03*
+
+## Followup 2026-05-06
+
+**Stars**: 1822 → 1855 (+33 in 3 days, consistent growth)
+**Two releases in 48h**: v0.14.0 (05-04) + v0.15.0 (05-05). Active development resumed.
+
+### v0.14.0 — Host-Neutral ZTK Policy
+- `ztk_policy.py` + `ztk.py`: shared policy evaluating shell commands, network fetches, file writes, permission requests
+- Works across hook-native (Claude Code PreToolUse), permission-rule (Codex), and prompt-only harnesses
+- **Signal**: moving from "portable brain" to "portable governance" — security policies that travel with the agent, not tied to one harness
+
+### v0.15.0 — Dashboard TUI (+1316 lines)
+- Terminal dashboard: project health, installed adapters, doctor checks, harness verification, memory, team brain, skills, managed instances, transfer, local data exports
+- Trust-console parity: per-harness trust inspection folded into the dashboard
+- Codex-generated (PR by `codex/tui-dashboard` branch) — they're eating their own dogfood
+
+**Assessment**: Project accelerating again. The ztk policy layer is the most interesting signal — it's [[mechanism-vs-evolution]] applied to agent safety, governance embedded in infrastructure rather than prompts. The dashboard is nice but incremental. Worth tracking v0.16 for where ztk goes.
+
+*Followup check: 2026-05-06*
