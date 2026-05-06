@@ -236,7 +236,16 @@ A **5th layer** is crystallizing: [[worktree-convergence-2026-05]]
 - Key innovation: **work-id binding** prevents scope creep (agent can't invent tasks), **plateau detection** stops loops that aren't improving, **git-as-memory** checks recent reverts before proposing changes.
 - Positioned between FlowForge (workflow) and [[cadis]] (runtime with HUD). Firmly on the [[mechanism-vs-evolution]] "mechanism" side.
 
-### 总体判断 (updated 2026-05-02)
+### Memory 层更新 (2026-05-06)
+- [[dreamer]] (luml-ai, 13⭐, brand new) — Team-wide self-evolving context server. MCP-based memory collection from any agent → two-phase "dream" pipeline (STM→LTM, LTM→Context). Protocol-based component graph, git+PR governance hook. First project to formalize the STM→LTM→Context pipeline as a deployable server.
+- [[auto-memory]] (333⭐) — Progressive session recall CLI. Simpler approach: automatic capture without explicit submit.
+- Signal: Memory layer splitting into "individual recall" (auto-memory, brain) vs "team consolidation" (Dreamer, stash)
+
+### Skill 层更新 (2026-05-06)
+- **oh-story-claudecode** (784⭐ in 2 weeks) — First viral skill package. Web novel writing pipeline (scan, analyze, write, de-AI, cover art). Proves domain-specific creative workflows are the killer app for skill ecosystems. Tagged with `openclaw`.
+- Signal: Skill explosion is real — domain experts packaging workflows > framework developers packaging tools
+
+### 总体判断 (updated 2026-05-06)
 - **No disruption, only refinement** — the 4-layer model from March still holds
 - Innovation moved from "what patterns exist" to "how to make them reliable/scalable"
 - Workflow layer getting more structured: Thoth brings project-management rigor (work items, reviews, dashboards) to agent loops
