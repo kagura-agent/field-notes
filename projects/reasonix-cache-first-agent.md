@@ -376,6 +376,40 @@ Reported improvement: **~10-15 percentage points** on medium-difficulty R1 tasks
 
 ---
 
+## Update: v0.28.0 (2026-05-06)
+
+**Growth:** 408⭐ (was untracked at first note). 100+ commits in 9 days (04-28 → 05-06). Rapid iteration from v0.5.x → v0.28.0.
+
+### Subagent System (New)
+
+Reasonix now has built-in subagent support with two typed personas:
+
+1. **Explore** — wide-net read-only investigation, 20 tool iters max. Returns one distilled answer with file:line citations.
+2. **Verify** — narrow YES/NO/INCONCLUSIVE check, 8 tool iters max. Focused evidence gathering.
+
+Key design decisions:
+- **Depth-1 hard cap** — `spawn_subagent` is excluded from the child's tool registry, preventing recursive spawning
+- **Flash-first** — subagents default to `deepseek-v4-flash` with `effort=high` (cheaper than parent's `max`). Skills can override to `v4-pro` via frontmatter
+- **Skill-scoped tools** — child registry can be restricted to `allowed-tools` from skill frontmatter
+- **Non-streaming** — subagents run inside a tool-dispatch frame, communicate via `SubagentEvent` side-channel
+- **Parent Esc propagation** — parent's AbortSignal forwarded so Esc cancels nested work
+- **Cost tracking** — child cost rolls up to parent's wallet display
+
+This mirrors [[openclaw]]'s subagent model (isolated child, depth limits, cost attribution) but with DeepSeek-specific economics: spawning an explore subagent costs ~$0.001, making it practical to use liberally.
+
+### Cost Control Maturation (Pillar 4)
+
+- **Presets simplified**: `fast` (flash/high), `smart` (flash/max, default), `max` (pro/max). Branching and harvest deliberately excluded from presets — pure opt-ins
+- **All auxiliary calls hard-code flash** — subagent spawns, truncation retries, summary calls never use pro tier
+- **`/pro` single-turn arming** — next turn only, auto-disarms. Clean UX for occasional frontier needs
+- **Proactive 40% context compaction** — shrinks before the 80% emergency threshold
+
+### Implications
+
+Reasonix's evolution from single-loop tool to subagent-capable system shows the natural progression: once your base loop is cheap enough (~$0.005/task), you can afford to spawn child agents liberally. This is the same pattern we see in [[openclaw]]'s model but driven by DeepSeek's 30× cost advantage rather than model-agnostic flexibility.
+
+---
+
 ## Relevance to OpenClaw
 
 **Lessons worth considering:**
