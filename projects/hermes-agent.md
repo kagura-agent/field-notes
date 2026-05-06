@@ -1325,3 +1325,12 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **Test runner**: `cd ui-tui && npx vitest run packages/hermes-ink/src/ink/parse-keypress.test.ts` (NOT jest — uses vitest workspace)
 - **Pattern**: Claude Code + manual verification was efficient. The fix is 5 lines + 18 lines of tests. Small, surgical.
 - **Risk**: Regex false positive is mitigated by requiring BOTH all-SGR-chars AND boundary signature. The `(?!.*\d{4})` lookahead prevents matching strings with 4+ digit runs that can't be mouse coords (0-255).
+
+### PR #20641 — CJK/Emoji panel border alignment (2026-05-06)
+- **Issue**: #20621 — CJK/emoji characters overflow approval panel borders
+- **Status**: Submitted, CI pending
+- **Fix**: Replaced `len()` with `prompt_toolkit.utils.get_cwidth()` in 3 panel functions
+- **Pattern**: Reused existing `_status_bar_display_width` approach (get_cwidth)
+- **CI note**: `check-attribution` always fails for new contributor emails — maintainer adds to AUTHOR_MAP
+- **Competing PR #20631**: Only fixes Markdown table widths (TUI TypeScript), not CLI panel borders (Python). Different code paths.
+- **Test**: cli.py is huge (11K+ lines), grep is slow. Use `find . -maxdepth 4` to limit search depth.
