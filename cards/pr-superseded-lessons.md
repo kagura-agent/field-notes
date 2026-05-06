@@ -331,6 +331,13 @@ Added to pre-PR checklist:
 
 **Lesson**: Before adding a simple fallback, search the codebase for existing context flags that should influence the behavior.
 
+## multica #2088 → superseded by #2118 (2026-05-06)
+
+**我的做法**: Inlined full `resources []ResourceRef` into `GetProject` response (9 additions, 1 file)
+**Maintainer 的做法**: Added scalar `resource_count` breadcrumb instead (231 additions, 7 files)
+**差距**: I denormalized the sub-collection into the parent — simple but creates API contract debt. Maintainer recognized that inlining a child collection into a parent endpoint is a breaking-change trap: every future resource type bleeds into the project schema. Scalar breadcrumb preserves REST hierarchy.
+**Pattern: collection-vs-breadcrumb** — When a parent entity needs discoverability of child resources, prefer a count/exists signal over inlining the full sub-collection. Inline = tight coupling + schema debt. Breadcrumb = loose coupling + forward-compatible.
+
 ## Applied: GoGetAJob pre-submit checks (2026-05-05)
 
 Integrated 4 core checks into `gogetajob submit` as non-blocking warnings:
