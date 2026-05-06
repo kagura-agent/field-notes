@@ -244,6 +244,15 @@ if (p.type === "compaction" && p.tail_start_id) {
 - DeepSeek OpenAI-compatible keeps `reasoning_content` interleaved by default
 - Tool streaming defaults off for non-Anthropic models (compatibility)
 
+### #25994 — fix(tui): navigate to home when --continue finds no sessions (2026-05-06)
+- **Status**: PENDING (CI all green ✅ — 4 checks passed)
+- **Issue**: #25989 — `--continue` flag with zero sessions crashes with validation error
+- **Root cause**: TUI sets initial route to `sessionID: "dummy"` for `--continue`, but if no sessions exist the effect does nothing and the dummy route stays active → server rejects `"dummy"` (must start with `"ses"`)
+- **Fix**: 4-line change — added `else` branch in `createEffect` to navigate to home when no session matches after sync loads
+- **Approach**: Local clone, manual edit (surgical fix too small for Claude Code), ran `bun test test/cli` (140/140 pass)
+- **Key learning**: `run.ts` (headless mode) already handles this gracefully by falling through to session creation. TUI needed the same fallback pattern.
+- **Note**: Still "new" relationship with this repo (0 merged PRs). Included AI disclosure.
+
 ### #25654 — fix(mcp): ensure Accept header includes both required values for Streamable HTTP (2026-05-04)
 - **Status**: PENDING (CI all green ✅ — 4 checks passed)
 - **Issue**: #25650 (dup of #6972) — MCP servers reject requests without Accept header containing both values
