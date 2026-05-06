@@ -115,3 +115,16 @@ Also fixed stale data: two broken symlinks in `~/.flowforge/workflows/` (workloo
 - Now followup mode starts with a prioritized list of due items instead of manual scanning
 
 **Effect**: Followup selection is now data-driven rather than memory-dependent. Should reduce "forgot to check X" misses and focus attention on items actually due.
+
+## --workflow Flag (2026-05-06)
+
+**Problem**: When multiple workflows are active simultaneously (e.g. study + workloop), `next`, `status`, `log`, `reset`, and `advance` operate on whichever instance has the highest DB ID. This silently targets the wrong workflow — you think you're advancing study but you're actually advancing workloop.
+
+**Applied insight**: From the [[mechanical-enforcement-via-topology]] pattern — if misuse is possible, make it structurally harder. The engine already supported `workflowName?` parameters throughout; the CLI just didn't expose them.
+
+**Implementation**:
+- Added `-w, --workflow <name>` option to `next`, `status`, `log`, `reset`, `advance` commands
+- `printStatus()` now accepts optional workflow name to stay consistent
+- Without `-w`, behavior is unchanged (most recent instance by ID)
+
+**Effect**: `flowforge next -w study` is unambiguous. Eliminates silent cross-workflow contamination. 80 tests pass.
