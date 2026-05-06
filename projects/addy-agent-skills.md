@@ -1,17 +1,17 @@
-# Addy Osmani — Agent Skills
+# Addy Osmani - Agent Skills
 
 > 2026-05-05 deep read | 26K⭐ | [repo](https://github.com/addyosmani/agent-skills) | [blog post](https://addyosmani.com/blog/agent-skills/)
 
 ## What It Is
 
-A collection of 20 production-grade engineering workflow skills for AI coding agents (Claude Code primary, also Cursor/Copilot/OpenCode). Written by Addy Osmani (Google Chrome team). Positioned as "senior engineer scaffolding" — encoding the invisible work (specs, tests, reviews, scope discipline) that agents skip by default.
+A collection of 20 production-grade engineering workflow skills for AI coding agents (Claude Code primary, also Cursor/Copilot/OpenCode). Written by Addy Osmani (Google Chrome team). Positioned as "senior engineer scaffolding" - encoding the invisible work (specs, tests, reviews, scope discipline) that agents skip by default.
 
 ## Why It Matters
 
-- **26K stars in weeks** — validates that skill quality/curation matters more than quantity
-- **Addy Osmani authorship** — Google-level engineering practices, not indie weekend hack
-- **Process over prose** — the core insight is that skills must be _workflows with checkpoints_, not reference docs or essays. "If you put best practices in context, the agent reads them and skips them. If you put a workflow with exit criteria, the agent has something to do and you have something to verify."
-- **Blog post on HN front page** (69pts) — pushing skill design patterns into mainstream dev consciousness
+- **26K stars in weeks** - validates that skill quality/curation matters more than quantity
+- **Addy Osmani authorship** - Google-level engineering practices, not indie weekend hack
+- **Process over prose** - the core insight is that skills must be _workflows with checkpoints_, not reference docs or essays. "If you put best practices in context, the agent reads them and skips them. If you put a workflow with exit criteria, the agent has something to do and you have something to verify."
+- **Blog post on HN front page** (69pts) - pushing skill design patterns into mainstream dev consciousness
 
 ## Architecture
 
@@ -43,7 +43,7 @@ Most distinctive design decision. Each skill has a table of common excuses to sk
 | "This is too simple to test" | Simple code gets complicated. The test documents expected behavior. |
 | "It's faster to do it all at once" | Feels faster until something breaks in 500 changed lines. |
 
-**Insight for us:** Our AGENTS.md has some of this ("讨好模式防范") but not per-workflow. Worth stealing for skill SKILL.md format — especially for [[flowforge]] workflow nodes.
+**Insight for us:** Our AGENTS.md has some of this ("讨好模式防范") but not per-workflow. Worth stealing for skill SKILL.md format - especially for [[flowforge]] workflow nodes.
 
 ### 2. Gated Workflow Phases
 
@@ -80,7 +80,7 @@ This mirrors our own context layering (AGENTS.md → skill SKILL.md → wiki →
 
 ### 5. Red Flags Section
 
-Every skill includes behavioral red flags — patterns that indicate the skill is being violated. Complement to anti-rationalization (which is about _excuses_), red flags are about _observable symptoms_.
+Every skill includes behavioral red flags - patterns that indicate the skill is being violated. Complement to anti-rationalization (which is about _excuses_), red flags are about _observable symptoms_.
 
 ## Comparison with Our Setup
 
@@ -97,8 +97,8 @@ Every skill includes behavioral red flags — patterns that indicate the skill i
 ## Actionable Takeaways
 
 1. **Anti-rationalization tables** — ✅ APPLIED (2026-05-05). Added to study.yaml (note, reflect, scout, deep_read nodes) and workloop.yaml (reflect node). Commit 6e2f09b. Each table pairs common excuses with concrete rebuttals. Already rendering in flowforge output.
-2. **Red Flags sections** — complement to our AGENTS.md 讨好模式 / 观测闭环 checks. Could add per-skill.
-3. **"Process over prose"** — validates our FlowForge approach (workflow > instructions). Our skills that are mostly essays should be refactored into step-by-step workflows.
+2. **Red Flags sections** — ✅ APPLIED (2026-05-06). Added to study.yaml (scout, deep_read, apply nodes) and workloop.yaml (followup, implement nodes). Commit 6dd9cb7. Observable symptoms that indicate a workflow is being violated. Complements anti-rationalization tables (excuses vs symptoms). 80 FlowForge tests pass.
+3. **“Process over prose”** — validates our FlowForge approach (workflow > instructions). Our skills that are mostly essays should be refactored into step-by-step workflows.
 4. **Parallel fan-out with merge** — the only multi-persona orchestration pattern they endorse. Interesting constraint — no router agents, only fan-out + merge. Relevant for [[team-lead]] skill design.
 
 ## Position in Ecosystem
@@ -113,5 +113,5 @@ Every skill includes behavioral red flags — patterns that indicate the skill i
 - ⭐ 28,334 (2026-05-05 evening, +2.3K from morning)
 - Forks: 3,484
 - Last push: 2026-05-03
-- HN front page: 286pts (2026-05-05 evening, climbing) — second wave of attention after blog post
+- HN front page: 286pts (2026-05-05 evening, climbing) - second wave of attention after blog post
 - Revisit: 05-12 (check for new skills, community adoption patterns)
