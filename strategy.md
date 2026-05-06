@@ -24,6 +24,7 @@
 - self-evolving agent 生态 + agent marketplace(toku/Moltbook)+ skill 生态爆发
 - 进化系统三层:DNA(全局原则)→ Workflow(执行 tips)→ Knowledge-base(领域知识)
 - **进化路径不开例外**:不分信息类/信念类,严格 beliefs-candidates 3 次才升级
+- **生态趋势（05-07 更新）**：skill-as-product 爆发已过峰值，进入整合期。价值上移：runtime 商品化 → skills/memory/identity 差异化。governance-in-infrastructure 成为跨项目收敛模式（kiwifs/agentic-stack/thClaws 验证）
 
 ## 产品方向(2026-03-28 确立)
 - **chat-first product**:聊天是主界面,UI 是附件
