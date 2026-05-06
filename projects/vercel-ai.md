@@ -73,9 +73,18 @@
 - Changeset added per CONTRIBUTING.md requirements
 - CI: Vercel deploy needs maintainer auth (expected for external PRs), Socket + Agent Review pass
 
-### PR #14928 (2026-05-02) — PENDING
-- Fix: add `resource_link` content type to `CallToolResultSchema` and `PromptMessageSchema`
-- Issue #14925: MCP spec defines `resource_link` variant, missing from zod union → hard reject with zod ≥4.4.x
-- Clean additive fix: new schema + union additions, no test changes needed
-- Changeset added, Socket Security passed, Vercel deploy awaiting maintainer auth
-- Pattern: MCP spec compliance fixes are good targets — clear spec reference, mechanical fix, high value
+### PR #15049 (2026-05-06) — PENDING
+- Fix: use `reasoning` field name for Cerebras assistant messages in multi-step runs
+- Issue #15042: Cerebras expects `reasoning` not `reasoning_content` on assistant message history
+- Approach: Added `reasoningFieldName` option to `OpenAICompatibleChatConfig` and `convertToOpenAICompatibleChatMessages()`. Cerebras provider sets it to `'reasoning'`
+- Pattern: Response parsing already handled both fields (`??`), input serialization was the gap
+- CI: Lint & Format initially failed (ultracite/oxfmt formatter, not prettier). Fixed with `npx ultracite fix`
+- Tests: Added 2 tests covering default and custom reasoning field name
+- Changeset: patch for both `@ai-sdk/cerebras` and `@ai-sdk/openai-compatible`
+- TypeScript, Tests, Lint all green. Vercel deploy needs maintainer auth (expected for external PRs)
+
+## 踩坑补充 (2026-05-06)
+
+- **Formatter**: Project uses `ultracite fix` (not prettier). `npx prettier` reformats entire file with different settings (double quotes). Use `npx ultracite fix <file>` for formatting
+- **CI lint-staged**: Checks formatting on changed files only. Even small whitespace differences trigger failures
+- **Pattern**: openai-compatible provider reads responses with `reasoning_content ?? reasoning` (handles both), but input serialization was hardcoded to `reasoning_content`. Symmetric fix = add config option
