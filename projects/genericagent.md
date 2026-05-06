@@ -331,3 +331,45 @@ GenericAgent's evolution path:
 This parallels the broader ecosystem trend in [[context-budget-constraint]]: everyone is converging on "keep recent details, compress older context" rather than "stuff everything in a big window."
 
 See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[l1-index-layer-evaluation]]
+
+## Followup 2026-05-06: ACP Bridge + codeg Integration
+
+**Stars**: 9,113 → 9,196 (+83/day, steady)
+
+### ACP Bridge (PR #272, merged 05-05)
+
+New `frontends/genericagent_acp_bridge.py` (355 lines) — JSON-RPC over stdio bridge implementing the **ACP (Agent Client Protocol)**. Allows GenericAgent to run as a local agent inside [codeg](https://github.com/yiqi-017/codeg), a multi-agent desktop/web UI.
+
+**Protocol**: ACP v1 over stdio, newline-delimited JSON-RPC 2.0. Five methods:
+- `initialize` — capability negotiation (no image/audio/embedded context)
+- `session/new` — creates GenericAgent instance + daemon thread per session
+- `session/prompt` — text-only, one prompt at a time per session (prompt_lock)
+- `session/cancel` — calls `agent.abort()`
+- `session/close` — cleanup
+
+**Streaming architecture**: `agent.put_task()` returns a `queue.Queue`. Bridge drains the queue, computes delta from `last_sent` string length, sends only new characters as `agent_message_chunk` session updates. Simple and effective.
+
+**stdout/stderr isolation** — The most interesting engineering challenge:
+1. Captures raw stdout FD (`os.dup`) for ACP JSON-RPC channel
+2. Redirects text-mode stdout → stderr via `os.dup2` + custom `_StdoutToStderrRouter`
+3. Marks ACP FD as **non-inheritable** (`os.set_inheritable(fd, False)`) so child processes (tool calls) can't pollute the JSON-RPC channel
+4. Handles Windows `msvcrt` binary mode separately
+5. All this runs BEFORE importing `agentmain` (which reconfigures stdout at import time)
+
+This pattern solves a real problem: process-based agent communication via stdio requires that NO stray print() from the agent or its dependencies leaks into the protocol channel. The solution is architectural (FD-level isolation), not just "don't use print()."
+
+**Ecosystem signal**: ACP is gaining traction as the universal protocol for multi-agent desktop UIs. codeg positions itself as a "universal agent IDE" hosting Claude Code, Gemini, Codex, and now GenericAgent — all via the same stdio interface. This is the [[worktree-convergence-2026-05]] pattern applied to agent UIs: standardize the interface, let agents compete on capabilities.
+
+**Comparison with OpenClaw ACP**: OpenClaw's ACP implementation uses a different transport (HTTP/SSE vs stdio) and richer capabilities (tool approval, thread-bound sessions, media). GenericAgent's bridge is minimal but shows that the ACP surface area for "basic agent-in-a-UI" is small (~5 methods, ~350 LOC). The hard part is isolation engineering, not protocol complexity.
+
+### Tracking Updates (05-06)
+
+| Project | Stars | Change | Signal |
+|---------|-------|--------|--------|
+| tiangolo/library-skills | 442 | +92 since 05-03 | No commits since 05-01. Stable v0.0.5. Growth slowing |
+| chromex | 838 | +4 | Bug fixes only (profile replay, image attachments). No arch changes |
+| codex-plusplus | 937 | +385 since 05-01! | Explosive growth. v0.1.3 stable. Branding updates |
+| Orb | 59 | +5 | Still v0.4.0, no push since 05-02. Quiet |
+| GenericAgent | 9,196 | +83/day | ACP bridge merged. Community-driven frontend expansion continues |
+
+See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]]
