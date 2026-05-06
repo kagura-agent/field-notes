@@ -1049,3 +1049,24 @@ Top 15 all ⭐100k+ established projects — no new discoveries in top tier. Not
 
 - **vercel-labs/deepsec** ⭐809 — Security harness for finding vulnerabilities in codebases via coding agents. Agent security testing is a real gap. Worth checking architecture when it matures.
 - **HN: "Lessons for Agentic Coding"** (48019025, 127pts) — design philosophy piece on code-is-cheap era. Read for framing, not implementation.
+
+## 2026-05-06 Quick Scan (22:15)
+
+GitHub trending (agent, created past week, sorted by stars):
+
+| Project | Stars | Verdict |
+|---|---|---|
+| deepclaude | 1420 | 已知 — proxy pattern, wiki card exists |
+| vercel-labs/deepsec | 1254 | 已知 — tracked yesterday at 809⭐, +445/day growth |
+| baguette (tddworks) | 673 | 不相关 — iOS simulator farm |
+| RunbookHermes | 529 | 已知 — backlog entry at 177⭐, now 3x. Approval-gated remediation interesting |
+| OpenMonoAgent.ai | 342 | 已知方向 — local coding agent in C#/.NET |
+| SPECA | 284 | 已知 — scout note exists |
+| trading-agents | 242 | 不相关 — finance multi-agent |
+| composio (warpdot) | 241 | 已知 |
+| craft-agents-oss | 226 | 已知 — wiki card exists |
+| beautiful-html-templates | 204 | 不相关 |
+
+**Saturation signal**: 7/10 already tracked. Ecosystem is stable this cycle.
+**Notable growth**: deepsec (+445/day) and RunbookHermes (177→529, 3x) — agent security and AIOps gaining traction.
+**HN**: Timed out, no data this scan.

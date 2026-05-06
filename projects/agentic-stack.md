@@ -435,7 +435,7 @@ Links: [[agent-brain-portability]], [[openclaw]], [[orb]], [[self-evolving-agent
 
 ## Followup 2026-05-06
 
-**Stars**: 1822 → 1855 (+33 in 3 days, consistent growth)
+**Stars**: 1822 → 1858 (+36 in 3 days, consistent growth)
 **Two releases in 48h**: v0.14.0 (05-04) + v0.15.0 (05-05). Active development resumed.
 
 ### v0.14.0 — Host-Neutral ZTK Policy

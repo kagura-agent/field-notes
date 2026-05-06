@@ -1,8 +1,8 @@
 ---
 title: "Invincat — Terminal AI Assistant with Independent Memory Agent"
 created: 2026-05-04
-updated: 2026-05-04
-stars: 269
+updated: 2026-05-06
+stars: 292
 repo: https://github.com/dog-qiuqiu/invincat
 language: Python
 license: Unknown
@@ -156,9 +156,36 @@ The regex-based invalid-fact scanner is a zero-cost safety net. We could add sim
 
 Invincat occupies the sweet spot: **automated but conservative, structured but file-based**. It's more sophisticated than our manual approach but lighter than Stash's heavy pipeline. The Memory Agent's "one focused LLM call per turn" is much cheaper than Stash's multi-stage consolidation.
 
+## 05-06 Followup: Major Simplification Refactor
+
+**Stars**: 292 (+23 in 2 days)
+**Key commit**: `33165994` — "Simplify memory agent operations" (-311/+126 lines in memory_agent.py)
+
+### What Changed
+
+1. **Removed rescore_candidates system entirely** — previously had 2-group rescoring (conversation-relevant + oldest-unconfirmed, 8 each). Now items in the snapshot have no `rescore_candidates` field. This suggests the proactive rescoring was over-engineered or not paying off.
+
+2. **Removed MAX_OPERATIONS_PER_RUN (was 8)** — operations are now uncapped. Indicates the limit was causing truncated memory updates.
+
+3. **Simplified field naming** — `score_reason` → `reason` throughout. Cleaner API surface.
+
+4. **Changed conversation passing architecture** — instead of passing raw multi-turn messages (human/ai/tool roles) to the Memory Agent LLM, now formats everything as a plain-text transcript in a single HumanMessage. Added explicit instruction: "It is context only; do not continue it." This is likely a fix for models that tried to continue the conversation instead of extracting memory.
+
+5. **Removed conversation from memory snapshot** — `_build_memory_snapshot()` no longer includes conversation text. Snapshot is now purely the existing memory state.
+
+6. **Added anti-tool-call guard** — System prompt now says: "You have no tools. Never emit tool calls, DSML tags, XML-like invocation markup, or requests to read files." Indicates they hit issues with models hallucinating tool calls during memory extraction.
+
+7. **Removed resolution signal regex** — previously detected "fixed/resolved/no longer reproducible" patterns deterministically. Removed, possibly because the LLM-based scoring handles this better.
+
+### Implications for Us
+
+- **Rescore pipeline complexity not worth it**: Invincat tried systematic rescoring with candidate selection and backed off. This validates our simpler approach of letting daily-review handle reconfirmation rather than per-turn rescoring.
+- **Plain-text transcript > multi-turn messages**: For background agents that process conversation but don't participate, flattening to text is more robust. Models stay in "analyze" mode rather than "chat" mode.
+- **Anti-hallucination guards are necessary**: Even structured JSON-only output prompts need explicit "you have no tools" instructions. Relevant for any memory extraction system we build.
+
 ## Growth Assessment
 
-269⭐ in 18 days, still getting commits (last push 05-02). Not viral but steady. The memory system alone makes it worth tracking — it's the most production-ready open-source agent memory implementation.
+292⭐ in 20 days, steady commits (5 commits on 05-05 alone). Not viral but healthy. The simplification refactor shows maturity — they're cutting complexity that didn't pay off rather than adding features.
 
 **Revisit**: 05-11
 

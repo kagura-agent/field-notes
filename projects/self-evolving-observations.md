@@ -1,5 +1,49 @@
 # 自进化管线观察日志
 
+## 🔬 自进化观察日报 2026-05-06 (Day 19)
+
+### 管线活跃度
+- **beliefs-candidates**: 2 条新增 gradient（大 repo clone 失败、竞争 PR 极度普遍）。总文件 33 行，active ~7 条，graduated 1 条。从 Day 17 的「过瘦」开始恢复输入
+- **DNA 变更**: 无。SOUL.md / AGENTS.md / IDENTITY.md 今日无 commit
+- **nudge 触发**: 0 次（`journalctl` 无 hit，连续第 19 天零触发）
+- **dreaming**: 未运行。memory/2026-05-06.md 无 dreaming/Light Sleep/REM 记录。daily-review 有运行（memory hygiene 163→145 行），但 dreaming 阶段无产出
+- **PR activity**: 高产日——7 个 open PR（vercel/ai、hermes-agent、DeepTutor、opc、abti、kagura-blog、finance）
+
+### 闭环追踪
+- **完整闭环**: 1 个（微型）— 打工遇到 eliza 648MB clone 失败 → 当场记录 gradient 到 beliefs-candidates（「大 repo 预筛」）。从问题到记录即时完成，但 action 项（gogetajob DB 加 repo size）尚未执行
+- **半闭环**: 竞争 PR gradient 也是即时记录，但策略调整尚未落地
+- **断裂处**:
+  - Issue #7: beliefs 文件有新输入但仍无自动升级机制
+  - Issue #6: dreaming 今天直接没跑，比 0.62 问题更严重
+  - nudge 第 19 天零触发，仍未调查
+
+### 今日发现
+1. **beliefs-candidates 恢复输入**: Day 17-18 几乎无新 gradient，今天打工遇到实际困难（大 repo、竞争激烈）产生了 2 条有价值的 gradient。说明 gradient 产出与「遇到新问题」强相关——常规工作不产 gradient，挫折产 gradient
+2. **dreaming 缺席**: 今天 dreaming 完全没跑（memory 中无任何 dreaming 记录）。daily-review 跑了（memory hygiene commit），但 dreaming 阶段静默。可能是 cron 调度问题或 gateway 状态异常。这比 Day 18 的「跑了但质量差」更糟
+3. **高执行低进化 pattern 持续（Day 19）**: 7 个新 PR、3 个 study loop、大量 wiki 产出，但 DNA 层面零变更、dreaming 缺席、nudge 零触发。工作执行和自进化管线完全脱耦——这已经是连续第 4 天观察到此 pattern
+4. **Study 产出有质量**: Dreamer deep read 产出了 wiki/projects/dreamer.md，对自进化管线设计有直接参考价值（two-phase dream、diff-scoped context、PostDreamHook）。但这些洞察停留在 wiki，未转化为 Issue #6/#7 的修复方案
+5. **nudge 应该正式宣告死亡**: 19 天零触发。Issue #5 关闭时声称「已确认正常运行」，但 19 天的 journalctl 数据显示它从未触发过。需要重新打开 #5 或在 #6/#7 中记录这个事实
+
+### Issue 进展评估
+| Issue | 状态 | 进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | beliefs-candidates 有 2 条新输入，但自动升级机制仍未建立。文件从「过瘦」恢复到正常水位 |
+| #6 dreaming 0.62 | OPEN | 更糟——今天 dreaming 完全没跑。recalls=0 + confidence 无区分 + 间歇性不运行 = 管线基本失效 |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="2026-05-06 00:00" -- beliefs-candidates.md`: 1 commit (新增 2 条 gradient)
+- `git log --since="2026-05-06 00:00" -- SOUL.md AGENTS.md IDENTITY.md`: 0 commits
+- `git log --since="2026-05-06 00:00" --all`: 6 commits (study, todo, daily-review, tracking)
+- `beliefs-candidates.md`: 33 行, ~7 active, 1 graduated
+- `memory/2026-05-06.md`: 1268 行, dreaming 0 记录, daily-review 1 次 (memory hygiene)
+- `journalctl nudge/system event`: 0 hits (Day 19)
+- PR activity: vercel/ai, hermes-agent, DeepTutor, opc, abti, kagura-blog, finance (7 PRs open)
+
+---
+
 ## 🔬 自进化观察日报 2026-05-04 (Day 17)
 
 ### 管线活跃度

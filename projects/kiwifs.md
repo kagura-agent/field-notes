@@ -162,12 +162,4 @@ This is essentially a **lightweight Linear/Jira built on markdown** — but nati
 
 415⭐ → 426⭐ in 2 days. Active development: PR #37 (ML/analytics, 10 features) and PR #38 (agent orchestration) merged within 48 hours. This is the most architecturally ambitious project in the agent knowledge space right now.
 
-## Also Scouted (2026-05-04)
-
-**SKILL.mk** (Teaonly, 80⭐, created 05-02) — Makefile-format agent skills with DAG structure + on-demand loading. Key insight: skill instructions as dependency graph, load only the relevant recipe target → 85% token reduction in probe mode. Novel but early (PoC stage). See [[agent-skill-standard-convergence]].
-
-**Skill ecosystem explosion** — Domain-specific skills proliferating: Swiss design (91⭐), Compose performance (295⭐), scientific plotting (36⭐), character animation (72⭐). We're in the "skill as content" phase — skills becoming the new blog posts.
-
-**future-agi** (819⭐, created 04-20) — Open-source eval/observability platform for agents. Apache 2.0, self-hostable. Growing fast.
-
 Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]]
