@@ -40,3 +40,12 @@
 - **pre-commit**: 项目配了 pre-commit hooks，是必需的；本地因网络问题没跑通（ruff 下载失败），但 CI 会跑
 - **百炼 Coding Plan endpoint**: 不支持 non-streaming tool calling（返回 InvalidParameter），必须用 stream=True
 - **贡献流程**: fork → dev branch → PR to upstream dev
+
+### PR #449 — Preserve newlines in user chat messages (2026-05-06)
+- **Issue**: #444 — 辅导机器人对话无法换行（Docker 部署）
+- **修复**: `web/components/chat/home/ChatMessages.tsx` line 464: `<div>{msg.content}</div>` → `<div className="whitespace-pre-wrap">{msg.content}</div>`
+- **Target**: `dev` branch
+- **CI**: 无 checks（frontend-only change，repo CI 只跑 Python tests）
+- **状态**: pending review
+- **注意**: 本地 clone 在 NTFS 盘，git checkout 会产生大量 filemode 变化，必须 `git config core.fileMode false`
+- **选题信号**: 简单 CSS bug，1 行修复，零竞争 PR，76% merge rate，ideal for quick contribution
