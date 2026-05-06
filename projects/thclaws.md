@@ -89,5 +89,58 @@ Same format as OpenClaw skills (YAML frontmatter + markdown instructions + optio
 
 76 commits from lead (mozeal), 4 other contributors. Created 2026-04-20, 612⭐ in 9 days. Growth rate: ~68⭐/day. Healthy for a new project but early. Watch for: community contributions, plugin ecosystem growth, whether the mono-crate architecture scales.
 
+## v0.8.0 Update (2026-05-05): `/goal` Persistent Objective System
+
+805⭐ (+193 since last check). New `/goal` feature is the headline of v0.8.0.
+
+### Architecture: `goal_state.rs` (451 lines)
+
+**State machine**: Active → Complete | Abandoned | Blocked (terminal states auto-stop loops)
+
+**Three authority-separated tools** (Phase C1):
+- `RecordGoalProgress` — mid-loop checkpoint, status stays Active
+- `MarkGoalComplete` — terminal, requires audit evidence
+- `MarkGoalBlocked` — terminal, requires blocker reason
+
+This separation prevents the model from casually marking goals complete without evidence.
+
+**Budget system**: optional token budget + time budget. When exhausted, switches to a soft-stop prompt that says "wrap up, don't start new work" but doesn't force completion.
+
+**Auto-continuation** (Phase D1): `--auto` flag on `/goal start` makes the worker auto-queue `/goal continue` after each turn (if tool calls were made and status is still Active). Without `--auto`, it's manual or wrapped in `/loop`.
+
+**Persistence**: JSONL events (`goal_snapshot`), survives `/load` session reload.
+
+### Anti-Sycophancy Discipline (goal_continue.md prompt)
+
+The audit prompt is remarkably rigorous:
+- "Restate the objective as concrete deliverables"
+- "Build a prompt-to-artifact checklist"
+- "Do not accept proxy signals as completion" (passing tests, effort, memory of work)
+- "Treat uncertainty as not achieved"
+- "Only mark complete when the audit shows objective actually achieved"
+- Budget exhaustion explicitly stated as NOT completion
+
+This is the same anti-"讨好模式" principle from our AGENTS.md, but formalized into a prompt template. The `<untrusted_objective>` wrapper also shows prompt injection awareness.
+
+### Relevance to OpenClaw
+
+| Aspect | thClaws /goal | OpenClaw equivalent |
+|--------|---------------|--------------------|
+| Persistent objectives | JSONL state + session-scoped | FlowForge workflows (but not per-session) |
+| Budget tracking | Built-in token/time limits | No equivalent (manual session awareness) |
+| Audit before completion | Prompt-enforced checklist | AGENTS.md 验证纪律 (cultural, not enforced) |
+| Auto-continuation | Opt-in per-goal | Heartbeat + cron (different mechanism) |
+| Authority separation | 3 tools (progress/complete/blocked) | No equivalent |
+
+**Key insight**: thClaws formalizes what we do culturally (verification discipline) into a mechanical enforcement layer. The model literally cannot mark a goal complete without going through the audit prompt. This is more reliable than relying on the model's compliance with AGENTS.md guidelines.
+
+**Potential application**: Could we add a similar goal-state system to FlowForge or OpenClaw sessions? A "goal" that persists across heartbeats, tracks token budget, and mechanically enforces completion audits? See [[flowforge]] for workflow comparison.
+
+### Other v0.8.0 Changes
+- NVIDIA direct model support
+- Gemini `thoughtSignature` preservation in function calling
+- Thinking deltas surfaced in `-p` print mode
+- Sidebar goal indicator (desktop GUI)
+
 ---
-*Deep read: 2026-04-29. Source: GitHub API (README, src/ tree, agent.rs, team.rs, kms.rs, skills.rs headers)*
+*Deep read: 2026-04-29 (initial), 2026-05-06 (v0.8.0 /goal deep read). Source: GitHub API (goal_state.rs, default_prompts/goal_continue.md, goal_budget_limit.md, commits, release notes)*
