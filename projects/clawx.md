@@ -74,3 +74,7 @@
 - ClawX 有完善的 Windows 兼容性补丁但 macOS 的被忽略——后续可扫描是否有其他 macOS 缺失的兼容处理
 - preload 脚本是 template string 内嵌 JS，不受 TypeScript 类型检查
 - E2E 跑三平台（ubuntu/windows/macos），fork PR 需 maintainer approve workflow
+
+## 排除的 Issues
+- **#968** (QQ Bot leaked `[QQBot] to=` delivery hint): 已在上游 openclaw 修复 (commit 5e72e39c18, Apr 22 2026)，`buildAgentBody` 重构移除了 `[QQBot] to=` system prompt 注入。ClawX 只需更新 bundled openclaw 版本。不适合作为 ClawX PR。
+- **#962** (DeepSeek reasoning_content 400): 也是上游 openclaw 问题 (#74374)，不是 ClawX 自身 bug。

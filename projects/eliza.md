@@ -56,11 +56,17 @@ Uses detailed PR template — must include: Relates to, Risks, Background (what/
 ## Maintenance Notes
 - Very active repo (commits daily)
 - Large codebase (15k+ files)
+- **Repo size: 648MB — even `--depth=1 --filter=blob:none` clone times out from CN network.** Need VPN or pre-cloned repo to contribute.
 - bun required for full build/test
 - Shallow clone recommended (repo is huge)
 - Tests require full `bun install` at root (monorepo workspace resolution)
+- Sparse checkout also fails because git still downloads the full pack file
 
 ## Next Time
+- **MUST solve clone problem first** — either pre-clone during off-peak hours, use a faster network, or clone to a VPS
 - If need to run tests locally: `bun install` at root first (takes time)
 - Watch for interaction between pty-manager's default prompt handling and orchestrator rules
 - The `skipAdapterAutoResponse` flag is key to understanding which layer handles prompts
+
+## Scouted Issues
+- **#7409** (reset cascade deadlock): `POST /api/agent/reset` hangs >180s because `clearCompatRuntimeStateViaApi()` makes loopback HTTP calls to self (conversations DELETE, knowledge DELETE, trajectories DELETE). Single-threaded Node server deadlocks on self-requests. Fix: replace loopback HTTP with direct DB operations via `state.current` runtime. No competition (2026-05-06). Code is in `packages/app-core/src/api/server.ts` lines 363-418.
