@@ -136,7 +136,64 @@ See [[skill-ecosystem]], [[thin-harness-fat-skills]]
 ### Growth Signal
 21.7k stars in 6 days is remarkable. Still actively maintained with multi-round PR reviews (3 rounds on #435). The commit quality is high — detailed commit messages with rationale. Using `looper 0.4.0` (automated fixer agent) for multi-commit PRs.
 
+## Update 2026-05-06
+
+**Stars**: 27,611 (was 21,736 on 05-04 — +27% in 2 days, +71% in 3 days from 16,170)
+
+### v0.4.0 Release (2026-05-05)
+
+71 PRs, 100+ contributors, 2-day dev cycle. Three architecturally significant additions:
+
+#### Critique Theater (Design Jury) — Multi-Agent Quality Gate
+
+PR #387 (foundation) + PR #481 (phase 4, persistence + orchestrator). ~8,800 lines total.
+
+**Concept**: Every design artifact goes through a 5-panelist evaluation before shipping. Minimum score 8.0/10. WCAG AA enforced, brand-system fidelity scored per round.
+
+**Architecture**:
+- Wire protocol v1 with streaming parser (SSE events)
+- `critique_runs` SQLite table for persistence + daemon-restart recovery (`reconcileStaleRuns`)
+- Transcript streaming: `PanelEvent` sequences to disk for replay
+- Orchestrator manages the full critique lifecycle
+
+**Pattern significance**: This is a **multi-agent evaluation pipeline** — not just "run the LLM and ship". The 5-panelist + score threshold pattern could apply to any agent output quality gating (code review, content generation, skill validation). Resonates with [[mechanism-vs-evolution]] — explicit quality gates vs emergent quality.
+
+#### MCP Server (`od mcp`) — Cross-Tool Design Access
+
+PR #399, 2,733 lines. Stdio MCP server that exposes Open Design projects as MCP resources. Any MCP-aware tool (Claude Code, Cursor, VS Code, Zed, Windsurf) can read Open Design files directly, including the currently-open project.
+
+**Why it matters**: Design artifacts become first-class inputs to coding workflows. The "active context bridge" concept — knowing which project the user has open in the OD app — is a nice UX pattern.
+
+#### Live Artifacts + Composio Connector Catalog
+
+PR #381, **22,361 lines** (118 files!). Massive addition.
+
+- Live artifact contracts: designs that react to real data (not static mockups)
+- Composio-backed connector catalog: plug into hundreds of SaaS tools
+- Credential/config flows for connector auth
+- MCP/tool-token integration
+
+**Pattern**: Moving from "AI generates static HTML" to "AI generates live, data-connected artifacts". This is the direction Claude Artifacts hasn't gone yet.
+
+#### Other Notable Changes
+- 13+ agent CLI adapters now (added Kilo CLI, DeepSeek TUI)
+- 5 new localizations (French, Ukrainian, Russian, Brazilian Portuguese, Arabic)
+- Security: daemon localhost binding by default, API key stripping on agent spawn
+
+### Growth Analysis
+
+27.6K stars in 8 days is extraordinary. Growth sustained past the initial HN spike. The v0.4.0 release quality (71 PRs, multi-round reviews, spec-driven development with `specs/current/`) suggests real engineering depth, not just hype-driven growth.
+
+### Relevance Update
+
+1. **Critique Theater pattern** → Could inspire quality gating for [[flowforge]] workflow outputs or [[clawhub]] skill validation
+2. **MCP server** → The active-context-bridge concept (exposing what's currently open) is relevant for [[openclaw]] tool integrations
+3. **Live artifacts** → Composio connector model shows how agent outputs can be data-connected, not just static
+4. Still uses [[agentskills]] SKILL.md convention with `od:` frontmatter extensions
+
+See [[multi-harness-adapter-pattern]], [[skill-ecosystem]], [[thin-harness-fat-skills]]
+
 ## Tracking
 
-- Revisit 05-10: check commit velocity, community PR merge rate, whether star growth sustains
-- Watch for: skill standard convergence with Claude Code / ClawHub conventions
+- Revisit 05-12: check if growth sustains past v0.4.0 launch spike, Critique Theater adoption metrics
+- Watch for: skill standard convergence with Claude Code / ClawHub conventions, live artifact ecosystem development

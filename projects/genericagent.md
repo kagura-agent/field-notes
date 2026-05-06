@@ -372,4 +372,13 @@ This pattern solves a real problem: process-based agent communication via stdio 
 | Orb | 59 | +5 | Still v0.4.0, no push since 05-02. Quiet |
 | GenericAgent | 9,196 | +83/day | ACP bridge merged. Community-driven frontend expansion continues |
 
+### Update 05-06
+
+**Stars**: 9,199 (steady +83/day pace).
+
+- **ACP bridge follow-up**: PR #274 (open) fixes streaming overlap and truncation in the ACP bridge merged in PR #272. Quick iteration cycle.
+- **Misc merged**: PR #268 (duplicate backtick key fix), PR #269 (request timeout + proper exception handling), PR #271 (WeChat QR group update)
+- **Open PRs**: #267 (file_write auto-resume on truncation — interesting robustness pattern), #266 (QT UI improvements), #260 (E2E test automation)
+- No architectural changes. Community growth is organic, mostly Chinese contributor base.
+
 See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]]
