@@ -109,3 +109,20 @@
 - **Scope**: 2 files, 18 insertions, 6 deletions. Surgical — only the error path changed
 - **Tests**: All 89 orchestrator + 28 sessions tests pass, tsc clean, lint-staged clean
 - **Pattern**: Same "dishonest persistence" family as #1034 (ghost worktree) and #1084 (silent error drop) — Archon has a pattern of not checking error states before persisting
+
+## 2026-05-06 Session Notes
+
+### PR Template Requirement
+- Wirasm (co-maintainer) now enforcing PR template `.github/pull_request_template.md`
+- Required sections: UX Journey, Architecture Diagram, Label Snapshot, Change Metadata, Linked Issue, Validation Evidence, Security Impact, Compatibility/Migration, Human Verification, Risks and Mitigations, Side Effects/Blast Radius, Rollback Plan
+- Even brief/N/A is fine, but sections must exist
+- Applied to #1530, #1532, #1423
+
+### PR #1532 — fix(core,web): show newest messages instead of oldest on hydration
+- Fixes message ordering — DB query fetches newest messages (ORDER BY DESC) then reverses for chronological display
+- Template filled, waiting review
+
+### PR #1423 — Wirasm review: minor-fixes-needed
+- Verdict: well-scoped, type safety solid
+- Issue: catch block in cleanup-service.ts:34-52 completely silent — should log like loadRepoConfig does
+- Addressed, waiting re-review
