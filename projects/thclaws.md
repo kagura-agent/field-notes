@@ -142,5 +142,15 @@ This is the same anti-"讨好模式" principle from our AGENTS.md, but formalize
 - Thinking deltas surfaced in `-p` print mode
 - Sidebar goal indicator (desktop GUI)
 
+## Applied: Mechanical Enforcement in FlowForge (2026-05-06)
+
+The `/goal` system's key insight — verification discipline should be enforced by topology, not by instruction — was applied to our [[flowforge]] `workloop.yaml`:
+
+- Added `pre_push_audit` node between `implement` and `submit`
+- Requires pasting actual test output, diff-stat, interface check results, and plan-item checklist
+- Agent cannot reach `submit` without providing evidence (not just claiming "verified")
+
+See [[mechanical-enforcement-via-topology]] for the generalized pattern.
+
 ---
 *Deep read: 2026-04-29 (initial), 2026-05-06 (v0.8.0 /goal deep read). Source: GitHub API (goal_state.rs, default_prompts/goal_continue.md, goal_budget_limit.md, commits, release notes)*
