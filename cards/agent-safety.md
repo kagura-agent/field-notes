@@ -28,5 +28,8 @@ Hidden Unicode characters (tag chars U+E0000-E007F, bidi overrides, zero-width c
 ## Strategic Importance
 Second main line in Kagura's strategy — agent autonomy requires proportional safety investment.
 
+## Tools & Projects
+- [[deepsec]] — Vercel Labs agent-powered vulnerability scanner (1.4K⭐ in 7 days). 5-stage pipeline with PR review mode for CI gating. Validates "agent security" as a real market category.
+
 ## Links
-[[openclaw]] [[cyberclaw]] [[agent-identity-protocol]] [[berkeley-benchmark-gaming]]
+[[openclaw]] [[cyberclaw]] [[agent-identity-protocol]] [[berkeley-benchmark-gaming]] [[deepsec]]

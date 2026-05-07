@@ -348,3 +348,18 @@ Integrated 4 core checks into `gogetajob submit` as non-blocking warnings:
 
 These automate what was previously manual pre-PR diligence. See PR kagura-agent/gogetajob#78.
 The checks are **shift-left** — catching issues at submit time rather than after rejection.
+
+## openclaw#78694 → superseded by #78773 (2026-05-07)
+
+**我的 PR**: 3 files (auth.ts, auth.test.ts, CHANGELOG.md), removed password fallback code block + updated tests
+**替代 PR**: 12 files — same core fix PLUS:
+1. `credential-planner.ts` — stopped selecting password credentials for trusted-proxy mode (client-side)
+2. `trusted-proxy-auth.md` + `configuration-reference.md` — updated docs to reflect policy change (4 doc sections)
+3. `credentials.test.ts`, `credentials-secret-inputs.ts` — credential selection tests
+4. `call.test.ts`, `runtime-gateway-*-surfaces.test.ts` — broader test coverage
+
+**差距分析**: I fixed the server-side symptom but missed the client-side (credential planner still selecting password for trusted-proxy). The maintainer also updated all docs referencing the old behavior. My PR was a surgical fix; theirs was a complete policy change.
+
+**Pattern**: Security fixes often need both server AND client sides + docs. A "remove the fallback" fix is incomplete without also preventing the credential from being offered. Check: who calls this? Who selects this credential? Who documents this behavior?
+
+**Lesson**: For auth/security PRs, grep for all references to the changed behavior across the codebase. `git grep "password.*trusted.proxy\|trusted.proxy.*password"` would have revealed credential-planner.ts and the docs.
