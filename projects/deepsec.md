@@ -1,106 +1,54 @@
 # deepsec (vercel-labs/deepsec)
 
-> Agent-powered vulnerability scanner for large codebases
+Agent-powered security scanner for codebases. Vercel Labs, Apache 2.0, TypeScript.
 
-- **URL**: https://github.com/vercel-labs/deepsec
-- **Stars**: 349 (2026-05-05, created 2026-04-30)
-- **License**: Apache-2.0
-- **Language**: TypeScript (pnpm monorepo)
-- **Org**: Vercel Labs
+## Stats
+- ⭐ 1,453 (05-07), was 1,222 on 05-06 (+231/day, explosive growth)
+- Created: 2026-04-30 (7 days old)
+- Commits: very active (multiple PRs/day)
 
-## What It Does
+## Architecture (05-07 deep read)
 
-Security scanner that uses coding agents (Claude/Codex) to find hard-to-detect vulnerabilities. The key insight: regex matchers cast a wide net cheaply (free), then AI agents do expensive deep investigation only on flagged files.
-
-Pipeline: `scan → process → revalidate → triage → enrich → export`
-
-Each stage is idempotent, additive, and can be run independently. Re-running merges new info rather than overwriting.
-
-## Architecture
-
+**5-stage pipeline**, each a CLI subcommand, each idempotent:
 ```
-scan (regex matchers, free, ~15s/2k files)
-  ↓ candidates
-process (AI agents, $$$, claude-opus-4-7 or gpt-5.5)
-  ↓ findings
-revalidate (AI re-check, cuts FP by 50%+)
-  ↓ verdicts (true-positive/false-positive/fixed/uncertain)
-triage (lighter model, P0/P1/P2 classification)
-  ↓ enriched
-export (JSON/markdown per finding)
+scan → process → revalidate → enrich → export
+(regex)  (AI)     (TP/FP)    (+committers) (md/json)
 ```
 
-### Key Design Decisions
+- **On-disk data model**: `data/<projectId>/files/<path>.json` — one FileRecord per source file. Additive merge (never overwrites). Git-friendly.
+- **INFO.md**: repo-specific context injected into every AI prompt. Written by agent (not human).
+- **Two agent backends**: Codex (`gpt-5.5` default) and Claude (`claude-opus-4-7`). Same prompt + JSON schema, interchangeable. Can mix within a project.
+- **Concurrency**: batched parallel processing, distributed to Vercel Sandbox microVMs for large repos.
 
-1. **Regex-first, AI-second**: 111 matchers in ~6800 lines do the cheap filtering. AI only sees pre-screened candidates. This makes the cost manageable even for huge repos.
-2. **File-as-source-of-truth**: Each `FileRecord` JSON accumulates all knowledge about a file. Additive merge model — nothing overwritten.
-3. **Multi-agent**: Same prompt schema, different backends (Claude Agent SDK / Codex SDK). Can mix backends within a project.
-4. **Distributed**: Fan out to [[vercel-sandbox]] microVMs for monorepos. Atomic file locking via `lockedByRunId`.
-5. **Designed for cost**: "scans can cost thousands or even tens-of-thousands of dollars" — positioned as a premium tool for enterprises who care about security ROI.
+## PR Review Mode (PR #57, merged 05-06)
 
-### Agent Integration
+`deepsec process --diff origin/main` — scoped scan of changed files only.
 
-Uses `@anthropic-ai/claude-agent-sdk` `query()` with:
-- `permissionMode: "dontAsk"` (no human approval needed)
-- `maxTurns: 150` (deep investigation)
-- `thinking: { type: "adaptive" }` for revalidation
-- Backoff + retry for transient errors
-- Refusal detection + follow-up prompts
+Key design decisions:
+- 5 mutual-exclusive file sources: `--diff <ref>`, `--diff-staged`, `--diff-working`, `--files`, `--files-from`
+- Regex scan still runs on changed files (prompt anchors), but agent reviews ALL changed files regardless of matcher hits
+- PR comment rendering filters to **net-new findings only** (by `producedByRunId`). Pre-existing findings on touched files excluded
+- Severity badges: CRITICAL/HIGH/MEDIUM/HIGH_BUG/BUG/LOW with color emojis
+- Exit code 0 = clean, 1 = findings → natural CI gate
 
-## Interesting Matchers (Agent-Specific)
+## Self-Dogfooding (PR #62, merged 05-07)
 
-These are novel — targeting AI/agent code specifically:
+33K additions, 295 files — checked deepsec data into its own repo. Now runs on itself. Turned on sandbox for local agent execution.
 
-| Matcher | What It Catches |
-|---|---|
-| `agentic-untrusted-prompt-input` | Prompts interpolating external data (CRM notes, scraped HTML, KB docs) without injection boundaries |
-| `mcp-tool-handler` | MCP tool registrations without per-tool auth/input validation |
-| `agent-loop-no-cap` | Agent loops without turn/iteration limits |
-| `agent-tool-definition` | Tool definitions with overly broad permissions |
+## Key Insights
 
-Also covers modern frameworks: Next.js server actions, drizzle ORM, tRPC, ConnectRPC, Terraform IaC, Kubernetes, Lua/OpenResty.
-
-## Plugin System
-
-- `MatcherPlugin` — custom regex matchers with noise tiers (precise/normal/noisy)
-- `OwnershipProvider` — who owns this file (CODEOWNERS, org chart)
-- `PeopleProvider` — look up people by email/name
-- Notifier plugins for reporting
+1. **Cost model is honest**: "scans can cost thousands or tens-of-thousands of dollars for large codebases" — not hiding behind freemium. Enterprise-grade positioning.
+2. **Existing subscription piggybacking**: locally uses your Claude/Codex subscriptions. Smart for adoption friction.
+3. **Additive merge model**: no destructive operations on data. Every re-run adds information. Good for iterative/incremental scanning.
+4. **PR mode as CI gate**: exit code 1 on findings = natural GitHub Actions integration. This is the feature that will drive adoption.
+5. **Regex as prompt anchoring**: candidates from regex matchers are "hints" for the AI, not the full analysis. Smart hybrid approach — cheap regex narrows attention, expensive AI does judgment.
 
 ## Relevance to Us
 
-### Direct
-- **Could scan OpenClaw and our tools** for security issues
-- The **MCP matcher** is specifically relevant — we expose MCP tools
-- The **agentic-untrusted-prompt-input** matcher catches prompt injection in agent code
+- **Agent security is a real market**: 1.4K⭐ in 7 days from Vercel Labs. The "coding agents introduce security risks" thesis has demand.
+- **Pipeline pattern**: scan → process → revalidate is a good template for any multi-stage agent workflow with human-in-the-loop (similar to FlowForge).
+- **PR mode architecture**: diff-scoped agent review with net-new-only filtering is worth borrowing for our own PR review workflows.
 
-### Architectural Lessons
-- **Regex + AI pipeline** is a powerful pattern: cheap filtering → expensive investigation. Applicable beyond security (code review, documentation generation, etc.)
-- **Additive merge model** for incremental analysis — same pattern [[flowforge]] uses for workflow state
-- **Idempotent stages** — interrupt and resume without data loss. Good model for any batch AI processing.
-
-### Contribution Opportunity
-- 349⭐, Apache-2.0, 5 days old, actively developed
-- Matcher contributions are low-risk, well-defined units of work
-- Could write matchers for patterns we know (e.g., OpenClaw-specific security patterns)
-
-## Ecosystem Position
-
-New category: **agent-powered security testing**. Competitors:
-- Traditional SAST (Semgrep, CodeQL) — rule-based, no AI investigation
-- GitHub Copilot security suggestions — inline, not batch analysis
-- Snyk Code — AI-assisted but not agent-powered
-
-deepsec sits between "automated scanner" and "manual pentest" — using agents to approximate expert-level code review at scale.
-
-## Signals
-
-- Vercel Labs backing = credible, well-resourced
-- $$$-grade positioning = enterprise play, not community tool
-- 111 matchers in first week = serious engineering investment (not a weekend project)
-- Claude Agent SDK integration = first major non-Anthropic project using this SDK publicly
-
-## Tracking
-
-- **Revisit**: 2026-05-12
-- **Watch for**: Community matcher contributions, integration with CI/CD, pricing model
+## Links
+- Repo: https://github.com/vercel-labs/deepsec
+- Docs: docs/ directory in repo
