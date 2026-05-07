@@ -16,6 +16,7 @@ Agent memory systems swing between "more pipeline = better" and "simpler = bette
 
 - **[[invincat]]** (05-06): Removed entire rescore_candidates system, removed MAX_OPERATIONS_PER_RUN limit, flattened multi-turn messages to plain-text transcript. Net -185 lines. The most sophisticated open-source memory agent is *removing* complexity.
 - **[[stash]]**: 9-stage consolidation pipeline. Works but expensive — multiple LLM calls per turn. Unclear if stages 4-9 justify their cost.
+- **[[invincat]]** (05-07): Prompt compression -152 lines. Replaced verbose operation catalog with "DECISION ORDER" — a prescribed evaluation sequence. Three rounds of simplification totaling -326 lines. The pendulum has swung fully: code pipelines replaced by prompt instructions.
 - **Our system**: Started with free-form markdown, still there. We never built the pipeline — and maybe that's not a bug.
 
 ## Insight

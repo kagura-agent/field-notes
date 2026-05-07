@@ -189,6 +189,62 @@ Invincat occupies the sweet spot: **automated but conservative, structured but f
 
 **Revisit**: 05-11
 
+## 05-07 Followup: Prompt Compression & Decision Order
+
+**Stars**: 304 (+12 in 1 day)
+**Key commits**: "Simplify memory agent prompt" + "Encourage memory rescore on confirmation"
+
+### Prompt Compression (-60% tokens)
+
+The system prompt went from 268 to 116 lines — a massive compression with no semantic loss. Techniques:
+
+1. **Removed ASCII section dividers** — `====` headers replaced with plain headings or removed entirely
+2. **Merged 4 sections → 2** — SCOPE + WHAT TO STORE + OPERATION RULES + examples consolidated into STORE ONLY + OP RULES
+3. **Examples cut from 11 to 5** — removed obvious cases (noop, retier, code review), kept only patterns where models make mistakes (contradicted item, confirmed item, noop on weak signal)
+4. **Inline op schemas** — verbose multi-line op definitions condensed to single-line JSON
+
+### New "DECISION ORDER" Section (Most Interesting)
+
+This is the biggest architectural addition despite the overall compression:
+
+```
+1. First compare this turn with existing memory_snapshot items.
+2. For each directly related item, classify as confirmed/refined/contradicted/resolved/stale/unrelated.
+3. Prefer existing-item ops before create.
+4. Emit noop only after checking confirmations, contradictions, and new durable facts.
+```
+
+**Why this matters**: Previous prompt told the model *what* each operation does. The new prompt tells it *when to think about each operation* — a prescribed evaluation sequence. This is the prompt engineering equivalent of [[mechanism-vs-evolution]]: structure the thinking process, not just the output format.
+
+The "prefer existing-item ops before create" instruction directly addresses the most common failure mode: creating near-duplicate items instead of updating existing ones. Combined with explicit "never create semantic duplicates" (also new), this is a two-layer defense against store bloat.
+
+### Rescore on Confirmation (Prompt-Based)
+
+After removing the code-based rescore_candidates pipeline (05-05), they added prompt-level instructions:
+- "Do not treat confirmation as noise" — warm/cold items confirmed by conversation should get rescored up
+- "Prefer rescore over noop" for directly confirmed items
+- Exception: don't rescore already-hot items for routine mentions
+- Added example H2 showing a project item confirmed without content changes
+
+This is the **mechanism → prompt** pattern: replacing a code pipeline (select candidates → feed to LLM → process results) with prompt instructions that achieve the same effect within the existing extraction call. Fewer moving parts, same outcome.
+
+### Trend: Three Rounds of Simplification
+
+| Date | Change | Net Lines |
+|------|--------|-----------|
+| 05-05 | Remove rescore pipeline, uncap operations, plain-text transcript | -185 |
+| 05-06 | Rescore-on-confirmation prompt, reduce debug logs | +11 |
+| 05-07 | Prompt compression, decision order | -152 |
+| **Total** | | **-326** |
+
+Invincat has removed ~330 lines of memory agent code in 3 days while *improving* behavior (better dedup, better confirmation handling). This is the [[memory-complexity-pendulum]] in action — they've crossed the complexity peak and are now on the simplification downslope.
+
+### Lessons for Us
+
+1. **Decision order > operation catalog**: When building memory extraction prompts, prescribe the evaluation sequence, not just the output schema. "First check existing items, then classify, then decide" is more effective than "here are 7 op types, pick the right one."
+2. **Prompt compression is free performance**: 60% fewer tokens with no behavioral regression (all tests pass). We should audit our own system prompts for similar bloat — AGENTS.md is 200+ lines.
+3. **Mechanism → prompt works for background agents**: When a background agent runs once per turn with full context, code-level pipelines add complexity without adding capability. The prompt *is* the pipeline.
+
 ## Related
 
 - [[stash]] — alternative approach (Postgres, heavy consolidation)
