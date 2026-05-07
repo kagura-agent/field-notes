@@ -253,6 +253,6 @@ A **5th layer** is crystallizing: [[worktree-convergence-2026-05]]
 - This gap is an opportunity — whoever builds good agent eval tooling will fill a real need
 
 ### 2026-05-06 Update
-- **[[photo-agents]]** (51⭐): Most articulate memory governance seen — 4-layer L1-L4 with ROI-based cleanup, "existence encoding", "no execution no memory" principle. Confirms L1 index convergence pattern (their L1 ≤30 lines = our wiki/L1.md)
+- **[[photo-agents]]** (184⭐, was 51): Most articulate memory governance seen — 4-layer L1-L4 with ROI-based cleanup, "existence encoding", "no execution no memory" principle. Confirms L1 index convergence pattern (their L1 ≤30 lines = our wiki/L1.md). Now commercial (API key gated), 3.6× growth in a week — vision-grounded agents resonate with market
 - Skill ecosystem explosion: 105K+ skill cards searchable via API (Photo-agents), master-skill distilling entire industries into skills, oh-story-claudecode (784⭐) as first viral skill package
 - Meta-trend: **skill as commodity** phase beginning — the moat is not individual skills but the memory/governance layer that selects and evolves them

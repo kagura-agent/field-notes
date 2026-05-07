@@ -14,7 +14,7 @@ type: trend
 |---------|-------|----------|-------------|
 | [[cadis]] | 39 | Rust | Desktop HUD, policy gates |
 | [[oh-my-kimichan]] | 20 | TypeScript | Kimi Code, DAG + ensemble voting |
-| [[paragents]] | 31 | Python | Permission-aware, preflight conflict checks |
+| [[paragents]] | 112 | Python | Permission-aware, preflight conflict checks |
 | parallel-worktree-dev | 9 | Shell | Next.js + Conductor, per-worktree DB |
 | amara | 4 | Zig | Terminal emulator approach |
 | agentfleet | 1 | Python | Pure CLI, minimal |
@@ -28,6 +28,21 @@ Git worktrees provide:
 3. **Merge integration** — standard git merge as the coordination mechanism
 4. **Zero overhead** — no VMs, containers, or copies needed
 5. **Familiar mental model** — developers already understand branches
+
+## Paragents Preflight Intent Deep Read (2026-05-07)
+
+Grew 31→112⭐ in 5 days. The novel piece is `preflight_intent.py`:
+
+- **PreflightIntent** dataclass: capabilities (git/shell/python/github/web/mcp), actions (git:commit, github:write), output_paths
+- **Rule-based inference** from prompt text (regex for redirects, keywords for git/shell)
+- **Optional LLM enrichment** — sends structured extraction prompt, merges with rule results
+- **Scheduler conflict detection**: compares `output_paths` between sessions. Same path → second session gets `serialize` decision (queued behind first)
+- **Capability overlap is NOT a conflict** — two sessions both using `python` is fine. Only shared output paths trigger serialization
+- **Permission model**: per-capability allow/deny + per-command allowlist/blocklist + approval queue for risky ops
+
+**Key insight**: The system distinguishes between "using the same tool" (parallel OK) vs "writing to the same place" (must serialize). This is more practical than full semantic conflict detection.
+
+**Relation to OpenClaw**: Our subagent spawns are already workspace-isolated, but we don't detect output path conflicts between concurrent subagents. For team-lead multi-agent work, this pattern could prevent two subagents from editing the same file.
 
 ## What This Means
 
