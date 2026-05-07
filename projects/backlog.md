@@ -1070,3 +1070,28 @@ GitHub trending (agent, created past week, sorted by stars):
 **Saturation signal**: 7/10 already tracked. Ecosystem is stable this cycle.
 **Notable growth**: deepsec (+445/day) and RunbookHermes (177→529, 3x) — agent security and AIOps gaining traction.
 **HN**: Timed out, no data this scan.
+
+## 2026-05-07 Scout (10:49)
+
+**GitHub API search (ai-agent/agent+skill/coding+agent, created >04-28):**
+
+| Project | Stars | Signal |
+|---------|-------|--------|
+| deepclaude (aattaran) | 1499 | Still growing (was 1420). Cost arbitrage still hottest need |
+| skydoves/compose-performance-skills | 337 | Skill commoditization — domain-specific skill packs |
+| craft-agents-oss (warpdot-dev) | 235 | Already tracked |
+| lukiIabs/skills | 212 | Curated skill collection, single-push |
+| Photo-agents (jmerelnyc) | 184 | 3.6× growth (was 51⭐). Vision+memory+skill-writing loop validated |
+| paragents (FrankHui) | 112 | **Deep read done**. Novel: preflight conflict detection for parallel sessions |
+| oh-my-kimi (dmae97) | 56 | Kimi Code CLI multi-agent harness. Non-Claude ecosystem emerging |
+| master-skill (voidborne-d) | 41 | Industry knowledge → runnable skill distillation |
+
+**Trends confirmed:**
+1. **Cost arbitrage** dominant user need (deepclaude still viral)
+2. **Skill commoditization** accelerating — curated packs, domain-specific skill repos
+3. **Non-Claude agent harnesses** emerging (Kimi, DeepSeek V4, OpenCode)
+4. **Conflict prevention** in multi-agent = underexplored green space
+
+**HN:** Quiet week for agent content. No standout posts.
+
+**Deep read:** paragents — predict-before-execute pattern, output path locking, LLM-assisted intent inference. See wiki/projects/paragents.md.
