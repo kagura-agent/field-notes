@@ -193,7 +193,56 @@ PR #381, **22,361 lines** (118 files!). Massive addition.
 
 See [[multi-harness-adapter-pattern]], [[skill-ecosystem]], [[thin-harness-fat-skills]]
 
+### v0.4.2-beta (2026-05-07) — Transcript Export + Headless + Image Providers
+
+**Stars**: 31,097 (+3,486 in ~1 day from 27,611 — growth sustained, not a spike)
+
+10+ PRs merged in 2 days post-v0.4.0. Three architecturally notable additions:
+
+#### Transcript Export (#493) — LLM-Ready Conversation Dump
+
+Pure function `exportProjectTranscript()` that walks SQLite conversation history → `.transcript.jsonl` in project dir. Prereq for #450 "Finalize design package" (DESIGN.md synthesis from source + transcript).
+
+**Design decisions worth noting:**
+- JSONL over JSON: ~20-30% token savings for synthesis calls, tail-friendly, jq-friendly
+- Block coalescing: streaming deltas → terminal text/thinking blocks via arrival-order flush (data-driven, model-agnostic)
+- Atomic write: tmp file → fsync → rename (POSIX atomic, concurrent-safe)
+- Content fallback: user messages (no events_json) → single text block from content field
+- Zero edits to existing files — purely additive diff
+
+**Pattern significance**: "Transcript as export primitive" enables multiple downstream features (#450 synthesis, #451 CLI handoff, #462 resume-conversation) from one stable format. The `schemaVersion: 1` header reserves room for breaking changes. Similar to how [[openclaw]] session logs could be a reusable primitive for reflection/synthesis.
+
+#### Headless Mode (#686) — WSL/Server Deployment
+
+New `headless.mjs` entry point runs daemon + web without Electron. `--headless` flag on Linux install/start/stop. Enables running in WSL, SSH, CI/CD environments.
+
+**Why it matters**: Removes the desktop-GUI-only constraint. Server-side design generation becomes possible. Aligns with the "design as a service" direction.
+
+#### Nano Banana Image Provider (#631)
+
+Dedicated media provider with Google Gemini-compatible `generateContent` API. Custom gateway override supported. Image generation embedded in the design loop.
+
+#### Other Changes
+- Qoder CLI agent adapter (#626) — 14th agent CLI supported
+- Codex imagegen integration (#622)
+- Connection tests in settings UI (#507)
+- Legacy data dir migration for 0.3.x→0.4.x (#712)
+- Windows ENAMETOOLONG fix (#727) — prompt delivery via stdin
+
+### Growth Analysis (Updated 05-07)
+
+31K stars in 9 days. Growth rate: ~3.5K/day (sustained, not decaying). For reference:
+- Day 5: 16K
+- Day 8: 27.6K
+- Day 9: 31K
+
+This is faster than Claude Design's own growth curve (closed-source advantage didn't help). The open-source + multi-agent approach is clearly winning community mind-share. 5 good-first-issues open for contributors.
+
+### Upcoming: DESIGN.md Synthesis (#450)
+
+Open issue for "Finalize design package" — daemon-side source scan + LLM pass against chat transcript → single DESIGN.md. This is the synthesis step that #493 transcript export enables. Worth watching — the concept of "synthesize a design doc from conversation + code" is a pattern [[openclaw]] could borrow for project-level context summaries.
+
 ## Tracking
 
-- Revisit 05-12: check if growth sustains past v0.4.0 launch spike, Critique Theater adoption metrics
-- Watch for: skill standard convergence with Claude Code / ClawHub conventions, live artifact ecosystem development
+- Revisit 05-12: #450 DESIGN.md synthesis feature progress, growth trajectory (still accelerating or plateauing?)
+- Watch for: skill standard convergence with Claude Code / ClawHub conventions, live artifact ecosystem development, headless mode adoption
