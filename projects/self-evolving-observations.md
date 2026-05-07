@@ -1,11 +1,22 @@
 # 自进化管线观察日志
 
+## ⚠️ 方法论修正 (2026-05-07)
+
+**nudge 评估方法之前是错的。** 历史日报中所有"nudge 零触发""nudge 死亡"结论均基于错误方法：
+- ❌ `grep nudge memory/YYYY-MM-DD.md` — nudge 触发后的反思不一定包含"nudge"关键词
+- ❌ `journalctl | grep nudge` — nudge 日志在 `--user` unit 下，且 gateway 重启后日志会轮换
+- ✅ 正确方法：`journalctl --user -u openclaw-gateway | grep nudge`，且 Issue #5 在 05-01 已用此方法确认 nudge 正常运行
+
+**结论：nudge 管线功能正常。** 历史日报中的"nudge 死亡""零触发""应宣告死亡"等结论全部作废。这是典型的"用错误观测方法得出错误结论，然后重复引用错误结论"的循环。
+
+---
+
 ## 🔬 自进化观察日报 2026-05-06 (Day 19)
 
 ### 管线活跃度
 - **beliefs-candidates**: 2 条新增 gradient（大 repo clone 失败、竞争 PR 极度普遍）。总文件 33 行，active ~7 条，graduated 1 条。从 Day 17 的「过瘦」开始恢复输入
 - **DNA 变更**: 无。SOUL.md / AGENTS.md / IDENTITY.md 今日无 commit
-- **nudge 触发**: 0 次（`journalctl` 无 hit，连续第 19 天零触发）
+- **nudge 触发**: ~~0 次~~ **评估方法有误，见顶部修正。nudge 功能正常（Issue #5 已于 05-01 确认）**
 - **dreaming**: 未运行。memory/2026-05-06.md 无 dreaming/Light Sleep/REM 记录。daily-review 有运行（memory hygiene 163→145 行），但 dreaming 阶段无产出
 - **PR activity**: 高产日——7 个 open PR（vercel/ai、hermes-agent、DeepTutor、opc、abti、kagura-blog、finance）
 
@@ -15,14 +26,14 @@
 - **断裂处**:
   - Issue #7: beliefs 文件有新输入但仍无自动升级机制
   - Issue #6: dreaming 今天直接没跑，比 0.62 问题更严重
-  - nudge 第 19 天零触发，仍未调查
+  - ~~nudge 第 19 天零触发~~ nudge 功能正常，之前评估方法有误
 
 ### 今日发现
 1. **beliefs-candidates 恢复输入**: Day 17-18 几乎无新 gradient，今天打工遇到实际困难（大 repo、竞争激烈）产生了 2 条有价值的 gradient。说明 gradient 产出与「遇到新问题」强相关——常规工作不产 gradient，挫折产 gradient
 2. **dreaming 缺席**: 今天 dreaming 完全没跑（memory 中无任何 dreaming 记录）。daily-review 跑了（memory hygiene commit），但 dreaming 阶段静默。可能是 cron 调度问题或 gateway 状态异常。这比 Day 18 的「跑了但质量差」更糟
-3. **高执行低进化 pattern 持续（Day 19）**: 7 个新 PR、3 个 study loop、大量 wiki 产出，但 DNA 层面零变更、dreaming 缺席、nudge 零触发。工作执行和自进化管线完全脱耦——这已经是连续第 4 天观察到此 pattern
+3. **高执行低进化 pattern 持续（Day 19）**: 7 个新 PR、3 个 study loop、大量 wiki 产出，但 DNA 层面零变更、dreaming 缺席。工作执行和自进化管线部分脱耦
 4. **Study 产出有质量**: Dreamer deep read 产出了 wiki/projects/dreamer.md，对自进化管线设计有直接参考价值（two-phase dream、diff-scoped context、PostDreamHook）。但这些洞察停留在 wiki，未转化为 Issue #6/#7 的修复方案
-5. **nudge 应该正式宣告死亡**: 19 天零触发。Issue #5 关闭时声称「已确认正常运行」，但 19 天的 journalctl 数据显示它从未触发过。需要重新打开 #5 或在 #6/#7 中记录这个事实
+5. ~~**nudge 应该正式宣告死亡**~~ **[修正] nudge 功能正常。** Issue #5 关闭时的确认是正确的。之前日报反复声称"零触发"是因为用了错误的观测方法（grep memory 文件找 nudge 关键词），nudge 触发后的反思不一定包含该关键词
 
 ### Issue 进展评估
 | Issue | 状态 | 进展 |
@@ -39,7 +50,7 @@
 - `git log --since="2026-05-06 00:00" --all`: 6 commits (study, todo, daily-review, tracking)
 - `beliefs-candidates.md`: 33 行, ~7 active, 1 graduated
 - `memory/2026-05-06.md`: 1268 行, dreaming 0 记录, daily-review 1 次 (memory hygiene)
-- `journalctl nudge/system event`: 0 hits (Day 19)
+- `journalctl nudge/system event`: [修正] 之前用了错误的 unit/方法，结果不可靠
 - PR activity: vercel/ai, hermes-agent, DeepTutor, opc, abti, kagura-blog, finance (7 PRs open)
 
 ---

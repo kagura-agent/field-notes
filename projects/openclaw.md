@@ -88,3 +88,13 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **CI notes**: Several check shards fail (check-dependencies, check-prod-types, check-test-types) but unrelated to my changes — pre-existing CI issues. Targeted test (manager-vector-warning.test.ts) passes 3/3.
 - **Pattern**: Small warning message fixes are good low-risk entry points for openclaw contributions
 - **Lesson**: Always check CHANGELOG.md requirements — clawsweeper enforces this for user-facing changes
+
+## PR #78679 (2026-05-07, PENDING)
+- **Issue**: #78661 — stream_options.include_usage regression for embedded sessions with PI native streams
+- **Root cause**: Reference equality check `currentStreamFn === streamSimple` only matched module-level export, not the wrapped version from `getApiProvider("openai-completions")?.streamSimple`
+- **Fix**: Added `isPiNativeDefaultStream()` helper that also checks against registered API provider's `streamSimple` for the given model API
+- **Files**: `stream-resolution.ts`, `stream-resolution.test.ts` (2 files, 65 insertions, 4 deletions)
+- **CI**: All code checks pass. "Real behavior proof" policy check fails — requires runtime evidence from real setup (not just unit tests). PR body explains the testing approach and requests `proof: override`.
+- **Pattern**: When fixing reference equality bugs in PI internals, use `getApiProvider()` to obtain the actual wrapped references for comparison — don't assume module-level exports are the only valid references
+- **Lesson**: openclaw requires "Real behavior proof" for external PRs — screenshots/logs from real setup, not just test results. For deep internals where real setup is hard to reproduce, explain clearly and request maintainer override
+- **Architecture insight**: PI's `streamSimple` has two layers: module-level export (dispatches to provider) and per-provider wrapped version (from `registerApiProvider`). `wrapStreamSimple` in `provider-runtime.js` wraps each provider's stream with credential injection. These wrapped functions have different references from the module-level `streamSimple`

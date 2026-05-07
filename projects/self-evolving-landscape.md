@@ -117,7 +117,7 @@ Mapping the survey's framework to our actual system:
 - Feishu (communication channel = perception)
 
 ### Optimisers
-- **nudge plugin** → post-conversation reflection (automatic, but trigger unreliable)
+- **nudge plugin** → post-conversation reflection (automatic, working correctly per Issue #5 closure)
 - **FlowForge reflect** → structured reflection workflow (manual trigger)
 - **daily-review cron** → periodic DNA review (configured, never run yet)
 - **EXP experiments** → manual self-exploration (initiated by Luna or self)
