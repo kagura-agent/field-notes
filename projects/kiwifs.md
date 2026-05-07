@@ -1,9 +1,9 @@
 ---
 created: 2026-05-04
-updated: 2026-05-06
+updated: 2026-05-07
 type: project
 status: active
-stars: 426
+stars: 421
 repo: kiwifs/kiwifs
 language: Go
 license: BSL-1.1
@@ -212,5 +212,41 @@ Comparison with competitors:
 - KiwiFS — trying to be all three + task board + rules engine
 
 Risk: BSL-1.1 license + feature bloat. Adding rules + spaces + claims + webhooks + Mermaid in 2 weeks signals aggressive scope expansion. Whether this holds together architecturally long-term is the question.
+
+## Agent Self-Modification of Rules (2026-05-07, PR #41)
+
+Small but philosophically significant change: agents can now read/write `.kiwi/rules.md` and `.kiwi/playbook.md` through standard `kiwi_write`/`kiwi_read` MCP tools.
+
+### Design: GuardPath Allowlist
+
+- Previously: blanket hidden-directory guard blocked ALL `.kiwi/*` writes
+- Now: `userEditableKiwiFiles` allowlist for `rules.md` and `playbook.md` specifically
+- Everything else in `.kiwi/` (config.toml, state/, templates/) and `.git/` remains blocked
+- Traversal attack protection tested: `../.kiwi/config.toml` still blocked
+- 82 additions / 3 deletions, 2 files changed — surgical fix
+
+### Why This Matters
+
+This completes the agent governance loop:
+1. Agent reads rules → understands workspace conventions
+2. Agent works within rules → knowledge/task operations
+3. Agent **writes rules** → adapts conventions based on experience
+
+Before PR#41, rules were human-only-writable — agents could read but not evolve them. Now agents can propose and apply rule changes through the same API they use for everything else. This is [[mechanism-vs-evolution]] in action: the mechanism (GuardPath) gates which files are mutable, but within that gate, evolution is unconstrained.
+
+**Contrast with our approach**: Our AGENTS.md/SOUL.md are self-modifiable by design (DNA Self-Governance section). KiwiFS had to explicitly punch a hole in its security model to enable this. Different starting assumptions — we trusted the agent from day one; they're cautiously expanding trust.
+
+**Open question**: No approval/review layer for agent-authored rule changes. Git history provides auditability but not pre-commit validation. In a multi-agent workspace, one agent could overwrite another's rules. The claim system (PR#38) could gate this, but it's not wired up yet.
+
+### Mermaid Rendering (PR#39, merged 05-06)
+
+External contributor PR adding Mermaid diagram rendering in markdown pages. Minor feature but signals community contribution — first non-maintainer code merged. Healthy sign for a 3-week-old project.
+
+## Followup Summary (2026-05-07)
+
+- **Stars**: 421 (plateau after initial 415→426 burst; growth decelerating)
+- **Dev velocity**: Still high — 5 PRs merged in 48h, but smaller scope (fixes, rendering, allowlist). The big architectural pushes (claims, workflows, spaces) were last week.
+- **Trajectory**: Transitioning from feature explosion to stabilization. Rules self-modification closes the last obvious gap in the agent autonomy story.
+- **Next revisit**: 05-14 as scheduled. Watch for: multi-agent coordination patterns using claims+rules, community growth (external PRs), and whether the feature scope stabilizes or keeps expanding.
 
 Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]], [[agent-commerce]], [[context-is-software]]
