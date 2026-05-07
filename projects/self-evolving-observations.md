@@ -879,3 +879,44 @@ Open PRs: ~32
 - `memory/2026-05-05.md`: 1969 行, dreaming light 100 条 (94×0.62 + 6×0.58), REM "No strong patterns", recalls 全部 0
 - `journalctl nudge/system event`: 0 hits (Day 18)
 - PR activity: openclaw#77790, kagura-blog#26, multica#2088, finance#237/#235
+
+## 🔬 自进化观察日报 2026-05-07 (Day 20)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增 gradient。文件 33 行，active ~7 条，graduated 1 条。连续第 2 天无新 gradient 写入（昨天有 2 条，今天回到 0）
+- **DNA 变更**: 无。SOUL.md / AGENTS.md / IDENTITY.md 今日无 commit [已验证: `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md` 返回空]
+- **nudge 触发**: 功能正常（Issue #5 已确认）。gateway 日志今日无 nudge 相关输出（`journalctl -u openclaw-gateway --since "2026-05-07" | grep -ci nudge` = 0），但这可能是日志轮换或 `--user` unit 差异，不代表未触发
+- **dreaming**: Light Sleep 运行 ✅，大量 staged candidates（~30 条），confidence 全部 0.62，recalls 全部 0。REM 输出 "No strong patterns surfaced" + 旧日期内容拼接（04-29, 04-25, 05-01 的记忆碎片）。**零 promote**，连续第 20 天
+- **PR activity**: 纯巡检/学习日，无新 PR 提交。workloop 产出 2 个 NemoClaw PR（#3169, #3181）
+
+### 闭环追踪
+- **完整闭环**: 1 个（micro）— daily-review 发现 MEMORY.md 3 处陈旧数据 → 直接修复 → commit (8d3077a)。从观测到修复到验证，单轮完成
+- **方法论修正闭环**: commit 95ad50b 修正了 nudge 评估方法论（之前 18 天用错误方法得出错误结论 → 确认正确方法 → 修正观察日志）。这是一个跨天的元级闭环
+- **断裂处**:
+  - Issue #7: beliefs-candidates 有 7 条 active 但 0 条达到 3x 升级阈值，无自动升级机制
+  - Issue #6: dreaming confidence 仍然统一 0.62，recalls 仍然全 0，REM 仍在拼接旧内容。无修复进展
+
+### 今日发现
+1. **nudge 方法论修正是有价值的**: commit 95ad50b 纠正了连续 18 天的错误观测结论。这本身是一个闭环，说明自我纠错能力在提升——但触发点是 daily-review cron 而非自主发现
+2. **dreaming REM 质量依然糟糕**: "Possible Lasting Truths" 输出的是 04-29 和 04-25 的记忆拼接，而非今天的认知。confidence 0.72/0.71/0.69 比 Light Sleep 的 0.62 高，但内容是跨天碎片而非洞察。dreaming 本质上仍是「记录回放」而非「深度反思」
+3. **活跃度高但进化沉默**: memory 1895 行（今日产出极多——study loop、workloop、channel patrol、story 定稿等），但 beliefs/DNA 层面完全静止。高执行低进化 pattern 已持续 4 天（Day 17-20）
+4. **beliefs-candidates 输入不稳定**: Day 17: 0 条 → Day 18: 0 条 → Day 19: 2 条 → Day 20: 0 条。gradient 写入高度依赖「遇到新问题」，常规工作不触发反思记录
+5. **workspace 有 3 个 commit 但都是维护性**: 方法论修正、memory hygiene、TODO 标记。无功能性改动，无 DNA 进化
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 无进展。active entries 未增加，无升级动作 |
+| #6 dreaming 质量 | OPEN | 无进展。confidence 0.62 统一、recalls=0、REM 拼接旧内容——连续第 20 天 |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --since="2026-05-06 22:30" --all`: 3 commits (nudge methodology fix, memory hygiene, TODO mark)
+- `beliefs-candidates.md`: 33 行, ~7 active, 1 graduated, 0 new today
+- `memory/2026-05-07.md`: 1895 行, ~94 sections
+- dreaming: Light Sleep ~30 staged (all 0.62, recalls=0), REM "No strong patterns" + old content splice
+- `journalctl nudge`: 0 hits (may be unit/log rotation issue, not conclusive)
+- PR activity: 2 NemoClaw PRs (#3169, #3181) via workloop
