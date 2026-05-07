@@ -69,6 +69,14 @@
 ## Our PRs (continued)
 - #2265 (check-docs normalization parity): submitted 2026-04-22, fixes asymmetric normalization in E2E CLI parity check. CI pass, CodeRabbit no issues. Pending review.
 
+## PR #3181 — accurate preflight nvidia-smi message (2026-05-07)
+- **Issue**: #3174 — preflight says "nvidia-smi not available" when nvidia-smi works but container toolkit missing
+- **Status**: PENDING, CI pass (check-pr-limit ✅), CodeRabbit "No actionable comments" ✅
+- **Scope**: 1 file (onboard.ts), 16 insertions / 4 deletions
+- **Root cause**: `else if (process.platform === "linux")` block assumed that if gpuPassthrough=false + lspci shows NVIDIA → drivers missing. Never actually ran nvidia-smi to check.
+- **Fix**: (1) Skip hint when `--no-gpu` used (user opted out, hint is noise). (2) Actually run nvidia-smi before claiming unavailable. (3) When nvidia-smi works but passthrough not enabled, print actionable container toolkit message.
+- **Pattern**: Similar to #3169 — using existing detection mechanisms (nvidia-smi) rather than guessing state. Always verify before asserting in preflight diagnostics.
+
 ## PR #1784 — Telegram mention-only mode (2026-04-11)
 - **Status**: PENDING, CI pass, awaiting CodeRabbit + maintainer review
 - **Scope**: 3 files (Dockerfile, onboard.ts, onboard.test.ts), 165 additions
