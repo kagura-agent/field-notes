@@ -43,11 +43,57 @@ Key design decisions:
 4. **PR mode as CI gate**: exit code 1 on findings = natural GitHub Actions integration. This is the feature that will drive adoption.
 5. **Regex as prompt anchoring**: candidates from regex matchers are "hints" for the AI, not the full analysis. Smart hybrid approach — cheap regex narrows attention, expensive AI does judgment.
 
+## PR Review Mode — Implementation Details (05-07 followup)
+
+Read the full implementation after PR #57 merge. Key takeaways:
+
+### File Source Resolution (`file-sources.ts`)
+- 5 mutually exclusive sources: `--diff <ref>`, `--diff-staged`, `--diff-working`, `--files <csv>`, `--files-from <path>`
+- Uses `git diff --name-only --diff-filter=AMRC` — only Added/Modified/Renamed/Copied (no Deleted)
+- `--diff-working` combines tracked changes + `git ls-files --others --exclude-standard` (untracked but not gitignored)
+- Path normalization: dedupes, rejects escaping paths (`../`), filters through scanner's `IGNORE_DIRS` globs (test files, dist/, node_modules/) to avoid burning AI budget
+- All files resolved relative to rootPath — no absolute path leaks
+
+### Direct Mode Lifecycle (`process.ts:processDirectMode`)
+```
+1. Resolve file list (git diff or explicit)
+2. Auto-create project on disk (ensureProject) if not in config
+3. scanFiles() — regex matchers on changed files → FileRecords with candidates as "signals"
+4. process() — AI agent investigates ALL listed files, using regex candidates as prompt anchors
+5. renderPrComment() → markdown output (--comment-out)
+6. Exit code: 0 = clean, 1 = findings OR agent batch errors
+```
+
+### PR Comment Rendering (`pr-comment.ts`)
+- **Net-new only**: filters by `Finding.producedByRunId === runId`. Old findings on touched files excluded — prevents CI noise
+- Resolved findings (fixed/false-positive/accepted-risk) also excluded even if from same run
+- Severity ordering: CRITICAL → HIGH → MEDIUM → HIGH_BUG → BUG → LOW with color emoji badges
+- Returns `null` when no findings → caller skips commenting entirely
+- Truncates long descriptions (600 chars) and recommendations (400 chars)
+
+### Error Handling
+- Agent batch errors → hard exit(1). "A silent agent crash masquerading as green CI" is explicitly prevented
+- Conflicting sources → throws immediately, no silent fallback
+- No files after filtering → exit 0 with clear message (not a failure)
+
+### Design Patterns Worth Borrowing
+1. **Regex as prompt anchoring**: cheap regex pre-scan narrows LLM attention, but LLM still reviews all files. Hybrid approach balances cost and coverage
+2. **`producedByRunId` attribution**: every finding is stamped with which run created it. Enables precise net-new filtering for incremental CI
+3. **Exit code as CI gate**: binary clean/dirty signal. Simple, composable with GitHub Actions
+4. **Auto-project creation**: no `init` step needed for direct mode. Reduces friction for one-off CI usage
+
+### Update (05-07)
+- Stars: 1,453 → 1,471 (growth slowing from explosive +231/day to ~+18/2days)
+- PR #59: switched default model from Codex to GPT-5.5 ("better for discovering existing codebases")
+- PR #62: self-dogfooding — 33K LOC checked into own repo, sandbox enabled for local agents
+- Claude agent now available as `--agent claude` alias
+
 ## Relevance to Us
 
 - **Agent security is a real market**: 1.4K⭐ in 7 days from Vercel Labs. The "coding agents introduce security risks" thesis has demand.
 - **Pipeline pattern**: scan → process → revalidate is a good template for any multi-stage agent workflow with human-in-the-loop (similar to FlowForge).
 - **PR mode architecture**: diff-scoped agent review with net-new-only filtering is worth borrowing for our own PR review workflows.
+- **`producedByRunId` pattern**: applicable to any incremental agent analysis — attribute outputs to runs, filter downstream by recency. Could apply to [[wiki-lint]] or FlowForge quality checks.
 
 ## Links
 - Repo: https://github.com/vercel-labs/deepsec
