@@ -23,10 +23,15 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#78694** (2026-05-07, PENDING): fix(gateway): remove password fallback in trusted-proxy auth mode. Fixes #78684. CI: 86/86 passed. Removes unintended local-direct password fallback within trusted-proxy mode.
 - **#76054** (2026-05-02, PENDING): feat(agents): allow per-agent contextInjection override in agents.list[]. Fixes #76046. CI: 81/81 passed after fixing type contract + lint.
 - **#74877** (2026-04-30, PENDING): fix(auto-reply): fall back to automatic delivery when message tool unavailable. Fixes #74868. Addressed clawsweeper bot review (P2: extend policy check to include profile + provider policies). CI: 75/75 passed.
 
 ## Learnings
+- Auth module (`src/gateway/auth.ts`) has extensive test coverage across 3 shards (gateway-core, gateway-server, gateway-client). Tests run fast (~3s).
+- `authorizeGatewayConnect` handles multiple auth modes in a single function with mode-specific blocks. Each mode should be self-contained.
+- "Real behavior proof" CI check is the clawsweeper bot mechanism — not a real test, just requires evidence in PR body.
+- Security fixes that remove code paths are cleaner than adding config options — smaller diff, less maintenance burden.
 - Tool policy resolution is layered: global → agent → profile → provider-profile → group → sandbox → subagent. When checking tool availability outside the full pipeline, include at least profile and provider-profile layers (not just global + agent).
 - clawsweeper bot does deep automated review (uses Codex gpt-5.5) — catches real architectural issues, not just style nitpicks. Worth addressing.
 - **Schema changes need 3 artifacts**: Zod schema (`zod-schema.agent-runtime.ts`), TypeScript type (`types.agents.ts`), and generated baseline (`schema.base.generated.ts` via `generate-base-config-schema.ts` + `generate-config-doc-baseline.ts`). Missing any one causes CI failures.
