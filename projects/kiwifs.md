@@ -162,4 +162,55 @@ This is essentially a **lightweight Linear/Jira built on markdown** — but nati
 
 415⭐ → 426⭐ in 2 days. Active development: PR #37 (ML/analytics, 10 features) and PR #38 (agent orchestration) merged within 48 hours. This is the most architecturally ambitious project in the agent knowledge space right now.
 
-Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]]
+## v0.5.0: Rules System + Multi-Space (2026-05-07)
+
+Two significant features landed post-v0.5.0 release (05-06/07):
+
+### Rules System (`.kiwi/rules.md`)
+
+A persistent rules file that agents read to understand workspace conventions. Key design:
+
+- **Format-agnostic storage**: rules are plain markdown in `.kiwi/rules.md`
+- **Multi-format export engine**: `GET /api/kiwi/rules?format=cursor|claude|agents|openclaw`
+  - Cursor → frontmatter with `alwaysApply: true` + tool list
+  - Claude → `### Rules` section with tool summary
+  - OpenClaw → JSON with `type: "mcp"`, tools array, rules string
+- **CLI**: `kiwifs rules show`, `kiwifs rules edit` (opens `$EDITOR`), `kiwifs rules export --format X`, `kiwifs rules sync --format cursor --output .cursor/rules/kiwi.md`
+- **Git-versioned**: every PUT auto-commits with actor attribution
+- **256KB limit**: sensible cap prevents abuse
+
+**Insight**: This is the "write once, deploy everywhere" pattern for agent instructions. One `.kiwi/rules.md` file syncs to Cursor rules, CLAUDE.md, AGENTS.md, and OpenClaw config. Eliminates the N-file drift problem where each harness has its own stale instructions.
+
+**Relevance to us**: We already have this pattern (AGENTS.md is our rules file), but KiwiFS's multi-format export is interesting — if our wiki were served via MCP, we could auto-generate per-harness instructions from a single source.
+
+### Multi-Space Architecture
+
+`internal/spaces/` introduces isolated knowledge spaces served from one binary:
+
+- **Space = full stack**: each space gets its own storage, versioner, searcher, pipeline (via `bootstrap.Build`)
+- **Three dispatch strategies**: `X-Kiwi-Space` header (subdomain routing via reverse proxy), URL path prefix (`/api/kiwi/{space}/...`), or default (first registered)
+- **CRUD API**: `POST /api/spaces` (create with auto-init `.kiwi/config.toml`), `DELETE /api/spaces/:name` (soft-delete with `.deleted-{timestamp}` rename), `GET /api/spaces` (list with metadata)
+- **Per-space auth**: `FilterKeysForSpace()` restricts API keys to their declared space — multi-tenant isolation
+- **Ownership semantics**: `ownStack` flag distinguishes manager-built stacks (Close on shutdown) from externally-registered stacks (lifecycle managed by serve.go)
+
+**Design quality**: Graceful degradation — `RemoveSpace` does soft-delete (rename, not rm), `Close` logs but continues on per-space errors so one broken space doesn't leak others' handles.
+
+**Relevance to us**: Multi-space maps to our workspace/repos split. If we ever wanted to expose different knowledge domains (personal wiki vs project docs vs public knowledge) with different access controls, this is the architecture. The per-space auth is particularly clean — one server, multiple tenants, key-scoped isolation.
+
+### Growth Update
+
+420⭐ (was 426 at last check — possible star fluctuation or measurement noise). Still actively developed: 9 commits in 24h, v0.5.0 release, external contributor PR merged (Mermaid rendering). Moving from "knowledge filesystem" to "agent operating environment" — rules + spaces + task orchestration positions it as a full workspace server.
+
+### Ecosystem Position
+
+KiwiFS is converging on "the Obsidian for agents" — a complete workspace that handles knowledge, tasks, rules, and multi-agent coordination. The rules export engine is a smart move: it positions KiwiFS as the single source of truth even when agents use different harnesses (Cursor, Claude Code, OpenClaw).
+
+Comparison with competitors:
+- [[stash]] — memory-only (episodes/facts), no task orchestration, no rules
+- [[memex]] — search-only, no server, no multi-tenant
+- Obsidian — human-only, no agent access layer
+- KiwiFS — trying to be all three + task board + rules engine
+
+Risk: BSL-1.1 license + feature bloat. Adding rules + spaces + claims + webhooks + Mermaid in 2 weeks signals aggressive scope expansion. Whether this holds together architecturally long-term is the question.
+
+Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]], [[agent-commerce]], [[context-is-software]]
