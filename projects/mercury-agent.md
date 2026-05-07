@@ -290,6 +290,81 @@ Mercury 的 soul 4 文件模板是这个趋势的**早期实现者**——把 ag
 - [ ] Memory 冲突解决（极性检测 + confidence-based resolution）
 - [ ] Reasoning loop detection（补充 tool call loop detection）
 
+## 跟进 2026-05-07: v1.1.6 — Sub-Agent Orchestration Layer
+
+⭐2013（从 1839 on 05-01，+9%/week steady growth）。v1.1.5-v1.1.6 (05-02 ~ 05-06)。
+
+### v1.1.6 核心变化：Background Tasks + Sub-Agent Lifecycle
+
+Mercury 补上了之前缺失的 **多 agent 协调能力**——之前是纯单线程 message queue，现在有了：
+
+#### 1. SubAgentSupervisor (src/core/supervisor.ts, 360 lines)
+- **Wait queue + resource gate**: 根据 CPU/RAM 动态计算 `maxConcurrent`（2GB/agent 估算），超限排队
+- **Lifecycle callbacks**: progress/complete 事件回调到 channel 层（发通知消息）
+- **Pause/resume**: 可以暂停 sub-agent（resolver pattern）
+- **File lock manager**: 防止多 agent 文件冲突（read/write 锁，deadlock detection）
+- **Auto-handoff**: 主 agent 被新消息打断时，当前任务自动移入 background
+
+#### 2. BackgroundTaskManager (src/core/background-tasks.ts)
+- 两种任务类型：`shell`（spawn 子进程）和 `agent`（LLM sub-agent）
+- 状态机：running → completed/failed/timed_out/cancelled
+- 自动清理：完成 1h 后 prune，最多 20 个任务
+- SIGTERM grace period (3s → SIGKILL)
+- 全局 completion callback 支持
+
+#### 3. TaskBoard (src/core/task-board.ts)
+- JSON 持久化到 `~/.mercury/memory/task-board.json`
+- CRUD + status filter + 持久化（每次变更都 save）
+- 作为 supervisor 和 background-tasks 的共享状态面板
+
+#### 4. ResourceManager (src/core/resource-manager.ts, 极简)
+- 公式：`min(cpuCores-1, (freeMem-1GB)/2GB, totalMem/2/2GB)`
+- 支持用户 override
+- 每次 canSpawn 重新计算（内存变化时动态调整）
+
+#### 5. FileLockManager (src/core/file-lock.ts)
+- Read/write 锁语义（多读单写）
+- Deadlock detection（O(n²) agent 对检查交叉等待）
+- Agent-scoped releaseAll（agent 完成/失败时清理全部锁）
+
+### 架构对比 [[openclaw]]
+
+| 维度 | Mercury v1.1.6 | OpenClaw |
+|---|---|---|
+| Sub-agent spawn | In-process class instance | Session spawn (isolated process) |
+| Concurrency control | Resource gating (CPU/RAM) | No explicit limit |
+| File conflict | FileLockManager | None (honor-based) |
+| Task visibility | TaskBoard JSON | `subagents list` / sessions_list |
+| Background handoff | Auto on interrupt | Manual (user initiates) |
+| Communication | Shared memory objects | Message passing (sessions_send) |
+
+**关键区别**: Mercury 的 sub-agent 是 in-process（共享内存、provider、identity）—— 更快但单点故障、不 crash-safe。OpenClaw 的是 isolated process—— 更 robust 但通信开销大、无共享状态。
+
+### 反直觉发现
+
+1. **ResourceManager 极简**: 2GB/agent 是硬编码估算，没有实际 token usage tracking。对 LLM API 调用来说 RAM 不是瓶颈——网络延迟和 rate limit 才是。这个设计更适合本地 LLM（Ollama）场景。
+2. **FileLockManager 有 deadlock detection 但没有 resolution**: 检测到 deadlock 后只返回 agent IDs，不自动解锁。需要外部决策（杀哪个 agent）。
+3. **TaskBoard 每次 update 都 writeFileSync**: 同步 IO 在高并发时可能阻塞。但对 max 2-3 concurrent agents 来说无所谓。
+4. **Auto-handoff 是 UX 亮点**: 用户发新消息 → 当前任务自动 background → 返回 task ID → 用户以后 `/bg status` 查看。这比 OpenClaw 的"等 subagent 完成"更流畅。
+
+### 可借鉴（v1.1.6 新增）
+
+- [ ] Auto-handoff UX: 被打断的任务自动转 background（OpenClaw 目前要求 user 手动 spawn subagent）
+- [ ] File conflict awareness: 尽管 OpenClaw 用隔离进程，多 subagent 操作同一 repo 仍可能冲突
+- [ ] Task board 持久化: 统一的任务状态面板（OpenClaw 的 `subagents list` 是 ephemeral，重启就丢）
+
+### 不值得借鉴
+
+- In-process sub-agent（共享内存）→ OpenClaw 的进程隔离更 robust
+- RAM-based concurrency gating → LLM API 场景不适用
+- Synchronous file persistence → scale 问题，但他们 scale 小不在乎
+
+### 跟踪项更新
+
+- ⭐ 2013, growth +9%/week (healthy steady state)
+- v1.1.6 是 Mercury 从 "单人工具" 到 "multi-agent capable" 的关键转折
+- **Revisit**: 05-13（看 v1.2.0 是否引入 MCP sub-agent 或 embedding memory）
+
 ## 跟进 2026-04-22 PM: 架构深入 + 代码阅读
 
 ⭐349。
