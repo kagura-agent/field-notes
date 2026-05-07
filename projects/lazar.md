@@ -116,3 +116,22 @@ The `_meta/distill` skill is opt-in LLM curation: reads archive samples, extract
 
 ## Tags
 #self-evolving #architecture #agent-infra #rust #minimalism #deep-dive
+
+## Applied: verify-claims.sh (2026-05-07)
+
+Applied the **[VERIFY] contract pattern** to our [[FlowForge]] workloop:
+
+1. Created `flowforge/scripts/verify-claims.sh` — mechanical filesystem verification
+   - Checks: files actually modified (git diff), no unstaged leftovers, non-empty files, no conflict markers
+   - Reports pass/fail/warn with colored output
+2. Integrated into `workloop.yaml`:
+   - `implement` node: run verify-claims.sh after acpx exec returns (catches Claude Code claims before human review)
+   - `pre_push_audit` node: verify-claims output is now item #0 (mechanical gate before self-reported evidence)
+
+**Before vs After:**
+- Before: agent self-reports "I verified the changes" — can paste incomplete evidence or skip checks
+- After: script mechanically checks filesystem state — either PASS or FAIL, no ambiguity
+
+**What we adapted:** lazar's verify contract uses inline `[VERIFY]` blocks parsed by kernel. We externalized it as a standalone script because our workflow is YAML-driven, not kernel-parsed. Same principle (prove claims against reality), different mechanism (script vs kernel parser).
+
+**What we didn't adopt:** lazar's kernel-level immutability (chflags uchg). Our trust model is behavioral (AGENTS.md) not OS-enforced. This is a deliberate tradeoff — we prefer flexibility over lockdown.
