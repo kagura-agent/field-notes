@@ -1095,3 +1095,7 @@ GitHub trending (agent, created past week, sorted by stars):
 **HN:** Quiet week for agent content. No standout posts.
 
 **Deep read:** paragents — predict-before-execute pattern, output path locking, LLM-assisted intent inference. See wiki/projects/paragents.md.
+
+## 2026-05-07 Quick Scan Additions
+- **strukto-ai/mirage** ⭐285 (created 05-06, 1-day-old) — Unified virtual filesystem for AI agents. TypeScript. 285⭐ in 24h, 16 forks. Worth deep read if sustained growth. Revisit 05-14.
+- **agent-skills-eval** (HN Show HN, 13pts) — Tests whether Agent Skills improve outputs. Low traction but directly relevant to skill ecosystem evaluation. Watch.

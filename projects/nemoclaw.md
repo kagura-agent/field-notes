@@ -57,6 +57,15 @@
 - `npm run check` = lint+format (run from `nemoclaw/` subdir), `npm test` = vitest (run from root)
 - When renaming fields: check serialization (createSession), deserialization (normalizeSession), filterSafeUpdates, and the serialize export path
 
+## PR #3169 — shields down agent-aware policy path (2026-05-07)
+- **Issue**: #3168 — shields down always fails on Hermes sandboxes
+- **Status**: PENDING, CI checks passed (check-pr-limit ✅), awaiting NVIDIA vetter + CodeRabbit review
+- **Scope**: 3 files (policies.ts, shields.ts, shields.test.ts), 4 insertions / 2 deletions
+- **Root cause**: `shieldsDown()` used hardcoded `PERMISSIVE_POLICY_PATH` (OpenClaw policy, missing `/opt/hermes`) instead of calling `resolvePermissivePolicyPath(sandboxName)` which returns agent-specific policy
+- **Fix**: Export `resolvePermissivePolicyPath` from policies.ts, use it in shields.ts
+- **Pattern**: The function already existed — this is a classic "use the existing helper" fix. Guide lesson #1 (方案粒度不匹配) didn't apply because the right abstraction was already there
+- **Lesson**: When fixing a hardcoded value, always search for existing resolver/helper functions before writing new logic
+
 ## Our PRs (continued)
 - #2265 (check-docs normalization parity): submitted 2026-04-22, fixes asymmetric normalization in E2E CLI parity check. CI pass, CodeRabbit no issues. Pending review.
 
