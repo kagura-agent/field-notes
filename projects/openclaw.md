@@ -94,7 +94,15 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Pattern**: Small warning message fixes are good low-risk entry points for openclaw contributions
 - **Lesson**: Always check CHANGELOG.md requirements — clawsweeper enforces this for user-facing changes
 
-## PR #78679 (2026-05-07, PENDING)
+## PR #78766 (2026-05-07, PENDING)
+- **Issue**: #78738 — exec approval followup dispatch silently drops results on transient failures
+- **Fix**: Add retry with exponential backoff (2s, 5s) to `sendExecApprovalFollowupResult` before giving up, escalate final failure to `logError`
+- **Files**: `bash-tools.exec-host-shared.ts`, `bash-tools.exec-host-shared.test.ts`, `CHANGELOG.md`
+- **CI**: All code checks pass; "Real behavior proof" fails (needs live setup evidence or maintainer `proof: override`)
+- **ClawSweeper**: No code issues. Asks for live proof. Notes overlap with stale PR #66685 (same function)
+- **Pattern**: Retry with injectable deps for testability is the cleanest pattern for async delivery reliability
+- **Lesson**: For async fire-and-forget paths, retry is the only option — there's no way to return an error to the caller after the tool result was already sent
+
 - **Issue**: #78661 — stream_options.include_usage regression for embedded sessions with PI native streams
 - **Root cause**: Reference equality check `currentStreamFn === streamSimple` only matched module-level export, not the wrapped version from `getApiProvider("openai-completions")?.streamSimple`
 - **Fix**: Added `isPiNativeDefaultStream()` helper that also checks against registered API provider's `streamSimple` for the given model API
