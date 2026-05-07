@@ -3,9 +3,9 @@
 Agent-powered security scanner for codebases. Vercel Labs, Apache 2.0, TypeScript.
 
 ## Stats
-- ⭐ 1,453 (05-07), was 1,222 on 05-06 (+231/day, explosive growth)
-- Created: 2026-04-30 (7 days old)
-- Commits: very active (multiple PRs/day)
+- ⭐ 1,512 (05-07), was 1,453 on 05-06, 1,222 on 05-05. Growth slowing (+41/day → +18/day, was +231/day at launch)
+- Created: 2026-04-30 (8 days old)
+- Commits: very active (multiple PRs/day), now monorepo (self-dogfooding)
 
 ## Architecture (05-07 deep read)
 
@@ -88,12 +88,59 @@ Read the full implementation after PR #57 merge. Key takeaways:
 - PR #62: self-dogfooding — 33K LOC checked into own repo, sandbox enabled for local agents
 - Claude agent now available as `--agent claude` alias
 
+## Composable Prompt Assembly (PR #53, merged 05-06)
+
+Major architectural upgrade: prompts now adapt per-batch to the repo's tech stack.
+
+### Tech Detection Pipeline
+```
+detectTech(rootPath) → walk lockfiles/manifests/sentinels → normalized tag list
+  → persisted to data/<id>/tech.json
+  → gates which matchers run (MatcherGate: { tech: ["laravel"] })
+```
+
+### Prompt Composition
+```
+assemblePrompt({ detectedTags, batchSlugs, batchLanguages, projectInfo, promptAppend })
+  → [core] + [tech highlights] + [slug notes] + [INFO.md] + [promptAppend]
+```
+
+Key design decisions:
+- **Language-scoped highlights**: Python batch in polyglot repo gets Django highlights but NOT Next.js. Filters by `batchLanguages` intersection with each highlight's declared `languages`
+- **Hard char budget** (6000 chars): when too many frameworks → polyglot fallback (one-line summary instead of full highlights). "Better to say less than crowd the prompt"
+- **Per-slug reviewer notes**: only included for slugs flagged in current batch. Prompt scales with what scanner actually found
+- **64 frameworks across 13 ecosystems**: from Next.js to Salesforce Apex. Each gets: matcher (gated), threat highlight, slug note
+- **Deterministic prompt samples**: 11 committed fixtures verified by vitest against assembler output (`UPDATE_PROMPT_SAMPLES=1 pnpm test:unit`)
+
+### Regex Hardening
+- Audited all matchers for catastrophic backtracking
+- Worst case: XSS matcher went from 662ms → 0.1ms on adversarial input (6600× faster)
+
+### Match-Rate Warning
+- Scanner reports per-language stats (files/hits/rate)
+- Yellow warning when ≥50 source files but <1% match rate → suggests custom matchers
+
+### Pattern Worth Borrowing: [[composable-prompt-assembly]]
+The idea of composing prompts from detected context (tech stack, batch content, project-specific notes) with hard token budgets and graceful fallbacks is applicable to any agent that processes heterogeneous codebases. Similar to how [[FlowForge]] could compose task prompts from project context.
+
+## Other Updates (05-07 followup)
+
+- **PR #58**: Concurrent processing merge — properly merges runs data when multiple agent instances process batches in parallel
+- **PR #59**: Default model switched from Claude to Codex GPT-5.5 (Melkeydev)
+- **PR #62**: Self-dogfooding — checked deepsec's own scan data into repo (33K additions, 295 files). Runs on itself.
+- **PR #56**: Vercel OIDC token conditional — if OIDC present in env, use it (serverless deployment signal)
+
+## Growth Trajectory Assessment
+
+Growth slowing: +231/day (launch) → +41/day (05-06) → +18/day (05-07). Typical hype curve. BUT sustained development velocity (cramforce shipping daily) means the product is maturing fast. The GPT-5.5 default switch suggests Vercel alignment (Codex partnership?). Worth continuing to track — the composable prompt pattern is genuinely novel.
+
 ## Relevance to Us
 
-- **Agent security is a real market**: 1.4K⭐ in 7 days from Vercel Labs. The "coding agents introduce security risks" thesis has demand.
+- **Agent security is a real market**: 1.5K⭐ in 8 days from Vercel Labs. The "coding agents introduce security risks" thesis has demand.
 - **Pipeline pattern**: scan → process → revalidate is a good template for any multi-stage agent workflow with human-in-the-loop (similar to FlowForge).
 - **PR mode architecture**: diff-scoped agent review with net-new-only filtering is worth borrowing for our own PR review workflows.
 - **`producedByRunId` pattern**: applicable to any incremental agent analysis — attribute outputs to runs, filter downstream by recency. Could apply to [[wiki-lint]] or FlowForge quality checks.
+- **Composable prompt assembly**: the tech-detection → per-batch prompt composition pattern is broadly applicable. Any agent processing diverse inputs benefits from context-aware prompt assembly with budget caps.
 
 ## Links
 - Repo: https://github.com/vercel-labs/deepsec
