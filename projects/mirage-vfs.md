@@ -123,4 +123,5 @@ The observer-as-VFS pattern (sessions visible at `/.sessions/`) is also elegant 
 - Created: 2026-05-06
 - First scan: 2026-05-07 (285⭐, 16 forks in 24h)
 - Deep read: 2026-05-07 (360⭐, tree-sitter parsing, provision system, barrier policy, observer)
+- Evening update: 500⭐ (+215 from morning 285⭐). Explosive growth confirmed.
 - Revisit: 2026-05-21 (check if growth sustains past launch hype)
