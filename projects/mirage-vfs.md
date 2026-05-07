@@ -69,8 +69,58 @@ Competes with: MCP (many small servers) vs Mirage (one VFS that subsumes them al
 
 The bet is that **filesystem semantics > tool/function semantics** for LLM agents. Interesting thesis, unclear if it holds for non-data-processing use cases.
 
+## Deep Read Findings (2026-05-07)
+
+Followup scan: 360⭐ (+75 in <24h), still accelerating.
+
+### Implementation Details
+
+1. **tree-sitter bash parsing** — Commands are parsed into proper ASTs via `tree_sitter_bash`, not regex. This enables correct handling of pipes, compound commands (`&&`, `||`), subshells, and redirections. Much more robust than naive string splitting.
+
+2. **Provision system (pre-execution cost estimation)** — Before executing, agents can call `provision()` to get estimated network I/O bounds (low/high range), cache hit counts, read ops, and even USD cost estimates. Three precision levels: EXACT, RANGE, UPPER_BOUND. This is a **safety layer for autonomous agents** — you can set budget caps and reject commands that would read too much data. Concept worth watching: [[agent-budget-control]].
+
+3. **Barrier policy** — Three execution modes:
+   - STREAM: lazy stdout, fire-and-forget
+   - STATUS: drain stdout, sync exit code only
+   - VALUE: fully materialize result
+   This controls memory footprint for large outputs — agents can choose how much to buffer.
+
+4. **Observer (session telemetry)** — JSONL logs persisted to any mounted resource at `/.sessions/`. Sessions become filesystem objects that agents can introspect (`cat /.sessions/agent-1/2026-05-07/log.jsonl`). Self-referential: the observation system uses the same VFS abstraction it monitors.
+
+5. **Cross-mount safety** — Explicit `exit_code=1` + `"cross-mount not supported"` errors when a command can't aggregate across mounts. Safety > convenience — the system tells you when a pipeline can't span backends rather than silently producing wrong results.
+
+6. **Session management** — `SessionManager` with per-agent cwd, env, functions, exit codes. Multiple agents can share one Workspace with isolated sessions. The `Workspace` is truly a kernel analog.
+
+### Architecture Quality Assessment
+
+- **Code quality**: High. Clean separation of concerns, proper typing, comprehensive tests (per-resource + cross-resource + shell parsing + integration).
+- **Abstraction layer count**: Moderate — Resource → Mount → Registry → Workspace → Session → Execute. Not over-engineered for what it does.
+- **Test coverage**: Good. Cross-provider dispatch tests verify mount boundary enforcement. Command spec tests verify flag parsing.
+- **Maturity**: Alpha (v0.0.1). API will change. But the core abstractions feel solid.
+
+### Ecosystem Comparison
+
+| Approach | Surface | Strength | Weakness |
+|---|---|---|---|
+| Mirage | Filesystem + bash | LLM-native, composable pipes | Huge surface area to maintain |
+| MCP | Tool/function calls | Simple, modular | N servers = N protocols |
+| [[composio]] | Tool aggregation | Wide coverage | Opaque, hosted |
+| OpenClaw | Native channel tools | Tight integration | Per-channel, not composable |
+
+Mirage bets that **filesystem > function calling** for data-heavy agent tasks. This is probably right for ETL/analytics agents, probably wrong for conversational agents like us.
+
+### Updated Relevance
+
+The provision system is the most transferable idea. Before an agent executes a potentially expensive operation, estimate cost and get approval. We could apply this to:
+- Subagent spawns (estimate token cost before spawning)
+- External API calls (estimate rate limit impact)
+- File operations (estimate disk usage)
+
+The observer-as-VFS pattern (sessions visible at `/.sessions/`) is also elegant — agent introspection through the same interface as everything else.
+
 ## Tracking
 
 - Created: 2026-05-06
 - First scan: 2026-05-07 (285⭐, 16 forks in 24h)
+- Deep read: 2026-05-07 (360⭐, tree-sitter parsing, provision system, barrier policy, observer)
 - Revisit: 2026-05-21 (check if growth sustains past launch hype)
