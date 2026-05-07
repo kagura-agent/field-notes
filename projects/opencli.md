@@ -39,6 +39,19 @@
 - 未来可以用它操作小红书、播客平台等
 - 品牌价值高（8.6k⭐ + 快速增长）
 
+## PR 历史
+- #1378: fix(youtube): use watch page HTML for transcript captions (fixes #1376) — PENDING
+  - Root cause: YouTube deprecated ANDROID client for caption retrieval
+  - Fix: fetch /watch HTML → extract ytInitialPlayerResponse (same as video.js)
+  - 1 file, -6 net lines. CI all green.
+  - Pattern: when YouTube API breaks, check video.js for working patterns first
+
+## 开发笔记补充
+- YouTube adapter pattern: `prepareYoutubeApiPage` → navigate to youtube.com for cookies, then fetch internal APIs
+- `video.js` uses watch page HTML + `extractJsonAssignmentFromHtml` for player data — reusable pattern for other YouTube commands
+- All files in clis/youtube/ are .js (compiled from TS), not TS source files
+- File modes: don't let Claude Code chmod +x random files (happened this round, had to fix)
+
 ## 竞品对比
 | 项目 | 星数 | 方式 | 成本 | 可预测性 |
 |------|------|------|------|----------|
