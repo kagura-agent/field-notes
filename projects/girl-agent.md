@@ -1,11 +1,11 @@
 ---
 title: girl-agent
 url: https://github.com/TheSashaDev/girl-agent
-stars: 185
+stars: 188
 first_seen: 2026-05-06
 last_checked: 2026-05-07
 status: active
-tags: [companion-agent, character-engine, telegram, state-machine, relationship-sim]
+tags: [companion-agent, character-engine, telegram, state-machine, relationship-sim, desktop-app, rust-iced, product-distribution]
 ---
 
 # girl-agent
@@ -103,8 +103,57 @@ The README explicitly compares to OpenClaw, claiming we lack:
 
 138→185⭐ in ~1 day (05-06→05-07). Active development: 6 PRs merged in one day (Docker support, LLM API compat, TG creds proxy). Russian-language community growing (Telegram channel/chat). npm-published (`npx @thesashadev/girl-agent`).
 
+## Product Distribution Burst (05-07)
+
+In ~24 hours the project went from "Telegram userbot" to a **multi-platform product**:
+
+### Native Desktop App (Rust/iced)
+
+New `desktop-rs/` directory — a Rust application using the iced GUI framework.
+
+**Architecture pattern: Rust shell supervising Node.js runtime.**
+- `BotProcess` spawns the Node.js girl-agent as a child process
+- NDJSON event bridge: bot stdout → `AppState.ingest()` → iced UI update
+- `BotHandle` wraps process lifecycle (start/stop/send_command) behind Arc<Mutex>
+- Profile picker, dashboard, web UI panel, system tray — all native
+- `BotLauncher` abstraction allows switching between local node and docker runtime
+
+This is pragmatic: native UX without rewriting AI logic in Rust. The supervisor pattern (spawn → pump events → render) is clean and potentially reusable. Comparable to how [[ClawX]] wraps its backend, but Rust instead of Electron.
+
+### Server Mode
+
+`src/server.ts` adds headless operation:
+- `--headless` flag → NDJSON events to stdout (12-factor log pattern)
+- Full env-var provisioning: `GIRL_AGENT_MODE`, `_TOKEN`, `_API_KEY`, etc.
+- Auto-generates systemd unit, docker-compose, docker run commands
+- Config validation with clear error messages
+- Profile management (list, load by slug, load from JSON file)
+
+### Distribution Trifecta
+
+| Channel | Method | Zero-dep? |
+|---|---|---|
+| curl\|sh | Downloads isolated Node.js 22 + npm install to `~/.local/` | ✅ |
+| Docker | `ghcr.io/thesashadev/girl-agent`, auto-detect TTY for interactive vs headless | ✅ |
+| Native installer | Rust/iced desktop app for Windows (macOS/Linux planned) | ✅ |
+| npx | `npx @thesashadev/girl-agent` (requires Node.js) | ❌ |
+
+The `install.sh` is well-engineered: auto-detects docker availability, bundles portable Node.js, creates shim scripts, adds to PATH. No sudo required.
+
+### What This Means
+
+This is a **distribution strategy inflection point**. The project recognized that Telegram userbot mode (requiring MTProto API creds) is a barrier. By adding bot mode + server mode + desktop app + docker + curl|sh installer, they're attacking every deployment scenario.
+
+The speed (all in ~24h, partially using Devin AI — PR #37 was from `devin/` branch) is notable but raises quality concerns for such a large surface area expansion.
+
+### Relevance to OpenClaw
+
+- **Rust supervisor pattern**: If OpenClaw ever needed a native desktop wrapper, this Rust-over-Node approach is a template. iced provides cross-platform GUI without Electron overhead.
+- **12-factor headless mode**: `--headless` with NDJSON is exactly what production deployment needs. OpenClaw's gateway already does this, but the systemd/docker scaffold generation is a nice UX touch.
+- **Distribution problem is real**: The fact that a hobby project invested heavily in distribution confirms that agent installation UX is a bottleneck. Related: [[agent-install]].
+
 ## Verdict
 
-Most architecturally interesting companion-agent project currently active. The hormones/conflict/agenda trifecta is unique. Worth tracking for design patterns, not for direct adoption.
+Most architecturally interesting companion-agent project currently active. The hormones/conflict/agenda trifecta is unique, and the distribution burst shows product ambition beyond a demo. Worth tracking for both design patterns and product strategy.
 
-Revisit: 05-14 (check if growth sustained, watch for v0.2.0 architecture changes)
+Revisit: 05-14 (check if growth sustained, quality of native app, v0.2.0 architecture changes)
