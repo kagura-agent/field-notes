@@ -1132,6 +1132,12 @@ GitHub trending (agent, created past week, sorted by stars):
 - **girl-agent** ⭐198 — Russian AI companion bot with state/mood/sleep/relationship stages. Companion agent pattern, relevant to our direction.
 - **agent-skills-eval** ⭐189 — Test runner for agentskills.io skills. Skill evaluation tooling emerging.
 - **deepclaude** ⭐1601 (05-08) — Still climbing. Thin-harness pattern confirmed.
-- **HN: "Agents need control flow, not more prompts"** 362pts (05-08) — Directly relevant to FlowForge thesis. Argues for deterministic scaffolds + aggressive error detection. **Validates our approach.**
+- **HN: "Agents need control flow, not more prompts"** 362pts→515pts (05-08) — Directly validates FlowForge thesis. Key argument: deterministic scaffolds + aggressive error detection. LLM as component, not system.
 - **RunbookHermes** ⭐534 (05-08) — Hermes-native AIOps agent. Evidence-driven incident response + runbook learning. Worth monitoring.
 - **Anthropic: Natural Language Autoencoders** 219pts HN (05-08) — Turning Claude's thoughts into text. Research, not directly actionable yet.
+
+**Midday refresh (12:30):**
+- **addyosmani/agent-skills** ⭐33.3K (was 32.1K on 05-07, +1.2K/day) — Hypergrowth continues. Domain-specific skill packs proliferating (marketing: 27K, game-dev: 17K, google-workspace: 26K).
+- **volcengine/OpenViking** ⭐23.6K (was 17.5K in our deep notes) — Steady climb. Already have comprehensive notes.
+- **Saturation signal confirmed**: Top 10 GitHub results all known projects. No new architectural patterns.
+- **Trend**: Vertical/domain skill repos emerging as the next wave (marketingskills 27K, googleworkspace/cli 26K, game-studios 17K). Generic skill repos → domain-specific. [[skill-distribution-convergence]]
