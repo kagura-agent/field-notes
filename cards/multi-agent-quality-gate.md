@@ -54,4 +54,13 @@ Key components:
 - **[[supervisor-pattern]]** — Supervisor evaluates; quality gate is a specialized supervisor with structured scoring
 - **[[flowforge]]** — Could add quality gate nodes to workflows
 
+## Update: Phase 5 Anti-Collusion (2026-05-08)
+
+[[open-design]] v0.5.0 Critique Theater Phase 5 adds two convergence constraints that address the correlated-errors weakness:
+
+1. **Disagreement requirement**: At least two panelists must diverge on a MUST_FIX target per non-final round. Unanimous agreement is treated as shallow critique.
+2. **Transcript shrinkage**: Each round's transcript bytes must be strictly less than the previous round — forces convergence, prevents scope creep.
+
+These are transferable to any quality gate implementation, not just design.
+
 See [[open-design]], [[supervisor-pattern]]

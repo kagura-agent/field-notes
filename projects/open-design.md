@@ -242,7 +242,51 @@ This is faster than Claude Design's own growth curve (closed-source advantage di
 
 Open issue for "Finalize design package" — daemon-side source scan + LLM pass against chat transcript → single DESIGN.md. This is the synthesis step that #493 transcript export enables. Worth watching — the concept of "synthesize a design doc from conversation + code" is a pattern [[openclaw]] could borrow for project-level context summaries.
 
+## v0.5.0 Deep Read (2026-05-08)
+
+**Release**: 2026-05-07. 51 PRs, 36 contributors, ~1 day cycle. 32,937⭐ (+1,937 from 05-07).
+
+### Critique Theater Phase 5: Panel Prompt + System Composer
+
+PR #524. The panel prompt template (`prompts/panel.ts`) is the most architecturally interesting piece:
+
+**Five fixed roles in one CLI session** — the model role-plays a 5-panelist jury:
+- DESIGNER: drafts artifact, does NOT score
+- CRITIC: visual dimensions (hierarchy, type, contrast, rhythm, space)
+- BRAND: brand spec adherence (palette, typography, spacing)
+- A11Y: WCAG 2.1 AA compliance
+- COPY: voice, verb specificity, length discipline
+
+**Wire protocol**: XML-tagged structured output (`<CRITIQUE_RUN>` → `<ROUND>` → `<PANELIST>` → `<DIM>` + `<MUST_FIX>`). Config-driven: maxRounds, scoreThreshold, scoreScale, protocolVersion all from CritiqueConfig, never inline literals.
+
+**Anti-collusion**: "Disagreement requirement" — at least two panelists must diverge on a MUST_FIX target per non-final round. Unanimous agreement treated as signal of shallow critique. This is a direct counter to the [[multi-agent-quality-gate]] weakness of correlated errors.
+
+**Anti-injection**: Brand DESIGN.md content escaped before interpolation — close-tag sequences neutralized with ZWJ so hostile DESIGN.md can't break out of `<BRAND_SOURCE>` wrapper. Smart defense against prompt injection via user-supplied design specs.
+
+**Convergence rule**: weighted composite average of 4 scoring panelists. Ship when composite ≥ threshold AND open MUST_FIX count == 0. Transcript bytes must decrease each round (forces convergence, prevents scope creep).
+
+**System composer integration** (`prompts/system.ts`): Panel addendum pinned last in prompt stack (overrides softer critique wording earlier). Skipped on media surfaces (image/video/audio) since panel protocol requires HTML artifacts. Clean opt-in: `cfg.enabled` + brand + skill must all be present.
+
+**Takeaway for us**: The "disagreement requirement" and "transcript bytes must decrease" constraints are transferable to any [[multi-agent-quality-gate]] implementation. The XML wire protocol approach (model outputs structured tags, daemon parses them) is an alternative to JSON-mode — more verbose but more robust for partial streaming. The anti-injection escape for user-supplied content is a pattern we should adopt whenever embedding untrusted text in prompts.
+
+### Transcript Export (#493)
+
+JSONL format for project transcripts: header line + per-message records. On-demand dump (not live mirror) — no sync-drift risk. `schemaVersion: 1` for forward compat. Input primitive for #450 DESIGN.md synthesis, CLI handoff (#451), and conversation resume (#462).
+
+Design choice: JSONL over JSON saves ~20-30% tokens when fed to LLM, is `tail`-able and `jq`-friendly, and enables chunk-feeding for long transcripts.
+
+### Other Notable Changes
+
+- **Linux headless mode** (#686): install/start/stop without desktop. CI and server deployment. Important for adoption.
+- **Live dashboards**: 3 new skills pulling real data (Notion-style team dashboard, clinic console, FlowAI). "Live Artifacts" category maturing from frozen mocks to dynamic data.
+- **Inspect mode** (#362): Click anything in preview to tweak styles without agent round-trip. UX shortcut for fine-tuning.
+- **Qoder CLI agent**: 13th supported agent adapter.
+
+### Growth
+
+32,937⭐ at day 10. Growth rate slowing slightly (~1.9K/day vs ~3.5K/day last week) but still strong. 36 contributors in one release is remarkable open-source velocity.
+
 ## Tracking
 
-- Revisit 05-12: #450 DESIGN.md synthesis feature progress, growth trajectory (still accelerating or plateauing?)
-- Watch for: skill standard convergence with Claude Code / ClawHub conventions, live artifact ecosystem development, headless mode adoption
+- Revisit 05-12: #450 DESIGN.md synthesis feature progress, Phases 6-15 of Critique Theater, growth trajectory
+- Watch for: live artifact ecosystem maturity, headless adoption, critique convergence data (do runs actually ship at 8/10+ in practice?)
