@@ -30,7 +30,18 @@ Embedded in [[flowforge]] `study.yaml`:
 
 Discovered 2026-05-02 during a scout round where all 5 top results were already in wiki. The productive output that round was the [[worktree-convergence-2026-05]] trend card, not any individual project note.
 
+## Enforcement (2026-05-08)
+
+Saturation detection was observation-only until now. Added a **hard daily cap** to `study.yaml` `entry` node:
+- Same-day quick_scout ≥ 3 → locked out from choosing quick scan
+- 2 consecutive days at cap → reduce to max 1/day, force apply mode
+
+Check: `grep -c "quick_scout\|Quick Scan\|Quick Scout" memory/YYYY-MM-DD.md`
+
+This turns a "should" into a "must" — the workflow blocks the rationalization path ("this time is different") mechanically.
+
 ## Related
 
 - [[worktree-convergence-2026-05]] — example of trend synthesis output
 - [[self-evolving-agent-landscape]] — the landscape being scouted
+- [[flowforge]] — workflow engine where the guard lives
