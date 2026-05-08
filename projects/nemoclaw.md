@@ -50,6 +50,7 @@
 - #1770 (debug tarball exit code): submitted 2026-04-11, CI pass, CodeRabbit nitpick adopted
 
 ## Gotchas
+- **⚠️ DCO required**: All commits must use `git commit --signoff` (`-s`). Twice failed CI for missing `Signed-off-by` (04-29, 05-08). Use `git rebase --signoff HEAD~N` to fix retroactively.
 - TS migration (#1673) can supersede JS-based PRs — always check if file still exists in src/
 - eslint config doesn't cover src/lib/ directly (warning, not error)
 - Test suite has ~5 pre-existing failures in preflight tests when gateway is running locally
