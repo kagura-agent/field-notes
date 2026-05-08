@@ -176,3 +176,11 @@
 - **Their approach** (#2900 by ericksoa): Completely removed token from displayed URLs + `gateway-token --quiet` retrieval + docs + shell scripts + tests. 7 files, 71 additions.
 - **Maintainer feedback**: "This was the right security direction and gave us the concrete starting point."
 - **Lesson**: REDACT_VS_REMOVE — for credentials, complete removal > masking. Provide separate retrieval path.
+
+## PR #3228 — Add resolved python3.11 to github network policy (2026-05-08)
+- **Issue**: #3225 — venv Python outbound requests still intercepted after PR#3100
+- **Status**: PENDING (CI pass, CodeRabbit no comments)
+- **Root cause**: PR#3100 added `/opt/hermes/.venv/bin/python` (symlink) to github policy, but OpenShell L7 proxy reads `/proc/PID/exe` which dereferences symlinks → sees `/usr/bin/python3.11`. That path was in other policies (nvidia, nous_research, pypi, etc.) but NOT in `github`.
+- **Fix**: 1 line — add `{ path: /usr/bin/python3.11 }` to github network policy binaries
+- **Pattern**: SYMLINK_VS_RESOLVED — when whitelisting binaries in process-identity-based policy enforcement, add the RESOLVED path (after symlink deref), not just the symlink path. `/proc/PID/exe` always resolves.
+- **Cross-reference**: Same policy area as my PR#3169 (shields down agent-aware policy path)
