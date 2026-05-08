@@ -417,4 +417,22 @@ This pattern solves a real problem: process-based agent communication via stdio 
 - **Open PRs**: #267 (file_write auto-resume on truncation — interesting robustness pattern), #266 (QT UI improvements), #260 (E2E test automation)
 - No architectural changes. Community growth is organic, mostly Chinese contributor base.
 
-See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]]
+### Applied: Mandatory Subagent Review Gate (05-08)
+
+**Pattern adopted** from GenericAgent's governance hardening (commit 7b51599) into our FlowForge workloop.
+
+**What we did**: Added `plan_review` node between `plan` and `implement` in `workloop.yaml`. This node:
+1. Takes the plan produced by `plan` and sends it to a spawned subagent (mode=run)
+2. Subagent scores the plan 1-10 on: scope minimality, root-cause targeting, test coverage, risk/omissions, maintainer alignment
+3. Score >= 7 → APPROVED → proceed to `implement`
+4. Score < 7 → rejected → loop back to `plan` with feedback
+
+**Why this matters**: Before this, the same agent that planned also approved its own plan (self-evaluation). GenericAgent's insight: separation of planning and validation roles prevents rationalization. The reviewer sees only the plan text, no study/context — forcing independent judgment.
+
+**Difference from GenericAgent**: They use infinite retry on spawn failure (hard gate). We allow trivial one-line fixes to skip (as noted in plan stage). Our threshold (7/10) is softer than their binary pass/fail, preserving gradient feedback.
+
+**Before vs After**:
+- Before: `plan → implement` (self-approved)
+- After: `plan → plan_review → implement` (independently validated)
+
+See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]], [[mechanism-vs-evolution]]
