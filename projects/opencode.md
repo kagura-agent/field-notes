@@ -261,3 +261,14 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Approach**: Local clone, manual implementation (small change), ran `bun test test/mcp/headers.test.ts` (4/4 pass)
 - **Key learning**: SDK constructor accepts `fetch` option — useful for augmenting request behavior without monkey-patching. `requestInit.headers` get overwritten by SDK's `.set()` calls, so custom fetch is the only reliable injection point.
 - **Note**: Had to use `--no-verify` for push due to bun version mismatch (1.3.12 vs required 1.3.13). CI passes fine.
+
+### #26311 — fix(lsp): use which() for node and npm binaries in ESLint LSP (2026-05-08)
+- **Status**: PENDING (CI all 4 checks passed ✅ — add-contributor-label, check-compliance, check-duplicates, check-standards)
+- **Issue**: #26303 — ESLint LSP hardcodes `"node"` and `"npm"` binary names
+- **Root cause**: ESLint spawn function used hardcoded `"node"` and platform-ternary `"npm"`/`"npm.cmd"` instead of `which()` utility used by all other LSP servers in server.ts
+- **Fix**: 
+  - npm: `which("npm")` with original platform string as fallback
+  - node: `which("node")` with early return + log (matching Deno/Go/Gleam pattern)
+- **Diff**: +9/-4 lines, 1 file only
+- **Approach**: Manual edit (surgical, <20 lines), local test run (`bun test test/lsp/` — 30/31 pass, 1 pre-existing timeout)
+- **Key learning**: Simple one-pattern-match fixes are faster to do manually than via Claude Code. The `which()` import was already present in the file.
