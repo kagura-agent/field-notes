@@ -1,7 +1,7 @@
 # Mirage — Unified Virtual Filesystem for AI Agents
 
 - **Repo**: [strukto-ai/mirage](https://github.com/strukto-ai/mirage)
-- **Stars**: ~990 (2026-05-08, created 05-06 — explosive growth)
+- **Stars**: ~1,007 (2026-05-08, created 05-06 — explosive growth)
 - **Language**: Python + TypeScript (dual SDK)
 - **License**: Apache 2.0
 - **Company**: Strukto.AI

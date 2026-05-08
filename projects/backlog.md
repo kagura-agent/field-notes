@@ -1,4 +1,29 @@
 
+## 2026-05-08 Quick Scan (09:15)
+
+**GitHub Trending (agent space, past 10 days):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|---|
+| deepsec | 1667 | 已跟踪 | +155 since 05-07, revisit 05-14 |
+| mirage | 997 | 已跟踪 | +7, plateau incoming? Revisit 05-14 |
+| RunbookHermes | 533 | 已跟踪 | Steady, revisit 05-21 |
+| NyxFoundation/speca | 348 | 观望 | **NEW** Spec-to-Checklist auditing framework. Python, 6 days old, active. Governance/quality angle |
+| lukiIabs/skills | 246 | 已跟踪 | 🔥 143→246 in 2 days (+72%), Matt Pocock effect. Revisit 05-12 |
+| craft-agents-oss | 228 | 已跟踪 | +16, revisit 05-13 |
+| darkrishabh/agent-skills-eval | 192 | 观望 | **NEW** Test runner for agentskills.io-style skills. TS, 2 days old |
+| jmerelnyc/Photo-agents | 185 | 观望 | **NEW** Vision-grounded self-evolving agents with self-written skills. Self-evolution aligns with north star |
+
+**HN signals:**
+- "Agents need control flow, not more prompts" (315pts) — validates workflow-over-prompting approach
+- "Natural Language Autoencoders: Claude's Thoughts" (189pts) — reasoning transparency research
+- "AlphaEvolve: Gemini coding agent" (240pts) — Google scaling agent-driven optimization
+- "AI slop killing communities" (432pts) — trust/quality signal for ecosystem
+
+**Trend:** Ecosystem consolidation continues. Top 3 all known. lukiIabs/skills explosive growth is the main signal — skill repos gaining traction as a category. No new paradigm-shifting projects this cycle.
+
+---
+
 ## 2026-05-02 Quick Scan #5 (22:50)
 
 **GitHub Trending (created past week, sorted by stars):**
