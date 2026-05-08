@@ -1141,3 +1141,14 @@ GitHub trending (agent, created past week, sorted by stars):
 - **volcengine/OpenViking** ⭐23.6K (was 17.5K in our deep notes) — Steady climb. Already have comprehensive notes.
 - **Saturation signal confirmed**: Top 10 GitHub results all known projects. No new architectural patterns.
 - **Trend**: Vertical/domain skill repos emerging as the next wave (marketingskills 27K, googleworkspace/cli 26K, game-studios 17K). Generic skill repos → domain-specific. [[skill-distribution-convergence]]
+
+## 2026-05-08 PM Followup (13:45)
+- **strukto-ai/mirage** ⭐1,105 (was 1,055 AM) — Growth continues but no commits since 05-06. Dev velocity stalled post-launch. Watch for commit resumption.
+- **agentic-stack** ⭐1,888 (was 1,877) — Plateauing. <1% daily growth. Matured.
+- **addyosmani/agent-skills** ⭐33,376 (was 33.3K AM) — Community PRs active (plugin json fixes, docs tightening). Addy merging, not authoring.
+- **tiangolo/library-skills** ⭐465 (was 448) — v0.0.5 stable with PEP 832 support. No new commits since 05-01. Slow but steady.
+- **deepclaude** ⭐1,610 (was 1,533) — Healthy 5% growth. Still thin wrapper.
+- **NEW: agent-skills-eval** (darkrishabh) ⭐204 (created 05-06) — Test runner for agentskills.io-style skills. TypeScript CLI. Directly relevant to skill quality verification. Worth tracking.
+- **NEW: speca** (NyxFoundation) ⭐355 (created 05-02) — Spec-to-checklist agentic auditing. Active dev (8 commits today). DeFi-focused benchmarks. Niche but active.
+
+**Key signal**: Mirage growth decoupled from dev activity — stars climbing while commits stopped. Classic launch-spike pattern. True value test comes when active development resumes.
