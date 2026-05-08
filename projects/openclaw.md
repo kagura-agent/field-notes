@@ -23,6 +23,7 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#79215** (2026-05-08, PENDING): fix(agents): allow hardlinked workspace bootstrap files. Fixes #79209. CI: all checks pass. Removes nlink>1 rejection in openBoundaryFile for bootstrap reads.
 - **#78694** (2026-05-07, PENDING): fix(gateway): remove password fallback in trusted-proxy auth mode. Fixes #78684. CI: 86/86 passed. Removes unintended local-direct password fallback within trusted-proxy mode.
 - **#76054** (2026-05-02, PENDING): feat(agents): allow per-agent contextInjection override in agents.list[]. Fixes #76046. CI: 81/81 passed after fixing type contract + lint.
 - **#74877** (2026-04-30, PENDING): fix(auto-reply): fall back to automatic delivery when message tool unavailable. Fixes #74868. Addressed clawsweeper bot review (P2: extend policy check to include profile + provider policies). CI: 75/75 passed.
@@ -34,6 +35,14 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - Security fixes that remove code paths are cleaner than adding config options — smaller diff, less maintenance burden.
 - Tool policy resolution is layered: global → agent → profile → provider-profile → group → sandbox → subagent. When checking tool availability outside the full pipeline, include at least profile and provider-profile layers (not just global + agent).
 - clawsweeper bot does deep automated review (uses Codex gpt-5.5) — catches real architectural issues, not just style nitpicks. Worth addressing.
+- **"Real behavior proof" CI gate** has strict format requirements:
+  - Section heading must be `## Real behavior proof` (case insensitive)
+  - Field names must be exact: `**Behavior or issue addressed**:`, `**Real environment tested**:`, `**Exact steps or command run after this patch**:`, `**Evidence after fix**:`, `**Observed result after fix**:`, `**What was not tested**:`
+  - Colon goes OUTSIDE bold markers: `**Name**: value` not `**Name:** value`
+  - NO bullet points (`- `) before field names — just `**Name**: value` at line start
+  - CODE BLOCKS MUST NOT CONTAIN `# comment` lines — the section parser uses `/\n#{1,6}\s+\S/` to find next heading and `#` comments in code blocks get misdetected as headings, truncating the section
+  - Evidence must reference live commands (`node`, `openclaw`, `docker`, `curl`, `gh`, `ssh`) — pure unit test references trigger "mock only" rejection
+  - Use the passing PR #78766 as format reference
 - **Schema changes need 3 artifacts**: Zod schema (`zod-schema.agent-runtime.ts`), TypeScript type (`types.agents.ts`), and generated baseline (`schema.base.generated.ts` via `generate-base-config-schema.ts` + `generate-config-doc-baseline.ts`). Missing any one causes CI failures.
 - **Lint uses `curly` rule**: all `if` bodies need braces, even single-return statements.
 - **Per-agent config override pattern**: Add field to `AgentEntrySchema` → add to `AgentConfig` type → update resolver to accept `agentId` and do `config.agents.list.find(a => a.id === agentId)` → update callers → add schema help/labels → regenerate. Precedent: `contextTokens` (ed03d91ae0).
