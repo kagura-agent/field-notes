@@ -1101,3 +1101,10 @@ GitHub trending (agent, created past week, sorted by stars):
 - **agent-skills-eval** (HN Show HN, 36pts) — Tests whether Agent Skills improve outputs. Growing traction, directly relevant to skill ecosystem evaluation.
 - **RunbookHermes** ⭐530 (created 05-01) — Hermes-native AIOps agent. Runbook learning = agent memory applied to ops. Interesting but niche.
 - **deepclaude** ⭐1540 (created 05-03) — Claude Code UX with cheaper backends. Known pattern (backend-swap), not our focus.
+
+## 2026-05-08 Quick Scan Additions
+- **strukto-ai/mirage** ⭐989 (was 500 yesterday) — Virtual filesystem for AI agents. 2× in 24h. **Deep read priority** — agent infra.
+- **girl-agent** ⭐198 — Russian AI companion bot with state/mood/sleep/relationship stages. Companion agent pattern, relevant to our direction.
+- **agent-skills-eval** ⭐189 — Test runner for agentskills.io skills. Skill evaluation tooling emerging.
+- **deepclaude** ⭐1593 (was 1540 yesterday) — Still climbing steadily.
+- **HN: "Agents need control flow, not more prompts"** 306pts — Directly relevant to FlowForge thesis. **Deep read candidate**.
