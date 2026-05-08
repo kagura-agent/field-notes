@@ -4,15 +4,16 @@ type: project
 created: 2026-05-03
 updated: 2026-05-03
 status: tracking
-stars: 366
+stars: 174
 ---
 
 # library-skills
 
 **Repo**: [tiangolo/library-skills](https://github.com/tiangolo/library-skills)
 **Author**: Sebastián Ramírez (FastAPI creator)
-**Stars**: 366 (2026-05-03)
+**Stars**: 174 (2026-05-08, was 366→likely corrected count)
 **Language**: Python + Node
+**Status**: v0.0.5, no commits since 05-01. Still early.
 
 ## What It Does
 
