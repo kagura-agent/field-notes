@@ -6,7 +6,7 @@
 | Repo | ⭐ | Verdict | Notes |
 |---|---|---|---|
 | deepsec | 1667 | 已跟踪 | +155 since 05-07, revisit 05-14 |
-| mirage | 997 | 已跟踪 | +7, plateau incoming? Revisit 05-14 |
+| mirage | 1168 | 值得深入 | 997→1168 in 7h — accelerating, not plateauing. VFS/FUSE for agents. Revisit 05-10 |
 | RunbookHermes | 533 | 已跟踪 | Steady, revisit 05-21 |
 | NyxFoundation/speca | 348 | 观望 | **NEW** Spec-to-Checklist auditing framework. Python, 6 days old, active. Governance/quality angle |
 | lukiIabs/skills | 246 | 已跟踪 | 🔥 143→246 in 2 days (+72%), Matt Pocock effect. Revisit 05-12 |
@@ -21,6 +21,13 @@
 - "AI slop killing communities" (432pts) — trust/quality signal for ecosystem
 
 **Trend:** Ecosystem consolidation continues. Top 3 all known. lukiIabs/skills explosive growth is the main signal — skill repos gaining traction as a category. No new paradigm-shifting projects this cycle.
+
+### PM Update (16:30)
+- **mirage** acceleration confirmed: 997→1168 in 7h. Upgraded to 值得深入, revisit 05-10
+- deepsec 1667→1732, RunbookHermes stale (last push 05-01)
+- New trending: **deepclaude** ⭐1616 (Claude Code proxy w/ cheaper backends — known pattern, not novel)
+- **HN #1**: "Agents need control flow, not more prompts" (456pts) — directly validates [[FlowForge]] deterministic workflow approach
+- **HN takeaway**: The babysitter/auditor/prayer trichotomy maps to our existing patterns: human-in-loop (AGENTS.md approval rules), programmatic verification (test-before-push), and the anti-pattern we're trying to avoid
 
 ---
 
