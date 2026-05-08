@@ -262,6 +262,14 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Key learning**: SDK constructor accepts `fetch` option — useful for augmenting request behavior without monkey-patching. `requestInit.headers` get overwritten by SDK's `.set()` calls, so custom fetch is the only reliable injection point.
 - **Note**: Had to use `--no-verify` for push due to bun version mismatch (1.3.12 vs required 1.3.13). CI passes fine.
 
+### #26333 — fix(mcp): accept 'env' field as alias for 'environment' in local MCP config (2026-05-08)
+- **Status**: PENDING (CI all 4 checks passed ✅)
+- **Issue**: #26332 — MCP local server env config not passed to spawned child process
+- **Root cause**: Config schema only accepts `environment` field name, but MCP ecosystem standard (Claude Desktop, Cursor) uses `env`. Users' `env` field silently ignored by Effect Schema decoder.
+- **Fix**: Added `env` as accepted field in `Local` schema alongside `environment`. Spawn code merges both with `env` taking precedence. +5/-1 lines in source, +37 lines test.
+- **Approach**: Manual edit (surgical, <10 lines), local test run (`bun test test/mcp/` — 36/36 pass, `bun test test/config/` — 81/81 pass)
+- **Key learning**: MCP ecosystem uses `env`, not `environment`. When building config schemas, check what the ecosystem convention is, not just what sounds more descriptive.
+
 ### #26311 — fix(lsp): use which() for node and npm binaries in ESLint LSP (2026-05-08)
 - **Status**: PENDING (CI all 4 checks passed ✅ — add-contributor-label, check-compliance, check-duplicates, check-standards)
 - **Issue**: #26303 — ESLint LSP hardcodes `"node"` and `"npm"` binary names
