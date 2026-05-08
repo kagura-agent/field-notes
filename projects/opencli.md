@@ -99,6 +99,15 @@ Links: cli-everything, [[agent-as-router]]
 - 3 new tests added, 1921 existing tests pass
 - Status: pending review
 
+### PR #1408 — fix(douyin): handle empty response body in browserFetch (2026-05-08)
+- Issue: #1405 — `douyin hashtag search` crashes with SyntaxError on empty API response
+- Root cause: `browserFetch` calls `res.json()` directly without checking for empty body
+- Fix: Read as text first, return null for empty, throw descriptive error at caller level
+- Impact: Benefits all 20 douyin commands using `browserFetch`
+- Tests: 2 new test cases (null/undefined responses), all 100 douyin tests pass
+- CI: all core checks green (build x3, unit-test, bun-test, audit, docs)
+- Pattern: shared utility fix > individual command fix (framework-level thinking)
+
 ### PR #1142 — fix(deepseek): separate thinking from response (2026-04-22)
 - Issue: #1124 — `deepseek ask --think` mixes thinking and response in single string
 - Root cause: `waitForResponse()` returns raw `innerText` including thinking prefix
