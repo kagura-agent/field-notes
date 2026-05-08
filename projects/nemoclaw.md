@@ -184,3 +184,14 @@
 - **Fix**: 1 line — add `{ path: /usr/bin/python3.11 }` to github network policy binaries
 - **Pattern**: SYMLINK_VS_RESOLVED — when whitelisting binaries in process-identity-based policy enforcement, add the RESOLVED path (after symlink deref), not just the symlink path. `/proc/PID/exe` always resolves.
 - **Cross-reference**: Same policy area as my PR#3169 (shields down agent-aware policy path)
+
+## PR #3241 — macOS preparation page (2026-05-08)
+- **Issue**: #3232 — No dedicated macOS preparation page
+- **Status**: PENDING, CI pass (check-pr-limit ✅, assign-linked-issue-author ✅)
+- **Scope**: 1 new file (macos-preparation.md, 160 lines) + 2 lines in prerequisites.md
+- **Content**: End-to-end macOS setup mirroring windows-preparation.md structure:
+  - Xcode CLI Tools, Docker Desktop/Colima, Node.js (Homebrew/nvm), Ollama
+  - Links to existing troubleshooting sections
+- **CodeRabbit feedback**: Flagged third-party GitHub link (Colima repo URL) — removed in amended commit
+- **Lesson**: NemoClaw docs disallow links to third-party GitHub repos in `**/*.md` files. Use descriptive text without external repo links. docker.com is OK.
+- **Pattern**: Docs parity issues ("X has it, Y doesn't") are good targets — clear scope, mirroring existing patterns
