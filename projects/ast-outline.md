@@ -1,7 +1,7 @@
 # ast-outline
 
 **Repo:** aeroxy/ast-outline
-**Stars:** 102 (2026-05-01)
+**Stars:** 140 (2026-05-08, was 102 on 05-01, +37%)
 **Language:** Rust (tree-sitter via ast-grep, rayon for parallelism)
 **Created:** 2026-04-25
 **License:** MIT
@@ -175,9 +175,35 @@ v0.1: outline (AST → compressed text)
 v0.4: + search (embeddings + BM25) + surface (public API)
 v0.5: + multi-agent installer (MCP + skills)
 v1.0: + dependency graph (9-lang unified resolver) + DSM visualization
+v1.1: + incremental rebuild (tombstones + delta apply) + scope filter
 ```
 
-The trajectory is clear: **structural shape → semantic search → dependency graph → code intelligence platform**. Each layer builds on the previous (dep-graph boosts search relevance, search uses outline's adapter system).
+The trajectory is clear: **structural shape → semantic search → dependency graph → code intelligence platform → production hardening**. Each layer builds on the previous (dep-graph boosts search relevance, search uses outline's adapter system). v1.1 marks a maturity inflection — moving from "rebuild everything" to production-grade incremental maintenance.
+
+### v1.1.0: Incremental Rebuild + Scope Filters (2026-05-07)
+
+The most architecturally interesting release since v1.0. Replaces the naive "any change → full rebuild" with per-file delta apply using **tombstones**.
+
+**Tombstone mechanism:**
+- When files are modified/removed, their old chunk ranges get tombstoned (marked dead) rather than physically removed
+- New/modified files re-chunk + re-embed and append to the end
+- BM25 rebuilds from live set only — tombstoned slots emit empty docs to preserve `chunk_id ↔ bm25_doc_id` alignment
+- `live_mask: Option<Vec<bool>>` cached on Index, threaded through search + find_related via existing mask plumbing as `lang ∧ scope ∧ live`
+- `None` when no tombstones exist = zero-cost fast path
+
+**Compaction:** Triggers at 30% tombstone ratio (configurable via `AST_OUTLINE_COMPACTION_RATIO`). Runs at `Index::open` — even quiet repos eventually get cleaned up. Self-healing: SIGKILL mid-write detected on next open and re-compacted.
+
+**Scope filtering for dep subcommands:**
+- `cycles` and `graph` now accept a path arg as scope filter, resolving project root by walking up looking for `.ast-outline/deps/` (capped at CWD)
+- `cycles`: drops cycles whose any member is outside scope
+- `graph`: produces induced subgraph within scope (drops nodes + boundary edges)
+- `deps`/`reverse-deps`: `find_root_for_with_cache` prefers existing cache over manifest walk
+
+**Why this matters for us ([[FlowForge]], [[agent-memory-landscape-202603]]):**
+1. **Tombstone pattern is universally applicable** — any append-only index (embeddings, memory) faces the same update problem. The mask-based approach (O(1) per chunk in hot path, zero cost when clean) is elegant. Our wiki memex index could benefit from the same pattern vs full reindex
+2. **Compaction as self-healing** — configurable ratio + auto-trigger on open means no manual maintenance. This is the [[mechanism-vs-evolution]] principle in action: mechanical rules > hoping someone remembers to clean up
+3. **Scope filter for blast radius** — `graph --scope src/search` gives you just the subgraph you care about. Useful mental model for any codebase exploration tool
+4. **Graceful degradation** — delta apply failure → automatic full rebuild fallback. No user intervention needed. Production-grade thinking from a solo dev
 
 ### What Changed for Us
 
@@ -200,7 +226,9 @@ We're still in the "read full files" camp. ast-outline offers 3 complementary la
 
 ## Tracking
 
-- Revisit 05-12: check if v1.0 drives star acceleration, community contributors
-- Consider: local install for coding workflows (now much more capable)
+- ~~Revisit 05-12: check if v1.0 drives star acceleration, community contributors~~ → 140⭐ on 05-08, +37% in 7 days. Acceleration confirmed.
+- Revisit 05-14: check v1.1.0 adoption, whether incremental rebuild attracts contributors
+- Consider: local install for coding workflows (incremental rebuild makes it practical for large repos)
 - Consider: contribution target if reaches 300⭐ (Rust adapter for missing languages)
-- Drop if: stars plateau by 05-20, no community
+- Consider: tombstone pattern extraction for our own index systems
+- Drop if: stars plateau by 05-25, no community
