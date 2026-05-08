@@ -159,3 +159,17 @@ APM has shipped the most significant architectural change since creation: **`.ag
 
 - **Activity**: Very active, daily pushes, 8 client adapters, v0.12.2 released
 - **Revisit**: 05-12 (drift detection adoption, v0.13 planning)
+
+## Update 2026-05-08
+
+**v0.12.3-v0.12.4** released (05-07). Key changes:
+- **Governance bypass fix**: `audit --ci` could silently bypass policy — now closed
+- **Triage panel rewrite**: Replaced prose-driven `list_issues` pagination with `search_issues` server-side filter
+  - **RCA finding**: LLM hallucinated `hasNextPage: false` from truncated page (DIFC filter dropped 17/30 issues silently)
+  - **Lesson**: LLMs are unreliable at multi-page loops driven by nested JSON fields; server-side filtering > client-side reasoning
+  - **DIFC (Decentralized Information Flow Control)**: MCP gateway silently drops non-collaborator issues based on integrity levels — agent sees partial data without knowing it
+- **Env-var placeholders**: No longer bakes secrets to disk during copilot deploy
+- Stars: 2,290 (was 2,232 on 05-05, +2.6%)
+- Velocity: 13 PRs merged in 2 days, single maintainer (danielmeppiel) + Copilot co-authored PRs
+
+See also: [[apm-triage-panel-patterns]] for deep analysis of the triage panel's production agent patterns (DIFC, batch allow-list, anti-pagination).
