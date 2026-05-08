@@ -1128,8 +1128,10 @@ GitHub trending (agent, created past week, sorted by stars):
 - **deepclaude** ⭐1540 (created 05-03) — Claude Code UX with cheaper backends. Known pattern (backend-swap), not our focus.
 
 ## 2026-05-08 Quick Scan Additions
-- **strukto-ai/mirage** ⭐989 (was 500 yesterday) — Virtual filesystem for AI agents. 2× in 24h. **Deep read priority** — agent infra.
+- **strukto-ai/mirage** ⭐1055 (05-08, was 989 yesterday) — Virtual filesystem for AI agents. 3rd day, still climbing. **Deep read priority** — agent infra.
 - **girl-agent** ⭐198 — Russian AI companion bot with state/mood/sleep/relationship stages. Companion agent pattern, relevant to our direction.
 - **agent-skills-eval** ⭐189 — Test runner for agentskills.io skills. Skill evaluation tooling emerging.
-- **deepclaude** ⭐1593 (was 1540 yesterday) — Still climbing steadily.
-- **HN: "Agents need control flow, not more prompts"** 306pts — Directly relevant to FlowForge thesis. **Deep read candidate**.
+- **deepclaude** ⭐1601 (05-08) — Still climbing. Thin-harness pattern confirmed.
+- **HN: "Agents need control flow, not more prompts"** 362pts (05-08) — Directly relevant to FlowForge thesis. Argues for deterministic scaffolds + aggressive error detection. **Validates our approach.**
+- **RunbookHermes** ⭐534 (05-08) — Hermes-native AIOps agent. Evidence-driven incident response + runbook learning. Worth monitoring.
+- **Anthropic: Natural Language Autoencoders** 219pts HN (05-08) — Turning Claude's thoughts into text. Research, not directly actionable yet.
