@@ -363,3 +363,15 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 **Pattern**: Security fixes often need both server AND client sides + docs. A "remove the fallback" fix is incomplete without also preventing the credential from being offered. Check: who calls this? Who selects this credential? Who documents this behavior?
 
 **Lesson**: For auth/security PRs, grep for all references to the changed behavior across the codebase. `git grep "password.*trusted.proxy\|trusted.proxy.*password"` would have revealed credential-planner.ts and the docs.
+
+## Cross-platform test gap (2026-05-08)
+
+| 我的 PR | 我的做法 | Maintainer 的做法 | 差距 |
+|---------|---------|---------|------|
+| memex #107 | Case-insensitive wikilink resolution, test assumes two files differing only in case can coexist | #142: Same code + runtime FS case-sensitivity detection, skip ambiguous test on case-insensitive FS (macOS/Windows) | Platform-aware testing |
+
+**Pattern: cross-platform-test-gap**
+- 写 test 时不要假设 FS 行为。macOS/Windows 是 case-insensitive — `OpenClaw.md` 和 `openclaw.md` 无法共存
+- memex CI 跑 3 平台 × 2 Node 版本 — 不能只在 Ubuntu 验证
+- 修法: 运行时检测 FS 是否 case-sensitive (`fs.mkdtemp` + 创建 a/A 测试)，skip 不适用的 test
+- **这是 respectful supersede**: maintainer credited 原作者, 保留代码, 只修 CI。最好的结果。

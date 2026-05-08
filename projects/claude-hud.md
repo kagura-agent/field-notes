@@ -49,6 +49,9 @@ source: GitHub jarrodwatts/claude-hud
 - dist/ 需要 commit（跟大多数项目不同）
 - 维护者 merge 率 23%——偏低，PR 质量要高
 - 没有 CI 自动跑测试，本地必须跑
+- CI 已经加上了！Node 18.x + 20.x 都跑 npm test
+- 现在 563 个测试（项目增长很快）
+- merge 率已升至 ~70%（项目成熟期，更欢迎贡献）
 
 ## 2026-04-08 PR #402 — Prompt cache TTL countdown
 
@@ -139,3 +142,18 @@ source: GitHub jarrodwatts/claude-hud
 - 他的 PR 通常代码量更多但边界条件更明确
 - render 相关的 bug：先问“这个分支是不是应该被跳过”而不是“改什么值能让输出好看”
 - **下次在这个 repo 提 PR 前**：先读 maintainer 最近 3 个 PR 的代码，学习他的处理方式
+
+## 2026-05-08 PR #528 — feat: add showSkills and showMcp HUD display elements (Closes #527)
+
+- **Status**: PENDING (CI ✅ Node 18.x + 20.x, 576 tests pass)
+- **Changes**: 9 files, +267/-4 (2 new renderers + config + type extensions + 13 tests)
+- **Feature**: Two new HUD elements — skills (from settings.json skill paths) and mcp (server names)
+- **Pattern**: Followed tools/agents/todos pattern exactly — new type variant, config toggle, renderer, wiring
+- **Note**: Previous session had left untracked renderer files (skills-line.ts, mcp-line.ts) from aborted Claude Code run — reused them after verification
+- **Lesson**: For multi-file features in well-understood codebases, manual implementation is consistently faster than Claude Code (which hung with no output for 3+ minutes)
+- **Lesson**: `core.fileMode = false` needed to avoid noise from permission changes (NTFS/ext4 mismatch on fork)
+- **Architecture**: `getSkillNames()` extracts directory name from skill.md paths; `mcpServerNames` reuses existing getMcpServerNames() but returns the names as array instead of just count
+
+## 注意
+- 测试现在 576 个（563 existing + 13 new in skills-mcp.test.js）
+- `git config core.fileMode false` 设置后文件权限差异不再出现在 diff 中

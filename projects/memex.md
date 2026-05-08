@@ -14,6 +14,8 @@
 - #20: --nested CLI flag (Phase 2) — ✅ merged 2026-03-26
 - #21: doctor + migrate commands (Phase 3) — ✅ merged 2026-03-26
 - #23: --all multi-dir search (Phase 1 of #22) — pending review, CI 6/6 绿
+- #107: case-insensitive wikilink resolution (fixes #106) — **SUPERSEDED** by maintainer's #142 (2026-05-08). Maintainer took my code, added macOS FS case-sensitivity detection. Closed gracefully.
+- #123: pending review
 
 ## 维护者模式
 - **iamtouchskyer**: 活跃, 回复快, merge 快（#20 和 #21 同天 merge）
