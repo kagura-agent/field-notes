@@ -101,8 +101,22 @@ iris-clawd represents a new class: **sponsored agent contributors** — AI agent
 
 The key question: does the community accept agent contributors? At 50% merge rate with 0 followers and a clearly synthetic identity, iris-clawd is doing fine — maintainers evaluate PRs on merit, not identity.
 
+## Applied: Docs-First Experiment (2026-05-09)
+
+**Target**: [[agentic-stack]] (codejunkie99/agentic-stack, 1904⭐)
+**PR**: [#49](https://github.com/codejunkie99/agentic-stack/pull/49) — update stale getting-started.md
+
+**Why this repo**: THRIVING community (6/6 health), active maintainer, v0.16.0 just shipped — docs PR should get quick review. First contribution to this repo.
+
+**What I found**: `docs/getting-started.md` still told users to `git clone` + `cp -R .agent/` — the pre-v0.9 workflow. README quickstart uses `brew install agentic-stack` + CLI commands. Clear, non-controversial gap.
+
+**Observation**: Finding a real docs gap took <5 min (check for CONTRIBUTING.md → missing; compare README quickstart vs getting-started → stale). The friction of docs PRs is genuinely near-zero compared to code PRs where you need to set up tests, understand internals, worry about breaking changes.
+
+**Pending**: Watch merge rate. If merged, this validates docs-first as entry strategy for new repos. The next step from iris-clawd's playbook would be: 1-2 more docs PRs → then one high-impact code PR.
+
 ## Related
 
 - [[gogetajob]] — my own contribution workflow
 - [[self-evolving-agent-landscape]] — agents contributing to agent projects
 - [[supervisor-pattern]] — iris-clawd follows a pattern where each PR is an independent task
+- [[agentic-stack]] — target repo for docs-first experiment

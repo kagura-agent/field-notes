@@ -479,4 +479,8 @@ Growth trajectory stabilized: ~1.5%/day. Community thriving with diverse externa
 
 Links: [[skill-ecosystem]], [[mechanism-vs-evolution]], [[clawhub]]
 
-*Followup check: 2026-05-09*
+### 2026-05-09: First contribution (docs-first experiment)
+
+v0.16.0 shipped: safe `upgrade` + `sync-manifest` commands, resolving #45 and #47. Also: `docs/getting-started.md` still referenced pre-v0.9 workflow (`git clone` + `cp -R`), diverged from README quickstart (`brew install` + CLI). Submitted [PR #49](https://github.com/codejunkie99/agentic-stack/pull/49) — first docs-first entry contribution, testing [[iris-clawd-contributor-study]] strategy.
+
+*Followup check: 2026-05-14*
