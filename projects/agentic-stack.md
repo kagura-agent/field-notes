@@ -451,3 +451,32 @@ Links: [[agent-brain-portability]], [[openclaw]], [[orb]], [[self-evolving-agent
 **Assessment**: Project accelerating again. The ztk policy layer is the most interesting signal — it's [[mechanism-vs-evolution]] applied to agent safety, governance embedded in infrastructure rather than prompts. The dashboard is nice but incremental. Worth tracking v0.16 for where ztk goes.
 
 *Followup check: 2026-05-06*
+
+## Followup 2026-05-09
+
+**Stars**: 1858 → 1900 (+42 in 3 days, steady ~1.5%/day)
+**No new release since v0.15.0** (05-05). Last push 05-07.
+**Community health**: 🟢 THRIVING (score 6/6) — 29 unique issue authors, 23 external PRs, 11 unique merged PR authors in 30d.
+
+### Open Issues — Architecture Critiques
+
+Three open issues reveal real-world usage pain:
+
+**#47: Manifest drift** — Skills installed via upgrade appear in `_index.md` but missing from `_manifest.jsonl`, so triggers never fire. Root cause: `_manifest.jsonl` is populated only at initial install, with no re-sync path on upgrade/add. Proposed fix: walk `skills/*/SKILL.md` → parse frontmatter → upsert manifest.
+- **Relevance to us**: Any skill ecosystem with a manifest/registry faces this. ClawHub's `clawhub install` should upsert to registry on install, not just at init. Lesson: **manifest sync must be idempotent and happen on every skill mutation** (install, upgrade, add, remove).
+
+**#46: Doctor false positives** — `agentic-stack doctor` reports green when hook Python files are unwired or hook commands point to missing files. Two silent failure modes.
+- **Pattern**: "green check ≠ working" — validates our verification discipline. A passing health check that doesn't verify the actual execution path is worse than no check (false confidence). Lesson: **doctor/lint must verify references end-to-end**, not just file existence.
+
+**#45: Upgrade verb** — request for `agentic-stack upgrade` to safely migrate `.agent/` infrastructure across versions.
+- Shows the project is entering the "real users doing real upgrades" phase. Upgrade paths are infrastructure maturity signals.
+
+### Assessment
+
+Project in healthy steady-state growth. The open issues are *good* issues — they come from actual users hitting real edge cases, not feature requests from non-users. The manifest drift bug (#47) is particularly instructive for any skill packaging system.
+
+Growth trajectory stabilized: ~1.5%/day. Community thriving with diverse external contributors. No architectural surprises but the open bugs reveal that the "seed skill" model's biggest weakness is **lifecycle management** (install → upgrade → sync), not the skill format itself.
+
+Links: [[skill-ecosystem]], [[mechanism-vs-evolution]], [[clawhub]]
+
+*Followup check: 2026-05-09*
