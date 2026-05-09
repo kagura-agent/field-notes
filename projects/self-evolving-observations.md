@@ -961,3 +961,51 @@ Open PRs: ~32
 - dreaming: Light Sleep ~30 staged (all 0.62, recalls=0), REM 1 reflection (0.75) + 3 PLT (0.69-0.72), 0 promoted
 - `journalctl nudge`: 0 hits
 - PR activity: 0 new, 30 open, 2 rebased (openclaw #78766, NemoClaw #3169)
+
+---
+
+## 🔬 自进化观察日报 2026-05-09
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新 gradient 写入，但管线机制本身大幅升级（Triple Verification gate + 独立评分规则）。现有 ~5 active candidates，1 graduated（历史）。无新候选毕业。
+- **DNA 变更**: **有，主动，重大**。2 commits 改了 beliefs-candidates.md + AGENTS.md：
+  - `3280a2a` — Triple Verification gate（从 cangjie-skill 学来的三重门控替代模糊的"重复3次"规则）
+  - `f5b034a` — 独立评分规则（从 darwin-skill 学来的"评分者≠修改者"原则，新增 `scripts/evaluate-candidate.sh`）
+  - 两次改动都是**主动**的，来自 study 环节学到的外部项目方法论
+- **nudge 触发**: 无法确认。`journalctl -u openclaw-gateway --since "yesterday 22:30" | grep nudge` 返回 0 hits。这可能是日志轮转/unit 差异，不等于 nudge 未触发。
+- **dreaming**: 运行了。Light Sleep ~11 staged（全部 confidence 0.62, recalls=0）。REM 输出了 3 条 Possible Lasting Truths（0.69-0.72），内容为跨天记忆拼接。0 promoted。
+
+### 闭环追踪
+- **完整闭环**: 2 个
+  1. study 学到 cangjie-skill Triple Verification → 应用到 beliefs-candidates 升级门控 → commit + 更新 AGENTS.md DNA
+  2. study 学到 darwin-skill 独立评分 → 创建 evaluate-candidate.sh 脚本 → 更新 reflect.yaml + beliefs-candidates.md
+- **断裂处**:
+  - Issue #7 的核心问题（candidates count 全为 1，无自动升级）仍未解决。Triple Verification 提高了升级标准，但没有增加输入频率。门控更严了，但进入管线的 gradients 没变多
+  - Issue #6 的 dreaming 质量问题不变：Light Sleep 仍然全 0.62，recalls 仍为 0，仍零 promote
+
+### 今日发现
+1. **机制进化日（罕见）**: 这是观察期以来第一次看到**管线机制本身被改进**而非只是管线产出数据。两个 commit 都是学习外部项目后主动应用到自己的进化管线，这正是 self-evolving 的理想模式
+2. **Study → DNA 闭环首次出现**: 之前的 DNA 变更要么是 Luna 指出（被动），要么是日常维护。今天首次出现「study 学到外部方法论 → 评估适用性 → 应用到自身管线 → commit」的完整自进化闭环
+3. **门控严格化的双刃剑**: Triple Verification 提高了候选毕业标准（V1 ≥3次独立出现 + V2 预测力 + V3 非显而易见），但当前 beliefs-candidates 里大部分条目 count=1。更高的标准 + 不变的输入频率 = 更长的候选积累周期。需要观察这是否会导致管线更加阻塞
+4. **独立评分是真突破**: 自评 bias 是 self-evolving 的根本问题之一。「评分者和修改者不是同一个 agent 上下文」原则如果被执行，意味着候选毕业时会有外部校验。这是管线质量控制的实质性提升
+5. **PR 活跃度高**: 10 PRs 今天（3 merged, 7 open），跨 6 个 repo。执行力不是问题。但这些 PR 产生了 0 条新 gradient — 高执行低反思 pattern 仍在
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | **有进展但方向存疑**: 升级门控变严格了（Triple Verification），但输入管线（gradient 写入频率）无改善。可能加剧阻塞 |
+| #6 dreaming 质量 | OPEN | **无进展**: Light Sleep 仍全 0.62/recalls=0/零 promote。REM 3 条 PLT 但内容是跨天拼接非深度反思 |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 2 commits (f5b034a, 3280a2a)
+- `git log --since="yesterday 22:30" --all --oneline`: 6 commits total
+- `beliefs-candidates.md`: Triple Verification gate added, independent scoring rule added, promotion checklist updated
+- `AGENTS.md`: DNA self-governance section updated (Triple Verification reference)
+- `memory/2026-05-09.md`: ~1930 行
+- dreaming: Light Sleep ~11 staged (0.62, recalls=0), REM 3 PLT (0.69-0.72), 0 promoted
+- `journalctl nudge`: 0 hits (unreliable metric)
+- PR activity: 10 PRs today (3 merged: finance#327, crosspost#1, crosspost#2; 7 open across openclaw, claude-hud, abti, agentic-stack, finance, kagura-blog)
+- New gradients written: 0
