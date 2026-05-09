@@ -157,3 +157,15 @@ source: GitHub jarrodwatts/claude-hud
 ## 注意
 - 测试现在 576 个（563 existing + 13 new in skills-mcp.test.js）
 - `git config core.fileMode false` 设置后文件权限差异不再出现在 diff 中
+
+## 2026-05-09 PR #530 — feat: show session start date and last-response timestamp (Closes #529)
+
+- **Status**: PENDING (CI ✅ Node 18.x + 20.x, 559 tests pass on main)
+- **Changes**: 5 src files, +232/-1 (1 new renderer + config + wiring + 9 tests)
+- **Feature**: Two new opt-in display toggles:
+  - `showSessionStartDate` — local time format `Started: 2026-05-08 09:14`
+  - `showLastResponseAt` — relative `Last reply: 5m ago`
+- **Pattern**: New `sessionTime` HUD element, data already parsed by transcript parser
+- **Implementation**: Manual — straightforward feature, 4 files to touch, well-understood pattern
+- **Testing**: `nowFn` parameter for injectable clock in relative time tests
+- **Lesson**: Local time formatting needs timezone-independent tests — use `new Date(year, month, ...)` constructor not ISO strings

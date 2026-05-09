@@ -5,7 +5,7 @@
 ## 分类(2026-03-26 更新)
 - **主力**: NemoClaw (NVIDIA/NemoClaw), OpenClaw (openclaw/openclaw), Hermes (NousResearch/hermes-agent)
 - **辅助**: deer-flow (字节, 44k⭐), claude-hud (jarrodwatts/claude-hud)
-- **观察**: Acontext (memodb-io), MemOS (MemTensor, 8.2k⭐, skill generation), blockcell, OpenCLI (8.6k⭐, YAML adapter), DeepTutor (HKUDS, 14.7k⭐, agent-native 学习助手), qmd (tobi, 19.5k⭐, 本地知识库搜索), 🆕 obra/superpowers (143k⭐, agentic skills framework), 🆕 Archon (coleam00, 14k⭐, AI coding harness builder)
+- **观察**: Acontext (memodb-io), MemOS (MemTensor, 8.2k⭐, skill generation), blockcell, OpenCLI (8.6k⭐, YAML adapter), DeepTutor (HKUDS, 14.7k⭐, agent-native 学习助手), qmd (tobi, 19.5k⭐, 本地知识库搜索), 🆕 obra/superpowers (143k⭐, agentic skills framework), 🆕 Archon (coleam00, 14k⭐, AI coding harness builder), 🆕 Paperclip (paperclipai/paperclip, 63.6k⭐, zero-human company orchestration, 3446 issues, TypeScript monorepo, MIT)
 - **维护中**: NemoClaw, ClawX, gitclaw(有 PR 等 merge)
 - **退出**: math-project (bot 刷 review), repo2skill, supermemory, hindsight (maintainer 要求停止), OpenKosmos (不活跃)
 - **退出 tenshu** - 不对齐 self-evolving agent 方向,4 个 PR 已够
