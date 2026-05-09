@@ -49,3 +49,22 @@
 - 对标 GTM 认知：面向非程序员、展示具体场景
 
 **建议：先发 A（停电婚礼），趁热打铁素材在手。B 作为后续系列。**
+
+## 05-09 行业信号更新（来自本周 study/scout）
+
+### 新趋势
+1. **Agent skill 生态持续爆发** — addyosmani/agent-skills 33.9K⭐ (vs 28.7K 上周), skillplus 469⭐ (CN 社媒 copywriting skills). Agent skill = 独立产品形态已确立
+2. **Deslop（去AI味）成为刚需** — oh-story-claudecode 901⭐, 建立了量化 deslop 评分体系（banned-word density）。AI 内容质量管控是真实痛点
+3. **AI 安全/合规赛道** — deepsec (Vercel) 1,777⭐, mirage 1,446⭐ (agent sandbox). 企业对 agent 安全的投入在加速
+4. **deepclaude 1,642⭐** — Claude 后端替换 DeepSeek 省 17x 成本。说明：企业 AI 成本管控是现实需求
+
+### 对 Luna 的启示
+- **"去AI味"写作服务** — 帮客户改 AI 生成的公众号/小红书稿子，让它读起来像人写的。门槛低（Luna 写作好），需求真实
+- **"AI 帮你管 X" 实操课** — 从自己用 Kagura 管生活的真实经验出发，拍 10 分钟短视频。非程序员看得懂
+- **公众号恢复更新是基础** — 1 个月没更，读者会流失。停电婚礼素材在手，发一篇只需 2 小时
+
+### 当前 blocker
+- briefing-001 无反馈 → 不知道 Luna 想往哪走
+- 公众号 1 个月没更 → 品牌冷却
+- 知识星球/Podcast 状态不明
+- **所有 4 个待办都 blocked on Luna input**（已连续 3 次 cron 报同样状态）

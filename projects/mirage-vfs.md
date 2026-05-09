@@ -1,7 +1,7 @@
 # Mirage — Unified Virtual Filesystem for AI Agents
 
 - **Repo**: [strukto-ai/mirage](https://github.com/strukto-ai/mirage)
-- **Stars**: 1,446 (2026-05-09; was 1,286 late 05-08, 1,105 early 05-08, 990 on 05-07 — sustained explosive growth ~12%/day)
+- **Stars**: 1,460 (2026-05-09; was 1,446 early 05-09, 1,286 late 05-08 — still growing ~12%/day)
 - **Language**: Python + TypeScript (dual SDK)
 - **License**: Apache 2.0
 - **Company**: Strukto.AI
@@ -49,8 +49,15 @@ Mounts heterogeneous services (S3, GitHub, Slack, Discord, Gmail, Redis, MongoDB
 
 ## Verdict
 
-**Track** — 1,446⭐ in 3 days is the fastest growth in our tracking portfolio. Now has agent prompt isolation (per-framework system prompts for OpenAI Agents, LangChain, PydanticAI) and serious bash interpreter work. Revisit 05-14.
+**Track** — 1,460⭐ in 4 days, fastest growth in portfolio. Now facing serious architectural scrutiny (5 critical issues filed by @eouzoe, a Rust/Nix/Firecracker infrastructure person). Growth is real but the gap between VFS promise and multi-agent reality is becoming visible. Key question: can they address isolation and cache correctness without breaking the simplicity that drives adoption? Revisit 05-14.
 
 ## Updates
 
-- **05-09**: 1,446⭐ (+12.4% from 05-08 PM). v0.0.2-alpha: (1) full bash interpreter parity — parameter expansion, arrays, set -e, pipefail, readonly, VAR=val prefix scoping, 73 new tests per binding; (2) agent prompt isolation — per-framework system prompts with mount info injection; (3) execute options + cancel support. The bash interpreter work is the most significant — they're treating shell fidelity as a core differentiator, not a nice-to-have.
+- **05-09 PM**: 1,460⭐. **Critical architectural scrutiny**: @eouzoe (Rust/Nix/Firecracker background) filed 5 well-researched issues in one batch:
+  1. **#15 Snapshot fidelity**: snapshot/load only captures RAM + config, not remote state. No version IDs/ETags tracked. "Portability" is overstated.
+  2. **#16 Session isolation**: concurrent agents share all filesystem state. No COW, no branch-scoped views, no conflict detection. Fan-out patterns (ToT, Reflexion) need per-session delta layers.
+  3. **#17 Credential blast radius**: all mount credentials colocated in one daemon. `MountMode.READ` is software-level, not a capability boundary. One prompt-injected agent can pivot to every mounted resource.
+  4. **#18 Cache invalidation**: read-through cache with no write-through invalidation. Read-after-write returns stale cached bytes. Verified in code: `FileCacheMixin` has no `invalidate_on_write` hook. This is a correctness bug.
+  5. **#19 Shell coverage gaps**: undocumented unsupported constructs (process substitution, here-docs, arithmetic expansion, brace expansion, job control). LLMs will reach for these and get silent failures.
+  - **0 maintainer responses** after ~24h. Watch how they handle this — will determine project maturity trajectory.
+  - **Lesson for us**: filesystem metaphor for agents is powerful but "works on the happy path" ≠ production-ready. Multi-agent isolation is the hard problem that separates toys from infrastructure. [[agent-isolation]] [[capability-scoping]]
