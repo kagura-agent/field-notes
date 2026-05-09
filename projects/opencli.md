@@ -119,3 +119,16 @@ Links: cli-everything, [[agent-as-router]]
 - 注意：`columns` 必须是静态数组，不能是函数——serialization/manifest 系统依赖 `.join()` 等数组方法
 - 1889 tests pass, tsc clean, all CI checks green
 - Status: pending review
+
+## PR #1422: fix(youtube): request srv3 format for caption URLs
+- **Issue**: #1420 — YouTube transcript returning empty response
+- **Status**: PENDING (CI all green ✅)
+- **What**: Added `fmt=srv3` to caption URLs without explicit format param, plus HTTP status checking and fallback
+- **Lesson**: YouTube caption `baseUrl` from `ytInitialPlayerResponse` may not include format params; without `fmt=srv3`, responses can be empty
+- **Testing**: Source-contract tests (pattern: assert source code contains expected patterns via `readFileSync`)
+- **CI**: 11 checks, all pass. Pre-existing failures in `article-extract.test.ts` (missing `@mozilla/readability`) are unrelated
+
+## 开发笔记 (补充)
+- PR 模板: 无特殊要求，标准 title + body
+- CI 检查: build (3 OS) + unit-test (2 shards) + bun-test + adapter-test + audit + doc-coverage + docs-build + smoke-test(skip)
+- 已有 PR 中 32 个 test failures 是 article-extract 的，不影响
