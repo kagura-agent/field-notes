@@ -40,8 +40,29 @@ Check: `grep -c "quick_scout\|Quick Scan\|Quick Scout" memory/YYYY-MM-DD.md`
 
 This turns a "should" into a "must" — the workflow blocks the rationalization path ("this time is different") mechanically.
 
+## Apply Saturation Guard (2026-05-09)
+
+The same pattern extends to `apply` mode. After 9 applies in one day (2026-05-09), the quality degradation was obvious:
+- Applies #1-3: substantial code/workflow changes (.agent/ docs pattern, darwin scoring)
+- Applies #4-6: still useful but smaller scope (2nd/3rd repo for same pattern)
+- Applies #7-9: forced, looking for "something to apply" rather than having something worth applying
+
+Hard cap added: apply ≥ 3/day → locked. Plus **weekend downgrade**: followup deprioritized on Sat/Sun (projects idle on weekends, low signal).
+
+Check: `grep -c "^## Study Apply\|^## Study.*Apply" memory/YYYY-MM-DD.md`
+
+## Generalized Principle
+
+Any repeated study mode exhibits diminishing returns. The saturation guard pattern is:
+1. Count occurrences in today's memory log
+2. ≥ threshold → mechanically lock that mode
+3. Force diversification to other modes
+
+Applied to: quick_scout (≥3), apply (≥3). Next candidate: followup (if weekend pattern holds).
+
 ## Related
 
 - [[worktree-convergence-2026-05]] — example of trend synthesis output
 - [[self-evolving-agent-landscape]] — the landscape being scouted
 - [[flowforge]] — workflow engine where the guard lives
+- [[apm-triage-panel-patterns]] — APM's per-author quota is the same anti-concentration pattern
