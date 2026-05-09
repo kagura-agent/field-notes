@@ -70,3 +70,4 @@ If we ever want to make [[kagura-story]] output less AI-sounding, this quantifie
 - 05-06: 800⭐, first noted in [[skill-distribution-convergence]]
 - 05-07: 831⭐, v0.4.0 released
 - 05-09: 901⭐ (+8.4%), v0.4.1. Major architecture evolution: desymlinking, CI pipeline, deslop quantification, 3-agent verification. 7 PRs in one release.
+- 05-09: **Applied** deslop quantification to [[kagura-story]]: created `scripts/deslop-score.sh` (density metric + tiered severity), batch scanner, integrated into storyteller SKILL.md. Baseline scan: 379 files, all CLEAN. Methodology adapted (EN+ZH word lists, structural patterns), but my writing was already clean — the tool's value is as a **regression guard** for future output.
