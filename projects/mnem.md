@@ -105,6 +105,28 @@ Ships a full reproducible harness (`bash benchmarks/harness/run_bench.sh`). Proo
 
 mnem is the "infrastructure bet" — if agent memory becomes important enough to need git-level versioning and crypto-level auditability, mnem is positioned uniquely. If memory stays "good enough with markdown files," mnem is over-engineered.
 
+## Update (2026-05-09)
+
+18→61⭐ in 4 days (3.4x growth). Growth is real — driven by FinanceBench benchmark addition, Python/npm package distribution, and i18n (Chinese/Spanish README).
+
+### Changes Since 05-05
+- v0.1.5 → v0.1.6
+- Added FinanceBench benchmark (R@5: 0.973 vs mem0 0.033 vs MemPalace 0.767) — strongest differentiator
+- Published pip and npm packages (`mnem-cli`)
+- README rewrite: led with git analogy, dropped fear framing (good marketing instinct)
+- Still **solo project** (only 1 contributor + dependabot), 1 open issue (broken docs links)
+
+### Revised Assessment
+- **Quality signal confirmed**: benchmarks reproducible, Rust crate structure clean, 17 crates with clear boundaries
+- **Adoption risk**: solo project, no external PRs, no community contributions yet. 21 forks but no activity from them
+- **Growth pattern**: docs/distribution polish, not feature development. Suggests v0.1.x is "ship and market" phase
+- **Relevance unchanged**: token-budget transparency and deterministic ingest remain the two ideas most applicable to us. We won't adopt the full system but these patterns inform how we think about [[brain-git-memory]] and memory retrieval improvements
+
+### New Ecosystem Context
+- **Git-model memory convergence**: codejunkie99/brain (56⭐, flat files) and mnem (61⭐, knowledge graph) independently adopted "git for agent memory" framing. Two implementations, same thesis. Validates [[brain-git-memory]] card.
+- **OpenSquilla** (135⭐ in 3 days, Python) — token-efficient microkernel agent with Feishu adapter. More "full-stack agent" than memory-specific. Different bet than mnem.
+- **oh-my-kimi** (62⭐) — Kimi Code CLI multi-agent harness with worktree runtime. Shows non-Claude ecosystems growing their own tooling. Diversification signal per [[worktree-convergence-2026-05]].
+
 ## Scout Context (2026-05-05)
 
 Also found this round:
