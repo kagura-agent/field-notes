@@ -436,3 +436,61 @@ This pattern solves a real problem: process-based agent communication via stdio 
 - After: `plan → plan_review → implement` (independently validated)
 
 See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]], [[mechanism-vs-evolution]]
+
+## Followup 2026-05-09: 10K Stars + /btw Side-Question Subagent
+
+**Stars**: 9,489 → 10,160 (+671, +7.1%, crossed 10K milestone)
+**Community**: 🟢 THRIVING (6/6) — 49 unique issue authors, 13 external PR contributors, 19 merged in 30 days
+
+### /btw Side-Question Subagent (PR #317, merged)
+
+The most interesting new feature: `/btw <question>` lets users ask a side question **without interrupting** the main agent task.
+
+**Architecture** (142 lines in `frontends/btw_cmd.py`):
+1. `deepcopy(backend.history)` under lock — snapshot current conversation
+2. Wrap question in `<system-reminder>` prompt that establishes sub-agent identity ("you are a lightweight sub-agent, no tools, one-shot answer")
+3. `backend.raw_ask(wire)` on a daemon thread — reuses the same LLM client, zero extra cost
+4. Result goes to `display_queue` with `source: 'system'` — never touches `backend.history`
+5. 120s hard timeout with partial response on expiry
+
+**Key design decisions**:
+- **Zero mutation**: Main agent's history is never written to. The side question is read-only.
+- **No tools**: Sub-agent explicitly told "you have NO tools" — prevents it from taking actions
+- **Lock + deepcopy**: Defends against `compress_history_tags` mutating history mid-copy
+- **i18n**: System prompt has both ZH and EN versions, selected by `GA_LANG` env var
+
+**Frontend integration**: `install(cls)` monkey-patches `_handle_slash_cmd` on the agent class — same pattern as `/continue`. All frontends that import `chatapp_common` get `/btw` for free. stapp needed special handling (Streamlit rerun kills generators, so the old `finally: agent.abort()` had to be removed for `/btw` to work without killing the main task).
+
+**Comparison with OpenClaw**: OpenClaw handles this natively via multi-session architecture — each Discord/Feishu conversation is an independent session, so asking a question while a subagent runs is just... another message. GenericAgent needed `/btw` because it's single-session with blocking I/O. This validates OpenClaw's multi-session design as architecturally superior for concurrent user interaction.
+
+### Robustness Hardening (5 commits today)
+
+- **Unified retry counter** (PR #312): `_empty_ct` shared across empty response / stream truncation / max_tokens — prevents infinite retry loops. Cap at 3 then force exit.
+- **Empty response protection**: Both native tool flow and non-native paths now filter whitespace-only text blocks and prevent empty responses from corrupting history
+- **`_fix_messages`**: Extended to non-native paths — ensures message array integrity regardless of backend
+
+### Other Recent (05-07~05-09)
+
+- **Textual TUI** (PR #228): Multi-session terminal UI with Ctrl+1~9 session switch, CJK-aware sidebar, `/clear` and `/close` commands
+- **Configure wizard** (PR #295): Interactive `configure_mykey.py` for first-time setup
+- **WeChat group 15 QR**: Community growth indicator (burned through 15 group QR codes)
+
+### Growth Trajectory
+
+| Date | Stars | Rate |
+|------|-------|------|
+| 04-27 | 7,626 | — |
+| 05-01 | 8,480 | +171/d |
+| 05-05 | 9,113 | +158/d |
+| 05-08 | 9,489 | +125/d |
+| 05-09 | 10,160 | +671/d! |
+
+Massive spike on 05-09. Likely triggered by 10K psychological milestone + TUI launch demos circulating in CN developer communities.
+
+### Takeaways
+
+1. **Multi-session > side-question**: OpenClaw's architecture handles concurrent interaction natively. `/btw` is GenericAgent's workaround for single-session blocking design.
+2. **Unified retry counters**: Simple but effective — share one counter across all "something went wrong" paths. Worth applying to our FlowForge retry logic.
+3. **Community health indicator**: 15 WeChat groups worth of users, 49 unique issue authors in 14 days — this is the largest CN agent community.
+
+See [[self-evolving-agent-landscape]], [[supervisor-pattern]], [[acp-protocol]]
