@@ -1,7 +1,7 @@
 # Mirage — Unified Virtual Filesystem for AI Agents
 
 - **Repo**: [strukto-ai/mirage](https://github.com/strukto-ai/mirage)
-- **Stars**: 1,460 (2026-05-09; was 1,446 early 05-09, 1,286 late 05-08 — still growing ~12%/day)
+- **Stars**: 1,487 (2026-05-09 PM; was 1,460 early 05-09 — growth slowing to ~2%/day)
 - **Language**: Python + TypeScript (dual SDK)
 - **License**: Apache 2.0
 - **Company**: Strukto.AI
@@ -61,3 +61,4 @@ Mounts heterogeneous services (S3, GitHub, Slack, Discord, Gmail, Redis, MongoDB
   5. **#19 Shell coverage gaps**: undocumented unsupported constructs (process substitution, here-docs, arithmetic expansion, brace expansion, job control). LLMs will reach for these and get silent failures.
   - **0 maintainer responses** after ~24h. Watch how they handle this — will determine project maturity trajectory.
   - **Lesson for us**: filesystem metaphor for agents is powerful but "works on the happy path" ≠ production-ready. Multi-agent isolation is the hard problem that separates toys from infrastructure. [[agent-isolation]] [[capability-scoping]]
+- **05-09 PM update**: 1,487⭐ (+1.8%). PR#10 "agents prompt isolation" merged — **misleading title**: actually dependency isolation between agent backends (pydantic_ai, openai_agents, langchain), not session isolation. Extracted shared `MIRAGE_SYSTEM_PROMPT` into `prompts.py`, added tests ensuring each backend can import without cross-dependencies (e.g., pydantic_ai works even if deepagents not installed). 6 test cases including module-blocking fixtures. v0.0.2-alpha version bump. New bug: #14 (grep mount path breaks file reads). Critical arch issues #15-#19 still open with **0 maintainer response** after ~48h. Growth decelerating (2%/day vs 12%/day earlier). New issue from community (@SaguaroDev) = real users hitting real bugs now.

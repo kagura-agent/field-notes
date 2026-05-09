@@ -130,9 +130,20 @@ The idea of composing prompts from detected context (tech stack, batch content, 
 - **PR #62**: Self-dogfooding — checked deepsec's own scan data into repo (33K additions, 295 files). Runs on itself.
 - **PR #56**: Vercel OIDC token conditional — if OIDC present in env, use it (serverless deployment signal)
 
+## Updates (05-09 followup)
+
+- **Stars**: 1,899 (05-09 PM). Growth settling: ~+12/day now. Typical post-hype stabilization.
+- **PR #68**: provenance turned on (public repo milestone)
+- **PR #67**: sandbox download path bug — good paths were being rejected. Safety vs usability tension.
+- **PR #66**: quota handling — gracefully handles out-of-quota situations (LLM cost management)
+- **PR #65**: typecheck fix for `.deepsec` directory config
+- **PR #69 (open)**: agent skills folder — `npx` skills ecosystem integration (@BankkRoll). Community feature.
+- **PR #70 (open)**: Ollama support (@soultellegend). Local LLM story.
+- 23 open issues (up from ~12). Community engagement growing.
+
 ## Growth Trajectory Assessment
 
-Growth slowing: +231/day (launch) → +41/day (05-06) → +18/day (05-07). Typical hype curve. BUT sustained development velocity (cramforce shipping daily) means the product is maturing fast. The GPT-5.5 default switch suggests Vercel alignment (Codex partnership?). Worth continuing to track — the composable prompt pattern is genuinely novel.
+Growth slowing: +231/day (launch) → +41/day (05-06) → +18/day (05-07) → +12/day (05-09). Typical hype curve. BUT sustained development velocity (cramforce shipping daily) means the product is maturing fast. The GPT-5.5 default switch suggests Vercel alignment (Codex partnership?). Worth continuing to track — the composable prompt pattern is genuinely novel. Community PRs (Ollama, skills folder) signal the project is attracting contributors, not just stars.
 
 ## Relevance to Us
 
