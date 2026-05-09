@@ -92,3 +92,7 @@ Connected to: [[skill-type-taxonomy]] (these are "methodology skills" — a type
 - cangjie-skill: 800⭐, created 04-16, active (last push 05-04). Growth moderate. Revisit 05-16.
 - darwin-skill: 2,254⭐, created 04-13, last push 04-21 (18 days ago — slowing). Creator focus may have shifted to cangjie.
 - nuwa-skill: 18K⭐, viral. Not tracking closely (person distillation is adjacent, not core).
+
+## Applied
+
+- **2026-05-09**: Triple Verification adapted as Promotion Gate for [[beliefs-candidates]]. V1→Cross-context (≥3 occurrences), V2→Predictive Power, V3→Non-obvious. AGENTS.md DNA self-governance updated to reference structured gate. Commit `3280a2a`.
