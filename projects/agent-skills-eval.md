@@ -1,66 +1,57 @@
+---
+title: agent-skills-eval
+type: project
+created: 2026-05-09
+last_verified: 2026-05-09
+status: tracking
+stars: 250
+repo: darkrishabh/agent-skills-eval
+tags: [skill-ecosystem, testing, agentskills-io, eval]
+---
+
 # agent-skills-eval — Test Runner for Agent Skills
 
-- **Repo**: darkrishabh/agent-skills-eval
-- **Stars**: 212 (2026-05-08, created 05-06)
-- **Language**: TypeScript
-- **Premise**: Runs skills with_skill vs without_skill, has a judge model grade both outputs, produces side-by-side report
+## What It Is
+
+A CLI/SDK that empirically measures whether a SKILL.md actually improves model performance. Runs the same eval prompts twice — once `with_skill` (SKILL.md injected as system context), once `without_skill` (baseline) — then has a judge model grade both outputs side-by-side.
+
+```bash
+npx agent-skills-eval ./skills --target gpt-4o-mini --judge gpt-4o-mini --baseline --strict
+```
+
+Produces an HTML report with pass/fail per eval, grading details, and artifacts.
+
+## Architecture
+
+Single-purpose TypeScript CLI (~16 source files), zero framework deps:
+- `discover.ts` — finds SKILL.md + eval YAML files in a directory tree
+- `run-eval.ts` — runs each eval in `with_skill` and `without_skill` modes
+- `grade.ts` — sends both outputs to a judge model for comparison grading
+- `report.ts` — generates static HTML report
+- `openai-compatible-provider.ts` — any OpenAI-compatible API as target/judge
+- Produces `agent-skills-workspace/iteration-N/` with full artifacts
 
 ## Why It Matters
 
-This is the missing eval layer for [[agentskills-io-standard]]. The claim: "skills are easy to ship, hard to prove they work." The tool provides the receipts.
+1. **First testing infra for the skill ecosystem** — until now "does my SKILL.md work?" was vibes-based
+2. **Validates agentskills.io as a standard** — testing tooling = ecosystem maturity signal
+3. **Judge-model grading pattern** — uses LLM-as-judge for eval, which is the emerging standard for skill quality
+4. **250⭐ in 3 days** — strong demand signal for skill quality tooling
 
-### How It Works
-1. Run prompts **with** the skill loaded in context
-2. Run the same prompts **without** the skill (baseline)
-3. Judge model grades both outputs
-4. HTML report with side-by-side comparison
+## Relation to Our Stack
 
-Artifacts: `meta.json`, `benchmark.json`, per-eval `with_skill/` and `without_skill/` directories.
+- ClawHub skills could adopt this eval format for quality gates
+- The `with_skill` / `without_skill` comparison methodology could inform our own skill development — proving a skill actually helps
+- Currently only supports agentskills.io format (SKILL.md + evals/ YAML), but the concept is universal
 
-### Implications for Us
-- Could be used to validate [[clawhub]] skills before publishing
-- The with/without methodology is the simplest possible A/B test for prompt engineering
-- OpenAI-compatible by default — works with any chat API
-- Tool-call assertions (deterministic checks for tool-calling agents, not just text)
+## Borrowable Ideas
 
-### Signal
-212⭐ in 2 days is very fast growth. Suggests strong demand for skill validation tooling. The [[skill-type-taxonomy]] is getting its quality assurance layer.
+- [ ] Eval format for ClawHub skills — `evals/` directory with YAML test cases
+- [ ] Judge-model grading for skill publish quality gate
+- [ ] A/B skill comparison — test skill v1 vs v2
 
-## Architecture Deep Read (2026-05-09)
+## See Also
 
-Read the full source. Key observations:
-
-### Two-Layer Grading System
-- **Rubric assertions** — free-form text, graded by LLM judge (sends model output + assertions to judge, gets JSON pass/fail + evidence)
-- **Tool assertions** — deterministic, no LLM: `tool-called`, `tool-not-called`, `tool-arg-equals`, `tool-arg-contains`, `tool-arg-matches`, `tool-call-count`
-- Combined into single `GradingJson` result. Tool assertions are appended after rubric results.
-
-### Judge Robustness
-- JSON extraction with fallback (tries to find `{...}` in response)
-- Auto-retry on parse failure (1 retry, includes bad response in next prompt)
-- Fail-closed: if judge can't produce parseable JSON after 2 attempts, all assertions fail
-- Judge grading prompt enforces "no benefit of the doubt" + require concrete evidence
-
-### Skill Loading
-- Reads `SKILL.md` frontmatter (name, description, license, compatibility, metadata, allowedTools)
-- Loads `references/` and `scripts/` as `AttachedFile` (text content or binary-skipped/too-large)
-- Discovers skills recursively; supports `.claude-plugin/plugin.json` naming
-- System message wraps skill in XML: `<skill name="..."><description/><instructions/><references/><scripts/></skill>`
-
-### Practical Value for Us
-- **ClawHub gate**: could run `agent-skills-eval` as a pre-publish quality gate for [[clawhub]] skills
-- **Contribution opportunity**: the tool is 3 days old, TypeScript, MIT — we could contribute provider extensions or report improvements
-- **Design pattern**: the with/without A/B approach is the simplest possible skill validation — worth adopting even without this specific tool
-
-## Growth Tracking
-| Date | Stars | Note |
-|------|-------|------|
-| 05-06 | — | Created |
-| 05-08 | 212 | Initial scout |
-| 05-09 | 246 | +34 in 1 day, sustained growth |
-
-## Tracking
-- Created: 2026-05-06
-- Revisit: 2026-05-15
-
-Links: [[agentskills-io-standard]], [[clawhub]], [[skill-type-taxonomy]], [[agent-skill-standard-convergence]], [[skills-as-packages]]
+- [[agentskills-io-standard]] — the format this tests
+- [[agent-skill-standard-convergence]] — skill ecosystem maturity
+- [[skills-as-packages]] — skill packaging landscape

@@ -2,9 +2,9 @@
 title: DeepClaude
 type: project
 created: 2026-05-04
-last_verified: 2026-05-05
+last_verified: 2026-05-09
 status: tracking
-stars: 1076
+stars: 1663
 repo: aattaran/deepclaude
 tags: [coding-agent, cost-arbitrage, proxy, claude-code, deepseek]
 ---
@@ -105,6 +105,7 @@ In-memory per-backend token accounting with `PRICING_PER_M` table. Simple `/_pro
 | 05-03 | 0 | Created |
 | 05-04 | 474 | First deep read |
 | 05-05 | 1,076 | +127% in 1 day — thinking-block fix, model remap, cost tracking |
+| 05-09 | 1,663 | +54% in 4 days, no new commits since 05-05 — pure viral growth |
 
 This growth rate (1K+ in 48h) for a shell script + 443-line proxy is extraordinary. The demand signal is unmistakable.
 
