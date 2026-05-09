@@ -409,4 +409,16 @@ Adopted nanobot's `.agent/` pattern for [[FlowForge]]:
 
 FlowForge had zero contributor docs before. Now AI agents can selectively load governance docs relevant to their change type. Commit: `e2f71b7`.
 
-*Followup: 2026-05-09. Source: GitHub API + `.agent/` docs + PR diffs.*
+### Applied: Factored AI Contributor Docs → GoGetAJob (2026-05-09 PM)
+
+Second application of nanobot's `.agent/` pattern, now to [[GoGetAJob]]:
+- `CLAUDE.md` — quick orientation (structure, build, 5 rules)
+- `.agent/design.md` — architecture decisions (why gh CLI, why SQLite, why no ORM, command architecture, data model)
+- `.agent/gotchas.md` — 7 traps (stderr capture, data dir resolution, migration idempotency, rate limits, no test runner, large index.ts)
+- `AGENTS.md` → trimmed to pointer file
+
+GoGetAJob had a monolithic AGENTS.md (53 lines mixing everything). Now factored into 3 focused docs totaling 128 lines with clear separation of concerns. Commit: `2109fe8`.
+
+Pattern validation: "Identified pattern → applied to first repo → applied to second repo" confirms this is a reusable, mechanical transformation. Remaining candidates: kagura-story, study repo.
+
+*Followup: 2026-05-09 PM. Source: local changes.*
