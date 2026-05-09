@@ -23,6 +23,7 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#79755** (2026-05-09, PENDING): fix(google): resolve gemini-3-flash-preview in forward-compat model resolver. Fixes #79750. Root cause: `normalizeGooglePreviewModelId` maps `gemini-3.1-flash` → `gemini-3-flash-preview`, but `resolveGoogleGeminiForwardCompatModel` only checks `gemini-3.1-flash` prefix. Added `gemini-3-flash` and `gemini-3-flash-lite` prefix matching. CI: Real behavior proof gate needs maintainer override (pure logic fix, no runtime env to test with Google API key). Extension-providers tests: 20/20 pass.
 - **#79723** (2026-05-09, PENDING): fix(memory): retry transient EBUSY errors when removing temp index files. Fixes #79708. CI: checks-node-core-fast failure is pre-existing upstream issue (assistant-visible-text.test.ts), Real behavior proof gate needs maintainer override (Windows-only bug, can't reproduce on Linux). Memory-specific tests: 9/9 pass.
 - **#79215** (2026-05-08, PENDING): fix(agents): allow hardlinked workspace bootstrap files. Fixes #79209. CI: all checks pass. Removes nlink>1 rejection in openBoundaryFile for bootstrap reads.
 - **#78694** (2026-05-07, PENDING): fix(gateway): remove password fallback in trusted-proxy auth mode. Fixes #78684. CI: 86/86 passed. Removes unintended local-direct password fallback within trusted-proxy mode.
@@ -51,6 +52,9 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - The cron system already had a similar fix (commit b9d2e0f86d) — good precedent to follow.
 - **Memory index atomic reindex**: `extensions/memory-core/src/memory/manager-atomic-reindex.ts` handles temp DB creation, swap, and cleanup. `renameWithRetry` existed for renames but `removeMemoryIndexFiles` had no retry. The fix pattern was straightforward — add parallel `removeWithRetry` matching the existing rename approach.
 - **Windows EBUSY on SQLite WAL/SHM**: Windows releases file handles asynchronously after `DatabaseSync.close()`. `fs.rm({ force: true })` only suppresses ENOENT, not EBUSY. Retry with linear backoff (25ms × attempt) matches the existing codebase pattern.
+
+- **Google model normalization gap**: `normalizeGooglePreviewModelId` canonicalizes `gemini-3.1-flash` → `gemini-3-flash-preview`, but `resolveGoogleGeminiForwardCompatModel` uses `gemini-3.1-flash` prefix for matching. When model IDs pass through normalization before reaching the forward-compat resolver, the canonical form won't match the original prefix. Always check if normalized/canonical forms still match prefix patterns in downstream resolvers.
+- **Forward-compat prefix ordering matters**: The if-else chain in `resolveGoogleGeminiForwardCompatModel` processes lite before non-lite. When adding new prefix variants (e.g., `gemini-3-flash` alongside `gemini-3.1-flash`), maintain this ordering to prevent lite models from matching the broader flash prefix.
 
 ## Links
 [[openclaw-architecture]] [[agentskills]] [[skill-ecosystem]] [[acp]]
