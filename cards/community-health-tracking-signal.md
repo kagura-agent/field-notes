@@ -11,7 +11,7 @@ Stars and commits are not enough to evaluate a project's health. **Community ado
 
 ## The Gap
 
-Our tracking process (via [[tracking-health.sh]]) evaluated projects on:
+Our tracking process (via `tracking-health.sh`) evaluated projects on:
 - Star count + growth rate
 - Commit recency
 - Revisit date compliance

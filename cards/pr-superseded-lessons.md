@@ -338,6 +338,15 @@ Added to pre-PR checklist:
 **差距**: I denormalized the sub-collection into the parent — simple but creates API contract debt. Maintainer recognized that inlining a child collection into a parent endpoint is a breaking-change trap: every future resource type bleeds into the project schema. Scalar breadcrumb preserves REST hierarchy.
 **Pattern: collection-vs-breadcrumb** — When a parent entity needs discoverability of child resources, prefer a count/exists signal over inlining the full sub-collection. Inline = tight coupling + schema debt. Breadcrumb = loose coupling + forward-compatible.
 
+## openclaw #79723 → superseded by #79763 (2026-05-09)
+
+**Issue**: EBUSY race on temp index file cleanup during memory reindex (Windows, #79708)
+**My approach**: Added `removeWithRetry` helper mirroring existing `renameWithRetry`. Kept `Promise.all` for parallel WAL/SHM removal. Renamed shared `isTransientRenameError` → `isTransientFileError`. Exported `removeMemoryIndexFiles` for testing. Mock-based unit tests.
+**Their approach**: Nearly identical `rmWithRetry` helper + retry logic, BUT changed `Promise.all` → sequential `for...of` loop. Comment: "Sequential to avoid concurrent lock conflicts on WAL/SHM files (Windows EBUSY on SQLite WAL cleanup)."
+**Why theirs won**: The core insight I missed: WAL and SHM files are lock-coupled. Removing them in parallel can trigger the very EBUSY contention we're trying to fix — removing the WAL while the SHM is still held (or vice versa) creates cross-file lock contention. Sequential removal respects SQLite's file lifecycle ordering.
+**Pattern**: **CONCURRENCY_VS_ORDERING** — when files are lock-coupled (SQLite DB + WAL + SHM), don't `Promise.all` their cleanup. Sequential removal respects the dependency graph. Parallel retry of coupled resources can trigger the exact contention the retry was meant to handle.
+**Also**: steipete closed mine as "duplicate of #79763" — both targeting the same issue, theirs had the better concurrency insight. Mock-only proof was also flagged as insufficient (no real Windows run).
+
 ## Applied: GoGetAJob pre-submit checks (2026-05-05)
 
 Integrated 4 core checks into `gogetajob submit` as non-blocking warnings:
@@ -375,3 +384,15 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - memex CI 跑 3 平台 × 2 Node 版本 — 不能只在 Ubuntu 验证
 - 修法: 运行时检测 FS 是否 case-sensitive (`fs.mkdtemp` + 创建 a/A 测试)，skip 不适用的 test
 - **这是 respectful supersede**: maintainer credited 原作者, 保留代码, 只修 CI。最好的结果。
+
+## Retry scope: rm vs rename (2026-05-09)
+
+| 我的 PR | 我的做法 | Maintainer 的做法 | 差距 |
+|---------|---------|---------|------|
+| openclaw #79723 | Added retry to `fs.rm` in a new cleanup path, parallel `Promise.all` for WAL/SHM | #79763: Extracted `rmWithRetry` reusing existing `isTransientRenameError` + retry options, sequential WAL/SHM removal to avoid concurrent lock conflicts |
+
+**Pattern: reuse-existing-retry-infra**
+- The file already had `renameWithRetry` with configurable `maxRenameAttempts` and `renameRetryDelayMs`. The canonical fix reused the same options/pattern for rm.
+- My PR created a separate retry mechanism instead of extending the existing one.
+- Sequential WAL/SHM removal (for-loop) is safer than parallel `Promise.all` — concurrent deletes can trigger additional EBUSY on related SQLite files.
+- **Lesson**: Before writing new retry logic, check if the file already has retry infrastructure. Extend it rather than duplicating.
