@@ -62,7 +62,7 @@
 ### 已应用 (2026-04-21)
 - ✅ **异常 fallback 表** → study.yaml 各节点添加显式错误处理分支（scout/deep_read/note/apply）+ 新建 fallback_offline 离线学习节点
 - ⬜ **棘轮机制 for DNA**: 待应用（需代理指标设计）
-- ⬜ **独立评分**: 待应用（beliefs-candidates 升级流程改造）
+- ✅ **独立评分**: 已应用 (2026-05-09) → `scripts/evaluate-candidate.sh` + reflect.yaml 集成 + beliefs-candidates.md promotion checklist 更新
 
 ## 不适用
 

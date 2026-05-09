@@ -23,6 +23,7 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#79723** (2026-05-09, PENDING): fix(memory): retry transient EBUSY errors when removing temp index files. Fixes #79708. CI: checks-node-core-fast failure is pre-existing upstream issue (assistant-visible-text.test.ts), Real behavior proof gate needs maintainer override (Windows-only bug, can't reproduce on Linux). Memory-specific tests: 9/9 pass.
 - **#79215** (2026-05-08, PENDING): fix(agents): allow hardlinked workspace bootstrap files. Fixes #79209. CI: all checks pass. Removes nlink>1 rejection in openBoundaryFile for bootstrap reads.
 - **#78694** (2026-05-07, PENDING): fix(gateway): remove password fallback in trusted-proxy auth mode. Fixes #78684. CI: 86/86 passed. Removes unintended local-direct password fallback within trusted-proxy mode.
 - **#76054** (2026-05-02, PENDING): feat(agents): allow per-agent contextInjection override in agents.list[]. Fixes #76046. CI: 81/81 passed after fixing type contract + lint.
@@ -48,6 +49,8 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Per-agent config override pattern**: Add field to `AgentEntrySchema` → add to `AgentConfig` type → update resolver to accept `agentId` and do `config.agents.list.find(a => a.id === agentId)` → update callers → add schema help/labels → regenerate. Precedent: `contextTokens` (ed03d91ae0).
 - CI has 75 checks; all passed on first try for this PR.
 - The cron system already had a similar fix (commit b9d2e0f86d) — good precedent to follow.
+- **Memory index atomic reindex**: `extensions/memory-core/src/memory/manager-atomic-reindex.ts` handles temp DB creation, swap, and cleanup. `renameWithRetry` existed for renames but `removeMemoryIndexFiles` had no retry. The fix pattern was straightforward — add parallel `removeWithRetry` matching the existing rename approach.
+- **Windows EBUSY on SQLite WAL/SHM**: Windows releases file handles asynchronously after `DatabaseSync.close()`. `fs.rm({ force: true })` only suppresses ENOENT, not EBUSY. Retry with linear backoff (25ms × attempt) matches the existing codebase pattern.
 
 ## Links
 [[openclaw-architecture]] [[agentskills]] [[skill-ecosystem]] [[acp]]
