@@ -400,4 +400,13 @@ Compare with OpenClaw's approach: single `CLAUDE.md` + inline comments. The fact
 - v0.1.5.post3 (2026-04-29) — still patching, no minor version bump
 - Daily pushes, reliability hardening + feature additions in parallel
 
+### Applied: Factored AI Contributor Docs → FlowForge (2026-05-09)
+
+Adopted nanobot's `.agent/` pattern for [[FlowForge]]:
+- `CLAUDE.md` — cartography (structure, concepts, quick start)
+- `.agent/design.md` — 8 architectural constraints (minimal engine, YAML-first, one active instance, etc.)
+- `.agent/gotchas.md` — 9 traps (1-based branches, auto-close on start, DB-stored YAML, etc.)
+
+FlowForge had zero contributor docs before. Now AI agents can selectively load governance docs relevant to their change type. Commit: `e2f71b7`.
+
 *Followup: 2026-05-09. Source: GitHub API + `.agent/` docs + PR diffs.*
