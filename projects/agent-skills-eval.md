@@ -57,7 +57,7 @@ Read the full source. Key observations:
 |------|-------|------|
 | 05-06 | — | Created |
 | 05-08 | 212 | Initial scout |
-| 05-09 | 231 | +19 in 1 day, sustained |
+| 05-09 | 246 | +34 in 1 day, sustained growth |
 
 ## Tracking
 - Created: 2026-05-06
