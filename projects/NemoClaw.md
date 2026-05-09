@@ -235,3 +235,16 @@ NemoClaw taught me that the agent infrastructure space is being built right now,
 | #2734 | OPEN | Partial tar backup handling | Well-filed bugs → fast fixes. CodeRabbit feedback worth addressing |
 | #2651 | OPEN | Ollama GPU cleanup | Maintainer-filed bug = higher merge probability |
 | #2468 | OPEN | Auth token redaction | Security fix |
+
+## 2026-05-09 PR #3309 — feat(status): classify failing layer
+
+- **Issue**: #3271 — follow-up to just-merged #3270 (silent-exit-0 fix)
+- **Status**: PENDING review
+- **What**: Gateway failure classifier that detects 4 layers (docker_unreachable, container_exited_port_conflict, container_exited, gateway_unreachable) and prints named header before recovery hints
+- **Implementation**: New `gateway-failure-classifier.ts` with injectable runners for testability, unit tests per layer, subprocess regression test extending #2666 coverage
+- **CI**: assign-linked-issue-author ✅, check-pr-limit ✅, CodeRabbit ✅
+- **CodeRabbit feedback**: 1 actionable — test regex was missing `container_exited_port_conflict`. Fixed immediately.
+- **Timing win**: Submitted same day as parent PR #3270 merge → maintainer context maximally fresh
+- **Key finding**: `GATEWAY_PORT` constant exists in `src/lib/core/ports.ts` (default 8080, env-overridable) — reused instead of hardcoding
+- **Test pattern**: Existing subprocess tests use fake `openshell` bash scripts in tmpdir + modified `PATH` — followed same pattern for the new layer test, also added fake `docker` script
+- **wscurran bot**: The "✨ Thanks for submitting..." comments on NemoClaw PRs are auto-ack messages from wscurran (bot or triage), not actionable review
