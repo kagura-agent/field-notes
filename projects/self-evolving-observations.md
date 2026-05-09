@@ -920,3 +920,44 @@ Open PRs: ~32
 - dreaming: Light Sleep ~30 staged (all 0.62, recalls=0), REM "No strong patterns" + old content splice
 - `journalctl nudge`: 0 hits (may be unit/log rotation issue, not conclusive)
 - PR activity: 2 NemoClaw PRs (#3169, #3181) via workloop
+
+## 🔬 自进化观察日报 2026-05-08 (Day 21)
+
+### 管线活跃度
+- **beliefs-candidates**: 1 条新增 gradient（"Scout-before-commit check" — study #1567 触发）。文件 39 行，active ~7 条，graduated 1 条。所有 active 条目 count=1，无条目达到 3x 升级阈值
+- **DNA 变更**: 无。`git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md` 返回 0 commits（beliefs-candidates 有新内容但未 commit）
+- **nudge 触发**: gateway 日志今日 0 hits（`journalctl -u openclaw-gateway --since "2026-05-08" | grep -ci nudge` = 0）。memory 中 3 处提及 nudge 均为 dreaming 输出引用而非实际触发记录。连续多日无可观测触发
+- **dreaming**: Light Sleep 运行 ✅，~30 条 staged candidates，confidence 全部 0.62，recalls 全部 0。REM 运行 ✅，输出 1 条 reflection（`let` theme, 0.75）+ 3 条 Possible Lasting Truths（DCO fix 0.72, chat-infra 0.71, discord-cards 0.69）。**零 promote**，连续第 21 天
+- **PR activity**: 无新 PR 提交。巡检日：rebased openclaw #78766（conflict fix），NemoClaw #3169 rebased。30 个 open PR 全部 mergeable
+
+### 闭环追踪
+- **完整闭环**: 1 个（micro）— daily-review 发现 dreaming managed cron 需手动触发 → 触发 → 确认运行
+- **断裂处**:
+  - beliefs-candidates 有 1 条新 gradient 但未 commit（写了没固化）
+  - Issue #7: 仍无自动升级机制，所有 active entries count=1
+  - Issue #6: dreaming confidence 分布稍有改善（REM 出现 0.69-0.75 区间），但 Light Sleep 仍全部 0.62，recalls 仍全 0，零 promote
+
+### 今日发现
+1. **REM 质量微改善但本质不变**: REM 今天输出了 3 条 Possible Lasting Truths（0.69-0.72），比之前"No strong patterns"好，但内容仍是跨天记忆拼接（04-29, 04-25, 05-01 的碎片），不是对今天工作的深度反思。核心问题不变：dreaming 是「记忆回放」不是「认知提炼」
+2. **beliefs 输入恢复但低频**: 昨天 0 条 → 今天 1 条。新 gradient 来自 study 环节（发现 wiki 已有笔记后的方法论修正），说明 study 比 workloop 更容易触发反思
+3. **高执行低进化 pattern 持续 (Day 17→21)**: memory 1736 行（大量巡检、study、lobster patrol），但 DNA 层完全静止。工作量和自进化仍然完全脱耦
+4. **workspace commits 全是维护性**: 3 个 commit（todo 标记、study tracking 更新、followup tracking）。无功能性改动，无 DNA 进化
+5. **nudge 观测困境**: 无法从外部确认 nudge 是否实际触发。gateway 日志 0 hits 连续多天，但这可能是日志/unit 差异。需要更可靠的 nudge 活动指标
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 微进展：+1 新 gradient，但核心问题（无自动升级、count 全为 1）不变 |
+| #6 dreaming 质量 | OPEN | 微进展：REM 输出了 3 条 PLT（比 "No strong patterns" 好），但 Light Sleep 仍全 0.62，仍零 promote |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --since="2026-05-07 22:30" --all`: 3 commits (todo mark, study tracking ×2)
+- `beliefs-candidates.md`: 39 行, ~7 active, 1 graduated, 1 new today (uncommitted)
+- `memory/2026-05-08.md`: 1736 行, ~123 sections
+- dreaming: Light Sleep ~30 staged (all 0.62, recalls=0), REM 1 reflection (0.75) + 3 PLT (0.69-0.72), 0 promoted
+- `journalctl nudge`: 0 hits
+- PR activity: 0 new, 30 open, 2 rebased (openclaw #78766, NemoClaw #3169)

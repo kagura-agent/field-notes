@@ -71,6 +71,15 @@
 - 关键设计：content hash > mtime，pluggable provider，incremental embedding
 - Owner 之前确认了 text-embedding-3-small 和 .memex/embeddings/ 缓存路径
 
+## 2026-05-09 PR #123 — feat(links): count inbound links from extraLinkDirs in orphan detection
+- **Review**: iamtouchskyer — structured feedback (must/should/nice-to-have)
+- **Must-fix**: MCP server.ts didn't pass extraLinkDirs to linksCommand() → inconsistent orphan counts
+- **Should-fix**: extracted scanMarkdownFiles() to shared lib/scan.ts (DRY)
+- **Should-fix**: self-reference guard — skip extraDir if == cardsDir
+- **Lesson**: reviewer caught edge case (extraLinkDirs: ["cards"]) I should have caught
+- **Status**: pushed fix 4a82288, awaiting re-review
+- **Follow-up needed**: organize.ts orphan consistency + .gitattributes for dist/
+
 ## 2026-03-31 PR #35
 - 基于 #34 维护者 review suggestions 的后续改进
 - embeddingModel + semanticWeight 可配置化
