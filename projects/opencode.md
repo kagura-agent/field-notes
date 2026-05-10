@@ -305,3 +305,9 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Diff**: +43/-9 lines, 2 files (tui-schema.ts, tui.ts)
 - **Approach**: Manual edit (three surgical changes). Local test: `bun test test/config/tui.test.ts` 31 pass, `bun test test/cli/cmd/tui/ test/cli/tui/` 99 pass, `tsc --noEmit` clean.
 - **Key learning**: Published JSON schemas can drift from code. The `$schema` URL is a separate artifact that may not auto-regenerate on code changes. Also: Zod `.strict()` inside a `catchCause` that returns `{}` = stealth config wipe — always provide a fallback parse path.
+
+## PR Notes (2026-05-10)
+- PR #26641 (tui keymap fix) — auto-closed by compliance bot within 2 hours for missing PR template
+- **PR template**: STRICT — auto-close after 2h if template not filled
+- Must fill `.github/pull_request_template.md` sections immediately on PR creation
+- CONTRIBUTING.md has specific requirements — check before next PR
