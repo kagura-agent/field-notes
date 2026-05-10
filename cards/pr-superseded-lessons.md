@@ -347,6 +347,20 @@ Added to pre-PR checklist:
 **Pattern**: **CONCURRENCY_VS_ORDERING** — when files are lock-coupled (SQLite DB + WAL + SHM), don't `Promise.all` their cleanup. Sequential removal respects the dependency graph. Parallel retry of coupled resources can trigger the exact contention the retry was meant to handle.
 **Also**: steipete closed mine as "duplicate of #79763" — both targeting the same issue, theirs had the better concurrency insight. Mock-only proof was also flagged as insufficient (no real Windows run).
 
+## multica #2354 → #2360 (2026-05-10)
+- **Issue**: `--mode run_only` rejected by autopilot CLI
+- **My approach**: Removed CLI guard, added test
+- **Their approach**: Same CLI guard removal + consolidated docs callout + runtime config injection into agent harnesses + regression test — all in one commit history
+- **Maintainer (Bohan-J)**: "Your CLI fix matched ours line-for-line, so we landed the consolidated change in #2360 to keep the related cleanups in a single commit history"
+- **Pattern**: When a fix is part of a larger cleanup, maintainers consolidate. Not a rejection — code was correct. Credit given.
+- **Lesson**: Check if there are adjacent related cleanups that could be bundled.
+
+## anomalyco/opencode #26641 — bot auto-closed (2026-05-10)
+- **Issue**: TUI keymap alias + leader none crash
+- **What happened**: PR description didn't follow the required template sections. Bot gave 2-hour window to fix; we didn't update in time.
+- **Pattern**: **FOLLOW_PR_TEMPLATE** — opencode has strict automated PR template enforcement with a 2-hour deadline. Must use their template from the start.
+- **Lesson**: Before submitting to any repo, check if they have a PR template bot. Fill it properly on first submission. `gh pr create` won't auto-fill templates — use `--body-file` with a pre-written body.
+
 ## Applied: GoGetAJob pre-submit checks (2026-05-05)
 
 Integrated 4 core checks into `gogetajob submit` as non-blocking warnings:
