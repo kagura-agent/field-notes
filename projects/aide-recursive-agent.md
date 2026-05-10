@@ -77,4 +77,6 @@ Three design principles:
 
 ## Tracking
 
+**Applied (2026-05-10):** Graduated loop detection adopted in [[flowforge]] engine.ts. Three levels: observe (silent), nudge (warn + reflection prompt), block (hard stop, requires --force). 84 tests pass. Commit `7436c4b`. This directly addresses gap #2 ("we don't have explicit loop detection beyond timeouts").
+
 - Revisit 05-24 (2 weeks) — check if community forms, if self-modification produces interesting emergent behavior
