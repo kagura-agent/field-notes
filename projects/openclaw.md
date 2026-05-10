@@ -23,6 +23,7 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#80123** (2026-05-10, PENDING): fix(cli): return null for unknown non-plugin commands instead of suggesting plugins.allow. Fixes #80109. Added `isKnownPluginId` check so only real bundled plugin IDs get the `plugins.allow` suggestion; unknown tokens return null for Commander's did-you-mean. CI: run-main.test (37/37), run-main.exit.test (72/72) pass. Real behavior proof provided via tsx direct invocation.
 - **#79755** (2026-05-09, PENDING): fix(google): resolve gemini-3-flash-preview in forward-compat model resolver. Fixes #79750. Root cause: `normalizeGooglePreviewModelId` maps `gemini-3.1-flash` → `gemini-3-flash-preview`, but `resolveGoogleGeminiForwardCompatModel` only checks `gemini-3.1-flash` prefix. Added `gemini-3-flash` and `gemini-3-flash-lite` prefix matching. CI: Real behavior proof gate needs maintainer override (pure logic fix, no runtime env to test with Google API key). Extension-providers tests: 20/20 pass.
 - **#79723** (2026-05-09, PENDING): fix(memory): retry transient EBUSY errors when removing temp index files. Fixes #79708. CI: checks-node-core-fast failure is pre-existing upstream issue (assistant-visible-text.test.ts), Real behavior proof gate needs maintainer override (Windows-only bug, can't reproduce on Linux). Memory-specific tests: 9/9 pass.
 - **#79215** (2026-05-08, PENDING): fix(agents): allow hardlinked workspace bootstrap files. Fixes #79209. CI: all checks pass. Removes nlink>1 rejection in openBoundaryFile for bootstrap reads.
@@ -55,6 +56,9 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 
 - **Google model normalization gap**: `normalizeGooglePreviewModelId` canonicalizes `gemini-3.1-flash` → `gemini-3-flash-preview`, but `resolveGoogleGeminiForwardCompatModel` uses `gemini-3.1-flash` prefix for matching. When model IDs pass through normalization before reaching the forward-compat resolver, the canonical form won't match the original prefix. Always check if normalized/canonical forms still match prefix patterns in downstream resolvers.
 - **Forward-compat prefix ordering matters**: The if-else chain in `resolveGoogleGeminiForwardCompatModel` processes lite before non-lite. When adding new prefix variants (e.g., `gemini-3-flash` alongside `gemini-3.1-flash`), maintain this ordering to prevent lite models from matching the broader flash prefix.
+
+- **run-main.exit.test.ts mock completeness**: When adding new exports to `manifest-command-aliases.runtime.ts`, the mock in `run-main.exit.test.ts` must be updated too — vitest throws "No X" for missing mock exports, and these only surface in CI (different test shard).
+- **`knownPlugin === false` vs `!knownPlugin`**: When adding optional checks with backward compat, use `=== false` (not `!value`) so `undefined` (no checker available) preserves old behavior while explicit `false` triggers new behavior.
 
 ## Links
 [[openclaw-architecture]] [[agentskills]] [[skill-ecosystem]] [[acp]]
