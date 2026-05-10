@@ -289,3 +289,18 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Fix**: Added separate keymap query with `visibility: "registered"` for slash commands, independent of keybinding-level enabled state
 - **Approach**: Local clone + manual edit (1-file, 14-line change). Traced data flow through keymap → command-palette → autocomplete.
 - **Key learning**: opentui keymap has 3 visibility levels: registered (all), active (layer active), reachable (active + enabled). Slash autocomplete should use "registered" not "reachable" since typing / inherently means input is non-empty.
+
+### #26641 — fix(tui): accept keymap alias, guard leader none, graceful unknown keys (2026-05-10)
+- **Status**: PENDING (CI all 4 checks passed ✅)
+- **Issue**: #26628 — TUI config schema mismatch + leader none crash
+- **Root cause**: Three related bugs:
+  1. Published schema at opencode.ai/tui.json recommends `keymap` but code only accepts `keybinds` (with `.strict()`) → users following schema get config silently dropped
+  2. `leader: "none"` accepted by Zod schema but crashes opentui keymap engine which requires exactly one real trigger binding
+  3. `.strict()` validation failure → `catchCause` returns `{} as Info` → entire config dropped silently, no user feedback
+- **Fix**:
+  1. `aliasKeymap()` in normalize() renames `keymap` → `keybinds` before validation
+  2. Guard in loadState() checks for disabled leader values, falls back to default with warning log
+  3. Two-pass approach: try `.strict()` first, fallback to `.strip()` (permissive) with warning log
+- **Diff**: +43/-9 lines, 2 files (tui-schema.ts, tui.ts)
+- **Approach**: Manual edit (three surgical changes). Local test: `bun test test/config/tui.test.ts` 31 pass, `bun test test/cli/cmd/tui/ test/cli/tui/` 99 pass, `tsc --noEmit` clean.
+- **Key learning**: Published JSON schemas can drift from code. The `$schema` URL is a separate artifact that may not auto-regenerate on code changes. Also: Zod `.strict()` inside a `catchCause` that returns `{}` = stealth config wipe — always provide a fallback parse path.
