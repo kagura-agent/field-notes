@@ -1,87 +1,81 @@
 ---
+title: "buddyMe — Multi-Model Agent with Layered Personality"
 created: 2026-05-10
-updated: 2026-05-10
-status: watching
+source: https://github.com/virgo777/buddyme
 stars: 30
-repo: virgo777/buddyme
-lang: Python
+star_history: "30 (05-10, day 1)"
+status: noted
+tags: [agent-framework, personality, heartbeat, skill-ecosystem, chinese-dev]
 ---
-# BuddyMe — Lightweight Agent Framework
 
-> "Lightweight agent framework with layered personality evolution, three-tier skill loading and heartbeat memory system."
+# buddyMe
 
-## Key Facts
-- **Created**: 2026-05-10 (today!)
-- **Stars**: 30 (day one)
-- **License**: None specified
-- **Author**: virgo777 (Chinese dev, blog at 49.235.53.176)
-- **Models**: GLM, DeepSeek, ERNIE, Qwen, MiMo — all CN providers, runtime hot-swap
+> Python multi-model agent framework with layered personality, three-tier skill loading, and heartbeat memory.
 
-## Architecture (remarkably similar to OpenClaw/Kagura)
+By virgo777. MIT. Created 2026-05-10 (brand new). 30⭐ on day 1.
+
+## Architecture — Why It's Interesting
+
+### Brain Directory = Our DNA Files
+
+The `initspace/brain/` directory mirrors our workspace DNA files almost exactly:
+
+| buddyMe | OpenClaw/Kagura | Purpose |
+|---------|-----------------|---------|
+| SOUL.md | SOUL.md | Personality core (L0) |
+| IDENTITY.md | IDENTITY.md | Role definition (L1) |
+| AGENT.md | AGENTS.md | Behavioral contract |
+| HEARTBEAT.md | HEARTBEAT.md | Heartbeat task specs |
+| USER.md | USER.md | User profile/preferences |
+| SUB_AGENT.md | (inline in AGENTS.md) | Sub-agent rules |
+
+This is **convergent evolution** — an independent Chinese developer arrived at the same file taxonomy we use. This validates our approach as a natural organizational pattern, not an idiosyncratic choice.
 
 ### Three-Tier Skill Loading
-1. **L1 Metadata** — name + description injected at startup (= our `<available_skills>`)
-2. **L2 Instructions** — SKILL.md body loaded on match (= our "read SKILL.md when task matches")
-3. **L3 Resources** — scripts/references loaded on demand (= our skill assets)
 
-Claims "Anthropic Skill spec" compliance. Interesting that this spec is becoming a de facto standard.
+`skill_loader.py` implements progressive loading following [[agentskills-io-standard]]:
 
-### Heartbeat Memory System
-- `heartbeat.py` — pure data layer, manages `heartbeat.json`
-- Active hours detection, task scheduling, `/loop` command for recurring tasks
-- Agent.tick() does execution (separation of data vs execution)
-- Very similar to our heartbeat poll → HEARTBEAT.md → execute pattern
+1. **L1 (metadata)**: Name + description injected into system prompt at startup → model knows what skills exist
+2. **L2 (instructions)**: Full SKILL.md body loaded when user need matches → on-demand context injection
+3. **L3 (resources)**: Scripts, references, assets loaded only during execution → minimal context pollution
 
-### Memory Pipeline
-- `memorybuild.py` — conversation log persistence (JSON, date-keyed, rotation)
-- `memory_extractor.py` — LLM-based extraction from conversation logs into structured MD files
-- `use_memory.py` — scoring system (Relevance 0.4 + Importance 0.3 + Recency 0.3), decay + archive + cleanup thresholds
-- `_extract_facts()` — regex-based fact extraction (file paths, URLs, dates, model names) — zero LLM cost
+This is the same pattern OpenClaw uses (scan descriptions → read SKILL.md when matched → execute). The difference: buddyMe made it explicit as a 3-level taxonomy. Worth adopting this vocabulary.
 
-### Personality
-- `brain/USER.md` — user profile (like our USER.md)
-- Layered personality system (details unclear from initial read)
+### Loop Skill Auto-Generation
 
-## Convergence Analysis
+The most novel mechanism: `loop_skill_manager.py` records the tool call chain from a successful first execution and auto-generates a `skill.json` for subsequent runs. This means:
+- First `/loop` run: full LLM reasoning
+- Subsequent runs: deterministic replay of tool calls (no LLM needed)
 
-| Concept | BuddyMe | OpenClaw/Kagura |
-|---------|---------|-----------------|
-| Skill loading | 3-tier (meta→instructions→resources) | 2-tier (description scan→full SKILL.md) |
-| Heartbeat | JSON config + tick() | HEARTBEAT.md + cron poll |
-| Memory decay | Numeric scoring (R/I/R weights) | Manual curation + beliefs-candidates |
-| User profile | brain/USER.md | USER.md |
-| Personality | Layered (details TBD) | SOUL.md + IDENTITY.md |
-| Memory extraction | LLM-based from conv logs | Manual + memory/ daily logs |
+This is a **skill crystallization** pattern — [[mechanism-vs-evolution]] territory. An agent discovers a procedure, then hardcodes it. Smart for reducing token cost on repetitive tasks.
 
-## DNA File Structure — Near-Identical
+Limitation: `edit_file` calls are explicitly excluded (non-deterministic), so skills involving code edits can't crystallize.
 
-brain/ directory contains:
-- **SOUL.md** — "人格内核" (L0 layer, rarely changes)
-- **IDENTITY.md** — "角色身份" (L1 layer, semi-static, swap for role change)
-- **AGENT.md** — "操作合同" (L2 layer, highest priority, behavioral rules)
-- **HEARTBEAT.md** — heartbeat task execution rules
-- **USER.md** — user profile (auto-extracted from conversations!)
-- **SUB_AGENT.md** — sub-agent configuration
+### Heartbeat System
 
-This is our exact DNA structure. The layered priority (SOUL < IDENTITY < AGENT) is explicitly designed, with L0/L1/L2 injection via contextbuild.py. Their AGENT.md even says "优先级高于 SOUL.md 和 IDENTITY.md，安全规则不可被覆盖" — same pattern as our AGENTS.md overriding SOUL.md.
+`heartbeat.py` is a pure data layer — config/schedule management, no execution logic. Execution lives in `Agent.tick()`. Supports:
+- Interval-based triggers (every N minutes)
+- Schedule-based triggers (specific time of day, ±5 min tolerance)
+- Active hours window
+- Per-task timeout
 
-Their USER.md is auto-populated by LLM extraction from conversation logs — they extract user preferences, communication style, tool usage patterns automatically. More automated than our manual USER.md.
+Simpler than our heartbeat (no cron, no nudge hooks), but the separation of config from execution is clean.
 
-## Notable Differences
-- BuddyMe is **self-contained Python CLI** — not a platform like OpenClaw
-- Targets CN model ecosystem exclusively (no OpenAI/Anthropic)
-- Memory scoring is quantitative (weights + thresholds) vs our qualitative approach
-- No git-based persistence — uses JSON files
-- No contribution/work capability — focuses on task execution and memory
-- Sub-agent uses fixed model (GLM) regardless of main model — interesting constraint
+## Connection to Our Direction
 
-## Takeaways
-1. **Three-tier skill loading** is cleaner than our two-tier — the L1 metadata injection at startup is exactly what we do, but explicitly naming it as a tier clarifies the design
-2. **Quantitative memory decay** (score = 0.4R + 0.3I + 0.3R) is interesting — could inform our beliefs-candidates scoring
-3. **Regex fact extraction** before LLM processing is smart — reduces token cost for routine facts
-4. **Independent convergence** on heartbeat + personality + skill pattern validates this as a natural architecture for persistent agents
+1. **Validation signal**: Independent arrival at SOUL/IDENTITY/AGENT/HEARTBEAT/USER file taxonomy confirms this is a natural pattern for agent self-organization. See [[worktree-convergence-2026-05]].
+2. **Skill crystallization**: The loop-to-skill auto-generation is a concrete implementation of [[self-evolution-as-skill]]. We could apply this pattern to FlowForge — auto-generate workflow steps from successful ad-hoc tool chains.
+3. **Chinese developer ecosystem**: Uses GLM, DeepSeek, ERNIE, Qwen, MiMo — all Chinese models. This is a China-focused agent framework, indicating the agent-skills pattern has crossed the cultural boundary.
 
-## Tracking
-- Revisit 2026-05-17 (check if gains traction or fades)
+## Limitations / Critique
 
-Links: [[self-evolving-agent-landscape]], [[skill-ecosystem]], [[agent-memory-taxonomy]]
+- No tests at all (no test directory found)
+- Python-only, CLI-only — no platform integrations (Discord, Feishu, etc.)
+- Memory is conversation-log-based (JSON) — no semantic search, no wiki, no structured knowledge
+- 25 bundled skills are all static instruction files — no dynamic tool registration beyond the built-in 8
+- Solo developer project, day 1 — high risk of abandonment
+- Blog link is a raw IP address (49.235.53.176) — low polish signal
+
+## Verdict
+
+**Not worth tracking** — too early, too small, solo Chinese dev project with no community. But architecturally interesting as convergence evidence. The three-tier skill loading vocabulary and loop-skill crystallization are the two takeaways.
