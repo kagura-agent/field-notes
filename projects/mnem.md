@@ -140,3 +140,22 @@ Also found this round:
 **Macro signal**: agent memory is becoming a product category. Three new entrants this week (mnem, brain spin-off, caura-memclaw). Meanwhile, self-evolution projects (aide, lazar) are appearing but staying small (10-20★). The market is betting on infrastructure (memory, orchestration) over autonomy.
 
 Links: [[brain-rust]], [[stash]], [[invincat]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[skills-as-packages]]
+
+## Update (2026-05-10)
+
+62⭐ (flat from 61 on 05-09 — growth stabilizing after initial spike). Still solo project, 1 contributor.
+
+### Roadmap Published (docs/ROADMAP.md)
+- **v0.2.x (near-term)**: Tombstone GC, SPLADE sparse lane (stable), secondary index, **remote sync** (`mnem push/pull` → S3-compatible store), pluggable embedding providers
+- **v0.3+ (medium-term)**: **CRDT multi-writer merge** (conflict-free view reconciliation), linearize mode default, `mnem serve` HTTP gateway, **WASM build target**
+- **Longer-term**: Cross-language SDKs (**TypeScript**, Python native bindings), semantic diffing (`mnem diff`), snapshot export/import
+
+Key takeaway: **TypeScript SDK is explicitly on the roadmap but marked "longer-term."** For us to integrate (Node.js stack), it would be via MCP or HTTP until TypeScript bindings land. The CRDT multi-writer merge in v0.3 is the feature that would make this genuinely transformative for multi-agent memory — currently it's single-writer.
+
+### Agent Memory Market Signal
+NirDiamant published Agent_Memory_Techniques (245⭐ in 5 days) — 30 Jupyter notebooks covering mem0, Letta, Zep, Graphiti, LoCoMo benchmarks. Educational repo from a known tutorial creator (GenAI_Agents, RAG_Techniques). Confirms agent memory is the hottest agent subcategory right now — both tooling (mnem, brain, stash) and education (NirDiamant) are finding audiences.
+
+### Revised Position
+mnem's v0.1.x "ship and market" phase continues. No architectural changes since last read. The roadmap reveals ambition (CRDT, WASM, cross-lang) but execution is solo. **Watch for**: first external contributor, v0.2.0 release with remote sync, or star growth inflection point. Current trajectory suggests a solid niche tool rather than ecosystem standard.
+
+Links: [[brain-git-memory]], [[agent-memory-landscape]]
