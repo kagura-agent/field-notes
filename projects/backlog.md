@@ -1,4 +1,24 @@
 
+## 2026-05-10 Quick Scan (15:21)
+
+**GitHub Trending (agent space, past week):**
+
+| Repo | ⭐ | Verdict | Notes |
+|---|---|---|
+| mirage | 1668 | 已跟踪 | +12% since 05-09 (1487→1668) |
+| Photo-agents (jmerelnyc) | 364 | 值得深入 | Self-evolving agent + vision-grounded layered memory + self-written skills. 6 days old, MIT, Python. Directly aligned with our north star |
+| agent-skills-eval | 269 | 已跟踪 | Steady growth |
+| hermes-desktop-os1 | 268 | 留意 | Hermes ecosystem desktop client |
+| Agent_Memory_Techniques (NirDiamant) | 252 | 不深入 | Curated notebooks, NirDiamant式资源集，教育价值但非产品 |
+| cwc-long-running-agents | 221 | 已深读 | Default-FAIL pattern adopted |
+| OpenSquilla | 173 | 已跟踪 | Token-efficient agent with ML router |
+
+**HN**: Web search unavailable, skipped.
+
+**Saturation**: 3/10 known — ecosystem still active, not in saturation.
+
+---
+
 ## 2026-05-08 Quick Scan (09:15)
 
 **GitHub Trending (agent space, past 10 days):**
