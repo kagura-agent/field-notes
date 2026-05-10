@@ -314,3 +314,13 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - My PR: just removed the CLI guard rejecting `--mode run_only`
 - Their #2360: same CLI fix + docs update (autopilots.mdx both en/zh) + runtime config cleanup + extra test
 - Lesson: when removing a guard/restriction, also update docs that reference the old behavior and add regression tests
+
+## 2026-05-10 PR #2367: workspace-level always_redact_env setting
+- **Issue**: #2352 — Optional always-redact mode for custom_env / mcp_config
+- **PR**: #2367 — feat(server): add workspace-level always_redact_env setting
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Design choice**: Used workspace `settings` JSON field (already exists as `[]byte`) instead of env var or TOML config. Per-workspace granularity, no migration needed.
+- **Implementation**: Added `workspaceAlwaysRedactEnv(settings []byte) bool` helper. In `ListAgents` and `GetAgent`, query workspace via `GetWorkspace`, check flag, force redaction if true. ~60 lines total.
+- **Testing**: 7 table-driven unit tests for the helper. `go vet` clean.
+- **Pattern**: When adding workspace-level toggles, parse from the existing `settings` JSON blob with a targeted struct (only decode the fields you need). No schema migration needed.
+- **Note**: Issue was framed as "design discussion" but the design was straightforward enough to just implement. If maintainer prefers a different approach (env var, TOML), easy to adapt.
