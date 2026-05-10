@@ -396,3 +396,16 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - My PR created a separate retry mechanism instead of extending the existing one.
 - Sequential WAL/SHM removal (for-loop) is safer than parallel `Promise.all` — concurrent deletes can trigger additional EBUSY on related SQLite files.
 - **Lesson**: Before writing new retry logic, check if the file already has retry infrastructure. Extend it rather than duplicating.
+
+## File-size rules and mode bit hygiene (2026-05-10)
+
+| 我的 PR | 我的做法 | Maintainer 的做法 | 差距 |
+|---------|---------|---------|------|
+| opc #15,#16,#17 (test PRs) | Single large test files (364-525 lines) | Split into smaller files while preserving all tests | File-size compliance |
+| opc #18 (docs fix) | Changed file modes to 100755 on docs/source files | Applied content-only fix, preserved mode bits | Mode bit pollution |
+
+**Pattern: respect-repo-file-rules**
+- opc has a file-size rule — large test files get rejected. Split tests into smaller, focused files.
+- Never change file modes (644→755) on non-executable files. This is git noise that maintainers strip.
+- All 4 PRs had content applied to main — the work was good, just the packaging wasn't.
+- **Lesson**: Check repo conventions (linter rules, file size limits) before submitting. `git diff --stat` to catch unintended mode changes.

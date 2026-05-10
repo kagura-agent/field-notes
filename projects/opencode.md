@@ -280,3 +280,12 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Diff**: +9/-4 lines, 1 file only
 - **Approach**: Manual edit (surgical, <20 lines), local test run (`bun test test/lsp/` — 30/31 pass, 1 pre-existing timeout)
 - **Key learning**: Simple one-pattern-match fixes are faster to do manually than via Claude Code. The `which()` import was already present in the file.
+
+### #26606 — fix(tui): show slash commands in autocomplete regardless of enabled state (2026-05-10)
+- **Status**: PENDING (CI all green ✅, compliance passed ✅)
+- **Issue**: #26549 — /exit, /quit, /q missing from slash command autocomplete
+- **Root cause**: `app.exit` command has `enabled: () => input === ""` which returns false when user types `/` (non-empty input). Slash autocomplete derived from entries filtered by `visibility: "reachable"` which excludes disabled commands. Ctrl+P works because dialog overlay causes prompt to lose focus → `enabled()` returns true.
+- **Regression**: Introduced by commit `98f5e6e7` (opentui keymap refactor, #26053)
+- **Fix**: Added separate keymap query with `visibility: "registered"` for slash commands, independent of keybinding-level enabled state
+- **Approach**: Local clone + manual edit (1-file, 14-line change). Traced data flow through keymap → command-palette → autocomplete.
+- **Key learning**: opentui keymap has 3 visibility levels: registered (all), active (layer active), reachable (active + enabled). Slash autocomplete should use "registered" not "reachable" since typing / inherently means input is non-empty.
