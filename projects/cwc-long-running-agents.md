@@ -34,7 +34,7 @@ Two operator controls: `kill-switch.sh` (AGENT_STOP file halts all tools) and `s
 | cwc Pattern | Our Equivalent | Gap |
 |---|---|---|
 | Default-FAIL | verify-claims.sh → **default-fail-gate.sh** (adopted 05-10) | ✅ Closed |
-| Fresh-context evaluator | plan_review subagent | Partial — our reviewer sees plan, not code |
+| Fresh-context evaluator | fresh-context-review.sh (adopted 05-10) | ✅ Closed |
 | Agent-maintained handoff | memory/ + HEARTBEAT.md | Similar, less structured |
 | Kill switch | No equivalent | Could add AGENT_STOP check to FlowForge |
 | Steer | No equivalent | Could add STEER.md check to heartbeat |
@@ -42,3 +42,4 @@ Two operator controls: `kill-switch.sh` (AGENT_STOP file halts all tools) and `s
 ## Applied
 
 - 2026-05-10: Created `default-fail-gate.sh` and integrated into workloop pre_push_audit node
+- 2026-05-10: Created `fresh-context-review.sh` — spawns Claude Code in read-only mode to review diffs from clean context. Integrated into workloop pre_push_audit as Step 4. Tested on flowforge's own loop-detection commit — found real issues (off-by-one, missing terminal field, test gaps). Closes the "Fresh-context evaluator" gap.
