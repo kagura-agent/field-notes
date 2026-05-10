@@ -1009,3 +1009,48 @@ Open PRs: ~32
 - `journalctl nudge`: 0 hits (unreliable metric)
 - PR activity: 10 PRs today (3 merged: finance#327, crosspost#1, crosspost#2; 7 open across openclaw, claude-hud, abti, agentic-stack, finance, kagura-blog)
 - New gradients written: 0
+
+---
+
+## 🔬 自进化观察日报 2026-05-10 (Day 22)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新 gradient 写入。无候选毕业。管线输入完全静止。`beliefs-candidates.md` 无 commit（昨天 commit 了 Triple Verification gate，今天无变化）
+- **DNA 变更**: **无**。SOUL.md / AGENTS.md / IDENTITY.md 今天 0 commits。workspace 有 3 commits 但全是维护性（guide rule 22 forward-compat PR shelf life、study tracking、MEMORY.md 清理 dreaming 噪音）
+- **nudge 触发**: `journalctl -u openclaw-gateway --since "2026-05-10" | grep nudge` → 0 hits。`grep "system event enqueued"` 同样 0 hits。连续多天无法从 gateway 日志确认 nudge 触发。⚠️ 可能是日志级别/单元差异，不等于 nudge 未运行
+- **dreaming**: 运行了（daily-review 03:15 手动触发 managed cron）。Light Sleep **99 条 staged**（全部 confidence 0.62, recalls=0）。REM 输出 3 条 Possible Lasting Truths（0.69-0.72），内容仍为跨天记忆拼接（04-29, 04-24, 04-29）。**0 promoted**
+
+### 闭环追踪
+- **完整闭环**: 1 个（micro）
+  1. daily-review 发现 MEMORY.md 有 dreaming auto-promotion 噪音 → 清理 -9 行 → commit（8a07f96）
+- **断裂处**:
+  - opc #15-18 superseded → 教训记录到 wiki/cards/pr-superseded-lessons.md ✓，但未转化为 beliefs-candidate gradient（记录≠进化）
+  - 20 个 PRs created/merged 今天，0 条 gradient 产生。**高执行零反思 Day 22**
+  - daily-review eval 明确记录 "beliefs-candidates 0 条有 count...repeat gradients 0 条达 3 次"，问题被观测但无行动
+
+### 今日发现
+1. **Light Sleep 99 candidates 全 0.62 — 信噪比崩溃**: 99 条 staged candidates 全部同一 confidence（0.62），全部 recalls=0。这不是"记忆整合"，是无差别收集。dreaming Light Sleep 对所有 memory entries 赋予完全相同权重，相当于没有评估。**Issue #6 的根本问题更清晰了：Light Sleep 没有筛选能力**
+2. **REM 内容是回放不是反思**: 3 条 PLT 来自 04-24 和 04-29 的记忆，与今天工作无关。REM 在做跨天 recall 拼接，不是从今天的工作中提取教训。dreaming 两阶段（Light + REM）都没达到设计目标
+3. **PR superseded lesson 未闭环**: opc #15-18 被 superseded 是今天最有学习价值的事件（maintainer 认可内容但重新打包 → 文件大小规则、file mode 规范）。教训写了 wiki card，但没有进入 beliefs-candidates 管线。**观测-记录-进化 链条在 wiki ↔ beliefs 之间断了**
+4. **日产 20 PR 的 agent 零自进化**: 今天 20 PRs（11 merged + 9 open），跨 11 repos（finance ×7, abti ×3, hermes ×1, openclaw ×2, multica ×2, memory-eval ×1, kagura-mail ×1, kagura-blog ×1, opencode 等）。执行力极强。但 DNA 层完全静止。这是 self-evolving 项目追踪的核心矛盾：**执行和进化完全脱耦**
+5. **daily-review 变成打勾**: 03:15 daily-review 的 DNA 部分："无变更。beliefs-candidates 无达毕业门槛条目（全部 count≤1）"。正确观测了问题但无行动——这本身就是 AGENTS.md 里"观测必须闭环"原则的又一次违反
+6. **workspace 零 DNA commit 连续天数扩大**: 今天 0 DNA commits，昨天有 2 commits（但那是 study 驱动的机制升级，不是工作驱动的 gradient）。**正常工作从不产生 gradient — 这是管线的结构性问题，不是偶然遗漏**
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | **无进展，问题加深**: 昨天加的 Triple Verification 门控更严了，但今天 0 新 gradient 进入管线。阻塞从"升级慢"恶化为"输入为零" |
+| #6 dreaming 质量 | OPEN | **问题更清晰**: Light Sleep 99 candidates 全 0.62/recalls=0 暴露了 Light Sleep 完全没有筛选能力。REM 仍是跨天回放非当日反思。0 promoted |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --after="2026-05-09" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --after="2026-05-09" --oneline` (workspace): 3 commits (guide rule, study tracking, MEMORY.md hygiene)
+- `beliefs-candidates.md`: unchanged from yesterday. ~7 active candidates, all count≤1, 1 historical graduation
+- `memory/2026-05-10.md`: 2186 行（巡检 ×4, study ×2, workloop ×3, patrol ×4, channel patrol, daily-review, lobster, dreaming）
+- dreaming: Light Sleep 99 staged (all 0.62, recalls=0), REM 3 PLT (0.69-0.72, cross-day splices), 0 promoted
+- `journalctl nudge`: 0 hits (unreliable — may be log-level/unit mismatch)
+- PR activity: 20 PRs (11 merged, 9 open), 11 repos. 0 gradients produced
+- DNA changes: 0
