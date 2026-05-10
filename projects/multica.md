@@ -275,3 +275,13 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Testing**: `go vet ./internal/handler/...` passes clean. Go 1.24.4 works for vet.
 - **Pattern**: When an API returns an entity without its relations, check if the relation query already exists (it did — `ListProjectResources`) and reuse it. `omitempty` keeps backward compat.
 - **Note**: Additive API change — existing consumers unaffected (new field only appears when resources exist)
+
+## 2026-05-10 PR #2354: fix CLI autopilot --mode run_only
+- **Issue**: #2347 — CLI rejects `--mode run_only` despite full server-side support
+- **PR**: #2354 — fix(cli): allow --mode run_only in autopilot create and update
+- **Status**: PENDING (CI ✅ backend + frontend pass)
+- **Root cause**: Outdated CLI guard in `cmd_autopilot.go` that hardcoded `create_issue` as the only valid mode. Server-side (`handler/autopilot.go`, `daemon.go`, `autopilot_listeners.go`, `prompt.go`) already fully supports `run_only` with tests.
+- **Fix**: Surgical — changed mode validation from `mode != "create_issue"` to `mode != "create_issue" && mode != "run_only"` in both create and update paths. Updated flag help text. 1 file, +7/-11 lines.
+- **Approach**: Manual edit (trivial surgical change, no need for acpx). `go vet` clean.
+- **Pattern**: When CLI restricts a feature the API already supports, check if the original restriction comment is still accurate. In this case the comment explicitly said "keep CLI to create_issue until server path is fixed" — but the server path was already fixed.
+- **Note**: PR template requires AI disclosure, "thinking path", and specific checklist items. No DCO/CLA required.
