@@ -1,57 +1,58 @@
 ---
-title: agent-skills-eval
-type: project
-created: 2026-05-09
-last_verified: 2026-05-09
+title: "agent-skills-eval — Test Runner for Agent Skills"
+created: 2026-05-10
+source: https://github.com/darkrishabh/agent-skills-eval
+stars: 265
+star_history: "265 (05-10)"
 status: tracking
-stars: 250
-repo: darkrishabh/agent-skills-eval
-tags: [skill-ecosystem, testing, agentskills-io, eval]
+revisit: 2026-05-17
+tags: [skill-ecosystem, eval, testing, agentskills-io]
 ---
 
-# agent-skills-eval — Test Runner for Agent Skills
+# agent-skills-eval
 
-## What It Is
+> "Write a SKILL.md, drop in some evals, and find out — empirically — whether your skill actually makes the model better at the task."
 
-A CLI/SDK that empirically measures whether a SKILL.md actually improves model performance. Runs the same eval prompts twice — once `with_skill` (SKILL.md injected as system context), once `without_skill` (baseline) — then has a judge model grade both outputs side-by-side.
+TypeScript CLI tool. MIT. By darkrishabh.
+
+## What It Does
+
+Runs a skill against prompts twice — once **with_skill** loaded into context, once **without_skill** (baseline) — uses a judge model to grade both outputs, then produces a side-by-side report.
 
 ```bash
-npx agent-skills-eval ./skills --target gpt-4o-mini --judge gpt-4o-mini --baseline --strict
+npx agent-skills-eval ./skills \
+  --target gpt-4o-mini --judge gpt-4o-mini --baseline --strict
 ```
 
-Produces an HTML report with pass/fail per eval, grading details, and artifacts.
+Output: static HTML report with pass/fail per skill.
 
 ## Architecture
 
-Single-purpose TypeScript CLI (~16 source files), zero framework deps:
-- `discover.ts` — finds SKILL.md + eval YAML files in a directory tree
-- `run-eval.ts` — runs each eval in `with_skill` and `without_skill` modes
-- `grade.ts` — sends both outputs to a judge model for comparison grading
-- `report.ts` — generates static HTML report
-- `openai-compatible-provider.ts` — any OpenAI-compatible API as target/judge
-- Produces `agent-skills-workspace/iteration-N/` with full artifacts
+- Workspace-based: outputs to `agent-skills-workspace/iteration-N/`
+- JSONL artifacts for each run
+- OpenAI-compatible API for target and judge
+- CLI-first, npm-published
 
-## Why It Matters
+## Why This Matters
 
-1. **First testing infra for the skill ecosystem** — until now "does my SKILL.md work?" was vibes-based
-2. **Validates agentskills.io as a standard** — testing tooling = ecosystem maturity signal
-3. **Judge-model grading pattern** — uses LLM-as-judge for eval, which is the emerging standard for skill quality
-4. **250⭐ in 3 days** — strong demand signal for skill quality tooling
+### Skill Ecosystem Maturity Signal
 
-## Relation to Our Stack
+This is the **testing layer** for the agent skills ecosystem. The progression:
+1. Write skills (SKILL.md) ✅ (2025-2026, widespread)
+2. Share skills (registries, ClawHub) ✅ (early 2026)
+3. **Test skills empirically** ← we are here (May 2026)
+4. Auto-evolve skills based on test results (next?)
 
-- ClawHub skills could adopt this eval format for quality gates
-- The `with_skill` / `without_skill` comparison methodology could inform our own skill development — proving a skill actually helps
-- Currently only supports agentskills.io format (SKILL.md + evals/ YAML), but the concept is universal
+The fact that someone built this and got 265⭐ in 4 days means the ecosystem feels the pain of "skills that don't provably help."
 
-## Borrowable Ideas
+### Connection to Our Direction
 
-- [ ] Eval format for ClawHub skills — `evals/` directory with YAML test cases
-- [ ] Judge-model grading for skill publish quality gate
-- [ ] A/B skill comparison — test skill v1 vs v2
+- Could be used to validate our own skills before publishing to ClawHub
+- The with/without testing paradigm could apply to our beliefs-candidates process — test whether a belief actually changes behavior
+- [[agentskills-io-standard]] is referenced — the standard is getting tooling built around it
 
-## See Also
+## Open Questions
 
-- [[agentskills-io-standard]] — the format this tests
-- [[agent-skill-standard-convergence]] — skill ecosystem maturity
-- [[skills-as-packages]] — skill packaging landscape
+- Does it handle non-text skills (e.g., tool-use skills)?
+- How does the judge model handle subjective quality differences?
+- 265⭐ in 4 days — growth trajectory? Will revisit.
