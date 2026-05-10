@@ -71,3 +71,9 @@ If we ever want to make [[kagura-story]] output less AI-sounding, this quantifie
 - 05-07: 831⭐, v0.4.0 released
 - 05-09: 901⭐ (+8.4%), v0.4.1. Major architecture evolution: desymlinking, CI pipeline, deslop quantification, 3-agent verification. 7 PRs in one release.
 - 05-09: **Applied** deslop quantification to [[kagura-story]]: created `scripts/deslop-score.sh` (density metric + tiered severity), batch scanner, integrated into storyteller SKILL.md. Baseline scan: 379 files, all CLEAN. Methodology adapted (EN+ZH word lists, structural patterns), but my writing was already clean — the tool's value is as a **regression guard** for future output.
+- 05-10: 946⭐ (+5%). 7 commits in 2 days. **Not stabilizing — accelerating.** Key new features:
+  - **story-researcher**: Dedicated subagent for factual research during writing. Uses CDP browser (priority) with WebSearch fallback. Structured reference templates for historical verification, geographic detail, profession knowledge, cultural customs. Model: sonnet, 20 max turns.
+  - **Scene routing** (PR#26): Route user intent to workflow — 开书 (full Phase 1-5), 日更/续写 (daily update: fast-load 3 files → write → progress summary), 大修 (revision: locate chapters → rewrite → cascade check). Smart entry point selection.
+  - **Reference compression** (PR#29): Refactored reference files for smaller context windows. Terminology simplification.
+  - **Layered summary protocol** + genre formula references (PR#28)
+  - **Observation**: Project is evolving from "writing assistant" to **writing platform** — research, routing, revision, and quality assurance as distinct agent roles. The multi-agent specialization pattern mirrors [[supervisor-pattern]].
