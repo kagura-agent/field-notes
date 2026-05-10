@@ -252,6 +252,7 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Approach**: Local clone, manual edit (surgical fix too small for Claude Code), ran `bun test test/cli` (140/140 pass)
 - **Key learning**: `run.ts` (headless mode) already handles this gracefully by falling through to session creation. TUI needed the same fallback pattern.
 - **Note**: Still "new" relationship with this repo (0 merged PRs). Included AI disclosure.
+- **Open PRs**: 5/5 (at limit): #25654, #26311, #26333, #26606, #26641
 
 ### #25654 — fix(mcp): ensure Accept header includes both required values for Streamable HTTP (2026-05-04)
 - **Status**: PENDING (CI all green ✅ — 4 checks passed)
