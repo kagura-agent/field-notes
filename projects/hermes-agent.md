@@ -1334,3 +1334,13 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **CI note**: `check-attribution` always fails for new contributor emails — maintainer adds to AUTHOR_MAP
 - **Competing PR #20631**: Only fixes Markdown table widths (TUI TypeScript), not CLI panel borders (Python). Different code paths.
 - **Test**: cli.py is huge (11K+ lines), grep is slow. Use `find . -maxdepth 4` to limit search depth.
+
+### PR #23173 — TUI confirmation dialog rendering (2026-05-10)
+- **Issue**: #23155 — `/clear` confirmation dialog renders as raw text in TUI mode
+- **Root cause**: `_confirm_destructive_slash()` used bare `print()` calls which get swallowed by prompt_toolkit's `patch_stdout` `StdoutProxy`
+- **Fix**: Replaced 15 `print()` calls with `_cprint()` — the TUI-aware output path that routes through `print_formatted_text(ANSI(...))`
+- **Affected commands**: `/clear`, `/new`, `/reset`, `/undo`
+- **Status**: PENDING review
+- **CI notes**: `check-attribution` required adding email to AUTHOR_MAP in `scripts/release.py`. Windows footguns and e2e failures are pre-existing upstream issues (process_registry.py SIGKILL, e2e needs API keys). `ruff + ty diff` fails on fork PRs (403 permission for PR comments).
+- **Pattern**: Manual edit was the right call — 15 line-level `print()` → `_cprint()` swaps, faster than spawning Claude Code for trivial replacements
+- **Lesson**: This repo's confirmation dialogs follow a consistent pattern — `_cprint()` for plain text, `ChatConsole().print()` for Rich markup. The `_confirm_and_reload_mcp` method is the reference implementation.
