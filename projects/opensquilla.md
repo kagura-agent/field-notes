@@ -3,105 +3,87 @@ title: OpenSquilla — Token-Efficient AI Agent
 created: 2026-05-10
 updated: 2026-05-10
 status: active
-stars: 170
+stars: 173
 url: https://github.com/OpenSquilla/opensquilla
-tags: [agent, router, token-efficiency, ml-routing]
 ---
 
-# OpenSquilla
+# OpenSquilla — Token-Efficient AI Agent
 
-**Token-Efficient AI Agent** — "same budget, more capability, better results."
+Apache-2.0, Python. 173⭐ in 4 days (created 2026-05-06). Self-described "microkernel AI agent."
 
-Python, Apache-2.0. 170⭐ (May 10, 2026). Created May 6. Active daily commits.
+## Core Idea
 
-## What It Does
+Three-lever token efficiency: **model selection × thinking depth × prompt compression**, all automated by a local ML classifier.
 
-Microkernel AI agent with a **bundled ML-based query router** (SquillaRouter) that classifies each user turn's complexity and routes to the appropriate model tier. The key innovation is doing **two things simultaneously**: picking the right model AND adjusting prompt/thinking strategy.
+## SquillaRouter — the differentiator
 
-## Architecture — SquillaRouter
+A **local inference** message classifier that routes to 4 tiers without burning an LLM call:
 
-### Two-Axis Routing
+| Tier | Model | Thinking | Prompt Policy |
+|------|-------|----------|---------------|
+| T0 | cheapest (flash/turbo) | none | P0: compressed, "answer directly" |
+| T1 | `deepseek/deepseek-v4-flash` | low | P0: compressed |
+| T2 | mid-tier | medium | standard |
+| T3 | `anthropic/claude-opus-4.7` | high | P2: full, unmodified |
 
-1. **Thinking Mode (T0-T3)**: Controls model's reasoning depth
-   - T0: No thinking (trivial turns, acknowledgements)
-   - T1: Light thinking (routine Q&A)
-   - T2: Medium thinking (default)
-   - T3: Deep thinking (debugging, architecture, high-risk)
+**Local classifier stack**: BGE-small-zh-v1.5 (ONNX) → TF-IDF + PCA + SVD features → LightGBM (main + aux heads) + MLP head. All shipped in-repo via Git LFS. Zero API cost for routing decisions.
 
-2. **Prompt Policy (P0-P2)**: Controls prompt compression
-   - P0: Compressed — "Answer directly, keep thinking short, avoid irrelevant expansion"
-   - P1: Normal (default)
-   - P2: Full — "Analyze thoroughly, cover key constraints, avoid omissions"
+**History-aware**: per-session routing history (last 5 decisions, 30min window) prevents flip-flopping between tiers mid-conversation.
 
-These are **orthogonal dimensions** — you can have T1+P0 (light thinking, compressed prompt) or T3+P2 (deep thinking, full prompt). One forbidden combination: T2/T3+P0 (deep thinking + compressed prompt is contradictory).
+**P0 prompt injection**: For simple messages, injects `[RESPONSE_POLICY: Answer directly, keep thinking short, avoid irrelevant expansion.]` — explicit instruction to the model to be terse.
 
-### Model Tier Registry
+## Context Overflow Management
 
-Default config maps to 3 actual models across 4 tiers:
+Three policies, configurable per deployment:
+- **auto_summarize** — call `session_manager.compact()` to collapse older history into a summary
+- **hard_truncate** — drop oldest transcript entries until under budget
+- **refuse** — short-circuit, don't invoke provider at all
 
-| Tier | Route Class | Model | When |
-|------|------------|-------|------|
-| S | R0 | DeepSeek V4 Flash | Trivial, acknowledgements |
-| M | R1 | DeepSeek V4 Flash | Routine Q&A, bounded coding |
-| L | R2 | GLM 5.1 | Debugging, multi-step analysis |
-| XL | R3 | Claude Opus 4.7 | Architecture, high-risk decisions |
+Compaction uses chunked LLM summarization with configurable chunk ratios (default 40% of context window per chunk).
 
-### ML Pipeline
+## Dream System (Memory Consolidation)
 
-The classifier is a **local ML ensemble** (no API calls for routing itself):
-- **BGE-small-zh-v1.5** (ONNX INT8) → semantic embedding of the query
-- **TF-IDF + SVD + PCA** → lexical features
-- **LightGBM** (main head) → primary classification
-- **MLP** (aux head, ONNX) → secondary classification
-- **Ensemble** → final R0-R3 prediction with confidence scores
+Automated cron-scheduled memory consolidation: `memory/*.md` → `MEMORY.md`
+- **Phase 1**: LLM analyzes new daily files + current MEMORY.md, produces rationale
+- **Phase 2**: Sub-agent with `read_file`/`edit_file` tools makes surgical edits to MEMORY.md
 
-Feature engineering includes:
-- Flag detection (high_risk, debug, repo_arch, strict_format, long_context) via keyword/pattern matching
-- Context-awareness: conversation depth, previous turn's token usage
-- Trajectory tracking: how complexity shifts across turns in a session
+Essentially automated version of what we do manually. Cursor advances on success; TTL/FIFO sweeps processed files.
 
-### Rollout Strategy
+## Architecture Notes
 
-Three-phase deployment: `observe` → `shadow` → `full`. In observe mode, router classifies but doesn't change model selection (safe to test accuracy). Shadow mode applies routing but logs both routed and default results. Full mode activates routing.
+- Shared `TurnRunner` across Web UI, CLI, and chat channels — single model loop
+- Pluggable provider layer: OpenRouter, OpenAI, Anthropic, Ollama, DeepSeek, Gemini, Qwen/DashScope (~20 providers)
+- SQLite-backed (migrations V001-V008 visible)
+- Multi-agent support (scheduler with session fields, reservations, job tool policies)
 
-## What Makes This Interesting
+## Anti-intuitive findings
 
-1. **Two-axis control is novel**: Most routing solutions (OpenRouter, Martian, etc.) just pick a model. OpenSquilla also adjusts *how the model should behave* (thinking depth + prompt detail). This is more granular.
+1. **BGE-small-zh-v1.5** as the embedding model — Chinese-optimized. Suggests Chinese market focus despite English README. The topics list includes "openclaw" — they see us as comparable.
+2. **Local ML classifier for routing** — most "smart routing" projects use an LLM to decide which LLM to call (recursive cost). OpenSquilla avoids this entirely with a trained classifier. Trade-off: requires training data and periodic retraining, but zero marginal cost per classification.
+3. **Prompt policy injection** — P0 messages get an explicit `[RESPONSE_POLICY]` prefix telling the model to be brief. This is crude but probably effective for simple queries.
 
-2. **Local inference for routing**: The router runs locally with ONNX models, adding ~milliseconds per turn. No API roundtrip for the routing decision itself.
+## Relevance to OpenClaw
 
-3. **History-aware routing**: Router considers conversation trajectory — if complexity is escalating across turns, it can pre-emptively upgrade. Prevents the "started on a cheap model, now stuck" problem.
+| Aspect | OpenClaw | OpenSquilla |
+|--------|----------|-------------|
+| Model routing | Manual `/reasoning` toggle | Automated via local classifier |
+| Thinking depth | User-controlled (off/low/medium/high) | Auto-derived from message complexity |
+| Context overflow | Session compaction exists | 3 configurable policies |
+| Memory consolidation | Manual memory/*.md → MEMORY.md | Automated "Dream" system |
+| Prompt compression | [[skill-context-compression]] experiments | P0/P1/P2 prompt policies |
 
-4. **Flag system is pragmatic**: Keywords like "deploy", "rollback", "production" automatically trigger high_risk flag → force upgrade to L/XL tier. Simple but effective heuristic layer on top of ML classification.
+**What could we learn**: The local classifier approach is interesting but high-maintenance. More practically, the three-policy context overflow model (summarize/truncate/refuse) is cleaner than a single strategy. The automated memory consolidation ("Dream") validates our memory architecture direction.
 
-5. **Contradiction guard**: T2/T3 + P0 is explicitly forbidden. This shows thoughtful design — they've encountered the failure mode where a model is told to think deeply but also keep it short.
+**What they lack**: No skill ecosystem, no [[agentskills-io-standard]] concept, no multi-channel presence (they added Telegram recently). Their "token efficiency" is model-routing focused; ours is architecture-focused ([[thin-harness-fat-skills]]).
 
-## Relation to Our Direction
+## Issues & Critiques
 
-**Directly relevant to OpenClaw**:
-- OpenClaw already has multi-model support but no smart routing. The two-axis (thinking+prompt) approach is more sophisticated than just "pick the cheapest model that works."
-- The rollout strategy (observe→shadow→full) is a safe pattern for deploying any behavior-changing feature.
-- Flag-based heuristics could enhance our existing system — detecting when a turn needs elevated reasoning.
+- Bug: `RuntimeError: aclose(): asynchronous generator is already running` in multi-agent tasks — async lifecycle management gaps
+- Feature requests for cross-session fair queueing + per-channel caps (multi-tenant) — confirms this is a real production concern
+- Feature request for provider-level model pinning — confirms benchmarking/cost accounting needs
 
-**Differences**:
-- OpenSquilla is a full agent platform (Python, microkernel), not just a router. They bundled the router into their agent stack.
-- Their tier registry is static config — operator defines which models map to which tiers. No dynamic model discovery.
-- For OpenClaw, the router concept could be extracted as a standalone step in the turn pipeline.
+## Position in Ecosystem
 
-## Concerns
+Positioned between [[genericagent]] (heavy governance) and lightweight coding agents. Differentiator is the token-efficiency angle. Comparable to [[deepclaude]] in cost arbitrage motivation but with a more sophisticated routing mechanism. The "dream" system overlaps with [[auto-memory]] concepts.
 
-- 4 days old, 170⭐ — very early. Growth could be transient.
-- ML models are trained on... what? No public training data or evaluation benchmarks visible yet. The PROVENANCE.md exists but I haven't seen ground truth.
-- Single maintainer patterns (issues all from hobezhang, who appears to be the primary dev).
-- Feature-rich but early — Feishu channel, web UI, sandbox, MCP — breadth over depth risk.
-
-## Tracking
-
-- Created: 2026-05-06
-- First check: 2026-05-10 (170⭐)
-- Revisit: 2026-05-17 (check growth trajectory, any community formation)
-
-## See Also
-
-- [[skill-type-taxonomy]] — how different agent platforms categorize capabilities
-- [[self-evolving-agent-landscape]] — broader context of agent infrastructure evolution
+Links: [[context-budget]], [[skill-context-compression]], [[self-evolving-agent-landscape]], [[thin-harness-fat-skills]], [[deepclaude]], [[auto-memory]], [[genericagent]]
