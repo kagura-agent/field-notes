@@ -104,3 +104,4 @@ Each session gets its own ref chain in the shared DAG. Divergent work lives on p
 |------|-------|-------|
 | 2026-05-09 | 238 | First observation. 10 days old, strong traction. Go, Apache-2.0 |
 | 2026-05-10 | 294 | +24%. Fork cmd merged, roadmap published, first external feature request |
+| 2026-05-10 PM | 297 | +1%. Quiet Sunday — one cosmetic commit ("change git to version-control" branding). Issues #16-#25 are roadmap items from maintainer. No architectural changes |
