@@ -297,3 +297,15 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Testing**: `go vet ./internal/daemon/...` + `go test ./internal/daemon/execenv/` — all pass
 - **Pattern**: When a function writes to disk AND the caller needs the content inline, return the content rather than re-computing or exporting the internal builder. Avoids double-rendering and drift.
 - **Note**: Issue was extremely well-written with code refs and reproduction. Made implementation trivial.
+
+## 2026-05-10 PR #2358: suppress git console windows on Windows
+- **Issue**: #2357 — Windows Desktop daemon repo-cache git commands flash console windows
+- **PR**: #2358 — fix(daemon): suppress git console windows on Windows
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: PR #1474 (merged) fixed console windows for agent processes but not for daemon git commands in execenv, repocache, and gc packages
+- **Fix**: Created shared `server/internal/util/proc_windows.go` with `HideConsoleWindow(cmd)` using same `CREATE_NEW_CONSOLE + HideWindow` pattern. Applied to all 33 `exec.Command("git", ...)` call sites across 3 files. Extracted inline `.Output()`/`.Run()` chains to variables.
+- **Approach**: Claude Code for implementation (mechanical multi-site change), manual review + go vet verification
+- **Key decision**: Placed helper in `internal/util/` (shared across 3 packages) rather than duplicating build-tagged files in each package
+- **Testing**: `go vet` clean. No local Postgres for full tests (expected)
+- **Pattern**: When a previous PR fixes a class of issue in one package, check if the same pattern needs to be applied in other packages. In this case, agent processes were fixed but daemon git processes were missed.
+- **Note**: Same pattern as #1474 but applied to different code paths. The `createNewConsole` constant was already updated from `CREATE_NO_WINDOW` after #1521 lesson (grandchild popup storm).
