@@ -309,3 +309,8 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Testing**: `go vet` clean. No local Postgres for full tests (expected)
 - **Pattern**: When a previous PR fixes a class of issue in one package, check if the same pattern needs to be applied in other packages. In this case, agent processes were fixed but daemon git processes were missed.
 - **Note**: Same pattern as #1474 but applied to different code paths. The `createNewConsole` constant was already updated from `CREATE_NO_WINDOW` after #1521 lesson (grandchild popup storm).
+
+### Supersede: #2354 → #2360 (2026-05-10)
+- My PR: just removed the CLI guard rejecting `--mode run_only`
+- Their #2360: same CLI fix + docs update (autopilots.mdx both en/zh) + runtime config cleanup + extra test
+- Lesson: when removing a guard/restriction, also update docs that reference the old behavior and add regression tests

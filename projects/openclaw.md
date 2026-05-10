@@ -133,3 +133,14 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Architecture insight**: PI's `streamSimple` has two layers: module-level export (dispatches to provider) and per-provider wrapped version (from `registerApiProvider`). `wrapStreamSimple` in `provider-runtime.js` wraps each provider's stream with credential injection. These wrapped functions have different references from the module-level `streamSimple`
 
 - **#79666** (2026-05-09, PENDING): fix(markdown): exclude trailing paragraph separator from blockquote style span. Fixes #79646. Trims `\n\n` before closing blockquote style in `ir.ts`, re-adds after, so Telegram `<blockquote>` no longer has trailing blank line. 3 new style span boundary tests added. All 84 markdown tests pass.
+
+## PR #80137 (2026-05-10, PENDING)
+- **Issue**: #80124 — Codex app-server thread/start validation fails when Thread response omits sessionId
+- **Root cause**: PR #79152 synced generated Codex schemas from `@openai/codex@0.129.0`, adding `sessionId` to `Thread`'s required array. Some live Codex app-server paths return only `id` without `sessionId`.
+- **Fix**: Added `normalizeThreadResponse()` in `protocol-validators.ts` that cross-fills `id`↔`sessionId` before AJV validation. Applied to both `assertCodexThreadStartResponse` and `assertCodexThreadResumeResponse`.
+- **Files**: `extensions/codex/src/app-server/protocol-validators.ts` (27 insertions, 2 deletions) + new `protocol-validators.test.ts` (5 tests)
+- **CI**: All code checks pass. "Real behavior proof" fails (expected, needs maintainer override).
+- **Competing PR**: #80136 by hclsys — different approach (normalizes case/UUID format rather than cross-filling missing fields)
+- **Pattern**: Extensions under `extensions/codex/src/app-server/` have their own test files but vitest build takes ~2min due to rolldown bundling. Tests themselves run fast (<50ms).
+- **Lesson**: `protocol-validators.ts` already has normalization functions for turns but not for threads. The pattern is: normalize → validate → return. Always apply before schema validation, not after.
+- **Lesson**: Thread schema has `createdAt`/`updatedAt` as integer (Unix seconds), not ISO string. `source` is `SessionSource` oneOf (enum "cli"|"vscode"|"exec"|"appServer"|"unknown" or custom object).
