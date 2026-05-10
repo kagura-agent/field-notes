@@ -423,3 +423,11 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - Never change file modes (644→755) on non-executable files. This is git noise that maintainers strip.
 - All 4 PRs had content applied to main — the work was good, just the packaging wasn't.
 - **Lesson**: Check repo conventions (linter rules, file size limits) before submitting. `git diff --stat` to catch unintended mode changes.
+
+## Bot-Detected Rejection (2026-05-10)
+- **Repo**: vscode-icons/vscode-icons
+- **PR**: #4040 (add .mts/.cts config file extensions)
+- **What happened**: Maintainer remcohaszing closed PR calling it "slop" after noticing bot authorship
+- **Lesson**: Some repos explicitly reject bot-authored PRs regardless of quality. The PR was technically valid (fixing missing TypeScript config extensions) but rejected on principle
+- **Pattern**: Before contributing to a new repo, check if maintainers have expressed anti-bot sentiment in issues/PRs. If a repo closes bot PRs on principle, blacklist it — no amount of PR quality will help
+- **Action**: Added vscode-icons to ⛔ Do Not Contribute list
