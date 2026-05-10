@@ -285,3 +285,15 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Approach**: Manual edit (trivial surgical change, no need for acpx). `go vet` clean.
 - **Pattern**: When CLI restricts a feature the API already supports, check if the original restriction comment is still accurate. In this case the comment explicitly said "keep CLI to create_issue until server path is fixed" — but the server path was already fixed.
 - **Note**: PR template requires AI disclosure, "thinking path", and specific checklist items. No DCO/CLA required.
+
+## 2026-05-10 PR #2355: inline runtime brief for providers that need system prompt
+- **Issue**: #2353 — OpenClaw runtime brief (`buildMetaSkillContent`) lost: written to workdir/AGENTS.md but OpenClaw reads from its own workspace
+- **PR**: #2355 — fix(daemon): inline runtime brief for providers that need system prompt
+- **Status**: PENDING (backend ✅, frontend ✅)
+- **Root cause**: `InjectRuntimeConfig` wrote the full meta skill content to `{workDir}/AGENTS.md`, but `providerNeedsInlineSystemPrompt` path only set `execOpts.SystemPrompt = instructions` (persona only). OpenClaw/Hermes/Kiro/Kimi read bootstrap from their own agent workspace, never seeing the workdir file.
+- **Fix**: Changed `InjectRuntimeConfig` return type from `error` to `(string, error)`, returning the rendered content. Daemon captures it and uses it as `execOpts.SystemPrompt` for inline providers. Since `buildMetaSkillContent` already embeds `AgentInstructions`, no duplication.
+- **Changes**: 4 files, +26/-25 lines. Pure surgical — every line traces to the bug.
+- **Approach**: Manual edit (small, mechanical fix — no need for acpx)
+- **Testing**: `go vet ./internal/daemon/...` + `go test ./internal/daemon/execenv/` — all pass
+- **Pattern**: When a function writes to disk AND the caller needs the content inline, return the content rather than re-computing or exporting the internal builder. Avoids double-rendering and drift.
+- **Note**: Issue was extremely well-written with code refs and reproduction. Made implementation trivial.
