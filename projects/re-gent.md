@@ -75,8 +75,32 @@ Each session gets its own ref chain in the shared DAG. Divergent work lives on p
 
 **Contribution opportunity:** Low — tightly coupled to Claude Code hooks, issues are feature-request type not bugs. But worth tracking as the space matures.
 
+## Updates (2026-05-10)
+
+**Stars**: 238→294 (+24% in 1 day) — accelerating growth.
+
+**New since last read:**
+- `rgt fork` command merged (PR#10) — create new sessions from any step
+- Formal **ROADMAP.md** published, targeting v1.0.0-beta by Q3 2026
+- 10 new issues (#16-#25) from maintainer setting up development phases
+- **First external feature request** (#25) — user asking for Gemini CLI + opencode support. Validates the concept resonates beyond Claude Code
+- Phase 3 (Advanced Features) — core complete, building toward production stability
+- VSCode extension with inline blame already shipped
+
+**Roadmap phases:**
+- Phase 1 ✅ Core storage (content-addressed blobs, BLAKE3, dedup)
+- Phase 2 ✅ Hook integration (Claude Code PostToolUse)
+- Phase 3 🚧 Advanced features (fork, rewind, performance)
+- Phase 4 📋 Multi-tool adapters (Cursor, Cline, Continue)
+- Phase 5 📋 Session sharing / remote sync
+
+**Code quality observation:** Tests are clean and behavior-focused. `TestHookSilentlyFailsWithoutRegent` explicitly tests the "don't break the agent" contract. Line-level blame uses go-diff (diffmatchpatch) with opcode conversion — standard but solid.
+
+**Multi-agent adapter question**: Issue #25 + Roadmap Phase 4 suggest the maintainer knows Claude Code lock-in is a risk. The hook payload format is JSON with session_id/tool_name/tool_input/tool_response — generic enough that adapters for other agents should be feasible without core changes.
+
 ## Tracking
 
 | Date | Stars | Notes |
 |------|-------|-------|
 | 2026-05-09 | 238 | First observation. 10 days old, strong traction. Go, Apache-2.0 |
+| 2026-05-10 | 294 | +24%. Fork cmd merged, roadmap published, first external feature request |
