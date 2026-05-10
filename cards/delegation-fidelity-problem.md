@@ -19,7 +19,7 @@ LLMs silently corrupt documents during long-horizon delegated work. DELEGATE-52 
 
 - **Diff-based editing** over whole-file rewrite — smaller corruption surface
 - **Per-edit verification** — tests, linters, structural parsers
-- **Checkpoint/rollback** — VCS-based safety nets (see [[re_gent]])
+- **Checkpoint/rollback** — VCS-based safety nets (see [[re-gent]])
 - **Domain-specific parsers** — structured formats resist corruption better than free text
 
 ## Connection to Self-Evolution
