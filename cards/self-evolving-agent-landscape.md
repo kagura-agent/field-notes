@@ -256,3 +256,11 @@ A **5th layer** is crystallizing: [[worktree-convergence-2026-05]]
 - **[[photo-agents]]** (184⭐, was 51): Most articulate memory governance seen — 4-layer L1-L4 with ROI-based cleanup, "existence encoding", "no execution no memory" principle. Confirms L1 index convergence pattern (their L1 ≤30 lines = our wiki/L1.md). Now commercial (API key gated), 3.6× growth in a week — vision-grounded agents resonate with market
 - Skill ecosystem explosion: 105K+ skill cards searchable via API (Photo-agents), master-skill distilling entire industries into skills, oh-story-claudecode (784⭐) as first viral skill package
 - Meta-trend: **skill as commodity** phase beginning — the moat is not individual skills but the memory/governance layer that selects and evolves them
+
+### 2026-05-10 Update
+- **[[photo-agents]]** 184→364⭐ (nearly 2x in 4 days). Vision-grounded self-evolving agents clearly resonating with market
+- **[[dreamer]]** 13→34⭐ (2.6x). STM→LTM→Context pipeline gaining traction
+- **[[aide-recursive-agent]]** (15⭐, new) — Agent that lives inside its own source code and recursively improves itself. Novel: mid-task Reflector (separate no-tool LLM call), graduated LoopDetector (observe→nudge→force_reset), "architecture as upbringing" thesis. Research vehicle, not production tool.
+- Skill registry proliferation: mercury-agent-skills (55⭐, cross-platform OpenClaw/Mercury/Hermes), AgentClaw (51⭐), system-prompt-skills (64⭐, 165个顶级AI产品提示词蒸馏)
+- **Trend signal**: self-evolving agents accelerating (photo-agents, dreamer, aide), while skill registries commoditizing. The interesting work is moving to the self-modification/reflection layer, not the skill packaging layer.
+- HN discourse: "87% of skills degrade agent safety" — skill trust/safety finally entering mainstream conversation. Validates our [[skill-trust-landscape-2026-04]] thesis
