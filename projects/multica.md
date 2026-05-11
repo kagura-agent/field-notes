@@ -324,3 +324,14 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Testing**: 7 table-driven unit tests for the helper. `go vet` clean.
 - **Pattern**: When adding workspace-level toggles, parse from the existing `settings` JSON blob with a targeted struct (only decode the fields you need). No schema migration needed.
 - **Note**: Issue was framed as "design discussion" but the design was straightforward enough to just implement. If maintainer prefers a different approach (env var, TOML), easy to adapt.
+
+## 2026-05-11 PR #2381: fix Pi extension tool filtering
+- **Issue**: #2379 — Pi extension tools silently filtered by hardcoded `--tools` allowlist
+- **PR**: #2381 — fix(agent): stop filtering Pi extension tools via hardcoded --tools allowlist
+- **Status**: PENDING (backend CI ✅, frontend CI pending)
+- **Root cause**: `buildPiArgs()` passed `--tools read,bash,edit,write,grep,find,ls` which Pi SDK uses as a restrictive allowlist. Extension tools registered via `pi.registerTool()` are filtered out by `isAllowedTool()`.
+- **Fix**: Remove hardcoded `--tools`. When omitted, Pi's `allowedToolNames` is `undefined`, making the filter a no-op. Users can still restrict via `custom_args`.
+- **Key learning**: Checked maintainer branch `upstream/agent/j/encoding-fix-v2` for #2376 (encoding issue) — already being fixed by Bohan-J. Avoided duplicate work (guide rule #4).
+- **Discovery**: #2247 (encoding fix) was merged then reverted in 3 minutes (#2252) — maintainer reimplemented with better structure on a separate branch. Pattern: immediate revert = maintainer disagrees with approach, not the fix itself.
+- **Tests**: Added `pi_test.go` with 3 tests (no test file existed before).
+- **No existing Pi tests**: This is the first test file for the Pi backend. Future PRs to pi.go should maintain/extend coverage.

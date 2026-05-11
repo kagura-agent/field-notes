@@ -63,6 +63,20 @@
 5. 跨 channel 上下文丢失
 6. Project Board 不适合混合任务
 
+## 核心洞察: 信息是图不是树 (2026-05-11)
+
+> 详见 `workshop/docs/research/graph-not-tree.md`
+
+Discord 24 个 channel 用了 2 个月，发现 channel 间关系是网状的（依赖/产出/触发/共享上下文），不是树状的。Discord 只提供 Category→Channel→Thread 三层树结构，完全无法表达这些关联。
+
+**对 Workshop 的设计启发：**
+- Project 模型方向正确，但节点之间需要支持**任意类型的边**
+- 边的类型不预定义，从使用中长出来
+- 跨节点上下文应该可查询（"show me everything related to X across all projects"）
+- Agent 视角比人类更碎片化（session 隔离 + cron 不进 context），更需要图结构补偿
+
+相关 issue: openclaw#80468（cron 投递消息不进 channel session context）
+
 ## 竞品
 
 - **Clawith**: agent 办公室概念，跟 Workshop 最像但他们做 SaaS 我们做自用
