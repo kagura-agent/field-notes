@@ -106,3 +106,4 @@ Each session gets its own ref chain in the shared DAG. Divergent work lives on p
 | 2026-05-10 | 294 | +24%. Fork cmd merged, roadmap published, first external feature request |
 | 2026-05-10 PM | 297 | +1%. Quiet Sunday — one cosmetic commit ("change git to version-control" branding). Issues #16-#25 are roadmap items from maintainer. No architectural changes |
 | 2026-05-11 | 357 | +20% in 1 day. Rebrand complete: "Version control for AI agents". ROADMAP.md added 05-09. Strong sustained growth |
+| 2026-05-11 PM | 361 | +1%. Growth leveling off after viral spike. Issue #26: professional security researcher (nullref, Cantina/Code4rena/Immunefi) offering free security review — path traversal, TOCTOU races, credential handling. Signal: project maturing enough to attract professional auditor attention |
