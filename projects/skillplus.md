@@ -1,9 +1,9 @@
 # Skill-Plus — Compilable Skill Packages for Content Agents
 
-**Repo:** https://github.com/eight-acres-lab/skillplus (⭐469, 2026-05-08)
+**Repo:** https://github.com/eight-acres-lab/skillplus (⭐242, 2026-05-11)
 **Language:** TypeScript/Node.js
-**Latest:** npm `@e8s/skillplus`, 8 skills (2026-05-07)
-**Status:** Active daily commits, strong growth (+32% stars in ~1 week)
+**Latest:** npm `@e8s/skillplus`, 9 skills (2026-05-10)
+**Status:** Active daily commits, steady growth (+12% since 05-10)
 
 ## What It Does
 Compilable skill package system for content-generation agents. A skill is a YAML + Markdown directory that a **deterministic compiler** (no LLM calls) turns into multiple target formats:
@@ -36,6 +36,7 @@ All focused on **CN social media content generation**:
 | `post-caption-xiaohongshu` | 小红书 copywriting |
 | `post-caption-douyin` | 抖音口播文案 |
 | `story-thread-weibo` | 微博故事串 |
+| `cs-player-card` | CS player card design (added 05-10) |
 
 ## Comparison to [[ClawHub]]
 - ClawHub: agent **behavioral** skills (tools, workflows, automation)

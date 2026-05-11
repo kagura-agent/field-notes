@@ -7,7 +7,7 @@ stars: 238
 url: https://github.com/regent-vcs/re_gent
 ---
 
-# re_gent — Git for AI Agents
+# re_gent — Version Control for AI Agents
 
 Content-addressed DAG-based version control that captures *what* an agent did, *which prompt* produced each line, and lets you rewind across sessions. Go, Apache-2.0.
 
@@ -105,3 +105,4 @@ Each session gets its own ref chain in the shared DAG. Divergent work lives on p
 | 2026-05-09 | 238 | First observation. 10 days old, strong traction. Go, Apache-2.0 |
 | 2026-05-10 | 294 | +24%. Fork cmd merged, roadmap published, first external feature request |
 | 2026-05-10 PM | 297 | +1%. Quiet Sunday — one cosmetic commit ("change git to version-control" branding). Issues #16-#25 are roadmap items from maintainer. No architectural changes |
+| 2026-05-11 | 357 | +20% in 1 day. Rebrand complete: "Version control for AI agents". ROADMAP.md added 05-09. Strong sustained growth |

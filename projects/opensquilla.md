@@ -3,13 +3,13 @@ title: OpenSquilla — Token-Efficient AI Agent
 created: 2026-05-10
 updated: 2026-05-10
 status: active
-stars: 173
+stars: 194
 url: https://github.com/OpenSquilla/opensquilla
 ---
 
 # OpenSquilla — Token-Efficient AI Agent
 
-Apache-2.0, Python. 173⭐ in 4 days (created 2026-05-06). Self-described "microkernel AI agent."
+Apache-2.0, Python. 194⭐ (2026-05-11, was 173 on 05-10). Self-described "microkernel AI agent."
 
 ## Core Idea
 
@@ -87,3 +87,10 @@ Essentially automated version of what we do manually. Cursor advances on success
 Positioned between [[genericagent]] (heavy governance) and lightweight coding agents. Differentiator is the token-efficiency angle. Comparable to [[deepclaude]] in cost arbitrage motivation but with a more sophisticated routing mechanism. The "dream" system overlaps with [[auto-memory]] concepts.
 
 Links: [[context-budget]], [[skill-context-compression]], [[self-evolving-agent-landscape]], [[thin-harness-fat-skills]], [[deepclaude]], [[auto-memory]], [[genericagent]]
+
+## Tracking
+
+| Date | Stars | Notes |
+|------|-------|-------|
+| 2026-05-10 | 173 | First observation. 4 days old, local ML router |
+| 2026-05-11 | 194 | +12%. Feishu channel support added, CI improvements, router defaults clarified |
