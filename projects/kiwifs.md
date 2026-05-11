@@ -296,7 +296,7 @@ kiwifs is executing the "everything server" strategy at extraordinary velocity. 
 **Risk**: Scope explosion continues. 6 major capability layers in 3 weeks. BSL-1.1 license unchanged. Whether this architectural breadth is sustainable with a small team is the key question.
 
 **Relevance to us**:
-1. **Lint-on-write pattern** — Our wiki-lint.py runs as post-hoc audit. kiwifs's approach (reject invalid writes at pipeline level) is more ergonomic. Consider: should memex or our commit hooks reject broken markdown before it enters the wiki?
+1. **Lint-on-write pattern** — Our wiki-lint.py runs as post-hoc audit. kiwifs's approach (reject invalid writes at pipeline level) is more ergonomic. **Applied 2026-05-11**: Added `.githooks/pre-commit` to wiki repo — rejects duplicate slugs at commit time instead of catching them post-push in CI. Immediately fixed a recurring CI failure (brain-git-memory duplicate slug). Next step: extend hook to reject broken wikilinks too.
 2. **Scoped tokens** — If we ever expose wiki via MCP server, their read/write scope + path prefix model is the right granularity.
 3. **Audit logging** — Append-only JSONL with daily rotation is simple and effective. We have session logs but no wiki-level audit trail.
 
