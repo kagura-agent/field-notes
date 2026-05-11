@@ -1,9 +1,9 @@
 ---
 created: 2026-05-04
-updated: 2026-05-07
+updated: 2026-05-11
 type: project
 status: active
-stars: 421
+stars: 419
 repo: kiwifs/kiwifs
 language: Go
 license: BSL-1.1
@@ -249,4 +249,55 @@ External contributor PR adding Mermaid diagram rendering in markdown pages. Mino
 - **Trajectory**: Transitioning from feature explosion to stabilization. Rules self-modification closes the last obvious gap in the agent autonomy story.
 - **Next revisit**: 05-14 as scheduled. Watch for: multi-agent coordination patterns using claims+rules, community growth (external PRs), and whether the feature scope stabilizes or keeps expanding.
 
-Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]], [[agent-commerce]], [[context-is-software]]
+## v0.10.0: Security + Quality Pipeline (2026-05-11 followup)
+
+Explosive development burst: v0.5.0 → v0.10.0 in 3 days (05-08 to 05-10). 9 PRs merged. Two significant architectural additions:
+
+### Security & Publish Primitives (PR#55, +950/-38)
+
+- **Space visibility**: `private` / `unlisted` / `public` modes via `PUT /space/visibility`. Public = all reads open; unlisted = direct file access but no tree/search; writes always require auth.
+- **Scoped tokens**: `scope=read` (rejects mutations) and `scope=write` with optional path prefix restrictions. CLI: `kiwifs token create/list/revoke`.
+- **Audit logging**: Append-only JSONL at `.kiwi/audit/YYYY-MM-DD.jsonl` with daily rotation. Captures every API request (method, path, actor, token hash, IP, status, duration). Query via `GET /audit?since=&limit=`.
+- **Rate limiting**: Per-token rate limiting (token hash key, IP fallback). Opt-in only when `requests_per_minute > 0` — won't break dev/test.
+- **Config-driven webhooks**: `[[webhook_entries]]` in config.toml auto-registers at startup (idempotent).
+- **CORS hardening**: `[server.cors]` with explicit allowed_origins, backward-compatible with legacy `cors_origins`.
+
+This transforms kiwifs from a single-user dev tool to a **multi-user publishable platform**. The visibility + scoped tokens + audit combo is production-grade access control.
+
+### Markdown Quality Pipeline (PR#53, +2024/-30)
+
+Two-layer quality system for agent-written content:
+
+1. **Auto-format on write** (`FormatWrite` pipeline hook): Normalizes markdown before commit — fixes table alignment, closes unclosed fences, normalizes list markers, strips trailing whitespace. Runs silently, zero agent effort.
+2. **`kiwi_lint` MCP tool** + `POST /api/kiwi/lint`: 10 lint rules with structured output (line numbers, severity). Error-severity issues reject writes with HTTP 422.
+
+Lint rules: frontmatter-yaml-invalid, frontmatter-missing-required, frontmatter-date-invalid, table-column-mismatch, table-no-separator, fence-unclosed, fence-mermaid-invalid, heading-duplicate-slug, heading-skip-level, link-image-broken.
+
+Pipeline: Format runs before validate. Both configurable via `[lint]` in config.toml.
+
+**Tested extensively**: CJK/emoji in tables, nested fences, escaped pipes, BOM, null bytes, 10K-char lines, 200-row tables, adversarial/fuzz inputs. Also validated against React, Kubernetes, Rust, VS Code READMEs + CommonMark spec (206KB) + GFM spec (216KB).
+
+### Other v0.7-0.10 additions
+
+- **Graph search tools** (PR#47): `peek`, `section`, `graph_walk`, `ingest` MCP tools for knowledge graph navigation
+- **Comprehensive markdown rendering v2** (PR#50): Major UI upgrade
+- **Batch UI fixes** (PR#51): Theme editor, search, wiki links, graph, nav
+
+### Ecosystem Position Update
+
+🟢 THRIVING (6/6 community health): 8 unique issue authors, 29 external PRs in 30 days, 4 merged PR authors, 27/30 PRs merged.
+
+kiwifs is executing the "everything server" strategy at extraordinary velocity. Each release adds a new infrastructure layer:
+- v0.5: Rules + multi-space → governance
+- v0.7: Graph search → navigation
+- v0.8-0.9: Rendering + UI polish → UX
+- v0.10: Security + quality → multi-user production
+
+**Risk**: Scope explosion continues. 6 major capability layers in 3 weeks. BSL-1.1 license unchanged. Whether this architectural breadth is sustainable with a small team is the key question.
+
+**Relevance to us**:
+1. **Lint-on-write pattern** — Our wiki-lint.py runs as post-hoc audit. kiwifs's approach (reject invalid writes at pipeline level) is more ergonomic. Consider: should memex or our commit hooks reject broken markdown before it enters the wiki?
+2. **Scoped tokens** — If we ever expose wiki via MCP server, their read/write scope + path prefix model is the right granularity.
+3. **Audit logging** — Append-only JSONL with daily rotation is simple and effective. We have session logs but no wiki-level audit trail.
+
+Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]], [[agent-commerce]], [[context-is-software]], [[wiki-lint]]

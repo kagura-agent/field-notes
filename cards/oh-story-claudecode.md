@@ -2,7 +2,7 @@
 title: oh-story-claudecode
 tags: [agent-skill, claude-code, viral, deslop, skill-ci]
 created: 2026-05-06
-updated: 2026-05-09
+updated: 2026-05-11
 ---
 
 # oh-story-claudecode
@@ -77,3 +77,4 @@ If we ever want to make [[kagura-story]] output less AI-sounding, this quantifie
   - **Reference compression** (PR#29): Refactored reference files for smaller context windows. Terminology simplification.
   - **Layered summary protocol** + genre formula references (PR#28)
   - **Observation**: Project is evolving from "writing assistant" to **writing platform** — research, routing, revision, and quality assurance as distinct agent roles. The multi-agent specialization pattern mirrors [[supervisor-pattern]].
+- 05-11: 955⭐ (+1%). Continued acceleration: PR#28 (writing formulas, layered summary protocol, genre element extraction), PR#29 (reference file split + compression + terminology simplification). The platform maturation continues but star growth is decelerating. Entering stabilization phase after explosive feature build-out.
