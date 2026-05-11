@@ -1205,3 +1205,9 @@ GitHub trending (agent, created past week, sorted by stars):
 - **HN**: No fresh agent-related front page hits today (Monday)
 - **Saturation**: 6/10 known or irrelevant. 2 genuinely new finds — mirage growth continues, 2 new repos in relevant domains
 - **Trend**: Agent infra layer diversifying — VFS (mirage), skill eval (agent-skills-eval), long-running patterns (Anthropic). Moving past "yet another agent framework"
+
+## deepcode-cli (lessweb/deepcode-cli)
+- **Stars**: 507 (2026-05-11)
+- **What**: DeepSeek-v4 native terminal AI coding agent with reasoning intensity control and Agent Skills
+- **Why interesting**: Another model-native agent (like whale for DeepSeek). CN developer. Skills support.
+- **Verdict**: Note only. Derivative of whale pattern. Revisit if hits 1k+.
