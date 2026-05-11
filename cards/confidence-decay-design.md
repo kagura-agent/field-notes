@@ -4,6 +4,7 @@ slug: confidence-decay-design
 tags: [wiki, knowledge-management, design, freshness]
 created: 2026-04-26
 status: design
+last_verified: 2026-05-11
 ---
 
 # Confidence Decay for Wiki Cards
@@ -98,6 +99,19 @@ done
 
 **Architecture decision**: Staleness is a **warning**, not an error. Knowledge doesn't expire — freshness does. This matches [[stash]]'s philosophy but uses time-based flagging instead of numeric decay.
 
-**Next steps**: Step 2 (backfill `last_verified`) and Step 3 (study loop integration) remain. Step 2 is mechanical; Step 3 requires workflow change.
+**Next steps**: Step 2 (backfill `last_verified`) remains — mechanical one-time script.
 
 **Links**: [[wiki-health-check]], [[stash]], [[wiki-as-compiled-knowledge]]
+
+### 2026-05-11: Pre-commit Auto-Update (Step 3)
+
+**Applied**: Extended `.githooks/pre-commit` to auto-update `last_verified` for any cards/ or projects/ files being committed. Two code paths: sed for existing field, awk for insertion before closing `---`.
+
+**Verification**:
+- Tested insert case (buddyme.md, no last_verified) → correctly added field before closing `---`
+- Tested update case (paperguru-ccm.md, has last_verified) → correctly updated date
+- Both cases re-stage the file so the commit includes the updated frontmatter
+
+**What's different now**: Every card edit automatically refreshes its staleness timer. Before this, `last_verified` had to be manually maintained — which means it would never be maintained. Now it's zero-effort. Wiki-lint section 10 staleness reports will be accurate without any behavioral discipline required.
+
+**Remaining**: Step 2 (backfill) — set `last_verified: <created>` for all existing cards that lack it. Low priority since new edits will naturally add the field.
