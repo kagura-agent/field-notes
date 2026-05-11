@@ -311,3 +311,13 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **PR template**: STRICT — auto-close after 2h if template not filled
 - Must fill `.github/pull_request_template.md` sections immediately on PR creation
 - CONTRIBUTING.md has specific requirements — check before next PR
+
+### #26824 — fix(app): display i18n-translated title in slash command popover (2026-05-11)
+- **Status**: PENDING (CI all 4 checks green ✅, compliance fixed ✅)
+- **Issue**: #26778 — Slash command popover shows English trigger text, ignores i18n title
+- **Root cause**: `slash-popover.tsx` line 113 renders `/{cmd.trigger}` (hardcoded English) as primary label. `cmd.title` (properly internationalized via `language.t()`) is defined in `SlashCommand` interface and populated by command definitions but never displayed.
+- **Fix**: 2-line change — show `cmd.title` as primary bold label, keep `/{cmd.trigger}` as smaller subtle secondary hint. Matches pattern in command palette (`Ctrl+K`) which already uses `item.title`.
+- **Diff**: +2/-1 lines, 1 file
+- **Approach**: Manual edit, no Claude Code needed. GitHub API for code review, local typecheck.
+- **Key learning**: PR template compliance is auto-enforced — 2h auto-close window. Always use template from the start.
+- **Lesson applied**: Used PR template immediately (from previous #26641 auto-close lesson)
