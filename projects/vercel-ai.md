@@ -73,7 +73,20 @@
 - Changeset added per CONTRIBUTING.md requirements
 - CI: Vercel deploy needs maintainer auth (expected for external PRs), Socket + Agent Review pass
 
-### PR #15049 (2026-05-06) — PENDING
+### PR #15159 (2026-05-11) — PENDING
+- Fix: resolve top-level $ref from Standard Schema providers (Effect Schema.Class)
+- Issue #15155: Schema.Class produces JSON Schema with $ref+$defs, OpenAI rejects for structured output
+- Approach: Added `resolveTopLevelRef()` to inline $defs definitions at top level; also handle $defs in `addAdditionalPropertiesToJsonSchema`
+- CI: All green (Lint, TypeScript, Tests 20/22/24, Bundle Size). Vercel deploy needs maintainer auth (expected)
+- Changeset: patch for `@ai-sdk/provider-utils`
+- Note: Had to use GitHub API (git/blobs + git/trees + git/commits) for push — regular `git push` OOMs on this 600MB+ repo
+
+## 踩坑补充 (2026-05-11)
+
+- **Git push OOM**: This repo is too large for regular git clone/push on kagura-server. Use GitHub API (create blob → create tree → create commit → update ref) to push changes. This is reliable and avoids memory issues.
+- **Fork sync matters**: Always `gh api repos/kagura-agent/ai/merge-upstream -X POST -f branch=main` before creating new branch. The fork can fall behind on import type changes etc.
+- **Branch recreation breaks PR**: If you delete+recreate a branch, the PR doesn't track the new commits. Must close old PR and create new one.
+- **import type enforcement**: Project now enforces `import type` for type-only imports (ultracite lint). Check upstream main's import style before pushing.
 - Fix: use `reasoning` field name for Cerebras assistant messages in multi-step runs
 - Issue #15042: Cerebras expects `reasoning` not `reasoning_content` on assistant message history
 - Approach: Added `reasoningFieldName` option to `OpenAICompatibleChatConfig` and `convertToOpenAICompatibleChatMessages()`. Cerebras provider sets it to `'reasoning'`
