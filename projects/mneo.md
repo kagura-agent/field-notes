@@ -57,5 +57,5 @@ Validates our bet on git + files as the memory substrate. The next step would be
 ## Related
 
 - [[stash]] — Postgres-based alternative
-- [[brain-git-memory]] — similar git-backed concept
+- [[git-backed-agent-memory]] — similar git-backed concept
 - [[wiki-as-compiled-knowledge]] — our theoretical framework

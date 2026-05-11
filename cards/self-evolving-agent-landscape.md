@@ -195,7 +195,7 @@ See [[wanman-skill-evolution]] for deep read.
 - **Git as source of truth, SQLite as derived index**：跟我们 wiki+memex 的模式同构，但粒度是 event 而非 file
 - Multi-agent adapters (Claude Code, Cursor, Codex, OpenClaw, Hermes) via MCP
 - 32⭐, 很早期，但架构设计成熟
-- See [[brain-git-memory]] for deep read
+- See [[git-backed-agent-memory]] for deep read
 
 ### Memory 层新信号
 - **Event-sourced > Document** 成为新辩论：brain 和 [[hermes-memory-skills]] 都主张结构化事件而非自由文本

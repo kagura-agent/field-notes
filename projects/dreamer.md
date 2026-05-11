@@ -90,6 +90,6 @@ Custom types can be declared in config with JSON Schema validation.
 
 ## Ecosystem Position
 
-Sits in the [[self-evolving-agent-landscape]] Memory+Prompt/Skill layers. Competes with [[brain-git-memory]] (simpler, git-only) and [[stash]] (episode-based, Postgres). Differentiated by the two-phase dream + MCP interface + team-wide design.
+Sits in the [[self-evolving-agent-landscape]] Memory+Prompt/Skill layers. Competes with [[git-backed-agent-memory]] (simpler, git-only) and [[stash]] (episode-based, Postgres). Differentiated by the two-phase dream + MCP interface + team-wide design.
 
-Links: [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[brain-git-memory]], [[stash]], [[agent-skill-standard-convergence]]
+Links: [[self-evolving-agent-landscape]], [[mechanism-vs-evolution]], [[git-backed-agent-memory]], [[stash]], [[agent-skill-standard-convergence]]

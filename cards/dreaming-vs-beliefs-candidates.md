@@ -71,7 +71,7 @@ This brings our gate from 4 to 5+1 dimensions (4 hard + Durability hard + Reduct
 
 ## 2026-04-29: Source Authority (from brain)
 
-After applying [[brain-git-memory]]'s authority model, beliefs-candidates entries now include a `source:` field (`human|self|study|review|env`). Key change: **human corrections graduate faster** (threshold 2×) than self-observed patterns (3×). This is the "not all memories are equal trust" principle — Luna's direct correction carries more signal than an agent's self-reflection.
+After applying [[git-backed-agent-memory]]'s authority model, beliefs-candidates entries now include a `source:` field (`human|self|study|review|env`). Key change: **human corrections graduate faster** (threshold 2×) than self-observed patterns (3×). This is the "not all memories are equal trust" principle — Luna's direct correction carries more signal than an agent's self-reflection.
 
 This differentiates the "repeated 3×" heuristic by source quality, not just quantity.
 

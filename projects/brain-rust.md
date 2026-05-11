@@ -134,6 +134,6 @@ agentic-stack's dream cycle (Jaccard clustering → pattern extraction → revie
 
 ## Links
 
-[[agentic-stack]], [[agent-memory-taxonomy]], [[brain-git-memory]], [[self-evolving-agent-landscape]], [[skill-ecosystem]]
+[[agentic-stack]], [[agent-memory-taxonomy]], [[git-backed-agent-memory]], [[self-evolving-agent-landscape]], [[skill-ecosystem]]
 
 *Deep read: 2026-05-03. Source: GitHub clone + code reading of all 7 crates.*

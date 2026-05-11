@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Pre-commit hook: reject duplicate slugs between cards/ and projects/
+# Inspired by kiwifs lint-on-write: reject at commit time, not after.
+set -euo pipefail
+
+dupes=0
+for f in cards/*.md; do
+  slug=$(basename "$f")
+  if [ -f "projects/$slug" ]; then
+    echo "❌ Duplicate slug: $slug exists in both cards/ and projects/"
+    dupes=$((dupes + 1))
+  fi
+done
+
+if [ "$dupes" -gt 0 ]; then
+  echo ""
+  echo "Fix: rename one copy to a unique slug, or merge and delete."
+  echo "Blocked by pre-commit hook (zero-tolerance on duplicate slugs)."
+  exit 1
+fi

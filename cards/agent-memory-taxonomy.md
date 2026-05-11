@@ -51,7 +51,7 @@ source: "Memory in the Age of AI Agents" (arxiv 2512.13564, 47 authors, HF Daily
 
 ## 2026-04-29 Update: brain's 6-Layer Model
 
-[[brain-git-memory]] introduces a formal 6-layer taxonomy: Working, Episodic, Semantic, Personal, Skill, Protocol. Maps neatly to the Functions dimension:
+[[git-backed-agent-memory]] introduces a formal 6-layer taxonomy: Working, Episodic, Semantic, Personal, Skill, Protocol. Maps neatly to the Functions dimension:
 - Working → Working memory
 - Episodic → Factual memory (events)
 - Semantic → Factual memory (general knowledge)
@@ -60,4 +60,4 @@ source: "Memory in the Age of AI Agents" (arxiv 2512.13564, 47 authors, HF Daily
 
 Also adds **authority scoring** (source + score 0-100) — a Dynamics dimension element missing from the survey: not just *what* to remember, but *how much to trust* each memory.
 
-[[self-evolving-agent-landscape]] [[beliefs-upgrade-mechanism]] [[agent-perception-gap]] [[brain-git-memory]]
+[[self-evolving-agent-landscape]] [[beliefs-upgrade-mechanism]] [[agent-perception-gap]] [[git-backed-agent-memory]]

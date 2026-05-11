@@ -120,10 +120,10 @@ mnem is the "infrastructure bet" — if agent memory becomes important enough to
 - **Quality signal confirmed**: benchmarks reproducible, Rust crate structure clean, 17 crates with clear boundaries
 - **Adoption risk**: solo project, no external PRs, no community contributions yet. 21 forks but no activity from them
 - **Growth pattern**: docs/distribution polish, not feature development. Suggests v0.1.x is "ship and market" phase
-- **Relevance unchanged**: token-budget transparency and deterministic ingest remain the two ideas most applicable to us. We won't adopt the full system but these patterns inform how we think about [[brain-git-memory]] and memory retrieval improvements
+- **Relevance unchanged**: token-budget transparency and deterministic ingest remain the two ideas most applicable to us. We won't adopt the full system but these patterns inform how we think about [[git-backed-agent-memory]] and memory retrieval improvements
 
 ### New Ecosystem Context
-- **Git-model memory convergence**: codejunkie99/brain (56⭐, flat files) and mnem (61⭐, knowledge graph) independently adopted "git for agent memory" framing. Two implementations, same thesis. Validates [[brain-git-memory]] card.
+- **Git-model memory convergence**: codejunkie99/brain (56⭐, flat files) and mnem (61⭐, knowledge graph) independently adopted "git for agent memory" framing. Two implementations, same thesis. Validates [[git-backed-agent-memory]] card.
 - **OpenSquilla** (135⭐ in 3 days, Python) — token-efficient microkernel agent with Feishu adapter. More "full-stack agent" than memory-specific. Different bet than mnem.
 - **oh-my-kimi** (62⭐) — Kimi Code CLI multi-agent harness with worktree runtime. Shows non-Claude ecosystems growing their own tooling. Diversification signal per [[worktree-convergence-2026-05]].
 
@@ -158,4 +158,4 @@ NirDiamant published Agent_Memory_Techniques (245⭐ in 5 days) — 30 Jupyter n
 ### Revised Position
 mnem's v0.1.x "ship and market" phase continues. No architectural changes since last read. The roadmap reveals ambition (CRDT, WASM, cross-lang) but execution is solo. **Watch for**: first external contributor, v0.2.0 release with remote sync, or star growth inflection point. Current trajectory suggests a solid niche tool rather than ecosystem standard.
 
-Links: [[brain-git-memory]], [[agent-memory-landscape]]
+Links: [[git-backed-agent-memory]], [[agent-memory-landscape]]
