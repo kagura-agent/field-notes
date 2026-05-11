@@ -2,6 +2,7 @@
 title: claude-hud - Claude Code HUD Plugin
 created: 2026-03-25
 source: GitHub jarrodwatts/claude-hud
+last_verified: 2026-05-11
 ---
 
 ## 概况
@@ -75,6 +76,16 @@ source: GitHub jarrodwatts/claude-hud
 - **Root cause**: subprocess piped stdout → terminal width 0 → fallback 40 → compact wraps
 - **Pattern**: Community already diagnosed root cause in issue comments — read comments before coding saves time
 - **Lesson**: When issue has good community analysis, leverage it — don't re-derive from scratch
+
+## 2026-05-11 PR #537 — Session start date & last response timestamp (Closes #529)
+
+- **Status**: PR submitted, CI green (Node 18.x + 20.x), 559 tests pass
+- **Changes**: 5 files, +232/-1 — new `renderSessionTimeLine` + config + tests
+- **Pattern**: Reused existing transcript data (`sessionStart`, `lastAssistantResponseAt`) — zero new parsing
+- **Architecture**: Added as `sessionTime` HUD element in element order system, follows `showDuration` pattern
+- **Note**: Had a previous branch from earlier session; rebased onto upstream/main, cleaned dist/ from commit per CONTRIBUTING.md
+- **Lesson**: When data infrastructure already exists, the feature is mostly render + config wiring
+- **Lesson**: Always check `git diff --stat` before push — dist/ was included from `npm run build` but CONTRIBUTING.md says CI handles it
 
 [[self-evolving-agent-landscape]]
 
