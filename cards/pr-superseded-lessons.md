@@ -2,6 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
+last_verified: 2026-05-11
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -72,6 +73,7 @@ source: NemoClaw #871/#879, hindsight #678 被关复盘
 23. 更新了用户文档吗？CLI fix 必须同步改 docs
 24. 检查 main branch — fix 可能已经 merge 了
 25. 搜 codebase 有没有现有 runtime context flag 该影响行为（如 RUNNING_FROM_BUILT_ARTIFACT）
+26. `git diff --stat` 检查有没有无意的 file mode 变更（644→755）；确认文件大小符合 repo 惯例
 
 ### Quick Patterns Reference
 | Pattern | 一句话 |
