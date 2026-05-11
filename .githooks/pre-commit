@@ -18,3 +18,32 @@ if [ "$dupes" -gt 0 ]; then
   echo "Blocked by pre-commit hook (zero-tolerance on duplicate slugs)."
   exit 1
 fi
+
+# --- Auto-update last_verified for modified cards/projects ---
+# Implements confidence-decay-design step 3: verification = touching.
+# When a card is edited and committed, its staleness timer resets.
+today=$(date +%Y-%m-%d)
+updated=0
+
+for f in $(git diff --cached --name-only --diff-filter=ACM -- 'cards/*.md' 'projects/*.md' 2>/dev/null); do
+  [ -f "$f" ] || continue
+  # Only touch files with frontmatter (--- delimited)
+  if head -1 "$f" | grep -q '^---$'; then
+    if grep -q '^last_verified:' "$f"; then
+      # Update existing last_verified
+      sed -i "s/^last_verified: .*/last_verified: $today/" "$f"
+    else
+      # Insert last_verified before closing --- using awk
+      awk -v date="$today" '
+        /^---$/ && NR>1 && !done { print "last_verified: " date; done=1 }
+        { print }
+      ' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+    fi
+    git add "$f"
+    updated=$((updated + 1))
+  fi
+done
+
+if [ "$updated" -gt 0 ]; then
+  echo "✅ Auto-updated last_verified ($today) for $updated card(s)"
+fi
