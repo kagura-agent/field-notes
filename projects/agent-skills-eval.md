@@ -1,58 +1,71 @@
 ---
-title: "agent-skills-eval — Test Runner for Agent Skills"
-created: 2026-05-10
-source: https://github.com/darkrishabh/agent-skills-eval
-stars: 265
-star_history: "265 (05-10)"
-status: tracking
-revisit: 2026-05-17
-tags: [skill-ecosystem, eval, testing, agentskills-io]
+title: agent-skills-eval
+tags: [skill-eval, testing, agentskills-io, quality]
+created: 2026-05-11
+stars: 276
+url: https://github.com/darkrishabh/agent-skills-eval
 ---
 
 # agent-skills-eval
 
-> "Write a SKILL.md, drop in some evals, and find out — empirically — whether your skill actually makes the model better at the task."
-
-TypeScript CLI tool. MIT. By darkrishabh.
+Test runner for [agentskills.io](https://agentskills.io)-style AI agent skills. MIT, TypeScript, CLI + SDK. Created 2026-05-06, ⭐276 in 5 days.
 
 ## What It Does
 
-Runs a skill against prompts twice — once **with_skill** loaded into context, once **without_skill** (baseline) — uses a judge model to grade both outputs, then produces a side-by-side report.
-
-```bash
-npx agent-skills-eval ./skills \
-  --target gpt-4o-mini --judge gpt-4o-mini --baseline --strict
-```
-
-Output: static HTML report with pass/fail per skill.
+A/B testing framework for agent skills: runs the same prompt **with** and **without** a SKILL.md loaded, has a judge model grade both outputs, produces a side-by-side comparison report. Answers the question: "does this skill actually make the model better?"
 
 ## Architecture
 
-- Workspace-based: outputs to `agent-skills-workspace/iteration-N/`
-- JSONL artifacts for each run
-- OpenAI-compatible API for target and judge
-- CLI-first, npm-published
+```
+eval prompt → target model (with_skill / without_skill)
+           → raw output + tool_calls
+           → judge model grades against assertions
+           → JSON artifacts + HTML report
+```
 
-## Why This Matters
+**Key design decisions:**
 
-### Skill Ecosystem Maturity Signal
+1. **Dual-mode comparison** — Every eval runs twice (with_skill, without_skill). Not just "does it pass" but "does the skill add lift." This is the right question.
 
-This is the **testing layer** for the agent skills ecosystem. The progression:
-1. Write skills (SKILL.md) ✅ (2025-2026, widespread)
-2. Share skills (registries, ClawHub) ✅ (early 2026)
-3. **Test skills empirically** ← we are here (May 2026)
-4. Auto-evolve skills based on test results (next?)
+2. **Separated grading** — Judge is a different model call. Free-form assertions go through LLM judge; tool-call assertions are deterministic (local checks). Clean separation of fuzzy vs. exact.
 
-The fact that someone built this and got 265⭐ in 4 days means the ecosystem feels the pain of "skills that don't provably help."
+3. **Provider-agnostic** — OpenAI-compatible interface. Any chat model works as target or judge. No vendor lock-in.
 
-### Connection to Our Direction
+4. **Artifact-first** — Everything is JSON/JSONL. `iteration-N/` layout with full artifacts. Diffable across runs.
 
-- Could be used to validate our own skills before publishing to ClawHub
-- The with/without testing paradigm could apply to our beliefs-candidates process — test whether a belief actually changes behavior
-- [[agentskills-io-standard]] is referenced — the standard is getting tooling built around it
+5. **Spec-compliant** — Implements the full agentskills.io specification: frontmatter parsing, evals.json, references, scripts.
 
-## Open Questions
+## Interesting Details
 
-- Does it handle non-text skills (e.g., tool-use skills)?
-- How does the judge model handle subjective quality differences?
-- 265⭐ in 4 days — growth trajectory? Will revisit.
+- `ToolAssertion` types: `tool-called`, `tool-not-called`, `tool-arg-equals`, `tool-arg-contains`, `tool-arg-matches`, `tool-call-count` — deterministic, no judge needed
+- Skill system message rendered as XML: `<skill><description>...</description><instructions>SKILL.md content</instructions><references>...</references></skill>`
+- Supports attached files in evals (e.g., CSV data), falls back to inline XML if provider doesn't support attachments
+- `completeWithFallback` handles both system-role-aware and single-prompt providers
+
+## Relevance to Us
+
+| Aspect | Their Approach | Our Situation |
+|---|---|---|
+| Skill format | agentskills.io spec (SKILL.md + evals/) | OpenClaw SKILL.md (similar but different spec) |
+| Eval method | with/without comparison + LLM judge | No formal skill eval — we test manually |
+| Artifact format | JSON/JSONL + HTML report | N/A |
+
+**Applicable insights:**
+
+1. **Skill lift measurement** — The with/without comparison is the right way to evaluate skills. We could adapt this for ClawHub skills: does installing skill X actually improve task Y? Currently we have no way to measure this.
+
+2. **Tool-call assertions** — Deterministic assertions on tool calls (was the right tool called? with the right args?) are more reliable than LLM-judged text output. Useful pattern for [[cwc-long-running-agents]]'s default-fail-gate concept.
+
+3. **Convergence signal** — Another data point for [[skill-distribution-convergence]]: the ecosystem is maturing from "ship skills" to "prove skills work." Eval tooling is the next layer.
+
+## Gaps / Criticism
+
+- Only 1 issue, no real community yet (5 days old)
+- Assumes chat-completion interface — doesn't handle agentic loops where skills affect multi-turn behavior
+- No cost tracking per eval (tokens counted but not priced)
+- "Judge grades judge" problem: LLM judge reliability is the weakest link, especially for subtle skill differences
+- No statistical significance testing — single run, no confidence intervals
+
+## Status
+
+New project (5 days). Watch for: community adoption, integration with agentskills.io registry, multi-turn eval support.

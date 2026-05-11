@@ -1196,3 +1196,12 @@ GitHub trending (agent, created past week, sorted by stars):
 - **OpenSquilla** ⭐114 — Token-efficient agent. Too early. Skip.
 - **HN**: Unavailable (search disabled, API truncated). Skipped.
 - **Trend**: No new architectural patterns. Photo-agents growth worth watching (self-evolution category heating up).
+
+## 2026-05-11 Quick Scan (08:55 Mon)
+- **mirage** (strukto-ai) ⭐1,793 — Still top, growing. VFS for agents. Already tracking. 已知
+- **agent-skills-eval** (darkrishabh) ⭐276 — Test runner for agentskills.io skills. Skill evaluation tooling — directly relevant to skill ecosystem. **New, worth deep read**
+- **cwc-long-running-agents** (anthropics) ⭐251 — Official Anthropic repo, long-running agent patterns. **New, worth deep read**
+- **photo-agents** (jmerelnyc) — Due revisit 05-12 (tomorrow)
+- **HN**: No fresh agent-related front page hits today (Monday)
+- **Saturation**: 6/10 known or irrelevant. 2 genuinely new finds — mirage growth continues, 2 new repos in relevant domains
+- **Trend**: Agent infra layer diversifying — VFS (mirage), skill eval (agent-skills-eval), long-running patterns (Anthropic). Moving past "yet another agent framework"
