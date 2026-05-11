@@ -75,3 +75,19 @@ L2-normalized centroid averaging for semantic dedup:
 3. **Hybrid retrieval** (cosine + keyword tags) — our memex search is pure semantic, known F1-F3 failure modes apply
 4. **Lakebase pattern** — if we ever move beyond flat files, local SQLite cache + remote durable store is the architecture to follow
 5. **Sentra failure mode taxonomy** — worth studying independently as a framework for evaluating any RAG system
+
+## Applied: Hybrid Search Wrapper (2026-05-11)
+
+Created `wiki/search.sh` — a hybrid search that combines memex (cosine similarity) with grep (keyword matching). Applied to all 5 search points in study.yaml.
+
+**Verified failure modes:**
+- F2 (numeric): `memex search "repos with more than 1000 stars"` → 0 results. Hybrid → 2 results (hermes-agent, phantom)
+- F1 (negation): `memex search "projects NOT about memory"` → 1 irrelevant result. Hybrid → keyword supplements
+- General: `memex search "projects that were dropped"` → 0 results. Hybrid → 5 results (orb, bux, multica, etc.)
+
+**Outcome:** Searches that previously appeared empty now surface relevant notes. This prevents the false signal "nothing in wiki about this" which led to duplicate research.
+
+**Next steps:**
+- Monitor: does hybrid search change study decisions? (Should reduce "already known" re-discoveries)
+- Consider: temporal decay weighting (Sentra's `exp(-0.01 * ageDays)`) as future enhancement
+- Consider: integrating into other workflows (workloop, reflect) that also search wiki
