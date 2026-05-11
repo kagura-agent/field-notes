@@ -127,7 +127,7 @@ nodes:
 
       **Stale 判断标准（按 repo 实际情况）：**
       - 先读 wiki/projects/<repo>.md 的外部 PR review 模式
-      - 不 merge 外部 PR 的 repo（MemOS、claude-hud）→ 直接 close
+      - 不 merge 外部 PR 的 repo（MemOS）→ 直接 close
       - 活跃 repo（NemoClaw、Archon、stagehand）→ ping maintainer
       - 14 天无任何回应 → close
 
