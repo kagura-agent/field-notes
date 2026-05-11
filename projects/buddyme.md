@@ -2,8 +2,8 @@
 title: "buddyMe — Multi-Model Agent with Layered Personality"
 created: 2026-05-10
 source: https://github.com/virgo777/buddyme
-stars: 30
-star_history: "30 (05-10, day 1)"
+stars: 33
+star_history: "30 (05-10, day 1), 33 (05-11, +10%)"
 status: noted
 tags: [agent-framework, personality, heartbeat, skill-ecosystem, chinese-dev]
 ---
@@ -67,15 +67,54 @@ Simpler than our heartbeat (no cron, no nudge hooks), but the separation of conf
 2. **Skill crystallization**: The loop-to-skill auto-generation is a concrete implementation of [[self-evolution-as-skill]]. We could apply this pattern to FlowForge — auto-generate workflow steps from successful ad-hoc tool chains.
 3. **Chinese developer ecosystem**: Uses GLM, DeepSeek, ERNIE, Qwen, MiMo — all Chinese models. This is a China-focused agent framework, indicating the agent-skills pattern has crossed the cultural boundary.
 
+### Memory Decay & Consolidation (Deep Read 05-11)
+
+`use_memory.py` implements a structured memory lifecycle:
+
+**Scoring formula**: `score = relevance×0.4 + importance×0.3 + recency×0.3`
+- Relevance: SequenceMatcher ratio between current query and memory content (crude but zero-LLM-cost)
+- Importance: manually set per-section (default 0.5), bumped to 0.9 after consolidation
+- Recency: linear decay over 30 days (`max(0, 1 - days/30)`)
+
+**Lifecycle states**:
+- Active (score ≥ 0.4) → stays in MD file
+- Archive (0.2 ≤ score < 0.4) → moved to `_history.json` with timestamp
+- Clean (score < 0.2) → deleted permanently
+
+**Consolidation**: keyword-based merge rules (e.g., sections containing "上次/曾经/之前" merge into "历史摘要"). Simple but solves the fragmentation problem — many small memories coalesce into fewer, richer sections.
+
+**Dedup**: SequenceMatcher ≥ 0.8 similarity → skip. Below threshold → archive old, write new.
+
+**Comparison to our approach**:
+- We use [[beliefs-candidates]] with Triple Verification (cross-context ≥3, predictive power, non-obvious) as upgrade gates → more selective but requires manual curation
+- buddyme's decay is automatic and continuous → lower maintenance but risks losing valuable low-frequency memories
+- Their relevance scoring uses string similarity (no embeddings, no LLM) → fast but misses semantic matches
+- Our approach separates "what happened" (memory/YYYY-MM-DD.md) from "what I believe" (beliefs-candidates.md) → buddyme conflates both in USER.md sections
+
+**Insight**: The 30-day linear decay window is interesting. Our daily memory files don't decay — they accumulate forever. We could benefit from a periodic consolidation pass that merges old daily memories into wiki knowledge, similar to buddyme's archive mechanism. See [[agent-memory-taxonomy]] (formation/evolution/retrieval dynamics).
+
+### Context Builder (Deep Read 05-11)
+
+`contextbuild.py` assembles system prompt in explicit layers: SOUL(L0) → IDENTITY(L1) → AGENT(capabilities) → HEARTBEAT → Tool schemas. This is the same layering we use but they made it a formal builder function with clear documentation of what each layer controls.
+
+### Zero Issues, Zero Tests
+
+No GitHub issues exist. No test directory. Blog is a raw IP. All signals point to a solo developer sharing their personal framework. No community engagement.
+
 ## Limitations / Critique
 
 - No tests at all (no test directory found)
 - Python-only, CLI-only — no platform integrations (Discord, Feishu, etc.)
-- Memory is conversation-log-based (JSON) — no semantic search, no wiki, no structured knowledge
+- Memory relevance uses SequenceMatcher (string distance) — misses semantic similarity entirely
+- Consolidation rules are hardcoded keywords — won't generalize to new memory categories
 - 25 bundled skills are all static instruction files — no dynamic tool registration beyond the built-in 8
 - Solo developer project, day 1 — high risk of abandonment
 - Blog link is a raw IP address (49.235.53.176) — low polish signal
+- `moudle` typos throughout (agent_moudle, llm_moudle, tool_moudle) — low code quality signal
 
 ## Verdict
 
-**Not worth tracking** — too early, too small, solo Chinese dev project with no community. But architecturally interesting as convergence evidence. The three-tier skill loading vocabulary and loop-skill crystallization are the two takeaways.
+**Not worth tracking** — too early, too small, solo Chinese dev project with no community. But architecturally interesting as convergence evidence. Three takeaways:
+1. Three-tier skill loading vocabulary (L1/L2/L3)
+2. Loop-skill crystallization pattern
+3. Memory decay formula (relevance×0.4 + importance×0.3 + recency×0.3) as a concrete reference for automated memory lifecycle management
