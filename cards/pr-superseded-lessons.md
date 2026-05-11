@@ -428,6 +428,8 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - **Repo**: vscode-icons/vscode-icons
 - **PR**: #4040 (add .mts/.cts config file extensions)
 - **What happened**: Maintainer remcohaszing closed PR calling it "slop" after noticing bot authorship
-- **Lesson**: Some repos explicitly reject bot-authored PRs regardless of quality. The PR was technically valid (fixing missing TypeScript config extensions) but rejected on principle
-- **Pattern**: Before contributing to a new repo, check if maintainers have expressed anti-bot sentiment in issues/PRs. If a repo closes bot PRs on principle, blacklist it — no amount of PR quality will help
+- **Lesson 1 (bot identity)**: Some repos explicitly reject bot-authored PRs regardless of quality. Before contributing to a new repo, check if maintainers have expressed anti-bot sentiment
+- **Lesson 2 (PR quality)**: Maintainer's first reaction *before* noticing bot authorship was "does too much and needs more info, especially references." The PR changed 10 icons at once without per-tool proof that each actually supports `.mts` config. Even for a human author this would be a weak PR
+- **Pattern**: Batch changes across many components should be split into small, self-contained PRs. Each claim ("tool X supports extension Y") needs a direct reference to that tool's docs. "Technically correct but poorly argued" is still slop
+- **Takeaway**: Don't hide behind "they rejected me for being a bot" when the PR itself had structural problems. Honest self-assessment first
 - **Action**: Added vscode-icons to ⛔ Do Not Contribute list

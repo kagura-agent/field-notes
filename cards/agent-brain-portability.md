@@ -14,7 +14,7 @@ Agent 的知识和经验不应绑定在特定 harness（Claude Code、Cursor、H
 | 方案 | 存储 | 复杂度 | 跨 harness |
 |------|------|--------|-----------|
 | 文件即一切（Kagura SOUL.md） | Markdown 文件 | 最低 | 需手动适配 |
-| [[agentic-stack]] .agent/ | 结构化文件夹 + Python 工具 | 中等 | 7 种 harness adapter |
+| [[agentic-stack]] .agent/ | 结构化文件夹 + Python 工具 + Brain CLI | 中等 | 8 种 harness adapter (now incl. Copilot CLI + Gemini CLI) |
 | [[gbrain]] | PGLite + dream cycle | 高 | 绑定 OpenClaw |
 | [[reflexio]] | 独立服务 + SQLite + embedding | 最高 | API 集成 |
 
@@ -23,6 +23,18 @@ Agent 的知识和经验不应绑定在特定 harness（Claude Code、Cursor、H
 1. **Adapter 层可以极简**：agentic-stack 的 harness adapter 只是一个 AGENTS.md 文件。因为所有主流 harness 都能读 markdown，所以适配成本接近零
 2. **标准化文件结构 > 复杂 API**：可移植性的关键不是协议，而是约定俗成的文件布局
 3. **Dream cycle 不需要 LLM**：Jaccard 聚类 + canonical extraction 够用，零 API 依赖
+
+## 2026-05-11 Update: agentic-stack Brain Bridge
+
+[[agentic-stack]] v0.18.0 shipped an explicit **two-tier memory** architecture:
+- **Local**: `.agent/memory/semantic/` — project-specific lessons (JSONL + rendered LESSONS.md)
+- **Global**: External `brain` CLI + MCP server — cross-harness durable preferences
+
+Bridge tool (`brain_bridge.py`) wraps `ask`/`note`/`status` commands. Brain is optional (Homebrew install, no vendoring). This mirrors our own wiki/ (project knowledge) + MEMORY.md (cross-context) split, but formalized as a CLI/MCP service.
+
+Also: **lesson retraction** (v0.17.0) — append-only status transition (accepted → retracted + rationale). Clean audit trail. Validates the "don't delete, mark obsolete" pattern we should adopt for beliefs-candidates.md.
+
+Links: [[agentic-stack]], [[beliefs-upgrade-mechanism]], [[dreaming-vs-beliefs-candidates]]
 
 ## 与 [[mechanism-vs-evolution]] 的关系
 

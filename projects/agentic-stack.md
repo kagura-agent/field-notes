@@ -484,3 +484,28 @@ Links: [[skill-ecosystem]], [[mechanism-vs-evolution]], [[clawhub]]
 v0.16.0 shipped: safe `upgrade` + `sync-manifest` commands, resolving #45 and #47. Also: `docs/getting-started.md` still referenced pre-v0.9 workflow (`git clone` + `cp -R`), diverged from README quickstart (`brew install` + CLI). Submitted [PR #49](https://github.com/codejunkie99/agentic-stack/pull/49) — first docs-first entry contribution, testing [[iris-clawd-contributor-study]] strategy.
 
 *Followup check: 2026-05-14*
+
+### 2026-05-11: v0.17-v0.18 burst — Brain bridge, lesson retraction, multi-harness adapters
+
+**PR #49 merged** (05-09) — our docs-first entry validated. Maintainer active, responsive.
+
+**v0.17.0** (05-10):
+- **Copilot CLI adapter**: `AGENTS.md`, `.github/instructions/`, `.github/hooks/`, `.github/skills/` wiring
+- **Gemini CLI adapter**: `gemini.md` + `.gemini/skills/` mirror
+- **Mission Control beta**: `agentic-stack mission-control` — local web dashboard + static snapshot renderer. Observability surface for the portable brain.
+- **Semantic lesson retraction**: `retract_lesson.py` — append-only status transition (accepted → retracted + rationale). Re-renders LESSONS.md from structured source. Clean audit trail without destructive edits. Our beliefs-candidates.md could adopt this pattern: don't delete superseded entries, mark them retracted with rationale.
+
+**v0.18.0** (05-10):
+- **External Brain memory bridge**: `brain_bridge.py` + `.agent/skills/brain/SKILL.md` — cross-harness long-term memory via `brain` CLI + MCP. Commands: `ask`, `note`, `status`, `doctor`, `tui`, `mcp-command`. Keeps Brain external (Homebrew install, no vendoring). This formalizes what we do informally with MEMORY.md as a CLI/MCP service.
+- Brain bridge pattern: project-local `.agent/memory/semantic` remains source of truth for project-specific lessons; Brain is for cross-project durable preferences. Two-tier memory — local semantic + global Brain. Similar to our wiki/ (project knowledge) + MEMORY.md (cross-context) split.
+
+**Architecture evolution**: agentic-stack is becoming a **meta-harness** — adapters for Claude Code, Cursor, Windsurf, OpenCode, OpenClaw, Hermes, Copilot CLI, Gemini CLI. Brain bridge is the memory unification layer. Mission Control is the observability layer. The full "portable agent brain" vision: `.agent/` folder + Brain CLI + Mission Control dashboard.
+
+**Community**: 🟢 THRIVING (5/6) — 12 unique merged PR authors, 24 external PRs in 30 days. 1,928⭐.
+
+**Actionable for us**:
+1. Lesson retraction pattern → consider for beliefs-candidates.md (status field instead of deletion)
+2. Brain bridge → interesting MCP memory protocol reference
+3. Next contribution: code PR targeting adapter or brain area
+
+*Followup check: 2026-05-17*
