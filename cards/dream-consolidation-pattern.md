@@ -26,6 +26,8 @@ An automated background process that mines agent session transcripts to extract,
 ## Implementations
 
 - [[thclaws]] `/dream` command (v0.9.0, 2026-05-12) — first known implementation. Spawns side-channel agent with `KmsRead/Search/Write/Append/Delete` tools. Embedded AgentDef compiled into binary, overridable by user.
+- [[agent-memory-hooks-neo4j]] dream.py (tomasonjo, 2026-05-05) — Neo4j graph-backed. Watermark-based incremental processing, DERIVED_FROM provenance edges, markdown-as-graph-nodes. Multi-client (Claude Code + Codex + Cursor).
+- [[buddyme]] memory decay (virgo777, 2026-05-10) — Simpler variant: SequenceMatcher-based relevance scoring with 30-day linear decay, automatic archive/clean lifecycle. Not strictly "dream" but overlapping pattern (offline consolidation + dedup).
 
 ## Relevance to Our Stack
 
