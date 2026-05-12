@@ -81,8 +81,11 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
     fi
   done
   
-  # Merge exact + intersection results, deduplicate
-  ALL_KEYWORD=$(echo -e "${EXACT}\n${WORD_FILES}" | sort -u | grep -v '^$' | head -"$LIMIT")
+  # Merge exact + intersection results, deduplicate, sort by recency (temporal decay)
+  # Newer files rank higher — matches krusch-context-mcp temporal decay insight
+  ALL_KEYWORD=$(echo -e "${EXACT}\n${WORD_FILES}" | sort -u | grep -v '^$' | while read -r f; do
+    [[ -f "$f" ]] && echo "$(stat -c %Y "$f" 2>/dev/null || echo 0) $f"
+  done | sort -rn | cut -d' ' -f2- | head -"$LIMIT")
   
   COUNT=0
   while IFS= read -r filepath; do
