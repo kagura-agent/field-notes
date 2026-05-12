@@ -855,3 +855,94 @@ Stars: 10,101 (+698 since 04-20). 仍在快速增长。
 - `runCycle` 模式 = 我们 dreaming 的理想架构（统一入口, 固定 phase order, lock coordination）
 - Multi-source federation = 我们 wiki 可以分源管理（projects vs cards vs memory），控制搜索范围
 - Schema migration ledger + crash-point recovery = 我们 memex 升级路径可参考
+
+## 2026-05-12 Followup: v0.18→v0.33 + Functional-Area Resolver
+
+> ⭐ 15,071 (+5,668 since 04-20, +59%) | v0.33.0 | 15 major versions in 3 weeks
+
+### Growth & Velocity
+
+- 9,403⭐ (04-20) → **15,071⭐** (05-12): 60% growth in 22 days
+- v0.18 → v0.33: 15 major versions. Release cadence: ~1 major version every 1.5 days
+- README mentions: 17,888 pages, 4,383 people, 723 companies, 21 cron jobs, 34 skills
+- Now supports 14 embedding provider recipes (OpenAI, Voyage, Gemini, Azure, DashScope, Zhipu, Ollama, llama.cpp, LiteLLM, etc.)
+
+### Key New Capabilities (v0.19→v0.33)
+
+**v0.25 — BrainBench-Real**: Session-captured eval pipeline. `GBRAIN_CONTRIBUTOR_MODE=1` captures real query+search calls (PII-scrubbed) into `eval_candidates` table. `gbrain eval export` → `gbrain eval replay` → three metrics (Jaccard@k, top-1 stability, latency Δ). Off by default. Zero API keys needed for replay.
+
+**v0.28.8 — LongMemEval**: Public benchmark integration. `gbrain eval longmemeval <dataset.jsonl>` runs against hybrid retrieval. In-memory PGLite per run, TRUNCATE between questions, 25.9ms p50 per question on Apple Silicon. Same `INJECTION_PATTERNS` sanitization as production.
+
+**v0.32 — Facts Table + Hot Memory**: `_meta.brain_hot_memory` injection on MCP responses. Facts extraction pipeline → dream-cycle consolidation promotes facts to takes. ~70% of v0.32 spec already shipped in v0.31.
+
+**v0.32.3.0 — Functional-Area Resolver** ⭐⭐⭐: The most directly applicable new pattern. See dedicated section below.
+
+**v0.33 — `gbrain recall` enhancements**: `--since-last-run`, `--pending`, `--rollup`, `--watch` flags. Morning pulse workflow. Fixed 9 commands that silently returned empty on thin-client (MCP-only) installs.
+
+### Functional-Area Resolver — Deep Read
+
+**Problem**: Routing files (RESOLVER.md/AGENTS.md) grow linearly with skills. At 200+ skills → 25-30KB, eating context budget.
+
+**Solution**: Two-layer dispatch. Replace N rows per domain with 1 entry per **functional area**, each listing sub-skills in a `(dispatcher for: ...)` clause.
+
+```
+Before (270 rows, 25KB):
+- Creating/enriching a person page -> `enrich`
+- Fix broken citations -> `citation-fixer`
+- Brain integrity -> `brain-librarian`
+...
+
+After (13 rows, 13KB):
+- **Brain & Knowledge**: create/enrich/search/export brain pages, filing,
+  citations, book analysis -> `brain-ops` (dispatcher for: enrich, query,
+  brain-pdf, citation-fixer, book-mirror, strategic-reading, ...)
+```
+
+**Why it works**: LLM needs (1) area recognition, (2) sub-skill visibility via dispatcher list, (3) the skill file itself for full routing. The `(dispatcher for: ...)` clause is **load-bearing** — remove it and accuracy collapses.
+
+**A/B Eval Results** (20 training + 5 held-out fixtures, n=3 seeded repeats, LENIENT scoring):
+
+| Variant | Opus 4.7 | Sonnet 4.6 | Haiku 4.5 | Size |
+|---|---|---|---|---|
+| baseline (270 rows) | 81.7% | 86.7% | 73.3% | 25KB |
+| **functional-areas** | **98.3%** | **100%** | **88.3%** | **13KB** |
+| resolver-of-resolvers (no dispatcher) | 63.3% | 41.7% | 65.0% | 10KB |
+
+**Key insight**: The resolver-of-resolvers variant (area names only, no sub-skill lists) **catastrophically fails** on Sonnet (41.7%). The `(dispatcher for: ...)` list is the routing signal, not the area name.
+
+**Anti-patterns identified**:
+- Resolver-of-resolvers with pipe tables → LLM picks area names instead of drilling into sub-skills
+- Removing sub-skill names → LLM can't route
+- Too few areas (<5) → too broad; too many (>50) → defeats purpose
+- Sweet spot: 12-15 areas
+
+**Eval methodology**: Reproducible via `node harness.mjs --model opus` (~$1.70). STRICT scoring (exact slug match) vs LENIENT (same dispatcher area). LENIENT better reflects production behavior. Results in JSONL with full receipts.
+
+**Prior art cited**: AnyTool (meta-agent → category-agent → tool-agent, +35.4pp over flat), RAG-MCP (49.2% token reduction), Anthropic Agent Skills (progressive disclosure). This is the **static-prompt analog** — no second routing call needed.
+
+### Quality Signal: Bug Wave in v0.32
+
+15 issues filed in 2 days (05-11~12) including:
+- #895 Ranking results inverted (most relevant gets lowest score)
+- #892 Security: config set echoes API key to stderr
+- #890 Regression: sync hard-errors without OPENAI_API_KEY (was soft-fail in v0.18)
+- #889 Git worktrees misclassified as submodules
+
+This confirms our earlier observation: rapid release cadence (v0.18→v0.33 in 3 weeks) creates stability debt. Each major version generates reliability follow-ups.
+
+### 与我们的关联（05-12 更新）
+
+**直接可应用：**
+1. **Functional-area-resolver 模式** — 我们的 AGENTS.md 现在还小（~200 行），但 skill 增长后会面临同样问题。关键 takeaway：`(dispatcher for: ...)` 是必须的路由信号，纯 area 名称不够。当我们的 available_skills 超过 ~30 个时，应该考虑分组
+2. **BrainBench-Real 捕获模式** — 从真实使用中捕获 eval 数据（opt-in, PII-scrubbed）比手写 fixtures 更能反映实际使用模式。可用于评估我们的 [[memory-search]] 质量
+3. **Facts → Takes promotion** — gbrain 的 facts table + dream-cycle consolidation = 我们的 daily memory → MEMORY.md promotion 的参照架构
+
+**架构差异确认：**
+- gbrain 仍是 **knowledge runtime**（facts, entities, citations, retrieval）
+- 我们是 **behavior runtime**（beliefs, patterns, DNA, self-modification）
+- 互补而非竞争。gbrain 验证了 knowledge management 的 ceiling 很高，我们在 behavior 层有独特位置
+
+**速度 vs 质量的 tradeoff**：gbrain 的 15 个 major versions in 3 weeks 产出惊人，但 v0.32 bug wave 说明单人+AI 的极速开发也有 ceiling。对我们的启示：宁可慢一版也不要发 broken 的 release。
+
+## Tags
+#agent-memory #knowledge-base #openclaw-ecosystem #dream-cycle #self-evolving #thin-harness-fat-skills #security #retrieval-evaluation #intent-classification #functional-area-resolver #context-compression
