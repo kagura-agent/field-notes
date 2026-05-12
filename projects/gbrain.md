@@ -944,5 +944,20 @@ This confirms our earlier observation: rapid release cadence (v0.18→v0.33 in 3
 
 **速度 vs 质量的 tradeoff**：gbrain 的 15 个 major versions in 3 weeks 产出惊人，但 v0.32 bug wave 说明单人+AI 的极速开发也有 ceiling。对我们的启示：宁可慢一版也不要发 broken 的 release。
 
+## 2026-05-12 Apply: Functional-Area Resolver 对我们的适用性评估
+
+**结论: 现在不需要，~40 个 skill 时重新评估。**
+
+当前 `available_skills` 注入 25 个 skill，~3-4KB context cost。gbrain 的痛点在 270 行 / 25KB — 我们距离那个规模还远。
+
+**关键设计笔记（存档供未来实施参考）：**
+- 分 12-15 个 functional area（少于 5 太粗，多于 50 失去意义）
+- `(dispatcher for: skill1, skill2, ...)` 子句是 **load-bearing** — 去掉后 Sonnet 准确率从 100% 暴跌到 41.7%
+- 纯 area 名称 + pipe table 是 anti-pattern（LLM 会选 area 名而非 drill into sub-skills）
+- A/B eval 成本约 $1.70，发布前必须测
+- 参考 [[context-budget]] [[thin-harness-fat-skills]]
+
+**触发条件：** `available_skills` > 40 个，或观察到 skill routing 频繁出错。
+
 ## Tags
 #agent-memory #knowledge-base #openclaw-ecosystem #dream-cycle #self-evolving #thin-harness-fat-skills #security #retrieval-evaluation #intent-classification #functional-area-resolver #context-compression
