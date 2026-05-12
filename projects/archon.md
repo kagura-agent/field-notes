@@ -140,3 +140,20 @@
   - `bun test <dir>` runs all test files together causing mock pollution; use per-file `bun test <file>` or `bun run test` for isolation
   - CodeRabbit gives substantial architecture feedback — address type-level suggestions, explain out-of-scope concerns in PR comments
   - lint-staged OOM on commit hooks — use `--no-verify` and note in PR that lint was run separately
+
+## 2026-05-12 Session Notes
+
+### PR #1651 — fix(workflows): pass user-controlled vars via env vars in bash nodes (pending)
+- **Issue**: #1585 — shell injection via literal $ARGUMENTS/$USER_MESSAGE substitution in bash nodes (subsumes #1377)
+- **Root cause**: `substituteWorkflowVariables()` did `.replace()` splicing user text into `bash -c` script body
+- **Fix**: Added `shellSafe` option to skip user-controlled var substitution; pass them as subprocess env vars instead. Bash naturally expands `$ARGUMENTS` from env at runtime.
+- **Affected paths**: `executeBashNode`, `until_bash` in loop nodes
+- **Tests**: 3 new tests (2 unit shellSafe, 1 integration env var delivery). All 279 existing tests pass.
+- **CodeRabbit review**: Found 1 Major + 1 Nitpick — both addressed:
+  - Major: `LOOP_PREV_OUTPUT` in `until_bash` should reference previous iteration output, not current. Fixed by capturing `prevIterationOutput` before updating `lastIterationOutput`.
+  - Nitpick: Test spy cleanup in try/finally + assert call count before dereferencing. Applied.
+- **CI**: Ubuntu ✅, Windows/docker-build pending at time of push
+- **Lessons**:
+  - Claude Code via `claude --print` timed out again (Copilot API 60s idle timeout) — implemented manually instead. For Archon's codebase, manual implementation is faster for surgical changes.
+  - The investigation comment on the issue (#1585) had a detailed implementation plan by `acton-golden` that was very accurate — saved significant analysis time. Good to read all issue comments carefully.
+  - When adding env vars to subprocess calls, check loop semantics carefully — iteration-scoped values (LOOP_PREV_OUTPUT, LOOP_USER_INPUT) have different values per iteration.
