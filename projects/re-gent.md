@@ -5,6 +5,7 @@ updated: 2026-05-09
 status: active
 stars: 238
 url: https://github.com/regent-vcs/re_gent
+last_verified: 2026-05-12
 ---
 
 # re_gent — Version Control for AI Agents
@@ -107,3 +108,50 @@ Each session gets its own ref chain in the shared DAG. Divergent work lives on p
 | 2026-05-10 PM | 297 | +1%. Quiet Sunday — one cosmetic commit ("change git to version-control" branding). Issues #16-#25 are roadmap items from maintainer. No architectural changes |
 | 2026-05-11 | 357 | +20% in 1 day. Rebrand complete: "Version control for AI agents". ROADMAP.md added 05-09. Strong sustained growth |
 | 2026-05-11 PM | 361 | +1%. Growth leveling off after viral spike. Issue #26: professional security researcher (nullref, Cantina/Code4rena/Immunefi) offering free security review — path traversal, TOCTOU races, credential handling. Signal: project maturing enough to attract professional auditor attention |
+| 2026-05-12 | 419 | +16% in 2 days, growth re-accelerating post-rebrand. 4 dep-bump PRs (Dependabot active). Security review issue #26 still unanswered. Maintainer (shayliv) started Discussions — revealed stealth startup in agentic-dev-tools (re_gent stays FOSS). Discussion #4 "Bash side-effect attribution" is a real design problem: coarse blame for multi-file Bash commands. 3 options proposed (accept coarse / syscall watching / command parsing). Leaning option 1 for v0 — pragmatic. Community score 5/6 (THRIVING), 7 external PRs in 30d |
+
+## Deep Read: CLAUDE.md & Open Design Questions (2026-05-12)
+
+CLAUDE.md is a comprehensive 2k+ word project constitution. Key architectural tensions:
+
+### 7 Open Design Questions
+
+1. **Bash side-effect attribution** — coarse blame for multi-file bash (Discussion #4). Option 1 (accept coarse) for v0 is right; filesystem watchers add complexity that outweighs benefit for early adoption.
+
+2. **Sub-agent lineage** — `secondary_parent` in schema supports sub-chains that merge back. Hook detection unspecified. **Directly relevant to [[openclaw]] subagents** — we face the exact same problem with subagent tool attribution.
+
+3. **Conversation rewind into live agent** — v0 rewinds files only; agent transcript continues forward. Full rewind needs JSONL overwrite + session reset API. **No agent framework exposes this cleanly today.**
+
+4. **Monorepo performance** — full snapshots per step won't scale to 50k files. Planned: incremental snapshots via inode mtimes, bloom filters, watchman integration.
+
+5. **Garbage collection** — orphan steps from abandoned exploration. Content-addressed objects are trivially GCable by reachability. Smart to defer.
+
+6. **Cross-repo subtree handling** — open question about `.regent/` scope boundaries.
+
+7. **Multi-tool unification** — multiple agents (Claude Code + Cursor + SDK) writing to same `.regent/`. Each adapter needs origin + non-colliding session IDs. **Phase 4 roadmap item.**
+
+### Design Principles (from working notes)
+
+- **"Never break the user's agent"** — hook failures log silently, never propagate. Same philosophy as [[openclaw]]'s ACP error handling.
+- **"Tests over commentary"** — spec-driven testing against POC.md §7 algorithms.
+- **CAS for refs, transactions for SQLite** — clean separation of consistency domains.
+
+### Blame Implementation Deep Read
+
+Annotated-blob blame: computed at write time, stored as sidecar `BlameMap`. Tests confirm:
+- New files → all lines attributed to current step
+- Modified lines → new step; unchanged lines → inherit old attribution
+- Deleted lines → removed from blame; surviving lines keep provenance
+- Pre-blame files (migration) → all lines attributed to current step (safe default)
+
+Line-level diff via `go-diff` (diffmatchpatch → opcode conversion). Standard but well-tested.
+
+### Strategic Assessment
+
+**Maintainer context**: shayliv is CTO/Co-Founder of stealth agentic-dev-tools startup. re_gent is explicitly NOT part of the startup, "will forever be free & open sourced". This is either genuine community commitment or loss-leader for the startup's product. Either way, project likely maintained long-term.
+
+**Community health**: 5/6 THRIVING. 7 external PRs in 30 days. First external feature request (#25, Gemini CLI support). Professional security researcher offered free review (#26). These are maturity signals.
+
+**Architectural quality**: Clean Go, behavior-focused tests, clear separation of concerns. CLAUDE.md as project constitution is best-practice. Design questions are honestly stated, not hidden.
+
+**Connects to**: [[gitclaw]] (complementary layers — git-level vs sub-git), [[agent-brain-portability]] (Step DAG as portable audit trail), [[worktree-convergence-2026-05]] (concurrent agent coordination)
