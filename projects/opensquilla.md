@@ -5,6 +5,7 @@ updated: 2026-05-10
 status: active
 stars: 194
 url: https://github.com/OpenSquilla/opensquilla
+last_verified: 2026-05-12
 ---
 
 # OpenSquilla — Token-Efficient AI Agent
@@ -94,3 +95,4 @@ Links: [[context-budget]], [[skill-context-compression]], [[self-evolving-agent-
 |------|-------|-------|
 | 2026-05-10 | 173 | First observation. 4 days old, local ML router |
 | 2026-05-11 | 194 | +12%. Feishu channel support added, CI improvements, router defaults clarified |
+| 2026-05-12 | 234 | +21% (1 day!). Preparing 0.1.0rc1 preview release. Windows portable zip. Onboarding hardening. |
