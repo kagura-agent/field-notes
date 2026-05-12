@@ -312,6 +312,16 @@ if (p.type === "compaction" && p.tail_start_id) {
 - Must fill `.github/pull_request_template.md` sections immediately on PR creation
 - CONTRIBUTING.md has specific requirements — check before next PR
 
+### #27016 — fix(watcher): resolve symlinked .git path before subscribing (2026-05-12)
+- **Status**: PENDING (CI all 4 checks passed ✅)
+- **Issue**: #26981 — TUI hangs when .git is a symlink (Android repo tool)
+- **Root cause**: `@parcel/watcher` inotify backend calls `inotify_add_watch` on the `.git` path directly. When `.git` is a symlink, inotify rejects with "Not a directory" because it receives the symlink node, not the directory.
+- **Fix**: Resolve `.git` path with `realpath()` before passing to `@parcel/watcher`. Falls back to original path if realpath fails.
+- **Diff**: +5/-2 lines, 1 file (`packages/opencode/src/file/watcher.ts`)
+- **Approach**: Manual edit (surgical, <10 lines). Verified with `@parcel/watcher` test: symlink path fails, realpath succeeds.
+- **Key learning**: inotify does NOT follow symlinks in paths — the path itself must be a real directory node. `fs.watch` works (it resolves internally), but `@parcel/watcher`'s native binding passes the path directly to the syscall.
+- **Note**: Full test suite can't run locally (OOM), but `bun test test/file/ test/config/` passes (242 pass, 0 new fail). Watcher-specific tests are skipped (need native binding).
+
 ### #26824 — fix(app): display i18n-translated title in slash command popover (2026-05-11)
 - **Status**: PENDING (CI all 4 checks green ✅, compliance fixed ✅)
 - **Issue**: #26778 — Slash command popover shows English trigger text, ignores i18n title
