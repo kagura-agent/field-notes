@@ -144,3 +144,15 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Pattern**: Extensions under `extensions/codex/src/app-server/` have their own test files but vitest build takes ~2min due to rolldown bundling. Tests themselves run fast (<50ms).
 - **Lesson**: `protocol-validators.ts` already has normalization functions for turns but not for threads. The pattern is: normalize → validate → return. Always apply before schema validation, not after.
 - **Lesson**: Thread schema has `createdAt`/`updatedAt` as integer (Unix seconds), not ISO string. `source` is `SessionSource` oneOf (enum "cli"|"vscode"|"exec"|"appServer"|"unknown" or custom object).
+
+## PR #80961 (2026-05-12, PENDING)
+- **Issue**: #80953 — String model config silently disables fallbacks (resolveAgentModelFallbackValues returns [] for strings)
+- **Fix**: Two-part diagnostic improvement:
+  1. Added one-time debug warning in `resolveAgentModelFallbackValues` when it receives a string model config (deduplicated via `Set`)
+  2. Added `noteStringModelFallbackWarning()` doctor check in config analysis, called during `loadAndMaybeMigrateDoctorConfig`
+  3. Unit tests in `src/config/model-input.test.ts` (5 cases)
+- **Files**: `src/config/model-input.ts`, `src/commands/doctor-config-analysis.ts`, `src/commands/doctor-config-flow.ts`, `src/commands/doctor-config-flow.test.ts`, `CHANGELOG.md`
+- **CI**: 40+ pass, "Real behavior proof" fails (expected, needs maintainer override)
+- **Lesson**: `SubsystemLogger.debug()` takes `(message: string, meta?: Record<string, unknown>)` NOT printf-style args. First push had TS2345 error from passing string as meta arg.
+- **Lesson**: When adding exported functions to `doctor-config-analysis.ts`, must also add mock in `doctor-config-flow.test.ts` (vi.mock returns object with all exports)
+- **Pattern**: Doctor checks follow pattern: export function from `doctor-config-analysis.ts`, import+call in `doctor-config-flow.ts`, mock in `doctor-config-flow.test.ts`
