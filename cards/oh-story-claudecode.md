@@ -2,7 +2,8 @@
 title: oh-story-claudecode
 tags: [agent-skill, claude-code, viral, deslop, skill-ci]
 created: 2026-05-06
-updated: 2026-05-11
+updated: 2026-05-12
+last_verified: 2026-05-12
 ---
 
 # oh-story-claudecode
@@ -66,6 +67,48 @@ The skill includes a human-writing baseline table (paragraph length, dialogue ta
 ### Relevance to us
 If we ever want to make [[kagura-story]] output less AI-sounding, this quantified approach is far superior to vague "write more naturally" instructions. The banned-words list is Chinese-specific but the methodology (tiered banned terms + density metric + qualitative override) is language-agnostic.
 
+## story-explorer: Read-only query agent (v0.5.0+, 05-12)
+
+The most architecturally interesting addition. A **read-only agent** with:
+- **Model**: haiku (cheapest, fastest — query doesn't need creative reasoning)
+- **Tools**: Read, Glob, Grep **only** — Write, Edit, Bash explicitly disabled
+- **10 query types**: character_status, character_appearances, foreshadow_status/list, setting_appearances/detail, timeline, progress, relationship, context_load
+- **Structured JSON output** with `gaps` field for missing info (no hallucination)
+- **Called by** other agents: story-long-write (daily context loading), story-review (pre-query), story router (user natural language questions)
+
+### Why this matters
+
+The **read-only constraint** is the key insight. By stripping write permissions, the explorer agent:
+1. Can't accidentally corrupt project files during queries
+2. Can run with a cheap fast model (haiku) since it doesn't need creative capability
+3. Separates **information retrieval** from **creative decision-making** — a clean architectural boundary
+4. Makes the multi-agent system more testable (query results are deterministic given same files)
+
+This is the **query/command separation** pattern (CQRS) applied to agent architecture. Read-only agents with restricted tool access is a pattern worth adopting.
+
+**Relevance to us**: Our [[kagura-story]] could benefit from a similar pattern — a cheap read-only agent that pre-loads story context before the expensive creative agent runs. Currently we load context manually in SKILL.md instructions.
+
+## story-import: Reverse engineering pipeline (v0.5.0+, 05-12)
+
+4-phase pipeline to import existing novels into the standard project structure:
+1. **Confirm source** — detect file format, chapter count, word count
+2. **Deep analysis** — reuse story-long-analyze's 6-stage decomposition pipeline
+3. **Structure migration** — map analysis results to standard project directory
+4. **Project activation** — make it compatible with story-long-write workflow
+
+All generated files marked `[导入反推]` to flag machine-generated content for human review.
+
+**Design principle**: "好的工具不是从零开始，而是从你已有的东西开始" (Good tools don't start from scratch — they start from what you already have). This is about **onboarding existing work** rather than forcing users to start fresh.
+
+## Cross-platform compatibility (Issue #23)
+
+Maintainer confirmed:
+- **Hermes**: Skills are directly compatible (same SKILL.md + frontmatter format). Only hooks need adaptation.
+- **Codex**: Not compatible — different skill directory (`.codex/skills/`), different agent config format (`agents/openai.yaml`), different hook system. Would need migration.
+- Users also running in **Cursor** (works but expensive).
+
+This validates [[skill-distribution-convergence]] — SKILL.md format is becoming a de facto standard across Claude Code and Hermes, but Codex diverges.
+
 ## Tracking updates
 - 05-06: 800⭐, first noted in [[skill-distribution-convergence]]
 - 05-07: 831⭐, v0.4.0 released
@@ -77,4 +120,5 @@ If we ever want to make [[kagura-story]] output less AI-sounding, this quantifie
   - **Reference compression** (PR#29): Refactored reference files for smaller context windows. Terminology simplification.
   - **Layered summary protocol** + genre formula references (PR#28)
   - **Observation**: Project is evolving from "writing assistant" to **writing platform** — research, routing, revision, and quality assurance as distinct agent roles. The multi-agent specialization pattern mirrors [[supervisor-pattern]].
-- 05-11: 955⭐ (+1%). Continued acceleration: PR#28 (writing formulas, layered summary protocol, genre element extraction), PR#29 (reference file split + compression + terminology simplification). The platform maturation continues but star growth is decelerating. Entering stabilization phase after explosive feature build-out.
+- 05-11: 955⭐ (+1%). Continued acceleration: PR#28 (writing formulas, layered summary protocol, genre element extraction), PR#29 (reference file split + compression + terminology simplification). The platform maturation continues but star growth is decelerating.
+- 05-12: 996⭐ (+4.3%). **v0.5.0 released.** Growth re-accelerating toward 1000⭐. Two major additions: story-explorer (read-only query agent, CQRS pattern) and story-import (reverse engineering pipeline). 10 rounds of code review with 3-agent parallel verification, 13 issues fixed. Now at 13 skills + 6 agents. The project has fully evolved from a writing assistant into a **multi-agent writing platform** with specialized roles (explorer, researcher, reviewer, writer, deslop, cover artist). Issue #23 confirms cross-platform interest (Codex, Hermes, Cursor).
