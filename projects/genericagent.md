@@ -494,3 +494,85 @@ Massive spike on 05-09. Likely triggered by 10K psychological milestone + TUI la
 3. **Community health indicator**: 15 WeChat groups worth of users, 49 unique issue authors in 14 days — this is the largest CN agent community.
 
 See [[self-evolving-agent-landscape]], [[supervisor-pattern]], [[acp-protocol]]
+
+## Followup 2026-05-12
+
+**Stars:** 11,027 (+8.5% from 10,160 on 05-09). Explosive growth continues.
+**Community:** 55 unique issue authors in 30 days, 38 open + 22 closed issues in 14 days. Healthy.
+
+### New: Reflect Plugin init() Pattern (05-12)
+
+Reflect scripts gain an `init(args)` lifecycle hook:
+- CLI args passed as key-value pairs via `parse_known_args()` → unknown args become dict
+- `init()` called on first load AND on hot-reload (file mtime change detection)
+- Pattern: reflect scripts are plugins with `init()`, `check()`, `on_done()`, `INTERVAL`, `ONCE`
+- Two scripts updated: `team_reflect` (BBS task coordination) and `goal_reflect` (state file management)
+- Args override env vars and config file values (cascade: CLI args > env > config file)
+
+This is a clean plugin interface that we could learn from for our own heartbeat/nudge system.
+
+### New: Cross-Platform CLI Entry (#329, 05-11)
+
+Renamed `command/` to `ga_cli/` to avoid namespace collision. Added `ga.cmd` for Windows support.
+
+### New: /btw Side-Question Subagent (#335, 05-11)
+
+The `/btw` feature (side-question handling via subagent) is expanding to Telegram app integration.
+
+### Open Issues of Note
+
+- **#221 (self-evolution loop)**: Exactly our domain. Proposes post-task reflection → candidate skill updates with versioned patches, trigger reasons, scope, caveats. Acceptance: user correction recall, reversible diffs, logs. Status: OPEN, 0 comments. We're ahead here (beliefs-candidates.md + DNA self-governance + Triple Verification).
+- **#219 (context compression)**: Long-task context overflow → auto-compression. We solved this with TACO-inspired compress-output.sh.
+- **#220 (tool discovery)**: Dynamic tool loading vs full-schema prompt bloat. Relevant to skill ecosystem scaling.
+- **#222 (skill consolidation → methodology memory)**: Skill updates should also generate "methodology" and "impression" memory. Interesting — blurs line between skill and reflection.
+
+### Comparison Notes
+
+GenericAgent is converging on problems we've already solved or are actively working on:
+- Self-evolution (#221) → we have beliefs-candidates.md pipeline + Triple Verification gate
+- Context compression (#219) → we have TACO compress-output.sh
+- Plugin lifecycle → their reflect init() is cleaner than our heartbeat.md approach
+- They're at ~11K stars with strong community but still solo-maintainer architecture decisions
+
+### Reflect System Architecture (Deep Read 05-12)
+
+The reflect system is a hot-reloadable plugin framework with 4 modes:
+
+**Plugin Interface:**
+- `init(args: dict)` — lifecycle hook, called on load + hot-reload
+- `check() → str|None` — polled every `INTERVAL` seconds; returns prompt or None (skip)
+- `on_done(result)` — callback after agent completes reflect-triggered task
+- `INTERVAL: int` — poll frequency (seconds)
+- `ONCE: bool` — run once then stop
+
+**Four Reflect Modes:**
+
+| Mode | File | INTERVAL | Purpose |
+|------|------|----------|---------|
+| Autonomous | autonomous.py | 1800s | After 30min user absence → trigger autonomous SOP |
+| Goal Mode | goal_mode.py | 3s | Budget-constrained self-driving: objective + time limit + turn cap |
+| Scheduler | scheduler.py | 120s | Cron-like JSON task scheduling with cooldown/weekday/max_delay |
+| Team Worker | agent_team_worker.py | 60s | BBS-based multi-agent task coordination |
+
+**Goal Mode is the standout pattern:**
+- State file (JSON): objective, budget_seconds, start_time, turns_used, max_turns, status
+- Agent keeps pushing until budget expires; explicit directive: "禁止说'已完成，是否继续'——预算没到就不准停"
+- Budget exhausted → wrap-up prompt: summarize progress, list unfinished items, persist for next session
+- Turn limit (default 50) as safety valve against runaway loops
+- Very similar to our subagent spawning but more structured
+
+**Scheduler has integrated L4 archival:**
+- Every 12h, silently runs `batch_process()` to compress raw model responses to L4 archives
+- Cron tasks as JSON files in `sche_tasks/` with `enabled`, `repeat`, `schedule`, `prompt`, `max_delay_hours`
+- Port-based mutex (`socket.bind()`) prevents duplicate scheduler instances
+
+**Comparison to Our System:**
+| Their mechanism | Our equivalent | Gap |
+|----------------|---------------|-----|
+| reflect plugins | heartbeat.md + nudge.md | We lack a clean plugin interface |
+| goal_mode | subagent spawning | We lack budget-constrained autonomous loops |
+| scheduler | cron system | Theirs is simpler (file-based), ours is more integrated |
+| autonomous | heartbeat idle detection | Similar concept, different trigger |
+| L4 archival cron | No equivalent | We don't auto-compress old sessions |
+
+**Actionable insight:** The goal_mode budget pattern could improve our long-running subagent tasks. Instead of open-ended subagents that sometimes spin, a budget constraint with explicit wrap-up would improve predictability.
