@@ -8,6 +8,7 @@ license: MIT OR Apache-2.0
 last_checked: 2026-04-29
 status: active
 tags: [agent-harness, rust, multi-provider, local-first, desktop-app]
+last_verified: 2026-05-12
 ---
 
 # thClaws — Rust-Native Agent Harness Platform
@@ -154,3 +155,38 @@ See [[mechanical-enforcement-via-topology]] for the generalized pattern.
 
 ---
 *Deep read: 2026-04-29 (initial), 2026-05-06 (v0.8.0 /goal deep read). Source: GitHub API (goal_state.rs, default_prompts/goal_continue.md, goal_budget_limit.md, commits, release notes)*
+
+## v0.9.0 Update (2026-05-12): /dream KMS Consolidation + Stream Hardening
+
+871⭐ (+259 since last check, +3% since 848). v0.8.4 → v0.9.0 in 4 days (5 releases: v0.8.8, v0.8.9, v0.9.0 on 05-11/12).
+
+### /dream — Built-in KMS Consolidation Agent
+
+A first-class slash command that spawns a side-channel agent to consolidate/deduplicate KMS pages by mining recent sessions. Key details:
+
+- **Four-pass operating procedure**: insight surfacing, deduplication, audit-trail authoring
+- **New `KmsDelete` tool** (`requires_approval = true`): allows dream agent to remove redundant pages
+- **Embedded AgentDef**: compiled into binary via `include_str!`, overridable by user's `.thclaws/agents/dream.md`
+- **Override priority**: builtins → legacy JSON → user/project .md dirs → plugins (no-clobber)
+- **Flags**: `--all` (consolidate everything), `--skip-dreamed` (skip already-processed), auto-rename
+
+**Relevance to us**: This is automated wiki maintenance — exactly what we do manually with memex doctor/lint. The "dream" metaphor (sleep → consolidate memories) is compelling. Could inspire a similar automated consolidation workflow for our wiki/memex.
+
+### Stream Timeout Hardening
+- Configurable stream chunk timeout (default 120s, was 30s)
+- Per-feature timeout override (e.g., /dream can have longer timeout than normal chat)
+- Applied to all providers, not just Anthropic
+- Addresses the same idle-timeout problem we hit with subagents on Copilot API (~60s)
+
+### Other v0.8.8-v0.9.0 Changes
+- Anthropic agent resume support
+- `/research` verify pass
+- Sidebar polish
+- Session snapshot wiring for serve mode
+- `AskUserQuestion` bridge for serve mode
+
+### Velocity Signal
+5 releases in 2 days is extreme velocity. 871⭐ in 22 days (created 04-20) = ~40⭐/day sustained. Still primarily mozeal (lead) but external PRs appearing (#80-84). Community growing.
+
+---
+*Update: 2026-05-12. Source: GitHub API (commits, releases, technical manual dream.md)*
