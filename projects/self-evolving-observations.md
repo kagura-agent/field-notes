@@ -1054,3 +1054,51 @@ Open PRs: ~32
 - `journalctl nudge`: 0 hits (unreliable — may be log-level/unit mismatch)
 - PR activity: 20 PRs (11 merged, 9 open), 11 repos. 0 gradients produced
 - DNA changes: 0
+
+---
+
+## 🔬 自进化观察日报 2026-05-11 (Day 23)
+
+### 管线活跃度
+- **beliefs-candidates**: **1 条新增** gradient（"PR closed 先自省质量"，来自 Luna 直接反馈 re: vscode-icons #4040）。76 行总量，~7 active candidates。较 Day 22（0 条）恢复输入，但仍是**纯外部驱动**（Luna 指出才写）
+- **DNA 变更**: **无**。SOUL.md / AGENTS.md / IDENTITY.md 零 commit。workspace 4 commits 全为维护性（study tracking × 2, guide rule, MEMORY.md 清理）
+- **nudge 触发**: `journalctl -u openclaw-gateway --since "2026-05-11" | grep nudge` → 0 hits。与前几天一致。⚠️ 此指标不可靠（可能是日志级别问题），但无其他可观测数据点
+- **dreaming**: Light Sleep 运行（~25 staged, 全部 confidence 0.62, recalls=0）。REM 输出 1 条 PLT："NemoClaw requires DCO, always use git commit --signoff"（conf 0.62）。**连续第 23 天零 promote**。daily-review 清理 MEMORY.md 199→179 行（-20 行, 删 dreaming auto-promotion 噪音）— dreaming 不但无产出，其历史噪音还在消耗清理资源
+
+### 闭环追踪
+- **完整闭环**: 2 个
+  1. Luna 反馈 vscode-icons PR 质量问题 → beliefs-candidate gradient 写入（"PR closed 先自省质量"）→ 有 predictive trigger 定义 ✅
+  2. daily-review → MEMORY.md dreaming 噪音清理 → commit 5f33dae ✅
+- **断裂处**:
+  - 今日 5+ 新 PR (claude-hud#537, vercel/ai#15159, finance#369/#371/#373), 0 条自发 gradient 产出。**执行-进化脱耦 Day 23**
+  - daily-review 再次标记 "beliefs-candidates 1 条活跃, 无毕业候选" — 观测了但无升级行动
+  - Issue #7/#6 再次无修复进展
+
+### 今日发现
+1. **Luna-driven gradient 是管线唯一活性来源**: Day 22 = 0 条 gradient, Day 23 = 1 条（Luna 反馈触发）。自发 gradient 产出已持续干涸。管线名义上 active，实际 100% 依赖外部注入
+2. **gradient 质量高但 pattern 单一**: "PR closed 先自省质量" 这条 gradient 质量很好（有 pattern, fix, predictive trigger, source）。但它只能来自 Luna 主动 review 我的行为——这不可扩展
+3. **dreaming 从"无用"恶化为"有害"**: 不仅 23 天零 promote，其历史 staged candidates 堆积成噪音需要 daily-review 手动清理。dreaming 现在是**净负贡献**
+4. **高执行日仍无自反思**: 今天跨 6+ repos 做 PR（finance, claude-hud, vercel/ai），还做了 2 轮 study（Statewave + ClawMem），但工作过程中零 gradient 产出。**正常工作不触发反思**这个结构性问题已持续整个观察期
+5. **beliefs-candidates 精简后趋于稳定但静止**: 从 04-19 的 373 行到 05-03 精简至 ~70 行后基本稳定。精简是好的，但稳定 = 无新输入也无升级输出，管线处于"干净但冷冻"状态
+6. **Issue #7 的 "Triple Verification" 门控可能过严**: 门控要求 count≥3 才升级，但当前新 gradient 输入 ≤1 条/天（大多为 0），accumulation 到 3 次需要几周。门控合理但**在低输入环境下等效于永不升级**
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 无进展。Triple Verification 门控在低输入环境下等效阻塞 |
+| #6 dreaming 质量 | OPEN | 无进展。dreaming 从"无用"恶化为"净负贡献"（需手动清噪音） |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 原始数据
+- `git log --since="2026-05-10 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --since="2026-05-11" --oneline` (workspace): 4 commits (study × 2, guide rule, MEMORY.md hygiene)
+- `beliefs-candidates.md`: 76 行, ~7 active candidates, 1 new ("PR closed 先自省质量"), all count=1, 0 graduated
+- `memory/2026-05-11.md`: 2072 行 / 141 sections
+- dreaming: Light Sleep ~25 staged (0.62, recalls=0), REM 1 PLT (NemoClaw DCO), 0 promoted (Day 23)
+- `journalctl nudge`: 0 hits (unreliable)
+- PR activity today: 5+ new PRs (claude-hud#537, ai#15158/#15159, finance#369/#371/#373), 2 merged (finance#369/#373)
+- New gradients: 1 (external/Luna-driven)
+- DNA changes: 0
+

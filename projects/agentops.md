@@ -7,7 +7,7 @@ language: Go
 license: MIT (NOASSERTION on API)
 status: active
 tags: [agent-ops, context-engineering, knowledge-flywheel, coding-agent, CDLC]
-last_verified: 2026-05-11
+last_verified: 2026-05-12
 ---
 
 # AgentOps (boshu2/agentops)
@@ -85,12 +85,43 @@ Bounded loop: INGEST → REDUCE → MEASURE
 - Tests: extensive — e2e, integration, CLI, canaries, scenarios
 - Self-bootstrapping: repo built using itself (claimed 1,842 learnings, 186 patterns, 80 planning rules)
 
+## v3.0 Evolution (2026-05-11)
+
+### Three-Gap Super-Gate (E5)
+
+Unified quality surface composing multiple child gates into three "gaps":
+1. **Council coverage** — PR-bound commits should have pre-mortem or vibe verdicts
+2. **Durable learning** — flywheel compounding snapshot + compile health
+3. **Loop closure** — goals validate + wiring closure + flywheel proof
+
+Each gap emits PASS/WARN/FAIL. Runs as single script (`check-three-gap-supergate.sh --gap=all`).
+
+### 38 Contracts
+
+Design-by-contract for the full system. Standout: **Context Assembly Interface Contract** — defines `phaseManifest` schema:
+- `HandoffFields`: which context fields a phase needs
+- `NarrativeCap`: max chars for narrative (0 = omit when fields specified)
+- `MaxTokens`: total token budget for assembled context
+- Pipeline: select → assemble → truncate (not truncate-first)
+- Token estimation: char/4 heuristic, sentence-boundary truncation
+- Observability: JSONL budget log per invocation
+
+Default manifests per phase (discovery: empty, implementation: 2500 tokens, validation: 2500 tokens) — keeps context injection under 10% of 32k window.
+
+### Evolution Roadmap
+
+5 evolution + 3 audit + 1 learning-capture epic. Key thesis: "PRODUCT.md is the setpoint, repo is actual state, `ao goals measure` is the sensor, `/evolve` is the reconcile loop." This is the most explicit goal-drift-correction system I've seen in an agent project.
+
+### Practice Citations: 756/756
+
+Every file has `// practices: [...]` comment. Self-bootstrapping claim: 1,842 learnings, 186 patterns, 80 planning rules.
+
 ## Maturity & Community
 
 - **Solo developer** (boshu2), 8 total contributors. Bus factor = 1.
-- Self-reported CLI bugs (#41-#48): percentage overflow, broken retrieval, misleading counts
+- Community health: THRIVING 6/6 (05-12 check) — 12 external PRs/30d, 4 unique issue authors
 - Very active: 8+ commits/day, systematic "practice pass" pattern
-- No external community engagement (0 community PRs, issues mostly from bots)
+- Self-reported CLI bugs (#41-#48): percentage overflow, broken retrieval, misleading counts
 
 ## Relation to Our Direction
 

@@ -157,8 +157,8 @@ APM has shipped the most significant architectural change since creation: **`.ag
 
 ## Tracking
 
-- **Activity**: Very active, daily pushes, 8 client adapters, v0.12.2 released
-- **Revisit**: 05-12 (drift detection adoption, v0.13 planning)
+- **Activity**: Very active, daily pushes, 8 client adapters, v0.13.0 released
+- **Revisit**: 05-18 (Wave C-J docs rewrite progress, community growth post-explosion)
 
 ## Update 2026-05-08
 
@@ -173,3 +173,44 @@ APM has shipped the most significant architectural change since creation: **`.ag
 - Velocity: 13 PRs merged in 2 days, single maintainer (danielmeppiel) + Copilot co-authored PRs
 
 See also: [[apm-triage-panel-patterns]] for deep analysis of the triage panel's production agent patterns (DIFC, batch allow-list, anti-pagination).
+
+### v0.13.0 — `apm update` + Frozen Install + Docs Rewrite (2026-05-11)
+
+**Star trajectory**: 2,290 (05-08) → 2,333 (05-12, +43). Total from first tracking: 2,145 (04-29) → 2,333 (+9% in 2 weeks). Steady growth but not explosive — the earlier 293⭐ tracking entry was a misrecording.
+
+**Key changes:**
+
+1. **`apm update` command (PR #1244)**: The missing npm-style dependency lifecycle leg. Resolves `apm.yml` against latest remote refs, prints structured plan (added/updated/removed/unchanged), prompts `[y/N]`. Previous `apm update` was CLI self-updater — renamed to `apm self-update` with one-release back-compat shim.
+   - **`--frozen` flag**: CI-safe install that fails fast on lockfile drift. Equivalent to `npm ci` / `uv sync --frozen`. Critical for reproducible builds.
+   - **Design decision**: "No-op nudge" when lockfile already satisfied — instead of silent success, points users at `apm update`. DevX cliff prevention.
+   - **Pattern**: Verb collision resolution (update = deps vs self-update) mirrors pip's evolution. APM chose the npm convention.
+
+2. **Agent-written docs rewrite (PR #1252)**: 16K additions, 11K deletions, 147 files. Full docs corpus rewritten using a **multi-wave agent pipeline**:
+   - Designed via `genesis` skill (8-step process)
+   - Doc-writer agents (Opus 4.7) draft pages in parallel from shared CONTEXT-PACK
+   - 4-layer verification: self-verification (SOURCE TABLE citing src/ paths) → CDO checkpoint (cohesion) → editorial-owner pass (voice, banned adjectives) → build gate
+   - 10 waves (A-J), Wave A+B merged, C-J pending
+   - **5 locked decisions** confirmed by user before mass execution — prevents agent drift
+   - ~250 agent invocations expected, parallelism cap ~10 concurrent
+   - **Persona-led ramps**: content structured by reader persona (consumer/producer/enterprise/operator/contributor) instead of by feature
+   - **3-promise narrative**: "Compose Fearlessly / Distribute Trustlessly / Run Anywhere" — canonical strings locked verbatim across all pages
+   - **Anti-pattern killed**: retired "AI-Native" framing (D2) — recognizing the term has become meaningless
+
+3. **Security**: ANSI escape injection fix in [[stripe-link-cli]] (same release window, different project but related pattern) — see below.
+
+4. **GitLab marketplace support (PR #1149)**: 9th host backend. APM now supports GitHub, ADO, Gitea, and GitLab.
+
+5. **New contributors**: sergio-sisternes-epam (164 contributions, 2nd highest), ganesanviji, awakecoding, slava-kudzinau — community is diversifying beyond solo maintainer.
+
+**Architectural insight — agent-written docs pipeline**:
+
+The docs rewrite represents a **production-grade agent content pipeline** worth studying:
+- CONTEXT-PACK as shared state between parallel agents (prevents drift)
+- Locked decisions as agent constraints (prevents re-deliberation)
+- Wave-based delivery with human checkpoint between batches
+- Self-verification via SOURCE TABLE (each page cites source code paths) — traceability built into the generation process
+- Editorial pass with specific banned patterns (adjectives, run-ons, ASCII art)
+
+This is more systematic than most agent-written docs efforts. The key insight: **constraint specification > prompt engineering** — instead of asking agents to "write good docs", specify exactly what's locked, what's banned, and require source citations.
+
+**For us**: The CONTEXT-PACK pattern could apply to any multi-agent content generation (e.g., kagura-story chapters, study briefings). Currently we use ad-hoc context passing between subagents; a shared frozen context pack would reduce drift.

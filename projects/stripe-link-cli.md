@@ -4,6 +4,7 @@ created: 2026-05-03
 source: https://github.com/stripe/link-cli
 stars: 403
 last-check: 2026-05-06
+last_verified: 2026-05-12
 ---
 
 # Stripe Link CLI
@@ -80,3 +81,46 @@ The MPP protocol (HTTP 402) could become the standard for agent-to-service payme
 **Assessment**: Credential-to-file output (PR #67) is the interesting signal — it shows they're thinking about agent context management, not just payment flow. The security fix (PR #51) is table-stakes but shows the project is maturing past MVP. Growth accelerating (+54 vs +20/day for agentic-stack) suggests strong developer interest in agent commerce.
 
 *Followup check: 2026-05-06*
+
+## Followup 2026-05-12
+
+**Stars**: 457 → 495 (+38, steady growth)
+**v0.5.0** released 05-11. Two security/reliability PRs worth studying:
+
+### 1. ANSI Escape Injection Sanitization (PR #85)
+
+**Problem**: Server-returned string fields (e.g. `merchant_name`, `line_items[].name`) can contain ANSI escape sequences or control characters that manipulate terminal output during the approval flow. An attacker could:
+- Clear screen (`\x1b[2J`) and redraw fake approval UI
+- Overwrite displayed amount with carriage return (`$1000\r$0.01`)
+- Set window title via OSC sequences
+- Inject hyperlinks to phishing sites
+
+**Solution**: Single sanitization boundary at the resource factory level using JavaScript Proxy:
+
+```
+sanitizeResource<T>(resource: T): T → new Proxy(resource, { get: ... })
+```
+
+Every SDK resource is wrapped in `sanitizeResource()` at creation time. The Proxy intercepts all method calls, and if the return value is a Promise (all API calls are), pipes `sanitizeDeep()` over the resolved value. `sanitizeDeep()` recursively walks objects/arrays and strips ANSI sequences + control chars from all strings.
+
+**Key design decisions**:
+- **Proxy at factory boundary** > per-field sanitization — one choke point, zero caller burden
+- **Preserves tabs and newlines** (legitimate formatting) while stripping everything else
+- **Fast path**: `NEEDS_SANITIZE_RE` test avoids `stripAnsi()` call on clean strings
+- **Defense in depth**: combines `strip-ansi` (handles CSI/OSC/etc.) with manual control char regex
+
+**Relevance to [[agent-safety]]**: This is the first production agent CLI implementing terminal injection protection. The pattern (Proxy-based sanitization at the data boundary) is applicable to any agent that displays server-controlled text in a terminal. Our OpenClaw CLI should consider similar protection — any MCP server response or tool output could contain escape sequences.
+
+### 2. Approval Polling Bug Fixes (PR #95)
+
+**Problem**: CLI only recognized `approved` and `denied` as terminal states. Other terminal states (`expired`, `succeeded`, `failed`, `canceled`) caused continued polling until timeout, then displayed misleading "Timed out waiting for approval" error — or worse, displayed a **false "✓ Approved"** for denied requests.
+
+**Root cause**: `pollUntilApproved` resolved on ANY non-pending status, but call sites treated resolution as success without checking which status.
+
+**Fix**: Shared `TERMINAL_STATUSES` set + explicit `status === 'approved'` checks. Also bumped default polling timeout from 300s to 600s to outlive server-side 8-minute expiry.
+
+**Pattern**: State machine terminal status sets should be exhaustive and shared as constants, not inlined at each call site. This is a common bug class in polling-based approval flows — [[stripe-link-cli]] is the first to fix it publicly.
+
+**Assessment**: v0.5.0 shows the project maturing from MVP to production-grade. The sanitization pattern is the most architecturally interesting — it solves a real attack vector that most agent CLIs haven't considered yet. Growth steady but not explosive.
+
+*Revisit: 05-18*
