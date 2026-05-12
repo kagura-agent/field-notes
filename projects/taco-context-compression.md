@@ -85,3 +85,19 @@ Created `tools/compress-output.sh` — a practical implementation of TACO's seed
 **Validation**: Tested against synthetic test output (vitest, jest formats). Correctly preserves failure details while stripping pass lines. Auto-detection works for npm/test/git content.
 
 **Usage**: `command 2>&1 | ~/.openclaw/workspace/tools/compress-output.sh [--type TYPE]`
+
+### Domain-Specific ID Preservation (2026-05-12)
+
+Applied [[runbook-hermes]] EvidenceStack insight: compression should preserve actionable identifiers even when verbose lines are stripped.
+
+Added `extract_domain_ids()` to `compress-output.sh`:
+- **refs**: PR/issue numbers (`#123`, `org/repo#123`)
+- **files**: paths with optional line numbers (`src/lib/parser.ts:45`)
+- **shas**: 7-12 char git short hashes
+
+Type-aware behavior:
+- `test`: only extract from FAIL/ERROR lines (PASS file paths bloat the summary uselessly)
+- `test`: skip SHA extraction (hex fragments in test names cause false positives)
+- `git`/others: full extraction
+
+**Before vs after**: compression summary line now reads `[...24 lines compressed (type=git) | preserved: refs:#138,#145 files:src/lib/parser.ts:45]` instead of just `[...24 lines compressed (type=git)...]`. The agent retains reference ability to compressed-away content.
