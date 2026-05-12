@@ -70,3 +70,18 @@ We could adopt TACO's pattern for our own exec output handling — especially fo
 ---
 
 *First noted: 2026-05-10 (scout)*
+
+## Applied: compress-output.sh (2026-05-12)
+
+Created `tools/compress-output.sh` — a practical implementation of TACO's seed rules pattern:
+- 6 type-specific rule sets: npm, pip, git, test, build, generic
+- Auto-detection from first 5 lines of output
+- Compression ratios: test 81→13 lines (84%), all-pass 35→10 lines (71%)
+- Zero LLM calls — pure regex at runtime, matching TACO's core design insight
+- Keeps: errors, warnings, summaries. Strips: individual PASS lines, progress bars, compilation noise
+
+**What's different from TACO**: No evolution loop yet. TACO has confidence scoring and complaint-driven rule evolution. Our version is static seed rules. The evolution loop would need integration with OpenClaw's exec handler (currently not extensible). If/when we find rules that over-compress, we can add manual rule tuning.
+
+**Validation**: Tested against synthetic test output (vitest, jest formats). Correctly preserves failure details while stripping pass lines. Auto-detection works for npm/test/git content.
+
+**Usage**: `command 2>&1 | ~/.openclaw/workspace/tools/compress-output.sh [--type TYPE]`
