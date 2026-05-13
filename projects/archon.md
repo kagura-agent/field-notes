@@ -157,3 +157,22 @@
   - Claude Code via `claude --print` timed out again (Copilot API 60s idle timeout) — implemented manually instead. For Archon's codebase, manual implementation is faster for surgical changes.
   - The investigation comment on the issue (#1585) had a detailed implementation plan by `acton-golden` that was very accurate — saved significant analysis time. Good to read all issue comments carefully.
   - When adding env vars to subprocess calls, check loop semantics carefully — iteration-scoped values (LOOP_PREV_OUTPUT, LOOP_USER_INPUT) have different values per iteration.
+
+## 2026-05-13 Session Notes
+
+### PR #1658 — fix(clone): multi-forge auth (pending, fixes #1655)
+- **Issue**: Clone handler only injected auth tokens for github.com URLs — GitLab/Gitea/Forgejo private repos failed
+- **Root cause**: Hardcoded `github.com` substring check + `GH_TOKEN` only
+- **Fix**: 
+  - New `resolveForgeAuth()` function matches forge by parsed hostname (not URL substring)
+  - Exact match for known hosts (github.com, gitlab.com, gitea.com)
+  - Label-based match for self-hosted (gitlab.mycompany.com → gitlab label → GITLAB_TOKEN)
+  - Correct auth URL scheme per forge (oauth2: for GitLab, bare token for GitHub/Gitea)
+- **CodeRabbit security review**: Caught that substring matching on full URL could leak tokens when forge name appears in path. Fixed by switching to hostname-only matching. Added 2 security regression tests.
+- **Tests**: 55 pass (13 new: 5 forge integration + 4 resolveForgeAuth unit + 2 security + 2 updated)
+- **CI**: Ubuntu + Windows + docker-build all green
+- **Lessons**:
+  - CodeRabbit gives substantial security feedback on Archon — especially around credential handling. Always think about token leakage vectors
+  - The codebase already had GITLAB_TOKEN/GITEA_TOKEN support in forge adapters — checking existing patterns saved design time
+  - Hostname parsing > substring matching for security-sensitive URL operations
+  - This was a good candidate: clear issue, no competition, simple root cause, direct fix path
