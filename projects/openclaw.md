@@ -165,3 +165,13 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Lesson**: The openclaw repo has `pnpm install` in pre-commit hooks that times out on slow networks. Use `--no-verify` and rely on CI.
 - **Pattern**: When fixing upstream tool validation issues at the caller layer, sanitize inputs before passing to the tool rather than catching errors after — prevention > recovery.
 - **Code location**: `packages/memory-host-sdk/src/host/qmd-query-parser.ts` has qmd output parsing; `extensions/memory-core/src/memory/qmd-manager.ts` has the QmdMemoryManager class with search() method. The source for parseQmdQueryJson is in packages/memory-host-sdk but bundled into dist/engine-qmd-*.js via rolldown.
+
+## PR #81389 (2026-05-13, PENDING)
+- **Issue**: #81355 — First-load RPC fanout: applyPluginAutoEnable recomputes 8× per fanout (Bug B)
+- **Fix**: Added two-level `WeakMap` cache to `applyPluginAutoEnable()` keyed on `(config, env)` object identity. When both are present and match cached entry, returns cached result. Extracted computation to private `computeAutoEnable()` helper.
+- **Files**: `src/config/plugin-auto-enable.apply.ts` (28 insertions), new `src/config/plugin-auto-enable.apply.test.ts` (4 tests)
+- **CI**: Security + Critical Quality + build checks pass. "Real behavior proof" check fails (needs structured format or maintainer `proof: override`). Lint/dependencies fail from pre-existing upstream issues (`extraSections` template literal error in scripts/).
+- **Pattern**: Performance cache PRs benefit from timing-based tests that prove cache hits are faster than uncached calls. The `performance.now()` comparison is more convincing than just identity checks.
+- **Lesson**: "Real behavior proof" CI check requires specific fields: `behavior`, `environment`, `steps`, `evidence`, `observedResult`, `notTested`. Plain markdown with test output isn't enough.
+- **Lesson**: `plugin-auto-enable` test files need `vi.mock("../channels/plugins/configured-state.js")` with `importOriginal` pattern — the mock must include `listBundledChannelIdsWithConfiguredState` or it errors. Use `makeIsolatedEnv()` from `plugin-auto-enable.test-helpers.ts` for isolated env.
+- **Code location**: `src/config/plugin-auto-enable.apply.ts` exports `applyPluginAutoEnable` and `materializePluginAutoEnableCandidates`. Called from gateway server methods (`channels.ts`, `tts.ts`) and CLI commands. Issue #81355 also describes Bug (A) in `src/gateway/server-methods/tts.ts` (event-loop blocking) — independent, could be separate PR.
