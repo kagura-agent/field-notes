@@ -15,6 +15,7 @@ WIKI_DIR="$HOME/.openclaw/workspace/wiki"
 LIMIT=5
 MODE="hybrid"
 QUERY=""
+DEBUG=0
 
 # Parse args
 while [[ $# -gt 0 ]]; do
@@ -22,6 +23,7 @@ while [[ $# -gt 0 ]]; do
     --limit) LIMIT="$2"; shift 2 ;;
     --keyword-only) MODE="keyword"; shift ;;
     --semantic-only) MODE="semantic"; shift ;;
+    --debug) DEBUG=1; shift ;;
     *) QUERY="$1"; shift ;;
   esac
 done
@@ -81,10 +83,40 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
     fi
   done
   
-  # Merge exact + intersection results, deduplicate, sort by recency (temporal decay)
-  # Newer files rank higher — matches krusch-context-mcp temporal decay insight
+  # Merge exact + intersection results, deduplicate, rank by decay-weighted maturity score
+  # Insight: AgentOps decay-ranked retrieval (δ=0.17/week) + maturity weights
+  # Source: agentops.md (Darr et al. knowledge decay), applied 2026-05-13
+  NOW=$(date +%s)
   ALL_KEYWORD=$(echo -e "${EXACT}\n${WORD_FILES}" | sort -u | grep -v '^$' | while read -r f; do
-    [[ -f "$f" ]] && echo "$(stat -c %Y "$f" 2>/dev/null || echo 0) $f"
+    [[ -f "$f" ]] || continue
+    MTIME=$(stat -c %Y "$f" 2>/dev/null || echo "$NOW")
+    AGE_WEEKS=$(( (NOW - MTIME) / 604800 ))  # seconds per week
+    [[ $AGE_WEEKS -lt 0 ]] && AGE_WEEKS=0
+
+    # Exponential decay: exp(-0.17 * ageWeeks), clamped to [0.1, 1.0]
+    # Using awk for floating point math
+    DECAY=$(awk "BEGIN { d = exp(-0.17 * $AGE_WEEKS); if (d < 0.1) d = 0.1; if (d > 1.0) d = 1.0; printf \"%.4f\", d }")
+
+    # Maturity weight from frontmatter status field
+    # active/deep-dive=1.3, stable=1.2, candidate/provisional=1.0, archived=0.7, dropped=0.4
+    STATUS=$(head -20 "$f" | grep -m1 '^status:' | sed 's/status: *//' | tr -d ' "' || echo "")
+    DEPTH=$(head -20 "$f" | grep -m1 '^depth:' | sed 's/depth: *//' | tr -d ' "' || echo "")
+    MATURITY="1.0"
+    case "$STATUS" in
+      active)   MATURITY="1.3" ;;
+      stable)   MATURITY="1.2" ;;
+      archived) MATURITY="0.7" ;;
+      dropped)  MATURITY="0.4" ;;
+    esac
+    # Depth bonus: deep-dive notes are more authoritative
+    case "$DEPTH" in
+      *deep*) MATURITY=$(awk "BEGIN { printf \"%.1f\", $MATURITY * 1.15 }") ;;
+    esac
+
+    # Combined score: decay * maturity (higher = better)
+    SCORE=$(awk "BEGIN { printf \"%.4f\", $DECAY * $MATURITY }")
+    [[ $DEBUG -eq 1 ]] && echo "[DBG] score=$SCORE decay=$DECAY maturity=$MATURITY status=$STATUS depth=$DEPTH age=${AGE_WEEKS}w $(basename "$f")" >&2
+    echo "$SCORE $f"
   done | sort -rn | cut -d' ' -f2- | head -"$LIMIT")
   
   COUNT=0

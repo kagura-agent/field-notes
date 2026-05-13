@@ -7,7 +7,7 @@ language: Go
 license: MIT (NOASSERTION on API)
 status: active
 tags: [agent-ops, context-engineering, knowledge-flywheel, coding-agent, CDLC]
-last_verified: 2026-05-12
+last_verified: 2026-05-13
 ---
 
 # AgentOps (boshu2/agentops)
@@ -152,4 +152,8 @@ Every file has `// practices: [...]` comment. Self-bootstrapping claim: 1,842 le
 
 The CDLC framing is the most articulate version of what we're doing informally. "Context is the new source code" is not just marketing — it's a useful mental model. The decay-ranked retrieval and formalized maturity pipeline are concrete patterns worth adopting. The council pattern is interesting but may be overkill for our current scale.
 
-Links: [[self-evolving-agent-landscape]], [[agent-memory-taxonomy]], [[coding-agent]], [[memex]], [[mechanism-vs-evolution]], [[worktree-convergence-2026-05]], [[claude-code-memory-architecture]], [[skill-trust-landscape-2026-04]]
+## Applied Insights
+
+- **2026-05-13**: Adopted decay-ranked retrieval into `wiki/search.sh`. Upgraded from simple mtime sort to exponential decay (δ=0.17/week) + maturity weights from frontmatter `status:` and `depth:` fields. Active deep-dive notes now outrank recently-touched shallow notes. Verified: query "agent memory" now surfaces poco-claw, whale, statewave (architecturally relevant) over pr-superseded-lessons, vercel-ai (incidentally matching). See [[krusch-context-mcp]] for the prior mtime-only version.
+
+Links: [[self-evolving-agent-landscape]], [[agent-memory-taxonomy]], [[coding-agent]], [[memex]], [[mechanism-vs-evolution]], [[worktree-convergence-2026-05]], [[claude-code-memory-architecture]], [[skill-trust-landscape-2026-04]], [[krusch-context-mcp]]
