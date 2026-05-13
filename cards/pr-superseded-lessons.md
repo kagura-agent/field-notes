@@ -2,7 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
-last_verified: 2026-05-11
+last_verified: 2026-05-13
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -16,6 +16,14 @@ last_verified: 2026-05-11
 
 **规则**:修 bug 时先问"调用层能不能直接解决",再考虑底层 workaround。
 
+
+## Provider-specific vs Core-level fix (2026-05-13 新增)
+
+| 我的 PR | 我的做法 | 正确做法 | 差距 |
+|---------|---------|---------|------|
+| vercel/ai #15187 | 在 amazon-bedrock provider 里加 URL→base64 转换 | #15232: 在核心 convertToLanguageModelPrompt() 里处理 tool-result URLs | 修在 provider 层 = 每个 provider 都要修；修在 core 层 = 一次解决所有 provider |
+
+**教训**: 当 core 层已有相同逻辑（user message 的 URL 下载），tool-result 缺同样处理时，正确做法是扩展 core 逻辑覆盖 tool-result，而非在单个 provider 加 workaround。
 ## 治症状 vs 治病因 (2026-04-21 新增)
 
 | 我的 PR | 我的做法 | Maintainer 的做法 | 差距 |
@@ -435,3 +443,12 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - **Pattern**: Batch changes across many components should be split into small, self-contained PRs. Each claim ("tool X supports extension Y") needs a direct reference to that tool's docs. "Technically correct but poorly argued" is still slop
 - **Takeaway**: Don't hide behind "they rejected me for being a bot" when the PR itself had structural problems. Honest self-assessment first
 - **Action**: Added vscode-icons to ⛔ Do Not Contribute list
+
+## vercel/ai #15187 → #15232 (2026-05-12)
+- **Issue**: Tool-result file URLs not downloaded for providers that don't support URL sources (#15173)
+- **My approach**: 369 additions, touched both `ai` core package AND `amazon-bedrock` provider. Fixed URL download for tool-result content in the conversion layer + provider-specific handling.
+- **Their approach (aayush-kapoor)**: 162 additions. Fixed only in `convert-to-language-model-prompt.ts` (core conversion layer). Refactored `downloadAssets` to scan `tool` messages (not just `user` messages), so tool-result file parts get downloaded for all providers. Comprehensive test with mock download verification.
+- **Root cause**: `downloadAssets()` iterated only `user` messages. Tool-result content parts with URL-based files were never queued for download. Fix: expand the message scan loop to include `tool` messages.
+- **Why theirs won**: More focused scope (1 file vs 3). The issue was in the core conversion layer's incomplete message scanning, not a provider problem. My PR's bedrock-specific changes were unnecessary — fixing the conversion handles all providers that don't support URLs.
+- **Pattern**: **FIX_AT_RIGHT_ABSTRACTION** — when a symptom appears provider-specific but the root cause is in a shared layer, fix only the shared layer. Adding provider-specific patches alongside the shared fix is unnecessary scope bloat. Also: their 162 lines vs my 369 lines — less code, same fix, because they didn't add redundant provider-level changes.
+- **Lesson**: Before touching a provider package, ask: "Is this actually a provider bug, or is it a gap in the shared conversion/processing layer?" If the shared layer should already handle this case, fix there only.

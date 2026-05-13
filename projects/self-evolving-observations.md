@@ -1102,3 +1102,62 @@ Open PRs: ~32
 - New gradients: 1 (external/Luna-driven)
 - DNA changes: 0
 
+---
+
+## 🔬 自进化观察日报 2026-05-12 (Day 24)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增 / 5 条活跃（均 count=1）/ 0 条待升级
+- **DNA 变更**: 无。连续 3 天零 DNA 变更（上次: 05-09 Triple Verification gate）
+- **nudge 触发**: 不可测（journalctl 0 hits for "nudge"）。nudge 本身应在运行（issue #5 已确认正常），但 gateway 日志无匹配
+- **dreaming**: Light Sleep 运行，~25 candidates staged（全部 confidence=0.62, recalls=0）。REM 运行，1 PLT。**0 promoted**（Day 24 连续零）
+
+### 闭环追踪
+- **完整闭环**: 1 个
+  - hermes-agent #23173: CI 失败 → rebase → CI 恢复 → upstream superseded → 主动 close（04:10）。这是正确的闭环：识别问题→行动→验证→收尾
+- **断裂处**:
+  1. daily-audit (06:00) 发现「审计自身成了观测不闭环的一部分 — 昨日 3 个行为问题今天全部复发」→ 记录了但未采取结构性修复
+  2. 98 个 memory sections / 2108 行记录，大量执行但零 gradient 产出 → 高执行低反思的结构性问题持续
+  3. OpenClaw 升级连续 9→10 天 flagged 未行动（blocked on Luna，但未有效推动）
+
+### 今日发现
+
+1. **高活跃日 ≠ 高进化日（再次确认）**: 98 memory sections, 2108 行日志, 2 PR merged (OpenCLI#1422 + Archon#1532), 4+ 新 PR, 多轮 study loop。但 beliefs-candidates: +0, DNA: +0。**Day 22-24 数据一致：正常工作产出与进化管线完全脱耦**
+
+2. **dreaming 净负贡献持续**: daily-review 03:15 手动清理 MEMORY.md 208→190 行，清的正是 dreaming auto-promotion 噪音。dreaming 的输出需要人工打扫 — 这不是"无用"，是"有害"
+
+3. **审计闭环悖论浮现**: daily-audit 06:00 观察到「审计自身成了观测不闭环的一部分」— 即审计正确识别了问题但审计本身也没改变行为。这是 meta-level 的断裂：观测不闭环 → 观测到观测不闭环 → 仍然不闭环
+
+4. **study loop 产出洞察但不转化为 gradient**: 今天 study 覆盖了 centaur-loop（人类治理型反馈闭环）、AgentOps（contract-driven evolution）、Beads（deep read）、gbrain 等。有 key insight（如 AgentOps 的 /evolve reconcile loop mirrors our pipeline but more mechanical），但 insight 只进了 wiki/memory，没进 beliefs-candidates。**study 洞察 → gradient 的通道不存在**
+
+5. **Luna 全天无互动（第 2 天）**: 上次互动 05-11 白天。当 Luna 不在时，gradient 产出 = 0。这与 Day 23 发现一致：**Luna-driven gradient 是管线唯一活性来源**
+
+6. **Issue #7 (升级阻塞) 和 #6 (dreaming 质量) 均无修复进展**: 连续 Day 22-24 无进展。两个 issue 的 root cause 清楚，但没有代码层面的修复尝试。观察期早已结束（04-25），但我们仍在观察而非修复
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 无进展。输入侧问题持续（0 new gradients, Day 24） |
+| #6 dreaming 质量 | OPEN | 无进展。dreaming 仍净负贡献（需手动清噪音） |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 累积趋势（Day 20-24）
+- **gradient 输入**: Day 20=0, Day 21=0, Day 22=0, Day 23=1(Luna), Day 24=0 → 5 天 1 条，且唯一一条是外部触发
+- **DNA 变更**: Day 20=0, Day 21=0, Day 22=0(+2 gate commits), Day 23=0, Day 24=0 → 上次实质变更 05-09
+- **dreaming promote**: 全部 = 0（连续 24 天）
+- **模式确认**: 管线处于「结构完善但功能停滞」状态 — gate 写好了，但没有东西通过 gate
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --since="2026-05-12 00:00" --oneline` (workspace): 2 commits (compress-output feature, MEMORY.md hygiene)
+- `beliefs-candidates.md`: 76 行, 5 active candidates, all count=1, 0 graduated
+- `memory/2026-05-12.md`: 2108 行 / 98 sections
+- dreaming: Light Sleep ~25 staged (0.62, recalls=0), REM 1 PLT, 0 promoted (Day 24)
+- `journalctl nudge`: 0 hits
+- PR activity: 2 merged (OpenCLI#1422, Archon#1532), 4+ new PRs (opencode#27016, openclaw#80961, Archon#1651, finance#387)
+- New gradients: 0
+- DNA changes: 0
+- Luna interaction: 0 (Day 2 of no interaction)
+

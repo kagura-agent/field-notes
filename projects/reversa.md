@@ -152,7 +152,27 @@ Reversa's engine compatibility table is now the best single reference for agent 
 
 *Field note: 2026-05-05*
 
+## Update: extract-soul Agent (2026-05-13)
+
+761⭐ (was 707 on 05-08, +7.6%). Still growing, community health 🟡 GROWING (4/6).
+
+**New agent: reversa-extract-soul** — synthesizes a project's "soul" into a single dense spec (`soul.md`). Runs after Scout, deliberately lightweight (doesn't replace Archaeologist/Detective). Answers three questions: What does this do? For whom? What pain does it solve?
+
+Key design choices:
+- **3-level doc depth** (essencial/completo/detalhado) controlled by `doc_level` in state.json — same spec, different granularity
+- **Non-destructive**: never overwrites existing soul.md, always asks user
+- **Confidence markers** (🟢/🟡/🔴) on every assertion — honest about what's inferred vs. evidenced
+- **Bounded sampling**: 3-5 representative files, not full codebase scan. Explicitly delegates completeness to deeper agents
+- **Prerequisite chain**: requires Scout's `surface.json` — won't hallucinate from nothing
+
+**Architectural insight**: The soul metaphor is load-bearing. A project's "soul" = purpose + core entities + founding decisions. Not documentation for humans — specs for agents. This frames legacy code understanding as distillation, not documentation.
+
+**Relevance to us**: Our SOUL.md is the agent's identity; reversa's soul.md is a project's identity. Different domain, same pattern: compress complex system → dense, actionable spec. Could inform a "project understanding" pre-phase in [[gogetajob]] workloop — before contributing, extract the project's soul so you know what you're working with.
+
+**Also notable**: `reversa-clarify` (renamed from `reversa-doubt`) — grouping docs by Teams. Security auditor agent added as optional independent agent. Growth decelerating (+7.6% vs earlier +16%/week) but project is maturing.
+
 ## See Also
 - [[hermes-labyrinth]] — read-only observability (similar immutability principle)
 - [[agent-skill-ecosystems]] — skills as distribution format
 - [[flowforge]] — checkpoint/resume state management (similar pattern)
+- [[doubt-driven-development]] — adversarial review pattern (extract-soul's confidence markers share the "honest about uncertainty" principle)

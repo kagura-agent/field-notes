@@ -13,6 +13,9 @@
 | #14636 | #14634 | PENDING | fix multi-region endpoint for Vertex Anthropic |
 | #14687 | #14678 | PENDING | fix xAI tool calling — strip additionalProperties |
 | #14704 | #14703 | PENDING | fix input-streaming optional type for exactOptionalPropertyTypes |
+| #15187 | #15173 | SUPERSEDED | fix tool-result URL download — superseded by #15232 (aayush-kapoor) |
+| #15159 | #15155 | PENDING | fix for another issue |
+| #15049 | #15042 | PENDING | fix Cerebras reasoning field serialization |
 
 ## 开发环境
 
