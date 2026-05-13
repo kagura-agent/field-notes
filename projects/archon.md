@@ -160,6 +160,16 @@
 
 ## 2026-05-13 Session Notes
 
+### PR #1661 — fix(providers): preserve native tools when skills set without allowed_tools (pending, fixes #1605)
+- **Issue**: Skills wrapper defaulted `tools` to `['Skill']` when no `allowed_tools` set, stripping all native tools
+- **Root cause**: `provider.ts:439` — `agentTools` defaulted to `['Skill']` when `options.tools` was undefined
+- **Fix**: Omit `tools` field on AgentDefinition when undefined → SDK provides default tool set. When `allowed_tools` is set, append `Skill` as before.
+- **Tests**: 2 new tests (skills without allowed_tools → tools undefined; skills with allowed_tools → tools includes Skill). 74 pass total.
+- **CI**: Ubuntu ✅ Windows ✅ Docker-build ✅ CodeRabbit: "No actionable comments"
+- **Pattern**: Option B (omit field, let SDK defaults apply) is always cleaner than hardcoding default lists that need maintenance
+- **Selection**: Found after extensive search — nearly all candidate issues in tracked repos had competing PRs. This issue was unclaimed for 6 days, well-documented with root cause analysis and suggested fixes.
+- **Lesson**: Saturday-filed issues in active repos may have lower competition than weekday issues (filed May 7, no competing PR by May 13)
+
 ### PR #1658 — fix(clone): multi-forge auth (pending, fixes #1655)
 - **Issue**: Clone handler only injected auth tokens for github.com URLs — GitLab/Gitea/Forgejo private repos failed
 - **Root cause**: Hardcoded `github.com` substring check + `GH_TOKEN` only
