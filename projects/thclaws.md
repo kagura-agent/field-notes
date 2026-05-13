@@ -1,14 +1,14 @@
 ---
 title: thClaws
 url: https://github.com/thClaws/thClaws
-stars: 612
+stars: 879
 created: 2026-04-20
 language: Rust
 license: MIT OR Apache-2.0
-last_checked: 2026-04-29
+last_checked: 2026-05-13
 status: active
 tags: [agent-harness, rust, multi-provider, local-first, desktop-app]
-last_verified: 2026-05-12
+last_verified: 2026-05-13
 ---
 
 # thClaws — Rust-Native Agent Harness Platform
@@ -158,6 +158,8 @@ See [[mechanical-enforcement-via-topology]] for the generalized pattern.
 
 ## v0.9.0 Update (2026-05-12): /dream KMS Consolidation + Stream Hardening
 
+> See below for v0.9.2-v0.9.4 update (2026-05-13)
+
 871⭐ (+259 since last check, +3% since 848). v0.8.4 → v0.9.0 in 4 days (5 releases: v0.8.8, v0.8.9, v0.9.0 on 05-11/12).
 
 ### /dream — Built-in KMS Consolidation Agent
@@ -190,3 +192,65 @@ A first-class slash command that spawns a side-channel agent to consolidate/dedu
 
 ---
 *Update: 2026-05-12. Source: GitHub API (commits, releases, technical manual dream.md)*
+
+## v0.9.2-v0.9.4 Update (2026-05-13): LINE Bridge + ChatGPT Codex + SSO
+
+879⭐ (+8 since yesterday). **Three releases in 24 hours** — extreme velocity continues.
+
+### LINE Bridge (v0.9.2-v0.9.4) — Messaging Platform as Remote Control
+
+The most architecturally interesting development. thClaws implements messaging platform integration with **inverted topology** compared to [[openclaw]]:
+
+| Aspect | OpenClaw | thClaws LINE Bridge |
+|--------|----------|--------------------|
+| Agent location | Server (24/7 daemon) | Local machine (user's laptop) |
+| Messaging role | Primary interface | Remote control surface |
+| Direction | Messages → agent | Agent ← relay ← LINE |
+| Always-on | Yes | Only when desktop app is running |
+
+**Architecture** (5 layers):
+1. **LINE webhook → Relay server** (`line.thclaws.ai`, Axum + Redis + Postgres on k3s) — receives LINE messages
+2. **Relay → WebSocket → Client** — per-install WS connection, JWT auth, pairing-code flow
+3. **Client bridge** (`crates/core/src/line/`) — WS client + `LineApprover` for tool approvals
+4. **Frontend modal** — paste pairing code → POST `/pair` → start WS
+5. **Worker integration** — `ShellInput::LineMessage` arm in `shared_session.rs` drives `Agent::run_turn`
+
+**Key design decisions**:
+- **Wire protocol is intentionally documented** for third-party relay implementers — `thclaws-technical-manual/line-bridge.md` is the contract. The official relay is workspace-only (not in public mirror), but the protocol is open.
+- **Reply-first / push-fallback** for LINE API quota management: reply tokens are free but expire in 60s and are single-use. Push messages count against monthly quota (200/month on free tier). Relay tries reply first, falls back to push on error.
+- **Quick Reply chips** for tool approval: mutating-tool approval prompts route to LINE as tappable `postback` buttons (Approve/Deny). Same concept as OpenClaw's native approvals but mapped to LINE's Quick Reply API.
+- **LineApprover routing** (v0.9.4): when the browser GUI is open, approvals route there instead of LINE — the relay exposes `/chat-bridge/has-browser` check. Smart multi-surface routing.
+- **Reconnect with exponential backoff** — k8s rolling updates drop WS connections, presence TTL (60s) absorbs the gap.
+
+**Relevance to us**: This is the first competitor implementing the "messaging platform as agent interface" pattern that OpenClaw pioneered with Discord/Feishu/Telegram. The topology is different (local agent + remote relay vs server-side agent), but the core UX — chat with your agent from your phone, approve tool calls via tappable buttons — is identical. The relay-as-a-service model (documented wire protocol, anyone can implement their own relay) is worth noting as an alternative to OpenClaw's built-in channel plugin approach.
+
+### ChatGPT Codex Provider (PR #88)
+
+652 additions, 11 files. Ported from "themion" — uses ChatGPT Plus/Pro/Team subscription OAuth to access Codex. No separate API key needed. This brings the provider count to **17 supported backends** with the 7-variant `ProviderEvent` normalization layer.
+
+### SSO/OIDC (v0.9.5-era)
+
+- Standard mode: Google (+ Azure stubbed), env-supplied `CLIENT_ID`/`CLIENT_SECRET`
+- Enterprise mode: signed policy file pins to org-managed IdP
+- PKCE flow, keychain-backed session storage (`thclaws-sso-<sha256-of-issuer>`)
+- This is **enterprise readiness** — OpenClaw doesn't have SSO yet
+
+### Post-v0.9.4 Sync (7.3K additions)
+
+- OpenRouter "free only" toggle (Settings + in-picker)
+- Model catalogue UX improvements
+- `secrets.rs` refactoring
+- User manual ch21 (LINE and browser chat)
+
+### Issue Analysis — Architecture Insights
+
+- **#82 (AskUser IPC gap)**: `AskUserQuestion` doesn't work through AgentSdk provider (Claude Code subprocess) — the SDK runs tools opaquely, thClaws's tool registry never sees them. This is a fundamental IPC boundary problem that any harness wrapping Claude Code's SDK will face.
+- **#58 (GUI deps in CLI binary)**: Even `--cli` mode links against Wayland/WebKit at runtime. The single-binary advantage breaks on headless servers. Feature-flag compilation (`--no-default-features`) would fix this but isn't shipped yet.
+- **#72 (Config plumbing gap)**: `maxTokens` parsed from settings but hardcoded to 8192 in `Agent::new()`. Classic mono-crate coupling — config values need manual threading through all call sites. 8 call sites + `ProductionAgentFactory` needed patching.
+
+### Velocity & Community
+
+9 releases in 2 days (v0.9.0-v0.9.4 + post-sync). 879⭐ in 23 days = ~38⭐/day sustained. Thai user base is engaged (issues in Thai, mozeal responds bilingually). mozeal's issue response quality is exceptional — detailed, commit-referenced, bilingual. External contributors appearing (#85 perf fix, #88 Codex port). Still predominantly a one-person project (mozeal) but community is growing.
+
+---
+*Update: 2026-05-13. Source: GitHub API (commits, releases, technical manual line-bridge.md, sso.md, providers.md, issues)*
