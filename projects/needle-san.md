@@ -10,7 +10,7 @@ last_verified: 2026-05-13
 # Needle — Simple Attention Network for Tool Calling
 
 - **Repo**: [cactus-compute/needle](https://github.com/cactus-compute/needle)
-- **Stars**: 372 (2026-05-13)
+- **Stars**: 850 (2026-05-13 PM, was 372 AM — HN front page 468pts explosion)
 - **License**: MIT
 - **Language**: Python (JAX/Flax)
 - **Team**: Cactus Compute (Henry Ndubuaku et al.)
@@ -87,5 +87,6 @@ The headline insight: **FFN layers can be completely dropped** for structured ou
 
 ## Tracking
 
-- Revisit: 2026-05-27 (check if community forms, if benchmarks are independently validated)
+- Revisit: 2026-05-20 (HN momentum — check if community forms faster, benchmark reproductions, star trajectory)
 - Watch for: external benchmark reproduction, multi-turn support, ONNX/PyTorch port
+- HN thread: https://news.ycombinator.com/item?id=48118763 (468pts, 2026-05-13)
