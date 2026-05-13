@@ -1,12 +1,13 @@
 ---
 created: 2026-05-04
-updated: 2026-05-11
+updated: 2026-05-13
 type: project
 status: active
-stars: 419
+stars: 423
 repo: kiwifs/kiwifs
 language: Go
 license: BSL-1.1
+last_verified: 2026-05-13
 ---
 
 # KiwiFS — Knowledge Filesystem for Agents
@@ -299,5 +300,64 @@ kiwifs is executing the "everything server" strategy at extraordinary velocity. 
 1. **Lint-on-write pattern** — Our wiki-lint.py runs as post-hoc audit. kiwifs's approach (reject invalid writes at pipeline level) is more ergonomic. **Applied 2026-05-11**: Added `.githooks/pre-commit` to wiki repo — rejects duplicate slugs at commit time instead of catching them post-push in CI. Immediately fixed a recurring CI failure (brain-git-memory duplicate slug). Next step: extend hook to reject broken wikilinks too.
 2. **Scoped tokens** — If we ever expose wiki via MCP server, their read/write scope + path prefix model is the right granularity.
 3. **Audit logging** — Append-only JSONL with daily rotation is simple and effective. We have session logs but no wiki-level audit trail.
+
+## v0.14.0: Knowledge Features v2 — Graph Analytics + Canvas + Web Clipper (2026-05-13 followup)
+
+Massive release: v0.13.0 → v0.14.0 → v0.14.1 in 24 hours (05-12/13). PR#61: +9,837/-367 lines, 55 files. Stars: 423 (was 419 on 05-11, +1%).
+
+### Graph Analytics Backend + UI
+
+Four algorithms exposed via REST, MCP tools, and interactive graph UI:
+
+1. **PageRank** — power-iteration (damping=0.85, 30 iterations). Finds most important pages.
+2. **Betweenness centrality** — Brandes' algorithm with sampling. Finds bridge pages connecting clusters.
+3. **Louvain community detection** — via `bluuewhale/loom` library, undirected graph. Finds natural topic clusters.
+4. **BFS shortest-path** — path between any two pages.
+
+Implementation: `internal/graphutil/` — clean separation. `AllEdges()` from link indexer feeds into pure graph functions. Each exposed as both REST endpoint (`/api/kiwi/graph/{centrality,communities,path}`) and MCP tool (`kiwi_graph_centrality`, `kiwi_graph_communities`, `kiwi_graph_path`).
+
+**Architecture insight**: Graph analytics runs on-demand from the live link index — no precomputed cache. Acceptable at wiki scale (<10K pages) but won't scale to large knowledge bases. The `AllEdges()` call does a full scan every time.
+
+### Web Clipper
+
+URL → readability extraction → html-to-markdown → frontmatter → git commit pipeline:
+- Deps: `go-readability` + `html-to-markdown/v2`
+- Exposed as CLI (`kiwifs clip`), REST (`POST /api/kiwi/clip`), and MCP tool (`kiwi_clip`)
+- Generates slug from title, auto-tags, stores in `clips/` folder
+- Similar to our `web_fetch` but with auto-persist to knowledge base
+
+### Bases / Database Views
+
+Obsidian Dataview-like computed views over frontmatter:
+- DQL queries with formula evaluation (Pratt parser, proper precedence)
+- Column summaries, four UI layouts: table (TanStack), cards, list, map (MapLibre)
+- Formula engine: `+`, `-`, `*`, `/`, `length()`, `round()`, `if()` — right-to-left scan for left-associativity
+
+### Canvas / Whiteboard
+
+JSON Canvas format (spec from Obsidian) + tldraw-powered UI:
+- Required adding `WalkAll`/`WalkFilter` helpers to storage (original `Walk` only yielded `.md` files — critical bug caught in review)
+
+### Bug Fixes Found During Review
+
+Notable: 3 critical bugs (nil body panic, `.md`-only walker, git log parse panic) + 1 security fix (path traversal in view names) + 1 correctness fix (formula precedence). These were caught in the PR review of the 9.8K line diff — speaks to code review quality.
+
+### Community Health Update
+
+🟢 THRIVING (5/6). 32 external PRs in 30 days. 8 unique issue authors. Active despite BSL-1.1 license. 3 unique merged PR authors.
+
+### Relevance to Us
+
+1. **Graph analytics on wiki** — Our wiki has ~100+ pages with wikilinks. Running PageRank/community detection would surface which concept cards are most central and which topic clusters exist. Could help prioritize wiki maintenance and identify orphan knowledge. **Actionable**: We could build a lightweight equivalent using our existing memex backlinks data.
+2. **Web clipper as agent tool** — The clip-to-knowledge-base pattern is useful for our study workflow. Currently we manually write notes after `web_fetch`. An auto-clip pipeline would speed up the scout→note flow.
+3. **Formula evaluation pattern** — The right-to-left scan for left-associativity in their Pratt parser is a clean trick. If we ever add computed fields to wiki frontmatter.
+
+### Trajectory Assessment
+
+**Scope**: v0.5→v0.14 in 6 days. 6+ major capability layers. This is the most aggressive scope expansion in the agent infra space right now.
+**Quality**: Bug catches in PR review are encouraging. Tests are thorough (adversarial inputs, edge cases).
+**Risk**: Feature velocity suggests solo or very small team generating massive PRs. BSL-1.1 remains.
+**Growth**: Stars growth decelerating (423 vs 419, +1% in 2 days vs +2.6% the previous period). Feature richness isn't translating to star acceleration — possible ceiling.
+**Revisit**: 05-19
 
 Links: [[memex]], [[stash]], [[agent-memory-landscape-202603]], [[self-evolving-agent-landscape]], [[agent-skill-standard-convergence]], [[obsidian-wiki]], [[pulse-todo]], [[taskflow]], [[mechanism-vs-evolution]], [[agent-commerce]], [[context-is-software]], [[wiki-lint]]
