@@ -1,7 +1,7 @@
 # Aegis — Architecture-Driven Development Method Pack
 
 - **Repo**: GanyuanRan/Aegis
-- **Stars**: 140 (2026-05-09, created 04-30)
+- **Stars**: 180 (2026-05-13, created 04-30)
 - **Language**: Shell + Markdown (zero runtime dependencies)
 - **Host**: Claude Code, Codex, Cursor, Windsurf, Gemini, OpenCode, DeepSeek-TUI, Trae, Kimi Code CLI, CodeBuddy, Warp
 
@@ -63,9 +63,61 @@ Skills-as-methodology (process packs) is a nascent category alongside skills-as-
 |------|-------|------|
 | 04-30 | — | Created |
 | 05-09 | 140 | Initial discovery |
+| 05-13 | 180 | +28%, v1.1.3→v1.3.0 in 3 days |
+
+## v1.2-1.3 Update (2026-05-13)
+
+Massive release burst: v1.1.3→v1.3.0 in 3 days (05-10 to 05-12). Despite 28% star growth, still 🔴 SOLO (0/6 community health) — zero external PRs, zero external issue authors, no discussions.
+
+### Workflow Quality Baseline (v1.3.0)
+
+The most interesting new artifact. Defines 7 quality dimensions for skill workflows:
+1. **Trigger accuracy** — right skill triggers for representative tasks
+2. **Fast-path cheapness** — simple tasks stay simple (no forced ceremony)
+3. **Output compactness** — depth scales with complexity
+4. **Evidence freshness** — completion claims need fresh evidence
+5. **Artifact stability** — consistent naming and structure
+6. **Workspace laziness** — don't create project records for trivial tasks
+7. **Authority boundary** — skills advise, don't decide
+
+Backed by a `workflow-quality-matrix.json` with representative task samples defining expected routing, output shape, workspace policy, and forbidden behaviors. This is essentially a **behavioral test suite for methodology** — testing not code correctness but *process appropriateness*.
+
+**Key insight**: The "fast-path cheapness" dimension is the anti-bloat mechanism we lack. Our DNA/workflow rules keep growing but we have no formal check for "is this rule making simple tasks harder?" Aegis solves this with explicit pass criteria: "simple factual Q&A does not force a full workflow."
+
+### ADR Auto Backfill (v1.2.0)
+
+Automatic architecture decision records from completed work. Evidence-led: `completed work → ADR trigger check → create/amend/supersede/skip`. Source priority: work records > plans > specs > git evidence.
+
+Key design choice: ADR backfill happens *near completion*, not at design time. This prevents speculative ADRs. Three-gate filter: (1) reversing would be costly, (2) decision would be surprising without context, (3) real alternatives existed.
+
+Relevant to our [[beliefs-candidates]] pipeline — we could adopt similar trigger conditions for when a behavioral observation graduates to DNA vs stays a candidate.
+
+### Dual-Track Governance
+
+Formalized the Repair+Retirement pattern noted in initial review. Key new constraint: **deletion is the default** for old logic during Retirement Track. Retention requires explicit justification with recorded: retained object, retention reason, observation metrics, retirement timing.
+
+This is more aggressive than our current approach where DNA rules accumulate. Worth adopting: every new DNA rule should answer "what old rule does this retire?"
+
+### Rule Layering (3-Layer Model)
+
+Separates rules into: (1) Portable method core, (2) Host/profile preferences, (3) Repo contribution rules. Migration principle: method core → docs/current/ + skills, host prefs → host-facing docs, repo constraints → contribution docs.
+
+Parallel to our DNA layers: SOUL.md (universal) → AGENTS.md (workspace-level) → workflow YAML (task-level). We do this implicitly; Aegis makes it explicit with clear criteria for which layer owns what.
+
+### Trigger Health Diagnostic
+
+8-layer diagnostic for "why didn't the right skill trigger?" From install/version (L0) through routing (L4) to context pressure (L7). Principled debugging: find the layer that owns the failure, fix there, don't compensate elsewhere.
+
+## Observations
+
+1. **Velocity without community = fragile**. 180⭐ and v1.3.0 in 2 weeks, but entirely one person. The documentation is excellent but no one is using it enough to file bugs or contribute. This is the "impressive but solitary" pattern — contrast with [[agentic-stack]] which has lower polish but real community engagement.
+
+2. **Over-documentation risk**. 17 docs in docs/current/, each with Status, Scope, Boundary sections. The methodology about methodology is growing faster than the methodology itself. At some point the meta-governance overhead exceeds the governed behavior.
+
+3. **Anti-bloat lesson for us**: Their workflow-quality-matrix.json is a clever idea — defining representative tasks and checking that your methodology doesn't make them unnecessarily expensive. We should consider something similar for our DNA rules.
 
 ## Tracking
 - Created: 2026-04-30
-- Revisit: 2026-05-16
+- Revisit: 2026-05-20
 
 Links: [[thin-harness-fat-skills]], [[agent-skill-standard-convergence]], [[invincat]], [[open-design]], [[flowforge]], [[beliefs-candidates]], [[skill-type-taxonomy]]
