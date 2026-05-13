@@ -143,7 +143,11 @@ The idea of composing prompts from detected context (tech stack, batch content, 
 
 ## Growth Trajectory Assessment
 
-Growth slowing: +231/day (launch) → +41/day (05-06) → +18/day (05-07) → +12/day (05-09). Typical hype curve. BUT sustained development velocity (cramforce shipping daily) means the product is maturing fast. The GPT-5.5 default switch suggests Vercel alignment (Codex partnership?). Worth continuing to track — the composable prompt pattern is genuinely novel. Community PRs (Ollama, skills folder) signal the project is attracting contributors, not just stars.
+Growth slowing: +231/day (launch) → +41/day (05-06) → +18/day (05-07) → +12/day (05-09) → ~+10/day (05-13). Typical hype curve.
+
+**⚠️ Maintainer silence (05-13 followup)**: cramforce has not committed or merged any PRs since 05-07 (6 days). 13 community PRs sitting unmerged. Stars still growing (2,427) from inertia but development velocity dropped to zero. Possible "Vercel Labs launch-and-showcase" pattern: ship a polished demo, collect stars, move team to next project. Compare with Photo-agents (684⭐, zero development since 05-04) — star growth without development is a recognized pattern in the agent ecosystem.
+
+Community PRs (Ollama, Rust matchers, ACP registry, skills folder) signal the project attracted contributors, but whether anyone is home to merge them is now the question.
 
 ## Relevance to Us
 

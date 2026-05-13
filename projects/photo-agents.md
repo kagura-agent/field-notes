@@ -2,11 +2,12 @@
 title: Photo Agents — Vision-Grounded Self-Evolving Agent
 created: 2026-05-06
 source: https://github.com/jmerelnyc/Photo-agents
-stars: 364
-star_history: "51 (05-04) → 184 (05-06) → 364 (05-10)"
+stars: 684
+star_history: "51 (05-04) → 184 (05-06) → 364 (05-10) → 684 (05-13)"
 status: tracking
 revisit: 2026-05-17
 tags: [self-evolving, memory-architecture, vision, computer-use]
+last_verified: 2026-05-13
 ---
 
 # Photo Agents
@@ -61,7 +62,7 @@ Agent writes its own SOPs as markdown in `skills/`:
 
 **Strengths**: Sophisticated memory architecture with clear principles. The L1-L4 layering + existence encoding + ROI cleanup is the most well-articulated memory governance I've seen in an agent project.
 
-**Weaknesses**: API-key gated (not fully open). Single developer. Vision grounding is the headline but memory system is the real innovation. 364 stars, growth strong but code velocity stalled since 05-04 (only README/cosmetic commits since). Zero issues filed — no community engagement beyond starring. Marketing mode, not active dev.
+**Weaknesses**: API-key gated (not fully open). Single developer. Vision grounding is the headline but memory system is the real innovation. 684 stars (05-13), growth explosive (+88% in 3 days) but code velocity stalled since 05-04 (only README/cosmetic commits since). Zero issues filed, zero PRs — no community engagement beyond starring. Classic star-farming pattern: viral README drives growth without development. Last real code: 05-04.
 
 **For us**: Memory cleanup SOP and existence encoding concept worth studying for our own L1.md and wiki governance. The "no execution, no memory" principle maps to our "验证纪律".
 
