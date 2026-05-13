@@ -1,10 +1,11 @@
 ---
 title: "Statewave"
 url: https://github.com/smaramwbc/statewave
-stars: 213
+stars: 214
 first_seen: 2026-05-11
 status: active
-last_verified: 2026-05-11
+last_verified: 2026-05-13
+depth: deep-read
 ---
 
 # Statewave
@@ -45,6 +46,22 @@ Word-overlap similarity (threshold 0.6) within same (subject, kind) group. Newer
 Different memory types decay at different rates. Episode summaries expire faster than profile facts. Configurable per deployment.
 
 **Connection to [[beliefs-upgrade-quality-gate]]**: Our "Durability" dimension in beliefs evaluation is the manual version of this — we ask "will this still be true in 30 days?" while Statewave encodes it as a TTL value per kind.
+
+### Bi-Temporal Anchoring (v0.7.2, PR #71)
+Four-commit fix that lifted benchmark scores from 0.388 → 0.535 (beating Mem0 0.382, Zep 0.244). Key lessons:
+
+1. **valid_from from payload event time** — `episode_valid_from(ep)` helper prefers `payload.event_time` → `payload.messages[0].timestamp` → `ep.created_at` → `now()`. Previously every memory carried `valid_from = POST time`, making temporal queries useless. Parses ISO 8601 + natural language ("1:56 pm on 8 May").
+
+2. **Date grounding in compiled content** — LLM compiler prompt gained "Temporal grounding" section: resolve relative phrases ("yesterday", "last Saturday") against message timestamp. `_render_memory_line` prefixes `[YYYY-MM-DD]` as safety net.
+
+3. **Granular detail extraction** — Previous "concrete, generalizable facts" wording caused LLM to emit summaries and skip specifics. New rules: specific attributes ARE generalizable facts. Preserve colors, brands, quantities, names, places, preferences. "Better to emit 30 concrete granular memories than 5 vague ones — the retrieval layer ranks them; the compiler's job is recall." Compiled count: 111 → 154 (+39%).
+
+4. **Embedding backfill on async path** — **The headline bug**: async compile route (default SDK mode) was missing one-line `schedule_embedding_backfill` call. Every async-compiled memory had `embedding=NULL`. Semantic search returned empty, silently falling back to lexical+temporal only. **Statewave's signature feature was effectively disabled.**
+
+**Lesson for us**: The granularity insight is directly applicable. Our MEMORY.md curation tends toward summaries ("worked on X") instead of specifics ("discovered that Y uses Z pattern for W reason"). The embedding bug pattern is also cautionary — a missing one-liner silently degraded the most important feature.
+
+### Sensitivity Labels & Memory Governance (Issue #50)
+Design-stage feature: per-memory sensitivity metadata + policy layer controlling which memories influence which tools/contexts. Six candidate abstractions: capability tags, trust tiers, namespace policy, OPA/Rego, per-tool access rules, human approval workflows. Key insight: the accountability story (receipts from #49) is only as strong as the policy layer underneath — no filter metadata = nothing to record.
 
 ## What's Interesting for Us
 
