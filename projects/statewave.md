@@ -1,7 +1,7 @@
 ---
 title: "Statewave"
 url: https://github.com/smaramwbc/statewave
-stars: 214
+stars: 217
 first_seen: 2026-05-11
 status: active
 last_verified: 2026-05-13
