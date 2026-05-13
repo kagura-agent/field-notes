@@ -124,9 +124,22 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
     [[ -z "$filepath" ]] && continue
     slug=$(basename "$filepath" .md)
     if [[ -z "${SEEN[$slug]+x}" ]]; then
+      # Extract metadata for confidence display
+      _status=$(head -20 "$filepath" | grep -m1 '^status:' | sed 's/status: *//' | tr -d ' "' || true)
+      _depth=$(head -20 "$filepath" | grep -m1 '^depth:' | sed 's/depth: *//' | tr -d '"' || true)
+      _verified=$(head -20 "$filepath" | grep -m1 '^last_verified:' | sed 's/last_verified: *//' | tr -d ' "' || true)
+      # Build confidence badge: depth | status | verified date
+      _badge=""
+      [[ -n "$_depth" ]] && _badge="$_depth"
+      [[ -n "$_status" ]] && { [[ -n "$_badge" ]] && _badge="$_badge | $_status" || _badge="$_status"; }
+      [[ -n "$_verified" ]] && { [[ -n "$_badge" ]] && _badge="$_badge | ✓$_verified" || _badge="✓$_verified"; }
       # Show matching line for context
       match_line=$(grep -m1 -i "$QUERY" "$filepath" 2>/dev/null || grep -m1 -i "$(echo "$WORDS" | head -1)" "$filepath" 2>/dev/null || echo "(matched by keyword)")
-      echo "  🔍 $slug — $match_line"
+      if [[ -n "$_badge" ]]; then
+        echo "  🔍 $slug [$_badge] — $match_line"
+      else
+        echo "  🔍 $slug — $match_line"
+      fi
       SEEN["$slug"]=1
       RESULTS+=("  🔍 $slug")
       COUNT=$((COUNT + 1))
