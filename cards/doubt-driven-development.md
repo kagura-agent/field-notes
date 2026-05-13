@@ -41,4 +41,4 @@ Our [[beliefs-upgrade-mechanism]] already includes verification gates, but DDD f
 
 The "router persona" anti-pattern (from orchestration PR #86) is worth watching: a persona whose only job is routing to other personas = pure overhead. As our skill count grows toward 40+, the [[functional-area-resolver]] pattern (from [[gbrain]]) should be the solution, not a routing agent.
 
-Links: [[agent-skill-ecosystems]], [[reversa]], [[mechanism-vs-evolution]], [[beliefs-upgrade-mechanism]]
+Links: [[agent-skill-ecosystem]], [[reversa]], [[mechanism-vs-evolution]], [[beliefs-upgrade-mechanism]]
