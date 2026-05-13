@@ -1,39 +1,41 @@
 ---
-title: "Mercury Agent Skills"
-created: 2026-05-10
-updated: 2026-05-10
-status: noted
-tags: [skill-ecosystem, cross-platform, methodology-skills]
+tags: [skill-registry, skill-ecosystem, mercury, curated-skills]
+status: active
+created: 2026-05-13
+updated: 2026-05-13
+last_verified: 2026-05-13
 ---
 
-# Mercury Agent Skills
+# Mercury Agent Skills — Curated Skill Registry
 
-> Cross-platform skill registry for Mercury Agent, OpenClaw, Hermes Agent
-
-- **Repo**: [cosmicstack-labs/mercury-agent-skills](https://github.com/cosmicstack-labs/mercury-agent-skills)
-- **Stars**: 63 (2026-05-10, 1 day old)
-- **License**: MIT
-- **Skills**: 48 SKILL.md files across categories (AI/ML, automation, devops, etc.)
+By cosmicstack-labs. 102⭐ (2026-05-13), created 2026-05-09. MIT. Shell/Markdown.
 
 ## What It Is
 
-A curated collection of 48 methodology-style skills (guides, not executable code) explicitly compatible with Mercury Agent, OpenClaw, and Hermes Agent. Categories include memory management, agent task delegation, error recovery, prompt engineering, token budget tracking, etc.
+130+ hand-crafted SKILL.md playbooks organized in 20 categories. Designed for Mercury Agent but explicitly cross-compatible with Claude Code, Cursor, Codex CLI, Gemini CLI, and OpenClaw.
 
-## Significance
+## Categories (partial)
 
-1. **Cross-platform signal**: Third-party registries now explicitly list OpenClaw as a target platform. This is ecosystem convergence in action — the [[agent-skill-standard-convergence]] trend materializing.
+- Development (9): clean code, code review, debugging, testing, ADRs
+- Frontend (8): React, Next.js, Tailwind
+- Backend (9): APIs, Node.js, Python, auth
+- DevOps (9): Docker, CI/CD, K8s, Terraform
+- AI & ML (10): agent health, memory, delegation, token budgets
+- Security (7): audit, threat modeling, supply chain
+- Product (7), Marketing (8), Health, Career, Education
 
-2. **Methodology skills dominating**: All 48 are guides/playbooks, not executable tools. Confirms the [[skill-type-taxonomy]] observation that methodology skills are the most portable type.
+## Key Observations
 
-3. **Quality**: Reasonable but generic (textbook-level). Useful for onboarding, not for experts. The real value is the signal, not the content.
+1. **102⭐ in 4 days** — strong traction signal for curated skill collections
+2. **Cross-agent compatibility** — explicitly lists 6 different agent CLIs. SKILL.md as universal format is solidifying
+3. **Breadth > depth** — 130 skills across 20 categories feels like breadth play. Quality per skill needs verification
+4. **Validates addyosmani/agent-skills pattern** — curated collections of SKILL.md files continue to be the dominant skill distribution model
+5. **Category taxonomy** — their 20-category system could inform our own skill organization
 
-## Connections
+## Relevance
 
-- [[agent-skill-standard-convergence]] — cross-platform skill registries are a convergence indicator
-- [[skill-type-taxonomy]] — methodology skills as the portable lowest common denominator
-- [[skills-as-packages]] — packaging guides as SKILL.md files
-- [[claude-code-skill-ecosystem]] — parallel ecosystem development
+- Further evidence that SKILL.md is becoming the de facto standard
+- Their AI & ML category (agent health, memory, delegation, token budgets) directly overlaps our interests
+- Worth monitoring if they develop quality metrics or community curation mechanisms
 
-## Not Tracking
-
-One-day-old dump, 48 skills is the content — no evolution expected. Noted for the ecosystem signal.
+Links: [[agent-skill-standard-convergence]], [[claude-code-skill-ecosystem]], [[skills-as-methodology]], [[library-skills]]

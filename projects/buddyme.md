@@ -1,120 +1,75 @@
 ---
-title: "buddyMe — Multi-Model Agent with Layered Personality"
-created: 2026-05-10
-source: https://github.com/virgo777/buddyme
-stars: 33
-star_history: "30 (05-10, day 1), 33 (05-11, +10%)"
-status: noted
-tags: [agent-framework, personality, heartbeat, skill-ecosystem, chinese-dev]
+tags: [agent-framework, python, skill-system, heartbeat, memory, personality]
+status: active
+created: 2026-05-13
+updated: 2026-05-13
+last_verified: 2026-05-13
 ---
 
-# buddyMe
+# BuddyMe — Multi-Model Agent Framework with Personality Evolution
 
-> Python multi-model agent framework with layered personality, three-tier skill loading, and heartbeat memory.
+Chinese-origin Python agent framework by virgo777. 75⭐ (2026-05-13), created 2026-05-10. No license declared.
 
-By virgo777. MIT. Created 2026-05-10 (brand new). 30⭐ on day 1.
+## Architecture
 
-## Architecture — Why It's Interesting
+- **Three-tier skill loading** (L1 metadata → L2 instructions → L3 resources) — same progressive loading as OpenClaw but explicitly codified
+- **Heartbeat system** — `HeartbeatManager` with active hours, task scheduling, JSON config. Pure data layer, execution in `Agent.tick()`
+- **Memory system** — Conversation logger with regex-based fact extraction (files, URLs, dates, models). Zero-LLM overhead. Atomic writes, date-keyed JSON, log rotation
+- **Brain files** — SOUL.md, AGENT.md, IDENTITY.md, HEARTBEAT.md, USER.md, SUB_AGENT.md — nearly identical naming to OpenClaw workspace files
+- **6 LLM providers** — GLM, DeepSeek, ERNIE, Qwen, MiMo, with OpenAI/Anthropic protocol auto-detection
+- **Loop engine** — `/loop` command for recurring/scheduled tasks, heartbeat thread polling
+- **Skill library** — 25+ skills, JSON index, hot-reload support
 
-### Brain Directory = Our DNA Files
+## Deep Read Notes (2026-05-13)
 
-The `initspace/brain/` directory mirrors our workspace DNA files almost exactly:
+### Three-Tier Skill Loader (skill_loader.py, 343 lines)
+- **L1**: `get_metadata_prompt()` — all skill name+description injected into system prompt at startup. Includes "must prioritize skills" instruction
+- **L2**: `load_instructions()` — strips frontmatter, resolves relative paths to absolute, appends resource path summary
+- **L3**: `resolve_reference()` / `get_script_path()` — on-demand file reads from references/scripts/assets subdirs
+- **Matching**: `match_skills()` uses keyword overlap scoring (name words ×3, description words ×1). Pure regex, no embedding. `get_matched_instructions()` auto-injects up to 2 matched skill bodies into subtask prompts
+- **Hot reload**: `reload()` re-scans directories, reports delta
+- **Tradeoff**: Simple but effective. No semantic matching means false negatives on paraphrased requests. But zero external dependencies (no PyYAML, no embeddings)
 
-| buddyMe | OpenClaw/Kagura | Purpose |
-|---------|-----------------|---------|
-| SOUL.md | SOUL.md | Personality core (L0) |
-| IDENTITY.md | IDENTITY.md | Role definition (L1) |
-| AGENT.md | AGENTS.md | Behavioral contract |
-| HEARTBEAT.md | HEARTBEAT.md | Heartbeat task specs |
-| USER.md | USER.md | User profile/preferences |
-| SUB_AGENT.md | (inline in AGENTS.md) | Sub-agent rules |
+### Memory System (use_memory.py + memory_extractor.py)
+- **Pipeline**: Extract from conversations → deduplicate → score → decay → consolidate
+- **Extraction**: LLM-based (not regex) — sends last N days of conversations + target MD section headers to LLM, asks for structured JSON extraction
+- **Dedup**: SequenceMatcher similarity ≥ 0.8 → skip. < 0.8 → archive old, write new
+- **Scoring**: `relevance×0.4 + importance×0.3 + recency×0.3`. Recency decays linearly over 30 days
+- **Decay**: Score < 0.4 → archive. Score < 0.2 → delete
+- **Consolidation**: Rule-based merging by keywords (e.g., "上次/曾经/之前" → merge into 历史摘要)
+- **History**: JSON sidecar file tracks archives, last_active timestamps, importance scores
+- **Key insight**: Memory decay is time-based (30-day linear) not access-based. Our beliefs-candidates system uses manual verification gates instead — different philosophy
 
-This is **convergent evolution** — an independent Chinese developer arrived at the same file taxonomy we use. This validates our approach as a natural organizational pattern, not an idiosyncratic choice.
+### Heartbeat (heartbeat.py)
+- Pure data layer — config/task CRUD, time checks, no execution logic
+- Execution delegated to Agent.tick() — clean separation of concerns
+- JSON-based task storage with active hours, scheduling
 
-### Three-Tier Skill Loading
+### memorybuild.py (Conversation Logger)
+- **Regex fact extraction** (zero-LLM): extracts file paths, URLs, dates, model names from conversation text
+- Atomic writes, date-keyed JSON, log rotation (100MB, 5 rotates)
+- This is the cheap extraction; the expensive LLM extraction is in memory_extractor.py
 
-`skill_loader.py` implements progressive loading following [[agentskills-io-standard]]:
+### Issues & Community
+- **Zero issues, zero PRs, zero community** — solo project
+- No license — blocks adoption
+- 75⭐ in 3 days suggests interest but no stickiness signal yet
 
-1. **L1 (metadata)**: Name + description injected into system prompt at startup → model knows what skills exist
-2. **L2 (instructions)**: Full SKILL.md body loaded when user need matches → on-demand context injection
-3. **L3 (resources)**: Scripts, references, assets loaded only during execution → minimal context pollution
+## Key Observations
 
-This is the same pattern OpenClaw uses (scan descriptions → read SKILL.md when matched → execute). The difference: buddyMe made it explicit as a 3-level taxonomy. Worth adopting this vocabulary.
+1. **Architecture convergence** — SOUL.md/AGENT.md/HEARTBEAT.md naming near-identical to OpenClaw. Likely direct inspiration (the blog references OpenClaw ecosystem patterns)
+2. **Two-layer memory extraction** — cheap regex (memorybuild) for facts + expensive LLM (memory_extractor) for semantic extraction. Smart hybrid
+3. **Memory scoring formula** — relevance×0.4 + importance×0.3 + recency×0.3 with linear decay. Simple but principled. Our manual verification gates are more robust but less automated
+4. **Skill matching by keyword overlap** — pragmatic, zero-cost, but misses semantic similarity. Works fine for 25 skills, wouldn't scale to 100+
+5. **Chinese LLM ecosystem** — GLM 5.1, DeepSeek V4 Pro, ERNIE 5.1, Qwen 3.6 Plus, MiMo V2 Pro. Shows these models now support tool calling well enough for agent frameworks
+6. **No license** — dealbreaker for ecosystem adoption
 
-### Loop Skill Auto-Generation
+## Relevance to Us
 
-The most novel mechanism: `loop_skill_manager.py` records the tool call chain from a successful first execution and auto-generates a `skill.json` for subsequent runs. This means:
-- First `/loop` run: full LLM reasoning
-- Subsequent runs: deterministic replay of tool calls (no LLM needed)
+- **Memory decay model**: Their automated scoring+decay vs our manual verification gates represent two valid approaches. Theirs scales better for high-volume agents, ours is safer for high-stakes decisions
+- **Two-layer extraction**: Regex for cheap facts + LLM for semantic meaning is a pattern worth considering for our memory pipeline
+- **Skill path resolution**: Their `_resolve_inline_paths()` that replaces relative paths in SKILL.md body with absolute paths at load time is a nice UX touch
+- Not a competitor (different ecosystem focus, solo project), but validates our architectural direction
+- **No contribution opportunity** (no license, no issues, no community engagement)
 
-This is a **skill crystallization** pattern — [[mechanism-vs-evolution]] territory. An agent discovers a procedure, then hardcodes it. Smart for reducing token cost on repetitive tasks.
-
-Limitation: `edit_file` calls are explicitly excluded (non-deterministic), so skills involving code edits can't crystallize.
-
-### Heartbeat System
-
-`heartbeat.py` is a pure data layer — config/schedule management, no execution logic. Execution lives in `Agent.tick()`. Supports:
-- Interval-based triggers (every N minutes)
-- Schedule-based triggers (specific time of day, ±5 min tolerance)
-- Active hours window
-- Per-task timeout
-
-Simpler than our heartbeat (no cron, no nudge hooks), but the separation of config from execution is clean.
-
-## Connection to Our Direction
-
-1. **Validation signal**: Independent arrival at SOUL/IDENTITY/AGENT/HEARTBEAT/USER file taxonomy confirms this is a natural pattern for agent self-organization. See [[worktree-convergence-2026-05]].
-2. **Skill crystallization**: The loop-to-skill auto-generation is a concrete implementation of [[self-evolution-as-skill]]. We could apply this pattern to FlowForge — auto-generate workflow steps from successful ad-hoc tool chains.
-3. **Chinese developer ecosystem**: Uses GLM, DeepSeek, ERNIE, Qwen, MiMo — all Chinese models. This is a China-focused agent framework, indicating the agent-skills pattern has crossed the cultural boundary.
-
-### Memory Decay & Consolidation (Deep Read 05-11)
-
-`use_memory.py` implements a structured memory lifecycle:
-
-**Scoring formula**: `score = relevance×0.4 + importance×0.3 + recency×0.3`
-- Relevance: SequenceMatcher ratio between current query and memory content (crude but zero-LLM-cost)
-- Importance: manually set per-section (default 0.5), bumped to 0.9 after consolidation
-- Recency: linear decay over 30 days (`max(0, 1 - days/30)`)
-
-**Lifecycle states**:
-- Active (score ≥ 0.4) → stays in MD file
-- Archive (0.2 ≤ score < 0.4) → moved to `_history.json` with timestamp
-- Clean (score < 0.2) → deleted permanently
-
-**Consolidation**: keyword-based merge rules (e.g., sections containing "上次/曾经/之前" merge into "历史摘要"). Simple but solves the fragmentation problem — many small memories coalesce into fewer, richer sections.
-
-**Dedup**: SequenceMatcher ≥ 0.8 similarity → skip. Below threshold → archive old, write new.
-
-**Comparison to our approach**:
-- We use [[beliefs-candidates]] with Triple Verification (cross-context ≥3, predictive power, non-obvious) as upgrade gates → more selective but requires manual curation
-- buddyme's decay is automatic and continuous → lower maintenance but risks losing valuable low-frequency memories
-- Their relevance scoring uses string similarity (no embeddings, no LLM) → fast but misses semantic matches
-- Our approach separates "what happened" (memory/YYYY-MM-DD.md) from "what I believe" (beliefs-candidates.md) → buddyme conflates both in USER.md sections
-
-**Insight**: The 30-day linear decay window is interesting. Our daily memory files don't decay — they accumulate forever. We could benefit from a periodic consolidation pass that merges old daily memories into wiki knowledge, similar to buddyme's archive mechanism. See [[agent-memory-taxonomy]] (formation/evolution/retrieval dynamics).
-
-### Context Builder (Deep Read 05-11)
-
-`contextbuild.py` assembles system prompt in explicit layers: SOUL(L0) → IDENTITY(L1) → AGENT(capabilities) → HEARTBEAT → Tool schemas. This is the same layering we use but they made it a formal builder function with clear documentation of what each layer controls.
-
-### Zero Issues, Zero Tests
-
-No GitHub issues exist. No test directory. Blog is a raw IP. All signals point to a solo developer sharing their personal framework. No community engagement.
-
-## Limitations / Critique
-
-- No tests at all (no test directory found)
-- Python-only, CLI-only — no platform integrations (Discord, Feishu, etc.)
-- Memory relevance uses SequenceMatcher (string distance) — misses semantic similarity entirely
-- Consolidation rules are hardcoded keywords — won't generalize to new memory categories
-- 25 bundled skills are all static instruction files — no dynamic tool registration beyond the built-in 8
-- Solo developer project, day 1 — high risk of abandonment
-- Blog link is a raw IP address (49.235.53.176) — low polish signal
-- `moudle` typos throughout (agent_moudle, llm_moudle, tool_moudle) — low code quality signal
-
-## Verdict
-
-**Not worth tracking** — too early, too small, solo Chinese dev project with no community. But architecturally interesting as convergence evidence. Three takeaways:
-1. Three-tier skill loading vocabulary (L1/L2/L3)
-2. Loop-skill crystallization pattern
-3. Memory decay formula (relevance×0.4 + importance×0.3 + recency×0.3) as a concrete reference for automated memory lifecycle management
+Links: [[openclaw]], [[skill-type-taxonomy]], [[agent-skill-standard-convergence]]
