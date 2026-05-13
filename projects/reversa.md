@@ -82,7 +82,7 @@ Detective agent mines git history for ADRs (Architectural Decision Records). Com
 ## Relevance to Us
 
 ### Transferable Insights
-1. **Confidence scale** (🟢/🟡/🔴) — could adopt for wiki notes and audit outputs
+1. **Confidence scale** (🟢/🟡/🔴) — ✅ adopted 2026-05-13: search.sh now shows `[depth | status | ✓verified]` badges from frontmatter in keyword results. Deep-dive/scout/no-metadata maps to the 🟢/🟡/🔴 tiers. Next: consider adding markers to audit report generation
 2. **Pure SKILL.md agents** — validates that complex multi-agent workflows can be built with just prompt files + state management. No code needed for the agents themselves.
 3. **Git as knowledge source** — Detective's git archaeology pattern could enrich our study/audit workflows
 4. **Scope tiers** — doc_level pattern applicable to any variable-depth analysis
