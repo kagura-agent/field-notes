@@ -6,7 +6,7 @@ created: 2026-01-08
 last_updated: 2026-05-11
 depth: 🔬 deep-dive
 status: active
-last_verified: 2026-05-11
+last_verified: 2026-05-13
 ---
 
 # Poco-Claw — OpenClaw's Direct Competitor
@@ -109,3 +109,13 @@ Plus `specs/research/` for exploratory investigations. This is a mature engineer
 - [[openclaw-architecture]] — our architecture for comparison
 - [[self-evolving-agent-landscape]] — poco-claw operates at Agent Infrastructure layer
 - [[skill-ecosystem]] — they support MCP & Skills, similar extensibility model
+
+### Applied: Single-Writer Rule → team-lead (2026-05-13)
+
+Codified the single-writer rule as a **Concurrent Work Guard** in `skills/team-lead/SKILL.md`:
+- Mandatory preflight path-overlap check before parallel assignment
+- Worktree isolation upgraded from suggestion to requirement
+- Re-read gate after subagent returns (adapted from [[concurrent-agent-file-coordination]] Hermes 3-layer defense)
+- Serialization rule: shared output paths → sequential assignment
+
+Merged insights from three sources: Poco-claw single-writer, [[concurrent-agent-file-coordination]] (Hermes), and [[worktree-convergence-2026-05]] (paragents preflight intent).
