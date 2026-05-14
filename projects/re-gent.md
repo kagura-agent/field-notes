@@ -5,7 +5,7 @@ updated: 2026-05-09
 status: active
 stars: 238
 url: https://github.com/regent-vcs/re_gent
-last_verified: 2026-05-12
+last_verified: 2026-05-14
 ---
 
 # re_gent — Version Control for AI Agents
@@ -155,3 +155,42 @@ Line-level diff via `go-diff` (diffmatchpatch → opcode conversion). Standard b
 **Architectural quality**: Clean Go, behavior-focused tests, clear separation of concerns. CLAUDE.md as project constitution is best-practice. Design questions are honestly stated, not hidden.
 
 **Connects to**: [[gitclaw]] (complementary layers — git-level vs sub-git), [[agent-brain-portability]] (Step DAG as portable audit trail), [[worktree-convergence-2026-05]] (concurrent agent coordination)
+
+## Updates (2026-05-14)
+
+**Stars**: 473 (was 439, +7.7%). Sustained growth.
+
+**v0.2.0 — Codex Parity Release:**
+- PR#31 (by @adit-chandra, external contributor): Unified capture via shared `Recorder` abstraction
+- New `codex-hook` command: reads `codexHookPayload` from stdin, same lifecycle events as Claude Code hook
+- **4 normalized lifecycle events**: `sessionstart`, `userpromptsubmit`, `posttooluse`, `stop`
+- Skills migrated: `.claude/skills/` → `.agents/skills/` (agent-agnostic, Claude skills now symlink)
+- Homebrew tap push fixed in release workflow
+- Session/turn-aware event recording with duplicate tool-use collision handling
+
+**Architectural significance:**
+- The 4-event model (session start / user prompt / tool use / stop) is a natural abstraction for any agent's lifecycle
+- Maps cleanly to OpenClaw ACP's (connect / message / tool_call / disconnect)
+- Validates that agent observability has a converging API surface
+
+### Deep Read: capture.Recorder (v0.2.0)
+
+The unified `Recorder` in `internal/capture/capture.go` is the core abstraction that makes multi-agent support work:
+
+**Session identity**: `canonicalSessionID(origin, externalID)` = `origin + ":" + url.QueryEscape(externalID)`. Prevents collision between Claude Code and Codex sessions. Simple but critical.
+
+**Turn-scoped finalization**: Codex provides `turn_id` per event; Claude Code doesn't (uses `allTurns: true` scope). The `turnScope` abstraction handles both — turn-scoped steps for Codex, session-scoped batch for Claude Code.
+
+**Legacy session adoption**: `adoptLegacySession()` handles migration from old session ID formats. Checks ancestry via DAG walk, archives divergent refs rather than losing data. This is the kind of migration code that reveals engineering maturity — they thought about users upgrading.
+
+**Self-referential filtering**: `isRegentCommand()` detects when the agent calls `rgt` itself (via Bash tool) and skips recording. Prevents infinite loops in the audit trail. Smart boundary.
+
+**Ref CAS with exponential backoff**: `maxRefUpdateAttempts = 8`, backoff 5ms→100ms cap. For concurrent sessions writing to the same `.regent/` store. Practical for multi-agent scenarios.
+
+**Message→Step lifecycle**: Messages are inserted as pending → linked to a Step on finalization → Step snapshots workspace. If finalization finds an existing Step for the turn (idempotency), it links to the existing one instead of creating a duplicate.
+
+**Connects to**: [[delegation-fidelity-problem]] (per-line blame addresses "who changed what"), [[agent-brain-portability]] (capture format is origin-tagged, could enable cross-agent audit), [[worktree-convergence-2026-05]] (CAS ref updates = concurrent agent coordination)
+
+| Date | Stars | Notes |
+|------|-------|-------|
+| 2026-05-14 | 473 | v0.2.0 Codex parity. Unified Recorder deep-read. `.agents/skills/` migration. External contributor @adit-chandra |
