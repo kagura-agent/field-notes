@@ -364,3 +364,12 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **SQL note**: `AddIssueSubscriber` uses `ON CONFLICT (issue_id, user_type, user_id) DO NOTHING` — idempotent, first reason wins.
 - **Testing**: `cd server && go test ./internal/handler/` + `go test ./cmd/server/` (needs PostgreSQL + Redis containers)
 - **PR template**: Strict — requires ## What, ## Related Issue, ## Type, ## Changes, ## How to Test, ## Checklist, ## AI Disclosure
+
+## 2026-05-14 PR #2581: fix(realtime): invalidate stale queries on workspace switch
+- **Issue**: #2562 — stale cache after workspace switch — missed WS events not recovered
+- **PR**: #2581
+- **Status**: PENDING
+- **Root cause**: provider.tsx tears down old WSClient on workspace switch; onReconnect only fires for reconnections within the same WSClient instance, not for fresh instances. TanStack Query cache retains stale data.
+- **Fix**: Extracted shared `invalidateAllStaleQueries` callback. Added `prevWsRef` + `useEffect` that detects WSClient instance change (workspace switch) and triggers invalidation. Also added `chatKeys.sessions` to invalidation set (was missing from original reconnect handler).
+- **Tests**: 3 existing tests pass. TypeScript compiles cleanly.
+- **Code location**: `packages/core/realtime/use-realtime-sync.ts`
