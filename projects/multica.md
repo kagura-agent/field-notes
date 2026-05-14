@@ -28,6 +28,20 @@ Claude Code, Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent
 
 (2026-04-21 侦察)
 
+## 2026-05-14 PR #2561: fix(repocache): strip embedded credentials from bare cache remote URL
+- **Issue**: #2554 — Security: daemon bare cache remote.origin.url may inherit embedded credentials
+- **PR**: #2561
+- **Status**: PENDING (backend CI ✅, frontend deploy needs Vercel auth — normal for external PRs)
+- **Root cause**: `gitCloneBare()` and `CreateWorktree()` don't sanitize `remote.origin.url` in bare cache. External processes can embed credentials that leak to all worktrees.
+- **Fix**: Added `sanitizeRemoteURL(barePath)` using `net/url.Parse()` to strip `User` info. Called after clone and before worktree creation. Best-effort (silent on error). SSH URLs skipped.
+- **Tests**: 3 new tests (credential strip, no-op clean URL, SSH unchanged). All pass.
+- **Note**: `TestCreateWorktreeInstallsCoAuthoredByHook` fails on upstream/main — pre-existing, unrelated.
+- **CI**: Backend runs Go tests. Frontend is Vercel deploy (needs team auth for external PRs, always "pending").
+- **Testing**: `cd server/internal/daemon/repocache && go test ./...`
+- **Code location**: `server/internal/daemon/repocache/cache.go` — bare clone cache + worktree creation
+- **Language**: Go (daemon/server) + TypeScript (web/CLI)
+- **Go version**: Requires 1.26+ per CONTRIBUTING.md
+
 ## 2026-04-21 PR #1415: fix usage model name "unknown"
 - **Issue**: #1395 — model name showing as "unknown" in usage stats when using OpenRouter
 - **PR**: #1415 — fix(usage): attribute tokens to configured model instead of "unknown"
