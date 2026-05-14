@@ -654,3 +654,15 @@ The reflect system is a hot-reloadable plugin framework with 4 modes:
 | L4 archival cron | No equivalent | We don't auto-compress old sessions |
 
 **Actionable insight:** The goal_mode budget pattern could improve our long-running subagent tasks. Instead of open-ended subagents that sometimes spin, a budget constraint with explicit wrap-up would improve predictability.
+
+### Applied: Goal Mode Budget Pattern → team-lead SKILL.md (2026-05-14)
+
+Applied the goal_mode budget constraint insight to our [[team-lead]] skill:
+- Added `runTimeoutSeconds` guidance (120-900s by task type) for all subagent spawns
+- Added wrap-up instruction template (PROGRESS/REMAINING/BLOCKERS) for graceful degradation
+- Added timeout handling protocol (check partial output, reassess scope)
+- New anti-pattern: spawning subagents without budget
+
+**Before vs After:** Before, team-lead SKILL.md had zero timeout guidance — subagents could run indefinitely. After, every spawn has a recommended budget range and wrap-up pattern. This makes the "conductor never executes, always delegates" pattern safer by ensuring delegation has a termination guarantee.
+
+See [[context-budget-constraint]], [[supervisor-pattern]]
