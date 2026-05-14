@@ -435,7 +435,85 @@ This pattern solves a real problem: process-based agent communication via stdio 
 - Before: `plan → implement` (self-approved)
 - After: `plan → plan_review → implement` (independently validated)
 
-See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]], [[mechanism-vs-evolution]]
+See [[self-evolving-agent-landscape]], [[context-budget-constraint]], [[supervisor-pattern]], [[acp-protocol]]
+
+## Followup 2026-05-14: Conductor System + Code Review Principles + Context Budget Tightening
+
+**Stars:** 11,243 (up from 11,027 on 05-12, +2%, steady growth)
+**Community:** 🟢 THRIVING (6/6) — 56 unique issue authors, 100 external PRs in 30 days, 10 unique merged PR authors
+
+### Conductor System (frontends/conductor.py + conductor.html, 855 lines total)
+
+The most significant architectural addition since supervisor_sop — a **WebUI-based multi-agent orchestrator** where a conductor agent delegates everything:
+
+**Core design:**
+- Conductor NEVER executes tasks directly: "你绝不亲自执行任何任务，一切工作必须通过POST /subagent分派"
+- FastAPI + WebSocket real-time UI
+- Event-driven wake: user message OR subagent completion → conductor_events queue → conductor wakes
+- Minimum action principle: "每次唤醒只做最小必要动作，然后立刻停"
+
+**API surface (6 endpoints):**
+| Endpoint | Method | Purpose |
+|----------|--------|----------|
+| /chat | POST | Send message to user |
+| /subagent | POST | Spawn new subagent |
+| /subagent/{id} | POST | keyinfo inject / input round / abort |
+| /chat | GET | Read chat history |
+| /subagent | GET | List all subagents + status |
+| /readme | GET | Self-documenting API |
+
+**Subagent lifecycle:**
+1. `start_subagent(prompt)` → GenericAgent() + daemon thread + display_queue monitor
+2. Progress: display_queue chunks → WebSocket broadcast as cards
+3. Intervention: `keyinfo_subagent()` injects into `working['key_info']` (visible from next turn)
+4. Resume: `input_subagent()` starts new task round on stopped agent (preserves conversation state)
+5. Done: `conductor_events.put({type: 'subagent_done'})` → wakes conductor for review
+
+**Streaming architecture:** `extract_last_summary()` for in-progress display (extracts `<summary>` tags), `extract_last_text_reply()` for final display (strips metadata, caps at 3000 chars).
+
+**Three-role hierarchy is now complete:**
+| Role | Implementation | Purpose |
+|------|---------------|----------|
+| Conductor | conductor.py | Orchestration — dispatches, reviews, communicates with user |
+| Supervisor | supervisor_sop.md | Quality — monitors workers, intervenes on deviations |
+| Worker | subagent | Execution — does actual tasks |
+
+**Comparison with OpenClaw:**
+- OpenClaw's main session IS the conductor — no separate process needed because sessions are first-class
+- OpenClaw's `sessions_spawn` + `subagents list/steer/kill` provides the same capability natively
+- GenericAgent needed a separate conductor because single-session was the baseline architecture
+- OpenClaw advantage: multi-channel from day one means concurrent user interaction is free (no need for `/btw`)
+- GenericAgent advantage: WebUI with real-time cards gives better visual monitoring (we rely on Discord channel output)
+
+**Key insight:** The conductor pattern validates the separation we already practice (main agent dispatches to subagents, never codes directly). But GenericAgent formalizes it architecturally while we enforce it by convention (AGENTS.md: "代码实现必须用 Claude Code，subagent 不自己手写代码"). Convention vs architecture — both work but architecture is harder to bypass.
+
+### Code Review Principles (memory/code_review_principles.md, 42 lines → expanded)
+
+Crystallized 15 code quality principles into a persistent memory document. Notable aspects:
+- Goes beyond typical "clean code" advice: includes "功能越多，代码应该越短" (more features = less code) and "Let it crash" (failure radius determines defense strategy)
+- Quick self-check section: 4 questions that give binary yes/no quality verdict
+- This is stored as L2/L3 memory — available for code review tasks. Shows maturation from "agent writes code" to "agent has taste about code"
+
+### Context Budget Tightening (llmcore.py)
+
+- `context_win` default: 28K → 30K (more room, offset by tighter trimming)
+- Refactored `trim_messages_history()`: cost() as local function, staged compress (compress → check → trim), history floor raised from 5 to 9 messages
+- Target: 60% of cap (was same, but cleaner implementation)
+- Pattern: the trim logic keeps getting simpler and more defensive each iteration
+
+### Issue #345: Multi-Agent Communication Architecture Discussion
+
+Community member proposed MQTT-based message bus for inter-agent communication. The LLM-generated response is a comprehensive 4-layer security model (TLS → Auth → ACL → Behavior Monitoring). Interesting as aspiration but premature — GenericAgent's file-based IPC still works fine at current scale. The push-back on external solutions (PCH routing) from the same community member shows preference for zero-dependency file-based approaches.
+
+**Trend:** GenericAgent's three communication patterns (file IPC → supervisor protocol → conductor API) represent an organic evolution from simple to complex, without ever abandoning the simpler layers. This is good architecture — add complexity only where needed.
+
+### Platform Expansion Continues
+
+- WeChat config wizard with 16 vendor support
+- TUI v2 keybinding improvements (debounce resize, input history)
+- Community contributing fixes for Telegram, DingTalk, QQ adapters
+
+See [[self-evolving-agent-landscape]], [[supervisor-pattern]], [[context-budget-constraint]], [[acp-protocol]], [[mechanism-vs-evolution]], [[mechanism-vs-evolution]]
 
 ## Followup 2026-05-09: 10K Stars + /btw Side-Question Subagent
 
