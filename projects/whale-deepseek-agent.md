@@ -4,8 +4,10 @@ created: 2026-05-10
 updated: 2026-05-10
 tags: [agent, cli, deepseek, prefix-cache, cost-optimization]
 url: https://github.com/usewhale/whale
-stars: 69
+stars: 117
 status: active
+updated: 2026-05-14
+last_verified: 2026-05-14
 ---
 
 # Whale — DeepSeek-Native CLI Coding Agent
@@ -84,6 +86,15 @@ Compatible SKILL.md format. Discovery roots: `.whale/skills/` and `.agents/skill
 
 - **Locked to one provider** — whale accepts this tradeoff explicitly, but it limits adoption. Fine for DeepSeek users, risky if DeepSeek pricing changes.
 - **JSON repair via regex** — fragile. Better than nothing, but proper streaming JSON parsers would be more robust.
+
+## Updates
+
+- **05-14**: 117⭐ (+24% since 05-12). Two significant features shipped:
+  1. **Skills system overhaul** (PR#32 by external contributor @shayne-snap): `when`/`requires` frontmatter for conditional skill availability, 4-bucket availability system (ready/needs_setup/disabled/problem), TUI skills manager with search + enable/disable, symlink-aware path escape security, `/skills` slash commands. More granular than OpenClaw's binary skill loading — worth studying the `requires` (commands/env/MCP) validation pattern.
+  2. **Cross-workspace resume** (05-13): sessions can resume across different workspace directories. TUI viewport freeze fix. Assistant transcript reconciliation.
+  - **Community**: 🟢 THRIVING (5/6). 14 external PRs in 30 days. 2 unique merged PR authors. Active issues.
+  - **Growth trajectory**: 69→86→94→117⭐ in 4 days. Steepening curve — possibly reaching inflection point.
+  - **Signal for us**: whale's `requires` frontmatter (check commands/env/MCP availability before loading skill) is a pattern OpenClaw could adopt. Our skills are always-loaded with no prerequisite checking.
 
 ## Links
 

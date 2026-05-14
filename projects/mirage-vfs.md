@@ -1,7 +1,7 @@
 # Mirage — Unified Virtual Filesystem for AI Agents
 
 - **Repo**: [strukto-ai/mirage](https://github.com/strukto-ai/mirage)
-- **Stars**: 1,487 (2026-05-09 PM; was 1,460 early 05-09 — growth slowing to ~2%/day)
+- **Stars**: 2,158 (2026-05-14; was 2,068 on 05-13, +4.3%)
 - **Language**: Python + TypeScript (dual SDK)
 - **License**: Apache 2.0
 - **Company**: Strukto.AI
@@ -71,3 +71,14 @@ Mounts heterogeneous services (S3, GitHub, Slack, Discord, Gmail, Redis, MongoDB
   - **Cache write-through**: `invalidateAfterWriteByPath()` drops file cache AND parent directory index. Closes stale-readdir gap.
   - **Maturity signal**: 0 responses → comprehensive fixes in ~48h. 1420 pytest cases pass. Both Python+TS ports updated. Community growing (PR#21 Notion support from external contributor).
   - **Relevance**: OpenClaw has process-level isolation (layer 4 vs mirage's layer 2), but the test design patterns for capability enforcement are excellent reference. The ContextVar pattern could be useful for in-process capability propagation.
+- **05-14**: 2,158⭐ (+4.3%). **Snapshot drift detection shipped** (PR#32, closes #15 — the @eouzoe fidelity issue). Major feature:
+  - Per-path fingerprints (ETag + Revision) recorded at snapshot time
+  - `ContentDriftError` raised under STRICT drift policy when remote content changes between snapshot and load
+  - Resources opt-in via `SUPPORTS_SNAPSHOT` capability (S3, R2 currently). Live-only resources (Gmail, Slack) surface warnings
+  - `pin_revision(path, rev)` lets backends (S3) serve exact recorded version. OFF policy skips pins entirely
+  - Parallel drift checking via `asyncio.gather` — N-path latency drops from N*RTT to ~1*RTT
+  - Refactored recording: single `Recorder` ContextVar (frozen, per-task), `OpRecord` carries `mount_prefix` explicitly
+  - `Workspace.snapshot` and `Workspace.copy` now async (await stat() on touched paths)
+  - Integration tests against real S3 buckets (auto-skip when env missing)
+  - PR#41 follow-up: `Revision` on `OpRecord`, `Mount.revisions` for cleaner pin API
+  - **Significance**: This was the #1 architectural gap (@eouzoe's most pointed critique). Snapshot now means something — deterministic replay of agent state across time. All 5 @eouzoe issues (#15-#19) now addressed. Project has proven it can absorb hard criticism and ship fixes.
