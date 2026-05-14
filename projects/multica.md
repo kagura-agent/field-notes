@@ -349,3 +349,18 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Discovery**: #2247 (encoding fix) was merged then reverted in 3 minutes (#2252) — maintainer reimplemented with better structure on a separate branch. Pattern: immediate revert = maintainer disagrees with approach, not the fix itself.
 - **Tests**: Added `pi_test.go` with 3 tests (no test file existed before).
 - **No existing Pi tests**: This is the first test file for the Pi backend. Future PRs to pi.go should maintain/extend coverage.
+
+## 2026-05-14 PR #2571: fix(issues): auto-subscribe creator on normal CreateIssue
+- **Issue**: #2568 — Auto-subscribe creator on normal CreateIssue (not just quick-create)
+- **PR**: #2571
+- **Status**: PENDING — CI ✅ (backend + frontend both pass)
+- **Root cause**: `CreateIssue` handler in `issue.go` didn't call `AddIssueSubscriber` after commit, while the quick-create path in `task.go:1925` did.
+- **Fix**: Added `AddIssueSubscriber` call + `EventSubscriberAdded` publish after `EventIssueCreated` (ordering matters for WS tests). Only for `creatorType == "member"`. Best-effort.
+- **Test fixes required**: 3 test files needed updating:
+  1. `subscriber_test.go` — ListSubscribers: accept reason "creator" (auto-subscribe uses ON CONFLICT DO NOTHING, so first insert wins)
+  2. `subscriber_test.go` — AgentCallerSubscribesItself: remove auto-subscribed member before testing agent subscribe isolation
+  3. `integration_test.go` — TestWebSocketIntegration: add `readWSEvent` helper to skip `subscriber:added/removed` events between expected events
+- **Key learning**: Event ordering matters for WS integration tests. Auto-subscribe must publish `subscriber:added` AFTER `issue:created`, not before.
+- **SQL note**: `AddIssueSubscriber` uses `ON CONFLICT (issue_id, user_type, user_id) DO NOTHING` — idempotent, first reason wins.
+- **Testing**: `cd server && go test ./internal/handler/` + `go test ./cmd/server/` (needs PostgreSQL + Redis containers)
+- **PR template**: Strict — requires ## What, ## Related Issue, ## Type, ## Changes, ## How to Test, ## Checklist, ## AI Disclosure
