@@ -1344,3 +1344,19 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **CI notes**: `check-attribution` required adding email to AUTHOR_MAP in `scripts/release.py`. Windows footguns and e2e failures are pre-existing upstream issues (process_registry.py SIGKILL, e2e needs API keys). `ruff + ty diff` fails on fork PRs (403 permission for PR comments).
 - **Pattern**: Manual edit was the right call — 15 line-level `print()` → `_cprint()` swaps, faster than spawning Claude Code for trivial replacements
 - **Lesson**: This repo's confirmation dialogs follow a consistent pattern — `_cprint()` for plain text, `ChatConsole().print()` for Rich markup. The `_confirm_and_reload_mcp` method is the reference implementation.
+
+## PR #25528: credential_pool ISO-8601 last_status_at (2026-05-14)
+
+**Issue**: #25516 — `_exhausted_until()` crashes with TypeError when `last_status_at` is ISO string after deserialization
+**Status**: PENDING review
+**Changes**: agent/credential_pool.py (+7/-2), tests/agent/test_credential_pool.py (+51)
+
+**Fix**: Two-layer defense:
+1. `from_dict()`: normalize `last_status_at` and `last_error_reset_at` through `_parse_absolute_timestamp()` on rehydration
+2. `_exhausted_until()`: defense-in-depth parsing before arithmetic
+
+**CI**: nix ✅, ruff ✅, e2e ✅, supply chain ✅, Windows footguns ✅. `check-attribution` ❌ (expected for external contributors). `test` pending.
+
+**Efficiency note**: Manual edit (15 lines + 51 lines test) was the right call for this surgical fix — no need for Claude Code on a change this focused.
+
+**Pattern observed**: hermes credential_pool.py uses dataclass with typed fields but from_dict() does no type coercion — general fragility point for any field that's round-tripped through JSON serialization.
