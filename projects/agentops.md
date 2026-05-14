@@ -7,7 +7,7 @@ language: Go
 license: MIT (NOASSERTION on API)
 status: active
 tags: [agent-ops, context-engineering, knowledge-flywheel, coding-agent, CDLC]
-last_verified: 2026-05-13
+last_verified: 2026-05-14
 ---
 
 # AgentOps (boshu2/agentops)
@@ -155,5 +155,11 @@ The CDLC framing is the most articulate version of what we're doing informally. 
 ## Applied Insights
 
 - **2026-05-13**: Adopted decay-ranked retrieval into `wiki/search.sh`. Upgraded from simple mtime sort to exponential decay (δ=0.17/week) + maturity weights from frontmatter `status:` and `depth:` fields. Active deep-dive notes now outrank recently-touched shallow notes. Verified: query "agent memory" now surfaces poco-claw, whale, statewave (architecturally relevant) over pr-superseded-lessons, vercel-ai (incidentally matching). See [[krusch-context-mcp]] for the prior mtime-only version.
+- **2026-05-14**: Livecache bench applied — created `tools/search-bench.sh` to measure search quality (inspired by [[whale-deepseek-agent]] livecache bench). Found critical issues:
+  1. **Memex only searched cards/ (261 files), ignoring projects/ (352 files)** — added `searchDirs: ["projects"]` to `.memexrc` + `--all` flag. Stale embedding index: only 87/613 files indexed (from April 6).
+  2. **Strict ALL-word intersection killed conceptual queries** — replaced with 60%-threshold partial matching. Files matching 3/5 query terms now surface instead of requiring all 5.
+  3. **Ranking ignored term relevance** — added term-match count as primary ranking signal (×10 weight) over decay×maturity. Files matching more query terms rank first.
+  4. **Slug-match boosting** — query terms appearing in filename get +5 bonus per term. "context budget" query now finds `context-budget-constraint.md`.
+  - Result: precision improved from 50%→70% (queries), 47%→76% (items). Remaining gap: no stemming ("evolve" ≠ "evolving"), stale semantic embeddings.
 
 Links: [[self-evolving-agent-landscape]], [[agent-memory-taxonomy]], [[coding-agent]], [[memex]], [[mechanism-vs-evolution]], [[worktree-convergence-2026-05]], [[claude-code-memory-architecture]], [[skill-trust-landscape-2026-04]], [[krusch-context-mcp]]

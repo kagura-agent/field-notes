@@ -39,7 +39,7 @@ RESULTS=()
 # ---- Semantic search (memex) ----
 if [[ "$MODE" == "hybrid" || "$MODE" == "semantic" ]]; then
   echo "🔮 Semantic results (memex):"
-  MEMEX_OUT=$(cd "$WIKI_DIR" && MEMEX_HOME=. memex search "$QUERY" --limit "$LIMIT" 2>/dev/null || true)
+  MEMEX_OUT=$(cd "$WIKI_DIR" && MEMEX_HOME=. memex search --all "$QUERY" --limit "$LIMIT" 2>/dev/null || true)
   if [[ -n "$MEMEX_OUT" ]]; then
     echo "$MEMEX_OUT"
     # Extract slugs from memex output (## slug-name lines)
@@ -71,15 +71,31 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
   WORDS=$(echo "$QUERY" | tr ' ' '\n' | grep -v -iE '^(the|a|an|is|are|was|were|with|for|and|or|not|about|more|than|that|this|from|have|has|been|will|can|could|would|should|of|in|on|at|to|by)$' || true)
   
   WORD_FILES=""
+  WORD_ARRAY=()
   for word in $WORDS; do
     if [[ ${#word} -ge 3 ]]; then
-      found=$(grep -rli "$word" "$WIKI_DIR/projects/" "$WIKI_DIR/cards/" 2>/dev/null || true)
-      if [[ -z "$WORD_FILES" ]]; then
-        WORD_FILES="$found"
-      elif [[ -n "$found" ]]; then
-        # Intersect: files matching ALL significant words
-        WORD_FILES=$(comm -12 <(echo "$WORD_FILES" | sort) <(echo "$found" | sort))
-      fi
+      WORD_ARRAY+=("$word")
+    fi
+  done
+  NUM_WORDS=${#WORD_ARRAY[@]}
+  # For short queries (1-2 words), require ALL words. For longer, require 60%
+  if [[ $NUM_WORDS -le 2 ]]; then
+    MIN_MATCH=$NUM_WORDS
+  else
+    MIN_MATCH=$(( (NUM_WORDS * 3 + 4) / 5 ))  # ceil(60%)
+  fi
+  # Score each file by how many query terms it contains
+  declare -A FILE_SCORES
+  for word in "${WORD_ARRAY[@]}"; do
+    found=$(grep -rli "$word" "$WIKI_DIR/projects/" "$WIKI_DIR/cards/" 2>/dev/null || true)
+    while IFS= read -r f; do
+      [[ -n "$f" ]] && FILE_SCORES["$f"]=$(( ${FILE_SCORES["$f"]:-0} + 1 ))
+    done <<< "$found"
+  done
+  # Filter files meeting minimum match threshold
+  for f in "${!FILE_SCORES[@]}"; do
+    if [[ ${FILE_SCORES["$f"]} -ge $MIN_MATCH ]]; then
+      WORD_FILES="${WORD_FILES}${WORD_FILES:+$'\n'}$f"
     fi
   done
   
@@ -113,8 +129,16 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
       *deep*) MATURITY=$(awk "BEGIN { printf \"%.1f\", $MATURITY * 1.15 }") ;;
     esac
 
-    # Combined score: decay * maturity (higher = better)
-    SCORE=$(awk "BEGIN { printf \"%.4f\", $DECAY * $MATURITY }")
+    # Term-match count as primary signal (from FILE_SCORES array)
+    TERM_SCORE=${FILE_SCORES["$f"]:-1}
+    # Slug-match bonus: if filename contains query terms, boost relevance
+    SLUG_NAME=$(basename "$f" .md)
+    SLUG_BONUS=0
+    for sw in $WORDS; do
+      [[ ${#sw} -ge 3 ]] && [[ "$SLUG_NAME" == *"$sw"* ]] && SLUG_BONUS=$((SLUG_BONUS + 5))
+    done
+    # Combined: term_match * 10 + slug_bonus + decay * maturity
+    SCORE=$(awk "BEGIN { printf \"%.4f\", $TERM_SCORE * 10 + $SLUG_BONUS + $DECAY * $MATURITY }")
     [[ $DEBUG -eq 1 ]] && echo "[DBG] score=$SCORE decay=$DECAY maturity=$MATURITY status=$STATUS depth=$DEPTH age=${AGE_WEEKS}w $(basename "$f")" >&2
     echo "$SCORE $f"
   done | sort -rn | cut -d' ' -f2- | head -"$LIMIT")
