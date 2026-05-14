@@ -4,7 +4,7 @@ created: 2026-05-10
 updated: 2026-05-10
 tags: [agent, cli, deepseek, prefix-cache, cost-optimization]
 url: https://github.com/usewhale/whale
-stars: 117
+stars: 118
 status: active
 updated: 2026-05-14
 last_verified: 2026-05-14
@@ -95,6 +95,12 @@ Compatible SKILL.md format. Discovery roots: `.whale/skills/` and `.agents/skill
   - **Community**: 🟢 THRIVING (5/6). 14 external PRs in 30 days. 2 unique merged PR authors. Active issues.
   - **Growth trajectory**: 69→86→94→117⭐ in 4 days. Steepening curve — possibly reaching inflection point.
   - **Signal for us**: whale's `requires` frontmatter (check commands/env/MCP availability before loading skill) is a pattern OpenClaw could adopt. Our skills are always-loaded with no prerequisite checking.
+- **05-14 (deep read)**: 118⭐. PR#32 code review — deep-read of `internal/skills/skills.go` (+450 lines). Key architecture insights:
+  1. **4-bucket availability**: `BuildReport()` groups skills into ready/needs_setup/disabled/problem based on runtime checks. `MissingRequirements()` uses `exec.LookPath` for commands, `os.Getenv` for env vars, and MCP connection state map. Simple, no-side-effect validation — doesn't install anything, just reports.
+  2. **Security boundary**: `isDiscoveredSkillReadPath()` in toolset.go permits read-only file access inside discovered skill directories, with `filepath.EvalSymlinks` for symlink-aware escape detection. Disabled skills don't expand read boundaries. Write/edit tools deny skill paths entirely.
+  3. **Issue #35 — cross-agent skill compat**: user had 15+ skills in `~/.agents/skills/` but whale only found `~/.whale/skills/`. Fixed by adding `.agents/skills` as discovery root. This is the exact [[agent-skill-standard-convergence]] problem — skill directories fragmenting across agents (`.claude/`, `.agents/`, `.whale/`).
+  4. **vs OpenClaw**: OpenClaw loads all discovered skills into system prompt unconditionally. whale's approach is more granular — skills with missing `requires` show as "needs_setup" and their instructions are still available but flagged. The TUI enable/disable with persistent config (`.whale/config.toml`) is also nicer than OpenClaw's current all-or-nothing model.
+  5. **Community signal**: 42 unique issue authors + 42 external PRs in 30 days for thClaws (comparable Thai agent). whale's community is smaller (14 PRs/30d) but quality contributions — @shayne-snap's PR#32 was 2572 lines with 2000+ test lines.
 
 ## Links
 

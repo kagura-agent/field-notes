@@ -8,7 +8,7 @@ license: MIT OR Apache-2.0
 last_checked: 2026-05-13
 status: active
 tags: [agent-harness, rust, multi-provider, local-first, desktop-app]
-last_verified: 2026-05-13
+last_verified: 2026-05-14
 ---
 
 # thClaws — Rust-Native Agent Harness Platform
@@ -252,5 +252,17 @@ The most architecturally interesting development. thClaws implements messaging p
 
 9 releases in 2 days (v0.9.0-v0.9.4 + post-sync). 879⭐ in 23 days = ~38⭐/day sustained. Thai user base is engaged (issues in Thai, mozeal responds bilingually). mozeal's issue response quality is exceptional — detailed, commit-referenced, bilingual. External contributors appearing (#85 perf fix, #88 Codex port). Still predominantly a one-person project (mozeal) but community is growing.
 
+### 05-14 Followup — Sustained Extreme Velocity
+
+905⭐ (+26⭐/day this week). 3 more releases (v0.9.5→v0.9.7) in 24 hours:
+- **v0.9.6**: Gateway crate removed from public repo (internal infrastructure separation)
+- **v0.9.7**: Streaming correctness fixes, opt-in browser Gemma, docs
+
+**Community growth confirmed**: 42 unique issue authors + 42 external PRs in 30 days. 127 forks. New contributor @nazt (ChatGPT Codex provider, PR#88 merged). PR#89 (OpenCodeGo multi-wire-format) from @baslenvm was closed (not merged) — interesting that they're being selective despite rapid velocity.
+
+**Pattern**: thClaws's velocity model is "accept external provider PRs fast but maintain code quality bar" — PR#89 rejected despite adding a valid provider. This is healthy for a 900⭐ project with 8 external contributors.
+
+**OpenCodeGo PR#89 insight**: Proposed multi-wire-format provider (OpenAI + Anthropic + Alibaba wire formats in one module). Rejected — probably too complex for a single provider module. The multi-wire-format idea itself is interesting for [[openclaw-architecture]].
+
 ---
-*Update: 2026-05-13. Source: GitHub API (commits, releases, technical manual line-bridge.md, sso.md, providers.md, issues)*
+*Update: 2026-05-14. Source: GitHub API (commits, releases, issues, PRs, community stats)*
