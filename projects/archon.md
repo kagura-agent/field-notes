@@ -158,6 +158,19 @@
   - The investigation comment on the issue (#1585) had a detailed implementation plan by `acton-golden` that was very accurate — saved significant analysis time. Good to read all issue comments carefully.
   - When adding env vars to subprocess calls, check loop semantics carefully — iteration-scoped values (LOOP_PREV_OUTPUT, LOOP_USER_INPUT) have different values per iteration.
 
+## 2026-05-14 Session Notes
+
+### PR #1676 — fix(scripts): handle duplicate ARCHON_STATE_JSON_BEGIN blocks in persist (pending, fixes #1674)
+- **Issue**: Persist script fails when synthesize node emits duplicate `ARCHON_STATE_JSON_BEGIN` blocks (truncated + complete)
+- **Root cause**: `indexOf(BEGIN)` finds first (partial) BEGIN, pairs with first END → slice spans both blocks → JSON.parse fails
+- **Fix**: `lastIndexOf(BEGIN)` to find last (complete) block; `indexOf(END, lastBegin)` for correct END pairing; brief boundary uses `indexOf(BEGIN)` (first) so preamble captured by heading filter
+- **Tests**: 4 new integration tests (single-block, duplicate-block #1674 repro, JSON-wrapper fallback, invalid-input)
+- **CI**: Ubuntu ✅ Windows ✅ Docker-build ✅ CodeRabbit: "No actionable comments"
+- **Lessons**:
+  - Small surgical fix (3 line changes) done manually — faster than acpx exec for trivial changes
+  - `lastIndexOf` + forward `indexOf(END, beginIdx)` pattern is common for "find last valid delimited block"
+  - The persist script is standalone (no package imports) so test isolation is trivial — spawn subprocess in temp dir
+
 ## 2026-05-13 Session Notes
 
 ### PR #1661 — fix(providers): preserve native tools when skills set without allowed_tools (pending, fixes #1605)
