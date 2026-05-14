@@ -78,3 +78,14 @@
 ## 排除的 Issues
 - **#968** (QQ Bot leaked `[QQBot] to=` delivery hint): 已在上游 openclaw 修复 (commit 5e72e39c18, Apr 22 2026)，`buildAgentBody` 重构移除了 `[QQBot] to=` system prompt 注入。ClawX 只需更新 bundled openclaw 版本。不适合作为 ClawX PR。
 - **#962** (DeepSeek reasoning_content 400): 也是上游 openclaw 问题 (#74374)，不是 ClawX 自身 bug。
+
+### PR #1016 — feat(chat): add session rename in sidebar (Issue #1013)
+- **状态**: pending review, check/build/comms-regression ✅, E2E pending (fork PR 需 maintainer approve workflow)
+- **功能**: 支持双击或点击 pencil icon 重命名侧边栏对话
+- **实现**: IPC handler (session:rename) + HTTP route (/api/sessions/rename) 双通道持久化到 sessions.json，镜像已有的 session:delete 模式
+- **改动**: 13 files, +340/-54 lines, 含 en/zh/ja/ru 四语言 i18n
+- **竞争**: PR #307 同一功能但 stale (2026-03-09 起无更新，0 reviews)；本 PR 基于当前 codebase（chat store 已拆分为模块）
+- **踩坑**:
+  - Fork 有 595 个 file mode diff（NTFS 权限问题），需 `git config core.fileMode false`
+  - legacy chat.ts 用 `hostApiFetch`，modular session-actions.ts 用 `invokeIpc`——两套都要实现
+  - 需同时加 HTTP route（给 hostApiFetch 用）和 IPC handler（给 invokeIpc 用）+ preload allowlist
