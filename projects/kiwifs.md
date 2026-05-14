@@ -7,7 +7,7 @@ stars: 423
 repo: kiwifs/kiwifs
 language: Go
 license: BSL-1.1
-last_verified: 2026-05-13
+last_verified: 2026-05-14
 ---
 
 # KiwiFS — Knowledge Filesystem for Agents
@@ -348,7 +348,7 @@ Notable: 3 critical bugs (nil body panic, `.md`-only walker, git log parse panic
 
 ### Relevance to Us
 
-1. **Graph analytics on wiki** — Our wiki has ~100+ pages with wikilinks. Running PageRank/community detection would surface which concept cards are most central and which topic clusters exist. Could help prioritize wiki maintenance and identify orphan knowledge. **Actionable**: We could build a lightweight equivalent using our existing memex backlinks data.
+1. **Graph analytics on wiki** — ✅ **Applied 2026-05-14**: Built `tools/wiki-graph.sh` — bash-based wiki link graph analyzer with hub detection (combined inbound+outbound scoring), orphan finder, broken link checker, and cluster analysis. Results on 663-page wiki: top hub is `self-evolving-agent-landscape` (122 combined), 235 orphan pages (35%), 81 broken link targets. Simpler than KiwiFS's Go implementation (no PageRank/Louvain) but sufficient for our scale and immediately actionable.
 2. **Web clipper as agent tool** — The clip-to-knowledge-base pattern is useful for our study workflow. Currently we manually write notes after `web_fetch`. An auto-clip pipeline would speed up the scout→note flow.
 3. **Formula evaluation pattern** — The right-to-left scan for left-associativity in their Pratt parser is a clean trick. If we ever add computed fields to wiki frontmatter.
 
