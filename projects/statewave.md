@@ -4,7 +4,7 @@ url: https://github.com/smaramwbc/statewave
 stars: 217
 first_seen: 2026-05-11
 status: active
-last_verified: 2026-05-13
+last_verified: 2026-05-14
 depth: deep-read
 ---
 
@@ -60,8 +60,32 @@ Four-commit fix that lifted benchmark scores from 0.388 → 0.535 (beating Mem0 
 
 **Lesson for us**: The granularity insight is directly applicable. Our MEMORY.md curation tends toward summaries ("worked on X") instead of specifics ("discovered that Y uses Z pattern for W reason"). The embedding bug pattern is also cautionary — a missing one-liner silently degraded the most important feature.
 
-### Sensitivity Labels & Memory Governance (Issue #50)
-Design-stage feature: per-memory sensitivity metadata + policy layer controlling which memories influence which tools/contexts. Six candidate abstractions: capability tags, trust tiers, namespace policy, OPA/Rego, per-tool access rules, human approval workflows. Key insight: the accountability story (receipts from #49) is only as strong as the policy layer underneath — no filter metadata = nothing to record.
+### Sensitivity Labels & Policy Engine (v0.8.0, PRs #49 + #76)
+Shipped 2026-05-14. Previously design-stage (#50), now fully implemented. The governance pivot: receipts (#49) + policy layer (#76) = auditable memory access control.
+
+**Policy engine architecture** (`server/services/policy.py`, 561 lines):
+- YAML/JSON policy bundles with strict schema validation — unknown predicates fail at load time, not silently pass through
+- 6 predicates: `memory_has_any_label`, `memory_has_all_labels`, `caller_type`, `caller_type_in`, `caller_type_not_in`, `caller_id`. AND within `when:`, first-match-wins across rules, default-allow
+- 2 actions: `deny` (exclude) and `redact` (replace content with `[REDACTED by policy]`, memory still visible in receipt)
+- Content-hashed bundles stored immutably — "what did policy abc123 say on date Y?" is answerable forever
+- **Fail-open design**: DB errors → no filtering, same as pre-policy. Safe for incremental rollout
+- **log_only vs enforce modes**: tenant can observe policy decisions for weeks before enabling enforcement. Receipts record decisions in both modes. This is the killer feature for adoption — zero-risk trial
+
+**Per-memory labels** (migration 0018):
+- `memories.sensitivity_labels TEXT[]` + GIN index
+- Operator-supplied via `PATCH /v1/memories/{id}/labels`
+- Normalized: dedup + lowercase + trim. Cap 32 per memory
+
+**Multi-tenant bundle resolution**:
+1. Tenant-specific active bundle → 2. Global active bundle → 3. No bundle (default-allow)
+- 60s in-process cache, bustable via `/admin/policy/reload`
+- Composite `(tenant_id, bundle_hash)` uniqueness — same YAML can be installed independently by different tenants (#79)
+
+**Test quality**: 26 unit tests + integration tests. Tests cover schema validation errors, predicate semantics, AND/OR logic, first-match-wins, mode enforcement, receipt projection. Each documented error has a corresponding test — the kind of coverage that catches regressions.
+
+**Architecture insight — "make the safe thing easy"**: The `log_only` default + first-match-wins + fail-open is a textbook enterprise adoption pattern. Most projects default to `enforce` and wonder why nobody enables their security feature. Statewave defaults to observability and lets compliance teams build confidence before enforcement. Connection to [[mechanism-vs-evolution]]: governance mechanisms only work if they can be adopted incrementally.
+
+**Relevance to us**: Our MEMORY.md has a manual access control (load only in DM, not in groups). Statewave's policy layer shows what the programmatic version looks like. The `log_only → enforce` pattern is worth noting for any future access control we build — always start with observability.
 
 ## What's Interesting for Us
 
