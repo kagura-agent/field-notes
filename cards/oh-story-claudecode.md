@@ -2,8 +2,8 @@
 title: oh-story-claudecode
 tags: [agent-skill, claude-code, viral, deslop, skill-ci]
 created: 2026-05-06
-updated: 2026-05-12
-last_verified: 2026-05-12
+updated: 2026-05-14
+last_verified: 2026-05-14
 ---
 
 # oh-story-claudecode
@@ -121,4 +121,8 @@ This validates [[skill-distribution-convergence]] — SKILL.md format is becomin
   - **Layered summary protocol** + genre formula references (PR#28)
   - **Observation**: Project is evolving from "writing assistant" to **writing platform** — research, routing, revision, and quality assurance as distinct agent roles. The multi-agent specialization pattern mirrors [[supervisor-pattern]].
 - 05-11: 955⭐ (+1%). Continued acceleration: PR#28 (writing formulas, layered summary protocol, genre element extraction), PR#29 (reference file split + compression + terminology simplification). The platform maturation continues but star growth is decelerating.
+- 05-14: 1,070⭐ (+5.3%). **v0.6.0 released** (05-12). Crossed 1000⭐ 🎉.
+  - **PR #44 — Explicit Agent Spawn Fix**: User-reported bug (#41) — narrative-writer agent existed in `.claude/agents/` but was NEVER spawned by any writing skill. Root cause: **Claude Code does not auto-select agents from descriptions**. Agent `.md` files declare design intent, but `SKILL.md` is the execution contract — without explicit spawn instructions, agents are dead code. 3 of 13 skills were affected. Fix: add explicit spawn instructions to every skill phase that should use an agent. Graceful degradation: check if agent file exists before spawning, fall back to main thread if not deployed.
+  - **Pattern: Description ≠ Contract**: This is the most important architectural insight from this project. Agent descriptions say "I should be used by X", but the skill file must say "spawn agent X here" for it to happen. Applies universally to any agent framework. See [[explicit-spawn-contract]].
+  - **v0.6.0 content**: story-explorer integrated into all writing skills, story-import pipeline, UPGRADING.md v3 agent record.
 - 05-12: 996⭐ (+4.3%). **v0.5.0 released.** Growth re-accelerating toward 1000⭐. Two major additions: story-explorer (read-only query agent, CQRS pattern) and story-import (reverse engineering pipeline). 10 rounds of code review with 3-agent parallel verification, 13 issues fixed. Now at 13 skills + 6 agents. The project has fully evolved from a writing assistant into a **multi-agent writing platform** with specialized roles (explorer, researcher, reviewer, writer, deslop, cover artist). Issue #23 confirms cross-platform interest (Codex, Hermes, Cursor).
