@@ -2,7 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
-last_verified: 2026-05-13
+last_verified: 2026-05-14
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -452,3 +452,9 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - **Why theirs won**: More focused scope (1 file vs 3). The issue was in the core conversion layer's incomplete message scanning, not a provider problem. My PR's bedrock-specific changes were unnecessary — fixing the conversion handles all providers that don't support URLs.
 - **Pattern**: **FIX_AT_RIGHT_ABSTRACTION** — when a symptom appears provider-specific but the root cause is in a shared layer, fix only the shared layer. Adding provider-specific patches alongside the shared fix is unnecessary scope bloat. Also: their 162 lines vs my 369 lines — less code, same fix, because they didn't add redundant provider-level changes.
 - **Lesson**: Before touching a provider package, ask: "Is this actually a provider bug, or is it a gap in the shared conversion/processing layer?" If the shared layer should already handle this case, fix there only.
+
+## 2026-05-14: openclaw#81336 — QMD hyphen sanitization (superseded by #81423)
+- **My approach**: Sanitized entire query globally before QMD mode/tool selection
+- **Better approach**: Preserve raw query for lexical (lex) search, normalize only semantic (vec/hyde) paths
+- **Lesson**: When fixing search/query issues, consider that different search modes (lexical vs semantic) have different requirements. Global sanitization can break exact-match lexical recall. Always check if the fix scope is too broad.
+- **Superseded by**: giodl73-repo's #81423 — surgical normalization only for vec/hyde

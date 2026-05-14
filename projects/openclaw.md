@@ -175,3 +175,17 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **Lesson**: "Real behavior proof" CI check requires specific fields: `behavior`, `environment`, `steps`, `evidence`, `observedResult`, `notTested`. Plain markdown with test output isn't enough.
 - **Lesson**: `plugin-auto-enable` test files need `vi.mock("../channels/plugins/configured-state.js")` with `importOriginal` pattern — the mock must include `listBundledChannelIdsWithConfiguredState` or it errors. Use `makeIsolatedEnv()` from `plugin-auto-enable.test-helpers.ts` for isolated env.
 - **Code location**: `src/config/plugin-auto-enable.apply.ts` exports `applyPluginAutoEnable` and `materializePluginAutoEnableCandidates`. Called from gateway server methods (`channels.ts`, `tts.ts`) and CLI commands. Issue #81355 also describes Bug (A) in `src/gateway/server-methods/tts.ts` (event-loop blocking) — independent, could be separate PR.
+
+### 2026-05-14: PR #81336 superseded
+- Issue: QMD search rejected hyphens in queries
+- My fix: global sanitization before QMD mode selection — too broad, would break lexical exact-match recall
+- clawsweeper bot closed, superseded by #81423 (giodl73-repo): normalize only vec/hyde, preserve raw lex
+- **Takeaway**: OpenClaw QMD has separate lex/vec/hyde paths — fixes must be scoped to the right path. Global query preprocessing is risky.
+
+### 2026-05-14: PR #81604 (PENDING)
+- **Issue**: #81581 — Telegram CLI `thread-create` → `topic-create` remap not working
+- **Root cause**: `channel.ts` wraps `telegramMessageActionsImpl` into a local `telegramMessageActions` object that forwards 4 methods but omits `resolveCliActionRequest`. The CLI calls `getChannelPlugin('telegram')?.actions?.resolveCliActionRequest` which returns `undefined`, so bare `thread-create` reaches the gateway and gets rejected.
+- **Fix**: Added `resolveCliActionRequest` forwarding to the wrapper (2 lines in `channel.ts`), plus 2 tests in `channel-actions.test.ts`.
+- **CI**: Most checks pass. Pre-existing failures: `checks-fast-contracts-plugins-d` (undocumented codex subpaths), `Real behavior proof` (no Telegram bot to test live).
+- **Pattern**: When a channel plugin wraps its action adapter for runtime injection, ALL methods must be forwarded — missing one silently breaks the CLI dispatch path.
+- **Lesson**: cc-connect #977 was rejected due to Go 1.25 requirement (we only have 1.24.4). Always check language version in `go.mod` / `package.json` engines before starting study.
