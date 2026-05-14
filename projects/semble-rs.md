@@ -1,35 +1,28 @@
 ---
-title: semble_rs
-created: 2026-05-14
+title: "semble_rs — Rust Hybrid Code Search for AI Agents"
+status: noted
 updated: 2026-05-14
-tags: [code-search, rust, agent-tool]
+stars: 39
+repo: johunsang/semble_rs
+language: Rust
+license: MIT
 last_verified: 2026-05-14
 ---
 
-# semble_rs (johunsang)
+# semble_rs
 
-Rust rewrite of MinishLab's semble — agent-native code search with AST chunking and dependency analysis.
+Rust rewrite of MinishLab/semble (Python) — hybrid BM25 + semantic code search designed as a drop-in replacement for `grep`, `cat`, `read`, `ls` when LLMs explore code.
 
-- **Repo**: johunsang/semble_rs
-- **Stars**: 30 (2026-05-14)
-- **Language**: Rust
-- **License**: MIT
-- **Created**: 2026-05-12
+## Key Architecture
 
-## Architecture
+- **Tree-sitter AST chunking** (vs line-based in original) — functions/classes/structs as atomic units
+- **Hybrid search**: BM25 (keyword) + model2vec embeddings (semantic) → RRF fusion
+- **Added over original**: dependency graph analysis, impact analysis, line numbers in results
+- Claims **-93% token reduction** (58K → 4K tokens/session)
+- Unicode-aware BM25 tokenizer (Korean/CJK support)
 
-Three-layer pipeline:
-1. **AST Chunking** (Tree-sitter, 8 languages) → definition-boundary chunks (~1,500 chars)
-2. **Hybrid Search** (BM25 + potion-code-16M semantic, RRF k=60)
-3. **Dependency Graph** (import extraction → reverse dep map → impact analysis)
+## Relevance
 
-Ranking: symbol-aware boost + sibling chunk boost + multi-chunk file boost + top-k rerank.
+Niche but well-executed. The token reduction claim is significant for agent cost optimization. AST-aware chunking > line-based chunking is a known-good pattern (see [[code-search-patterns]]). Not directly on our north star but useful reference for anyone building agent-native code tools.
 
-## Verdict (2026-05-14)
-
-Concept sound. AST chunking + hybrid search + impact analysis is novel combination. But **too young** (2 days, 0 tests, 0 issues, 0 community). Not tracking. Pattern captured in [[agent-native-code-search]].
-
-## Related
-
-- [[agent-native-code-search]] — concept card
-- [[ast-outline]] — adjacent tool (outline vs search)
+Korean developer (johunsang). Active development (pushed 05-14).
