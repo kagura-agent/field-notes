@@ -1,108 +1,73 @@
 ---
-title: "Needle — 26M Function Call Model (Simple Attention Network)"
-tags: [agent-infrastructure, model-distillation, on-device-ai, tool-calling, architecture]
-created: 2026-05-13
-updated: 2026-05-13
-status: tracking
-last_verified: 2026-05-13
+title: "Needle — Simple Attention Network for Tool Calling"
+status: active
+created: 2026-05-14
+updated: 2026-05-14
+stars: 1372
+repo: cactus-compute/needle
+tags: [architecture, tool-calling, distillation, on-device, small-model]
+last_verified: 2026-05-14
 ---
 
-# Needle — Simple Attention Network for Tool Calling
+# Needle — Simple Attention Network (SAN)
 
-- **Repo**: [cactus-compute/needle](https://github.com/cactus-compute/needle)
-- **Stars**: 872 (2026-05-13 evening, was 372 AM → 850 PM → 872 evening — HN front page 475pts)
-- **License**: MIT
-- **Language**: Python (JAX/Flax)
-- **Team**: Cactus Compute (Henry Ndubuaku et al.)
+> 26M parameter model distilled from Gemini 3.1 Flash Lite for single-shot function/tool calling.
+> MIT license, weights open on HuggingFace.
 
-## What It Does
+## Why It Matters
 
-26M parameter encoder-decoder model that does single-shot function calling. Distilled from Gemini 3.1 Flash Lite. Runs at 6000 tok/s prefill / 1200 tok/s decode on [Cactus](https://github.com/cactus-compute/cactus) runtime.
+Proves that tool calling — the core capability agents need — can be distilled into a tiny model (26M params, ~15MB INT4) that runs on phones, watches, glasses at 6000 tok/s prefill, 1200 tok/s decode. Beats FunctionGemma-270m, Qwen-0.6B, Granite-350m, LFM2.5-350m on single-shot function call benchmarks.
 
-Beats FunctionGemma-270m, Qwen-0.6B, Granite-350m, LFM2.5-350m on single-shot function call benchmarks, despite being 10-25x smaller.
-
-**Scope limitation**: single-shot tool calling only. Not conversational. Not multi-turn. The authors are upfront about this.
+**Implication for us**: On-device tool routing is now viable. A local Needle model could pre-filter/route tool calls before hitting a full LLM, saving tokens and latency.
 
 ## Architecture: Simple Attention Network (SAN)
 
-The headline insight: **FFN layers can be completely dropped** for structured output tasks where the model relies on external knowledge (tool definitions).
+Key insight: **MLPs can be completely dropped from transformers when the task relies on external knowledge source.** Tool calling = retrieval-and-assembly (match query→tool, extract args, assemble JSON) — all alignment/copying ops that cross-attention handles natively.
 
-- **d=512**, 8 heads, 4 KV heads, BPE=8192
-- **12 encoder layers** (bidirectional, processes query + tool definitions)
-- **8 decoder layers** (causal, generates tool call JSON)
-- **No FFN anywhere** — attention-only
-
-### Why No FFN Works Here
-
-1. Tool calling is retrieval-and-assembly (match query → tool name, extract arg values, assemble JSON). All three operations are alignment/copying between input and output — exactly what cross-attention does
-2. FFN provides per-position feature transformation — not needed when the task is structured routing
-3. FFN is ~2/3 of transformer params. Removing it = 3x parameter efficiency at same depth
-4. Fewer params = less memory bandwidth pressure = faster inference on edge devices
-5. **Softmax IS the nonlinearity** — attention is already nonlinear via softmax(QK^T). For routing/alignment tasks, this is sufficient without FFN's element-wise nonlinearity
-
-### Why Encoder-Decoder (not decoder-only)
-
-1. Bidirectional encoder sees full tool definition at once (decoder-only processes left-to-right, must infer structure from partial context)
-2. No input tokens in KV cache — encoder output is fixed-size
-3. Clean separation: encoder feeds both decoder (generation) and contrastive head (tool retrieval)
+### Specs
+- d=512, 8 heads, 4 KV heads, BPE=8192
+- **Encoder**: 12 layers, self-attention only (GQA + RoPE), **no FFN**
+- **Decoder**: 8 layers, masked self-attention + cross-attention to encoder
+- Shared embedding between encoder/decoder
+- Tied output projection
 
 ### Novel Components
 
-- **ZCRMSNorm**: `(1 + γ) * x / RMS(x)`, γ init to 0 (identity at init). From nGPT/DeepSeek-V3 lineage
-- **Gated residuals**: `x + sigmoid(gate) * Attn(Norm(x))`, gate init to 0 → sigmoid=0.5 at start. Allows model to sharpen (g→1) or suppress (g→0) per layer. **Critical** in FFN-free arch — without FFN to do per-position rewriting, residual design determines all information flow
-- **Contrastive tool selection head**: CLIP-style head for pre-filtering tools when set is large. Mean pool → Dense(d/4) → ReLU → Dense(128) → L2-norm. Trained jointly via symmetric CLIP loss at 0.1x weight
-- **Grammar-constrained decoding**: Character-level trie built from tool definitions. `JsonStateMachine` tracks position in output JSON, constrains tool names and argument keys via trie prefix matching; values are unconstrained. See `model/constrained.py`
-- **Muon optimizer for attention projections**: Newton-Schulz orthogonality on Q/K/V/O prevents representation collapse in deep stacks of linear layers without interleaving nonlinearities (LR 0.02, WD 0.01). Everything else uses AdamW (LR 3e-4)
-- **INT4 QAT as regularization**: Fake quantization every 100 steps with STE. Doubles as weight noise regularization + ensures no post-training quantization gap
-- **Token-level loss weighting**: argument values 4x > tool names 2x > argument keys 1.5x > JSON structure 1x. Matches actual error distribution (values are hardest)
+1. **No FFN in encoder** — saves ~2/3 parameters per layer. Softmax IS the nonlinearity. For routing/alignment tasks, attention alone is sufficient. FFN does per-position feature transformation, which tool-calling doesn't need.
 
-## Training
+2. **Gated Residuals** — `x = x + sigmoid(gate) * Attn(Norm(x))`, gate initialized to 0 (so sigmoid(0)=0.5, starts at half-strength). Without FFN to do nonlinear rewriting, pure additive residuals are too limiting. Gated lets model learn to sharpen useful layers (g→1) or suppress (g→0).
 
-- Pretrained on 16 TPU v6e, 200B tokens, 27 hours
-- Post-trained on 2B tokens of single-shot function call data, 45 min
-- Data synthesized via Gemini (`needle generate-data`)
-- Finetuning playground: web UI that generates data, trains, evaluates — `needle playground`
+3. **ZCRMSNorm** — `x * (1 + gamma) / RMS(x)`, gamma initialized to 0. Identity-at-init. From nGPT/DeepSeek-V3 line. Pairs with gated residuals for "start as damped identity" training.
 
-## Code Quality (Deep Read 2026-05-13 evening)
+4. **Contrastive Tool Selection Head** — CLIP-style head for retrieving relevant tools before generation. Encoder output → mean pool → Dense(d/4) → ReLU → Dense(128) → L2-normalize. Trained jointly with CE loss at 0.1x weight. Enables top-k tool filtering from large tool sets.
 
-### Strengths
-- Clean separation of concerns: `architecture.py` (model), `constrained.py` (grammar), `run.py` (inference), `train.py` (training)
-- Uses `nn.scan` for layer stacking with `nn.remat` — memory-efficient for TPU training
-- Shared embedding between encoder, decoder, and output projection (weight tying)
-- Batch generation support (`generate_batch`) with proper per-example constrained decoders
-- Safe L2 normalize with `sqrt(sum² + eps²)` instead of `max(norm, eps)` — avoids NaN in backward pass
+5. **Muon Optimizer for attention-only** — Dual optimizer: Muon (Q/K/V/O projections, LR 0.02) + AdamW (everything else, LR 3e-4). Muon enforces orthogonality via Newton-Schulz, preventing representation collapse when stacking many linear layers without FFN.
 
-### Weaknesses / Maturity Signals
-- No tests directory — playground-level maturity
-- JAX/Flax only (no PyTorch port) — limits adoption
-- `generate.py` is 158KB(!) — likely a data generation pipeline, not hand-written
-- Issue #14 (CLOSED): Missing HF tokenizer repo broke playground
-- Issue #1: No Mac Metal training support (JAX/TPU only)
-- Issue #15: ToolConstraints needs fixing
-- Only 2 external contributors (bobbrysonn filed #14, rest is internal team)
-- Audio augmentation experiments (issues #7, #8) suggest broader ambitions beyond text
+6. **INT4 QAT as Regularization** — Fake quantization every 100 steps with STE. Acts as weight noise regularization for small models. Deploy-ready (no post-training quantization gap).
 
-## Relevance to Our Direction
+7. **Token-Level Loss Weighting** — argument values 4.0x, tool names 2.0x, argument keys 1.5x, JSON structure 1.0x. Matches the actual error distribution (values > names > keys > structure).
 
-**Direct**: Low. We don't build models, and our tool calling goes through full LLMs.
+### Training
+- Pretrained on 16 TPU v6e for 200B tokens (27hrs)
+- Post-trained on 2B tokens of single-shot function call dataset (45min)
+- Data synthesized via Gemini (they ship the generation tooling)
 
-**Conceptual**: High.
-- The **FFN-free architecture** for structured tasks is a design principle worth remembering: when the task is alignment/routing (not feature transformation), attention alone suffices. This maps to [[thin-harness-fat-skills]] — the "routing" layer can be dramatically simpler than the "execution" layer
-- **Grammar-constrained decoding via trie** is a technique applicable to any structured output system. The `JsonStateMachine` + per-tool `TrieNode` approach is clean and reusable. Could constrain skill routing output if we ever build a local dispatcher
-- **Model bifurcation signal**: agent infrastructure is splitting into **tiny specialized models** (tool routing, intent classification, 26M) + **large general models** (reasoning, code generation, 100B+). This aligns with [[skill-distribution-convergence]] — different model sizes for different layers
-- The **contrastive tool selection head** (CLIP-style) is a smarter approach to tool filtering than gbrain's functional-area-resolver string-matching. Pre-filters to top-k relevant tools before generation — relevant when tool count grows large
-- **Gated residuals as architectural principle**: when you remove a component (FFN), the remaining components need better control flow (gates). Same principle applies to removing components from agent architectures — compensate with better routing, not just deletion
-- **INT4 QAT as regularization** — training with the same quantization as inference is a general principle for deploy-aware systems. Our workflow YAMLs could benefit from similar "train as you deploy" thinking
+## Encoder-Decoder vs Decoder-Only (for tool calling)
 
-## Position in Ecosystem
+Their argument for enc-dec:
+1. **Bidirectional encoding** — tools are structured objects, bidirectional sees full definition at once vs causal's left-to-right
+2. **No input tokens in KV cache** — encoder output is fixed-size cross-attention, not re-attending full input at each generation step
+3. **Clean multi-head design** — encoder feeds both decoder (generation) and contrastive head (retrieval)
 
-- Competes with: FunctionGemma, Granite-FC, LFM2.5
-- Complementary to: full LLM agents (serves as a fast pre-router)
-- Upstream dependency: Gemini (for distillation data)
-- Related runtime: [[cactus-compute]] (their inference engine)
+## Patterns Worth Borrowing
 
-## Tracking
+- **Task-specific architecture** — not everything needs a general-purpose decoder-only model. Tool calling is structured enough for specialized architecture.
+- **Contrastive tool selection** — CLIP-style pre-filtering of tools is elegant. Could be applied to skill selection (our ~25 skills → semantic match before loading).
+- **Loss weighting by error distribution** — simple but effective. Weight the tokens that actually cause errors, not uniform loss.
+- **"No FFN" principle** — when the task is routing/alignment, attention alone suffices. Worth remembering for any structured-output task.
 
-- Revisit: 2026-05-20 (HN momentum — check if community forms faster, benchmark reproductions, star trajectory)
-- Watch for: external benchmark reproduction, multi-turn support, ONNX/PyTorch port
-- HN thread: https://news.ycombinator.com/item?id=48118763 (468pts, 2026-05-13)
+## Links
+- Repo: https://github.com/cactus-compute/needle
+- Weights: https://huggingface.co/Cactus-Compute/needle
+- Runtime: https://github.com/cactus-compute/cactus
+- Related: [[tool-calling]], [[distillation]], [[on-device-inference]]
