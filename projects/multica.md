@@ -394,3 +394,12 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Reused infrastructure**: extractSkillMdPaths, fetchRawFile, buildRawGitHubURL, collectGitHubFiles, buildGitHubContentsURL, skillDirFromSkillFilePath
 - **Risk**: GitHub API rate limits on large repos; response shape differs from single import (frontend may need handling)
 - **Note**: First feature PR (vs bug fixes). Go code, server-side handler only.
+
+## 2026-05-15 PR #2690: fix(deps): bump Next.js to patch CVE-2026-44578
+- **Issue**: #2676 — Next.js CVE-2026-44578 security vulnerability
+- **PR**: #2690 — fix(deps): bump Next.js to patch CVE-2026-44578
+- **Status**: PENDING (backend ✅, frontend pending Vercel auth — expected)
+- **Fix**: Bumped `apps/docs` next from `^15.3.3` → `^15.5.16`, `apps/web` next from `^16.2.3` → `^16.2.5`. Lockfile regenerated (15.5.15→15.5.18, 16.2.3→16.2.6).
+- **Lockfile lesson**: pnpm CI uses `--frozen-lockfile`, must commit lockfile changes. pnpm install partially succeeded locally despite apparent OOM — always check `git status` after aborted pnpm install.
+- **Approach**: Manual 2-file edit + lockfile update. No Claude Code needed for trivial dep bumps.
+- **CVE dep bumps**: Good contribution type for multica — clean, fast, high value, low competition.
