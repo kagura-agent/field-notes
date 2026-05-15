@@ -27,6 +27,7 @@
 | #1307 | N/A | pending | register safe.directory for bind-mount restart |
 | #1294 | N/A | pending | clear stale session ID on error_during_execution |
 | #1423 | #1419 | pending | cleanup-service respect worktree.baseBranch |
+| #1694 | #1673 | pending | condition_json_parse_failed → workflow error instead of silent skip |
 
 ## 注意事项
 - eslint 禁止 unused vars，catch 里不用的 error 要命名为 `_err`
@@ -199,3 +200,12 @@
   - The codebase already had GITLAB_TOKEN/GITEA_TOKEN support in forge adapters — checking existing patterns saved design time
   - Hostname parsing > substring matching for security-sensitive URL operations
   - This was a good candidate: clear issue, no competition, simple root cause, direct fix path
+
+### PR #1694 — fix(workflows): condition_json_parse_failed → error (pending, fixes #1673)
+- **Issue**: When `when:` condition references `$node.output.field` and JSON parse fails (Pi/Minimax wrapping in markdown fences), workflow exits 0 silently
+- **Root cause**: `resolveOutputRef()` returned `''` on parse failure → `evaluateAtom` returned `{parsed: true, result: false}` → DAG treated as legitimate skip
+- **Fix**: `resolveOutputRef` now throws `OutputRefParseError` on parse failure. `evaluateAtom` catches it → returns `{parsed: false}`. DAG executor already handles this correctly (exits non-zero + error message). Also: strips markdown fences before JSON.parse attempt.
+- **Tests**: 4 new tests (parse failure → parsed:false, fence stripping, compound propagation). 54 pass total.
+- **CI**: Ubuntu ✅ Windows ✅ Docker-build ✅ CodeRabbit: skipped
+- **Pattern**: When a function returns a sentinel value (empty string) that's indistinguishable from a valid state (empty output), the downstream consumer can't differentiate — use exceptions or discriminated unions instead
+- **Selection**: Well-documented issue, clear root cause, no competing PRs, small surgical fix
