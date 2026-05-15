@@ -3,7 +3,7 @@ title: html-anything (nexu-io)
 status: active
 created: 2026-05-15
 updated: 2026-05-15
-stars: 831
+stars: 1087
 url: https://github.com/nexu-io/html-anything
 last_verified: 2026-05-15
 ---
@@ -35,11 +35,19 @@ A `SHARED_DESIGN_DIRECTIVES` module prepends global rules to every skill's promp
 
 1. **Content-drives-quantity**: Templates define a *layout pool* (reusable), not a page count. This was a hard-won lesson — Issue #1 fixed a bug where numeric hints in skills were being read as hard caps.
 
-2. **Agent-agnostic via protocol abstraction**: Three invocation protocols:
+2. **Agent-agnostic via protocol abstraction**: Four invocation protocols:
    - `stdin` — pipe prompt to stdin, parse ndjson stdout (Claude, Cursor, Gemini, Copilot, Qwen, Aider)
    - `argv` — prompt as positional arg (DeepSeek)
    - `argv-message` — prompt via `--message` flag, single JSON stdout (OpenClaw!)
    - `acp` / `pi-rpc` — planned but not yet implemented
+
+3a. **Adapter pattern** (PR#14): `adapter` field in AgentDef lets wrapper binaries reuse another agent's argv/parser without code changes. Example: `{ id: "codex-nightly", bin: "codex-next", adapter: "codex" }`. Enables users to register custom agent CLIs via environment variables.
+
+3b. **Environment-based extension hooks** (PR#14): Three-tier customization without code:
+   - `HTML_ANYTHING_EXTRA_AGENTS` — JSON array of custom AgentDefs, appended to built-in list
+   - `HTML_ANYTHING_MODELS_<AGENT>` — comma-separated model overrides per agent
+   - `HTML_ANYTHING_BIN_<AGENT>` — binary path override per agent
+   - `HTML_ANYTHING_AGENT_PROXY` — explicit proxy control for agent subprocesses
 
 3. **Zero API key**: Reuses the agent CLI's existing auth session. Marginal cost = $0.
 
@@ -60,12 +68,43 @@ The "scenario" taxonomy (marketing, engineering, product, etc.) is another appro
 
 ## Anti-Patterns Observed (from Issues)
 
-- Agent binary detection fails when PATH doesn't include common install dirs (#hallestar)
-- Streaming display can get stuck showing "generating" even after HTML is produced (#qtwaiter)
-- Some agents output conversation text instead of raw HTML (#fcityboy)
+- Agent binary detection fails when PATH doesn't include common install dirs (#hallestar) — **fixed by PR#14** with unified `resolveAgentBin()` and env override support
+- Streaming display can get stuck showing "generating" even after HTML is produced (#qtwaiter) — **fixed by PR#9/#11** (write-tool rescue)
+- Some agents output conversation text instead of raw HTML (#fcityboy) — **fixed by PR#14** with empty-output detection and `summarizeJsonLine()` diagnostics
+- Windows spawn EINVAL failures (#15, #16) — **open**, likely agent binary quoting issue on Windows
 
-## Verdict
+## Growth Trajectory
 
-**Track-worthy**. 831⭐ in 4 days = genuine breakout. The skill-surface matrix is a reusable architecture pattern. OpenClaw integration is a bonus.
+| Date | Stars | Delta | Notes |
+|------|-------|-------|-------|
+| 05-11 | ~0 | — | First commits |
+| 05-15 AM | 831 | — | Initial tracking |
+| 05-15 PM | 1,087 | +30.8% | Viral breakout confirmed |
 
-Revisit 05-22 — check if growth sustains, community forms, or if it's a one-week spike.
+Community: 🟢 THRIVING 6/6 — 9 unique issue authors, 5 external PRs, 118 forks, 2 merged PR authors.
+
+## PR#14 Architecture Deep Read (05-15)
+
+The biggest architectural shift since launch. Three key patterns:
+
+### 1. Extensible Agent Registry via Environment
+
+`parseExtraAgents()` reads `HTML_ANYTHING_EXTRA_AGENTS` env var — a JSON array of agent definitions. This means users can add custom agent CLIs without forking. Each custom agent can specify `adapter` to reuse an existing protocol implementation.
+
+**Insight**: This is the [[skill-ecosystem]] "plugin without plugin system" pattern — using environment variables as the extension surface instead of a plugin API. Zero runtime overhead, works in Docker/CI, no config files to manage. Trade-off: no validation, no UI for discovery.
+
+### 2. Unified Binary Resolution
+
+`resolveAgentBin()` consolidates the previously scattered binary lookup into one function with clear priority: env override → primary bin → fallback bins → env-provided extra bins. The old code had detection and invocation doing separate PATH lookups that could disagree.
+
+**Relevance to OpenClaw**: The `resolveOpenclawAgentId()` function probes `openclaw agents list` with a 5-minute TTL cache — it knows OpenClaw refuses `agent --message` without `--agent`. This is the kind of adapter-specific knowledge that makes first-class support real vs. superficial.
+
+### 3. Defensive Output Parsing
+
+PR#14 adds `hasContent` tracking and `summarizeJsonLine()` — if an agent exits without producing HTML/text, the user gets a diagnostic with the last parsed event type, not a silent failure. Also filters known Codex stderr noise (10+ benign warning patterns). This is production hardening.
+
+## Verdict (updated)
+
+**Strong track**. Growth trajectory suggests sustained viral adoption, not a one-week spike. The architecture is maturing rapidly (4 PRs in 24 hours fixing real user-reported issues). OpenClaw first-class support is genuine — they wrote adapter-specific code, not just string matching.
+
+Revisit 05-22 — watch for: 2K⭐ milestone, Windows fix, ACP protocol implementation.
