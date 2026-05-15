@@ -381,3 +381,16 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Fix**: Extracted shared `invalidateAllStaleQueries` callback. Added `prevWsRef` + `useEffect` that detects WSClient instance change (workspace switch) and triggers invalidation. Also added `chatKeys.sessions` to invalidation set (was missing from original reconnect handler).
 - **Tests**: 3 existing tests pass. TypeScript compiles cleanly.
 - **Code location**: `packages/core/realtime/use-realtime-sync.ts`
+
+## 2026-05-15 PR #2655: feat(skills): support 2-segment skills.sh URL for batch import
+- **Issue**: #2653 — Support 2-segment skills.sh URL for batch importing all skills from a repo
+- **PR**: #2655
+- **Status**: PENDING (backend CI ✅, frontend pending Vercel auth — expected)
+- **Root cause**: `parseSkillsShParts` only accepted 3-segment URLs, rejecting 2-segment batch import
+- **Fix**: Extended `parseSkillsShParts` to accept 2 segments. Added `fetchAllFromSkillsSh` using existing tree API + `extractSkillMdPaths`. Handler branches on segment count for batch vs single import.
+- **Approach**: Claude Code for implementation (timed out/killed but committed before dying), go vet verified manually
+- **Testing**: go vet clean. 3 unit tests for parseSkillsShParts added. Full handler tests skip without local Postgres (expected).
+- **Batch response**: `{ imported: [...], errors: [...] }` — partial failure is transparent to caller
+- **Reused infrastructure**: extractSkillMdPaths, fetchRawFile, buildRawGitHubURL, collectGitHubFiles, buildGitHubContentsURL, skillDirFromSkillFilePath
+- **Risk**: GitHub API rate limits on large repos; response shape differs from single import (frontend may need handling)
+- **Note**: First feature PR (vs bug fixes). Go code, server-side handler only.

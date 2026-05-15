@@ -1211,3 +1211,24 @@ GitHub trending (agent, created past week, sorted by stars):
 - **What**: DeepSeek-v4 native terminal AI coding agent with reasoning intensity control and Agent Skills
 - **Why interesting**: Another model-native agent (like whale for DeepSeek). CN developer. Skills support.
 - **Verdict**: Note only. Derivative of whale pattern. Revisit if hits 1k+.
+
+### native-feel-skill (yetone)
+- **URL**: https://github.com/yetone/native-feel-skill
+- **Stars**: 456 (2026-05-15)
+- **What**: Agent skill for designing cross-platform desktop apps that feel native
+- **Why interesting**: Skill packaging for native UX — aligns with skill ecosystem tracking
+- **Added**: 2026-05-15
+
+### Tactile (yliust)
+- **URL**: https://github.com/yliust/Tactile
+- **Stars**: 232 (2026-05-15)
+- **What**: Accessibility-first operating layer for agents
+- **Why interesting**: Novel framing — agent accessibility as first-class concern
+- **Added**: 2026-05-15
+
+### OpenClaw-AWD-Arena (LYiHub)
+- **URL**: https://github.com/LYiHub/OpenClaw-AWD-Arena
+- **Stars**: 196 (2026-05-15)
+- **What**: Automated attack-with-defense platform where LLM-powered agents compete
+- **Why interesting**: Built on OpenClaw — ecosystem growth signal
+- **Added**: 2026-05-15

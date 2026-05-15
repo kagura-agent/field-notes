@@ -68,7 +68,7 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
   EXACT=$(grep -rl "$QUERY" "$WIKI_DIR/projects/" "$WIKI_DIR/cards/" 2>/dev/null | head -"$LIMIT" || true)
   
   # Individual significant words (skip common words)
-  WORDS=$(echo "$QUERY" | tr ' ' '\n' | grep -v -iE '^(the|a|an|is|are|was|were|with|for|and|or|not|about|more|than|that|this|from|have|has|been|will|can|could|would|should|of|in|on|at|to|by)$' || true)
+  WORDS=$(echo "$QUERY" | tr ' ' '\n' | grep -v -iE '^(the|a|an|is|are|was|were|with|for|and|or|not|about|more|than|that|this|from|have|has|been|will|can|could|would|should|of|in|on|at|to|by|how|do|does|did|its|into|also|just|like|very|much|being|each|when|what|who|where|which|why|get|got|make|made|some|any|all|own|use|used|using)$' || true)
   
   WORD_FILES=""
   WORD_ARRAY=()
@@ -129,14 +129,27 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
       *deep*) MATURITY=$(awk "BEGIN { printf \"%.1f\", $MATURITY * 1.15 }") ;;
     esac
 
-    # Term-match count as primary signal (from FILE_SCORES array)
-    TERM_SCORE=${FILE_SCORES["$f"]:-1}
+    # Term-match count as primary signal, normalized by document length
+    RAW_TERM_SCORE=${FILE_SCORES["$f"]:-1}
+    # Document length normalization: log2(lines) penalty for large files
+    # Small files (≤50 lines) get no penalty; large files get diminishing returns
+    DOC_LINES=$(wc -l < "$f" 2>/dev/null || echo 50)
+    [[ $DOC_LINES -lt 10 ]] && DOC_LINES=10
+    if [[ $DOC_LINES -le 50 ]]; then
+      TERM_SCORE=$RAW_TERM_SCORE
+    else
+      # Penalize: score * (50 / docLines)^0.3 — gentle penalty for length
+      TERM_SCORE=$(awk "BEGIN { printf \"%.1f\", $RAW_TERM_SCORE * (50.0 / $DOC_LINES) ^ 0.3 }")
+    fi
     # Slug-match bonus: if filename contains query terms, boost relevance
     SLUG_NAME=$(basename "$f" .md)
     SLUG_BONUS=0
+    SLUG_HITS=0
     for sw in $WORDS; do
-      [[ ${#sw} -ge 3 ]] && [[ "$SLUG_NAME" == *"$sw"* ]] && SLUG_BONUS=$((SLUG_BONUS + 5))
+      [[ ${#sw} -ge 3 ]] && [[ "$SLUG_NAME" == *"$sw"* ]] && { SLUG_BONUS=$((SLUG_BONUS + 20)); SLUG_HITS=$((SLUG_HITS + 1)); }
     done
+    # Slug-priority boost: 2+ slug-term matches get a large bonus (concept card relevance)
+    [[ $SLUG_HITS -ge 2 ]] && SLUG_BONUS=$((SLUG_BONUS + 100))
     # Combined: term_match * 10 + slug_bonus + decay * maturity
     SCORE=$(awk "BEGIN { printf \"%.4f\", $TERM_SCORE * 10 + $SLUG_BONUS + $DECAY * $MATURITY }")
     [[ $DEBUG -eq 1 ]] && echo "[DBG] score=$SCORE decay=$DECAY maturity=$MATURITY status=$STATUS depth=$DEPTH age=${AGE_WEEKS}w $(basename "$f")" >&2
