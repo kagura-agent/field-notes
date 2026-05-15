@@ -365,6 +365,14 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Testing**: `cd server && go test ./internal/handler/` + `go test ./cmd/server/` (needs PostgreSQL + Redis containers)
 - **PR template**: Strict — requires ## What, ## Related Issue, ## Type, ## Changes, ## How to Test, ## Checklist, ## AI Disclosure
 
+## 2026-05-14 PR #2571: CLOSED — auto-subscribe creator on issue creation
+- **Issue**: #2568
+- **PR**: #2571 — CLOSED by Bohan-J
+- **Reason**: Maintainer pointed out `subscriber_listeners.go` already subscribes creator on `issue:created` event. My PR would create a duplicate subscription path.
+- **Why I missed it**: Integration tests in `TestMain` don't register `registerSubscriberListeners`, so my investigation via tests gave false signal that the subscription path didn't exist. I relied on test behavior instead of reading the production code paths.
+- **Lesson**: When investigating "missing behavior", always trace the production code path end-to-end, not just the test environment. Test environments may intentionally omit side-effect listeners. `ON CONFLICT DO NOTHING` would have made the duplicate harmless, but the unnecessary code complexity was still wrong.
+- **Maintainer style**: Bohan-J — polite but firm, thorough code-level review with inline examples. Appreciates when contributor accepts feedback gracefully.
+
 ## 2026-05-14 PR #2581: fix(realtime): invalidate stale queries on workspace switch
 - **Issue**: #2562 — stale cache after workspace switch — missed WS events not recovered
 - **PR**: #2581

@@ -1219,3 +1219,63 @@ Open PRs: ~32
 - New gradients: 0
 - DNA changes: 0
 - Luna interaction: 0 (Day 3 of no interaction)
+
+
+---
+
+## 🔬 自进化观察日报 2026-05-14 (Day 27)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增 gradient / 1 条通过三重验证（"流程存在但不执行" V1/V2/V3 PASS → PROMOTE to Workflow 推荐，但实际尚未写入目标载体）
+- **DNA 变更**: 无。`git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md` = 0 commits。上次 DNA 实质变更: 05-09（5 天前）
+- **nudge 触发**: 0 次。`journalctl -u openclaw-gateway --since "yesterday 22:30" | grep -i nudge` = 0 hits
+- **dreaming**: Light Sleep ~30 staged（全部 confidence=0.62, recalls=0）; REM "No strong patterns surfaced"; 0 promoted (Day 27 连续零 promote)
+
+### 闭环追踪
+- **完整闭环**: 1 个 — beliefs-candidates "流程存在但不执行" count=3 → 三重验证通过 → PROMOTE 推荐（study #08:30）。这是管线运行以来第一次候选通过三重验证门控
+- **部分闭环**: 验证通过但未实际写入 Workflow 目标载体 — "PROMOTE to Workflow 推荐"停在了推荐阶段，beliefs-candidates.md 中该条目仍在
+- **断裂处**:
+  - dreaming 清理循环继续（daily-review 清理 220→201 行，dreaming 回填噪音）
+  - 高执行日（2122 行 / 152 sections）但 0 新 gradient 自生成
+  - 外部反馈（openclaw#81336 被 supersede, hermes-agent ×5 自关）未转化为 gradient
+
+### 今日发现
+
+1. **🎉 管线首次完整通过门控——但最后一步卡住了。** "流程存在但不执行" 是 27 天来第一个通过 V1/V2/V3 三重验证的候选。study session 08:30 明确说了 "PROMOTE to Workflow 推荐"，但截至 22:30，beliefs-candidates.md 里该条目仍在原位，workflow yaml 没有变更。讽刺的是，"流程存在但不执行" 这个 gradient 本身的升级流程也没执行完。
+
+2. **高密度工作日 vs 零 gradient 输出的矛盾继续。** 今天 memory 2122 行 / 152 sections，23 个新 PR，63 个 commit。但自生成 gradient = 0。唯一的 beliefs 进展是回顾已有候选的升级评估，不是从今天工作中提取新 pattern。
+
+3. **dreaming 行为不变。** 全部 staged confidence=0.62, recalls=0。REM 输出 "No strong patterns surfaced"。Day 27 连续零 promote。dreaming 的净效应仍是负面（回填 > 清理）。
+
+4. **nudge 零触发需要确认机制。** 连续多天 journalctl 零 nudge 命中。issue #5 关闭时确认 nudge 正常运行，但缺乏持续可观察的信号。可能 nudge 在运行但 gateway 日志里没有打印关键词。
+
+5. **PR 活动很高但反思密度低。** 23 个 PR（含 finance 系列、外部 cc-connect/Archon/openclaw），多个被 supersede 或 self-close，但这些结果没有被系统性地转化为 gradient。workloop reflect 和 study reflect 都在做分析，但结论停在 "no beliefs-candidates needed"。
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | **首次突破**: "流程存在但不执行" 通过三重验证。但实际写入未完成，管线 last-mile 问题暴露 |
+| #6 dreaming 质量 | OPEN | 无进展。confidence=0.62, recalls=0, 0 promote (Day 27) |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 累积趋势（Day 20-27）
+- **gradient 输入**: Day 20-22=0, Day 23=1(Luna), Day 24-27=0 → 8 天 1 条（外部触发），自生成持续为零
+- **DNA 变更**: 上次实质变更 05-09（5 天前）
+- **dreaming promote**: 全部 = 0（连续 27 天）
+- **beliefs 门控**: 首次有候选通过三重验证，但 last-mile 执行未完成
+- **模式**: 管线"结构性断连"状态持续，但有微弱信号（门控首次通过）
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --since="2026-05-14 00:00" --oneline` (workspace): 2 commits (search quality fixes, MEMORY.md hygiene)
+- `beliefs-candidates.md`: 5 active candidates (count=1 except "流程存在但不执行" count=3), 2 old gradients, 0 graduated（三重验证通过但未写入目标）
+- `memory/2026-05-14.md`: 2122 行 / 152 sections
+- dreaming: Light Sleep ~30 staged (0.62, recalls=0), REM 0 PLT, 0 promoted (Day 27)
+- `journalctl nudge`: 0 hits (since yesterday 22:30)
+- PR activity: 23 new PRs (finance×7, external cc-connect/Archon/openclaw/multica/abti/kagura-mail), multiple superseded/self-closed
+- GitHub contributions: 63 commits, 23 PRs
+- New gradients: 0 self-generated
+- DNA changes: 0
+- Luna interaction: 0 (Day 4 of no interaction)

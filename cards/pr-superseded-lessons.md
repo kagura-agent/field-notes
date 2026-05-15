@@ -2,7 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
-last_verified: 2026-05-14
+last_verified: 2026-05-15
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -458,3 +458,10 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - **Better approach**: Preserve raw query for lexical (lex) search, normalize only semantic (vec/hyde) paths
 - **Lesson**: When fixing search/query issues, consider that different search modes (lexical vs semantic) have different requirements. Global sanitization can break exact-match lexical recall. Always check if the fix scope is too broad.
 - **Superseded by**: giodl73-repo's #81423 — surgical normalization only for vec/hyde
+
+### multica #2571 — 自己关闭（2026-05-15）
+- **Issue**: #2568 auto-subscribe creator on normal CreateIssue
+- **问题**: 没看到 `subscriber_listeners.go` 已经在 `issue:created` 事件上订阅 creator
+- **原因**: 集成测试 `TestMain` 没注册 `registerSubscriberListeners`，导致追码时误以为 normal create 路径没有订阅
+- **教训**: 测试环境的 listener 注册和生产环境不同 → 不能只看测试行为判断生产行为。查 event-driven 代码时，必须检查所有 listener 注册点，不只是 handler 内部
+- **Pattern**: "测试环境缺少组件 → 误判为 bug" — 先确认测试环境是否完整再下结论
