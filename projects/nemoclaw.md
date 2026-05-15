@@ -186,7 +186,15 @@
 - **Pattern**: SYMLINK_VS_RESOLVED — when whitelisting binaries in process-identity-based policy enforcement, add the RESOLVED path (after symlink deref), not just the symlink path. `/proc/PID/exe` always resolves.
 - **Cross-reference**: Same policy area as my PR#3169 (shields down agent-aware policy path)
 
-## PR #3241 — macOS preparation page (2026-05-08)
+## PR #3554 — kill host openshell-gateway on uninstall (2026-05-15)
+- **Issue**: #3516 — nemoclaw uninstall does not kill running openshell-gateway host process, port 8080 leaks
+- **Status**: PENDING, CI pass (check-pr-limit ✅, assign-linked-issue-author ✅, onboard-entrypoint-budget ✅, CodeRabbit skipped)
+- **Scope**: 1 line in run-plan.ts + 34 lines test
+- **Root cause**: `executePlan()` "Stopping services" step didn't stop host-process gateway (only containerized path via `openshell gateway destroy`). `stopDockerDriverGatewayProcess()` existed in `destroy.ts` but wasn't called during uninstall.
+- **Fix**: Add `stopMatchingPids("openshell-gateway", ...)` to the "Stopping services" step, matching existing pattern for forward processes and orphaned openshell
+- **Pattern**: Reused existing `stopMatchingPids` helper — don't reinvent when the pattern exists. Also, `destroy.ts` had a PID-file-based kill but the simpler `pgrep` approach was more appropriate for the uninstall context (catches orphans without PID file too)
+- **Lesson**: Always check destroy/cleanup code for processes that might survive uninstall — the two paths often diverge
+
 - **Issue**: #3232 — No dedicated macOS preparation page
 - **Status**: PENDING, CI pass (check-pr-limit ✅, assign-linked-issue-author ✅)
 - **Scope**: 1 new file (macos-preparation.md, 160 lines) + 2 lines in prerequisites.md
