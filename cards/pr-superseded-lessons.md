@@ -465,3 +465,10 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - **原因**: 集成测试 `TestMain` 没注册 `registerSubscriberListeners`，导致追码时误以为 normal create 路径没有订阅
 - **教训**: 测试环境的 listener 注册和生产环境不同 → 不能只看测试行为判断生产行为。查 event-driven 代码时，必须检查所有 listener 注册点，不只是 handler 内部
 - **Pattern**: "测试环境缺少组件 → 误判为 bug" — 先确认测试环境是否完整再下结论
+
+## openclaw #82075 → #82086 (2026-05-15)
+**Issue**: silentReply policy not respected in failure-fallback path for group chats
+**My PR (#82075)**: Fixed the core logic but lacked focused regression tests for group/channel scenarios
+**Superseding PR (#82086 by taozengabc)**: Same fix + 2 focused test cases (`group` and `channel` chat types for both disallow and default-allow behavior) + threaded `cfg` parameter through all failure-reply callsites
+**Lesson**: When fixing a policy/config bug, always add regression tests that cover the specific chat types/surfaces affected. The superseding PR won by adding `it.each(["group", "channel"])` parameterized tests that prove the fix works for both chat types, plus testing the default behavior doesn't regress. My narrow fix was correct but incomplete — missing test coverage made it easy to supersede.
+**Pattern**: "Tests are proof" — in a competitive PR environment, the PR with focused regression tests wins over the one with just a code fix.
