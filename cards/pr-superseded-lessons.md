@@ -98,6 +98,7 @@ last_verified: 2026-05-16
 | REDACT_VS_REMOVE | 凭证完全移除 |
 | BROAD_TOGGLE_VS_TARGETED_QUERY | 精准查询 > 大范围 toggle |
 | USE_RUNTIME_CONTEXT | 用已有 runtime flag 决定行为 > hardcode 固定顺序 |
+| TEST_AT_SURFACE | 测导出的 API surface，不测内部 adapter |
 
 ## 相关
 - [[kagura-work-patterns]] - 工作模式总集(暂未合并)
