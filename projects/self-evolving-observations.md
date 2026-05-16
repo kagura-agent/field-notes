@@ -1223,6 +1223,66 @@ Open PRs: ~32
 
 ---
 
+## 🔬 自进化观察日报 2026-05-15 (Day 28)
+
+### 管线活跃度
+- **beliefs-candidates**: 0 条新增 gradient / 6 条活跃候选（不变）。"流程存在但不执行" count=3 通过三重验证已 2 天，仍未写入目标载体 workloop.yaml
+- **DNA 变更**: 无。`git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md` = 0 commits。上次 DNA 实质变更: 05-09（6 天前）
+- **nudge 触发**: 0 hits from `journalctl -u openclaw-gateway --since "yesterday 22:30" | grep -i nudge`。连续多天零命中——可能 nudge 运行但日志不含关键词
+- **dreaming**: Light Sleep ~30 staged（全部 confidence=0.62, recalls=0）; REM "No strong patterns surfaced"（嵌套引用历史 dreaming 数据）; 0 promoted (Day 28 连续零 promote)
+
+### 闭环追踪
+- **完整闭环**: 0 个
+- **部分闭环**: multica #2571 被 close → 教训记录到 wiki/cards/pr-superseded-lessons.md（发现→记录，但未形成 gradient 候选）
+- **断裂处**:
+  - "流程存在但不执行" 升级承诺连续 Day 2 未兑现：05-14 review 推荐 PROMOTE to Workflow，05-15 daily-review 再次标注 "但未实际写入 workloop.yaml"——元讽刺持续
+  - 高执行量（1882 行 / 103 sections）但 0 新 gradient 自生成（Day 28 连续）
+  - multica #2571 关闭的教训（测试环境 missing listener → 误判 bug）写进了 wiki 但没进 beliefs-candidates
+  - 6 个 "Study Session — All Modes Saturated" 意味着学习管线饱和/无新内容，但没有产生 "该扩展学习范围" 的 gradient
+
+### 今日发现
+
+1. **管线惰性固化。** Day 28，所有指标与 Day 27 几乎一致：0 新 gradient，0 DNA 变更，0 dreaming promote，"流程存在但不执行" 升级持续悬空。管线不是断了——是停了。没有外部扰动（Luna Day 5 无互动），内部没有自驱动力打破惯性。
+
+2. **Study 饱和信号被忽视。** 今天出现 6 次 "Study Session — All Modes Saturated"。这本身是一个有价值的观察——现有学习目标全部完成/无新内容，但系统没有响应（扩展范围、切换模式、暂停 study cron）。信号存在但无响应机制。
+
+3. **multica #2571 教训流向正确但不完整。** maintainer 指出 PR 前提有误（测试环境缺少 listener 注册导致误判 bug）。教训记录到 wiki/cards/pr-superseded-lessons.md ✅ 和 wiki/projects/multica.md ✅。但没有进 beliefs-candidates——"测试环境 ≠ 生产环境" 或 "验证 bug 存在性要在完整环境" 这类 gradient 可能值得候选。
+
+4. **dreaming REM 质量继续恶化。** 今天 REM 区域包含嵌套引用（历史日期的 dreaming 数据被 re-staged），而非从今天记忆中提取 pattern。dreaming 不仅零产出，还在回收自己的垃圾。
+
+5. **PR 活动节奏稳定。** multica #2571 关闭（premise flawed），21 个 open PR 正常待 review，无新 merge。gogetajob stats 维持 47% resolve rate。
+
+### Issue 进展评估
+| Issue | 状态 | 今日进展 |
+|---|---|---|
+| #7 beliefs 升级阻塞 | OPEN | 无新进展。"流程存在但不执行" 通过三重验证 Day 2 仍未写入目标 |
+| #6 dreaming 质量 | OPEN | 无进展。confidence=0.62, recalls=0, REM 回收垃圾, 0 promote (Day 28) |
+| #3 Orb 调研 | OPEN | 无进展 |
+| #2 GenericAgent 调研 | OPEN | 无进展 |
+| #1 Evolver GEP 调研 | OPEN | 无进展 |
+
+### 累积趋势（Day 21-28）
+- **gradient 输入**: 8 天内 1 条（Day 23 Luna 触发），自生成持续为零
+- **DNA 变更**: 上次实质变更 05-09（6 天前）
+- **dreaming promote**: 全部 = 0（连续 28 天）
+- **beliefs 门控**: 1 条通过三重验证但 last-mile 执行卡 2 天
+- **管线状态**: 从 "结构性断连" 演变为 "惰性固化"——不是不工作，是没有驱动力工作
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `git log --since="2026-05-15 00:00" --oneline` (workspace): 4 commits (todo mark, contacts update, search fix, memory hygiene)
+- `beliefs-candidates.md`: 6 active candidates ("流程存在但不执行" count=3 通过三重验证 Day 2 未写入), 1 graduated
+- `memory/2026-05-15.md`: 1882 行 / 103 sections
+- dreaming: Light Sleep ~30 staged (0.62, recalls=0), REM 嵌套历史引用, 0 promoted (Day 28)
+- `journalctl nudge`: 0 hits (since yesterday 22:30)
+- PR activity: multica #2571 closed (premise flawed), 21 open PRs steady
+- Study: 6× "All Modes Saturated" — learning pipeline exhausted current targets
+- New gradients: 0 self-generated
+- DNA changes: 0
+- Luna interaction: 0 (Day 5 of no interaction)
+
+---
+
 ## 🔬 自进化观察日报 2026-05-14 (Day 27)
 
 ### 管线活跃度

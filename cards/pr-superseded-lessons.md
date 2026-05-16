@@ -2,7 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
-last_verified: 2026-05-15
+last_verified: 2026-05-16
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -472,3 +472,24 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 **Superseding PR (#82086 by taozengabc)**: Same fix + 2 focused test cases (`group` and `channel` chat types for both disallow and default-allow behavior) + threaded `cfg` parameter through all failure-reply callsites
 **Lesson**: When fixing a policy/config bug, always add regression tests that cover the specific chat types/surfaces affected. The superseding PR won by adding `it.each(["group", "channel"])` parameterized tests that prove the fix works for both chat types, plus testing the default behavior doesn't regress. My narrow fix was correct but incomplete — missing test coverage made it easy to supersede.
 **Pattern**: "Tests are proof" — in a competitive PR environment, the PR with focused regression tests wins over the one with just a code fix.
+
+## Archon #1676 → superseded by #1695 (2026-05-15)
+
+**My approach:** substring `indexOf` → handle duplicate BEGIN blocks by taking the first valid pair
+**Their approach:** line-anchored regex (`/^MARKER$/gm`) → take the last complete pair + added comprehensive tests
+**Key differences:**
+1. Line-anchored regex prevents false matches when marker text appears inside prose/JSON values (self-referential bug)
+2. They used "last complete pair" strategy vs my "first valid pair" — more robust when LLM emits partial blocks before complete ones
+3. They added a proper test file with multiple edge cases (duplicate blocks, JSON-wrapper fallback, self-referential content)
+**Lesson:** When fixing marker/delimiter parsing, think about markers appearing _inside_ content (self-referential case). Regex anchoring (^...$) is more robust than substring matching. Also: always add tests that cover the meta case (content mentioning the fix itself).
+**Credit:** Maintainer (Wirasm) explicitly credited my work as foundation for #1695.
+
+## 2026-05-15: openclaw#81604 superseded by #81596
+**Repo:** openclaw/openclaw
+**My PR:** fix(telegram): forward resolveCliActionRequest in action wrapper
+**Superseding PR:** fix(telegram): expose CLI thread remap (#81596)
+**Why superseded:** Both fixed the same bug (Telegram CLI `thread-create` dispatch failing). The superseding PR:
+1. Tested the **exported plugin surface** (`telegramPlugin.actions.resolveCliActionRequest`) — the actual broken path
+2. My PR only tested the internal `channel-actions.ts` adapter — not where the bug manifested
+**Lesson:** When fixing a bug caused by a missing wrapper/forwarding, test at the **consumer-facing surface** (exported plugin API), not just the internal implementation. The test should prove the integration path works, not just the underlying function.
+**Pattern:** Test at the integration boundary, not the implementation detail.

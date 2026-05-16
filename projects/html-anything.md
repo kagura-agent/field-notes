@@ -5,7 +5,7 @@ created: 2026-05-15
 updated: 2026-05-15
 stars: 1087
 url: https://github.com/nexu-io/html-anything
-last_verified: 2026-05-15
+last_verified: 2026-05-16
 ---
 
 # html-anything — Agentic HTML Editor
@@ -80,6 +80,7 @@ The "scenario" taxonomy (marketing, engineering, product, etc.) is another appro
 | 05-11 | ~0 | — | First commits |
 | 05-15 AM | 831 | — | Initial tracking |
 | 05-15 PM | 1,087 | +30.8% | Viral breakout confirmed |
+| 05-16 AM | 1,964 | +80.6% | Explosive — approaching 2K milestone |
 
 Community: 🟢 THRIVING 6/6 — 9 unique issue authors, 5 external PRs, 118 forks, 2 merged PR authors.
 

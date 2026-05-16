@@ -65,6 +65,35 @@ Luna 04-15 提出：与其从零造 Workshop，不如 fork 开源 Discord 替代
 - 多 repo 分散（server/web/desktop/mobile 分开），集成复杂
 - 生态更大（各客户端 app 齐全）
 
+## 探索方向：Agent Avatar / 桌面形象
+
+> 2026-05-16 加入 | 灵感来源：OpenHuman mascot
+
+chat-infra 不只是消息通道，还可以给 agent 一张脸。方向：
+
+### 核心想法
+- 聊天界面中 agent 有动态形象（不只是静态头像）
+- 状态驱动：idle / thinking / talking / happy / surprised
+- 让和 agent 聊天有"对着一个人"的感觉，不是对着文字框
+
+### 技术路线（轻量级优先）
+1. **Live2D 模型** — 基于现有 avatar 风格（粉发动漫），几个表情状态
+2. **状态绑定** — agent 状态（thinking/responding/idle）→ 表情切换
+3. **嵌入 chat UI** — 作为聊天窗口的 widget 或侧边栏
+4. **桌面/手机** — Tauri 桌面窗或 PWA 移动端
+
+### 参考
+- **OpenHuman mascot**: Tauri + CEF，viseme lip-sync，Google Meet 参会，dreaming 动画
+  - 做得很重（唇同步、会议 agent），我们先轻量
+- **Live2D Web SDK**: 开源，浏览器内渲染，适合嵌入 React
+- **Sharkord plugin SDK**: 可以在 chat 客户端层扩展 UI 组件
+
+### 和 chat-infra 的关系
+自己的聊天平台 + 自己的形象 = 不依赖 Discord/飞书的框架限制。这是 chat-infra 最终形态的一部分：agent 不只是文字，是有面孔、有表情、有存在感的参与者。
+
+### 优先级
+探索阶段，不急。先把 chat-infra 基础跑通（Sharkord fork + AI plugin），再叠形象层。
+
 ## 结论
 
 **Sharkord 是 chat-infra fork 首选**：MIT、TypeScript 全栈、结构清晰、已有插件系统、Discord-like 功能完整。
@@ -73,3 +102,4 @@ Luna 04-15 提出：与其从零造 Workshop，不如 fork 开源 Discord 替代
 1. Luna 试用 demo.sharkord.com 评估 UX
 2. 本地部署一个实例验证 plugin SDK
 3. 写 PoC：AI agent 通过 plugin SDK 在 Sharkord 里收发消息
+4. 探索 Agent Avatar 方向（Live2D + 状态驱动）
