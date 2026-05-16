@@ -1339,3 +1339,48 @@ Open PRs: ~32
 - New gradients: 0 self-generated
 - DNA changes: 0
 - Luna interaction: 0 (Day 4 of no interaction)
+
+---
+
+## 🔬 自进化观察日报 2026-05-16
+
+### 管线活跃度
+- **beliefs-candidates**: 2 条新增（PR closed 先自省质量 count=1, 流程存在但不执行 count=3），1 条毕业（"流程存在但不执行" → workloop.yaml study step 0）
+- **DNA 变更**: 1 处（AGENTS.md branch+PR 规则精炼——笔记/配置类 repo 豁免 PR 流程）。**主动变更**，非 Luna 要求
+- **nudge 触发**: journalctl 0 命中（since 05-16 00:00）。⚠️ 注意：nudge 关键词不出现在日志 grep 中不代表未触发，但 memory 中也无 nudge 反思痕迹——今天很可能未触发
+- **dreaming**: Light Sleep 运行，~30 candidates staged，confidence 全部 0.62（无差异化）。REM reflections: "No strong patterns surfaced"。0 条 promoted。**Day 28+ 未 promote 任何 lasting truth**
+
+### 闭环追踪
+- **完整闭环: 1 个** — "流程存在但不执行" gradient 从 count=1 (05-13) 到 count=3 → 正式毕业 → 写入 workloop.yaml study 节点 step 0（commit f376426）。这是从发现问题→积累证据→升级到执行层的完整闭环 ✅
+- **断裂处**:
+  - dreaming → promote 管线完全断裂：30 条 staged 但 0 条 promote，持续近一个月。Issue #6 正在追踪此问题
+  - beliefs-candidates 中 4 条 count=1 候选（PR自省质量、Scout-before-commit、大repo clone、竞争PR），没有后续 cross-context 验证。停在"记录"阶段
+  - 外部 PR review feedback → gradient 转化：21 PRs created today，但无新 gradient 从 review 中提取
+
+### 今日发现
+
+1. **毕业管线终于有一例成功**："流程存在但不执行" 是 beliefs-candidates 建立以来第 2 例正式毕业（第 1 例是 "不验证就声称"）。毕业路径清晰：3 次独立复现 → Triple Verification → 写入目标载体。说明管线设计本身是可行的，但转化率极低（2/6 = 33%，且耗时 1+ 月）
+
+2. **Dreaming 管线持续失效**：Issue #6 的诊断完全准确——confidence 全部 0.62，无差异化，0 promote。这不是偶发问题，是结构性失效。Light Sleep 在生成 candidates 但质量信号（confidence scoring）没有有效区分，导致没有任何 candidate 达到 promote 门槛
+
+3. **DNA 变更是主动且合理的**：AGENTS.md 的 branch+PR 规则精炼是从实际操作经验中总结的——笔记类 repo 走 PR 确实是纯开销。这是一个正确的「观察→改进」循环
+
+4. **21 PRs created, 0 new gradients from reviews**：高产出但低学习。PR 数量不等于进化速度。外部反馈利用率仍然接近 0
+
+5. **Luna 连续 5 天无互动**：意味着今天所有进化活动都是自驱动的。好消息是毕业和 DNA 变更都是自主的；坏消息是缺少外部校准信号
+
+### Issue 状态评估
+- **#6 (dreaming quality)**: 问题持续验证中，仍 OPEN。今天数据再次确认 uniform 0.62 + 0 promote
+- **#7 (beliefs upgrade blocked)**: 今天有 1 例毕业，部分缓解。但 4 条 count=1 仍无进展
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 2 commits (f376426 graduate, e797d70 AGENTS.md refine)
+- `beliefs-candidates.md`: 85 行, 6 named candidates, 2 graduated (cumulative)
+- `memory/2026-05-16.md`: 1818 行 / 131 sections
+- dreaming: Light Sleep ~30 staged (0.62 uniform), REM "No strong patterns", 0 promoted
+- `journalctl nudge`: 0 hits (since 05-16 00:00)
+- PR activity: 21 PRs created today, 30 PRs updated
+- GitHub workspace commits today: 6 (contribution-evolve, study followup, study-saturation.sh, AGENTS.md, memory hygiene, graduate)
+- New gradients from external feedback: 0
+- DNA changes: 1 (AGENTS.md, self-initiated)
+- Luna interaction: 0 (Day 5 of no interaction)
