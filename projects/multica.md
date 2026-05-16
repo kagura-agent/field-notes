@@ -413,3 +413,14 @@ Competitive takeaway: multica's velocity is partly driven by eating their own do
 - **Lockfile lesson**: pnpm CI uses `--frozen-lockfile`, must commit lockfile changes. pnpm install partially succeeded locally despite apparent OOM — always check `git status` after aborted pnpm install.
 - **Approach**: Manual 2-file edit + lockfile update. No Claude Code needed for trivial dep bumps.
 - **CVE dep bumps**: Good contribution type for multica — clean, fast, high value, low competition.
+
+## 2026-05-16 PR #2716: fix(agent): use openclaw agent id instead of name for --agent flag
+- **Issue**: #2714 — OpenClaw agent name with spaces causes "no parseable output" error
+- **PR**: #2716
+- **Status**: PENDING (backend CI ✅, frontend Vercel auth pending — expected for external PRs)
+- **Root cause**: `openclawEntriesToModels()` used `e.Name` (e.g. "Sub2API OPS") as `Model.ID`, which gets passed to `--agent` flag. OpenClaw's `normalizeAgentId` converts spaces to hyphens ("sub2api-ops"), mismatching the registered id ("sub2api").
+- **Fix**: Prefer `e.ID` over `e.Name` for `Model.ID`. Name only used for display Label. Backward compatible — when ID is empty, falls back to Name.
+- **Test added**: `TestOpenclawEntriesToModelsUsesIDOverName` — verifies ID is used as Model.ID when both ID and Name are present
+- **Approach**: Manual edit (small surgical fix, 2 files, +38/-9 lines). No acpx needed.
+- **Pattern**: When an API returns both ID and display Name, use ID for machine-to-machine communication, Name for human display. OpenClaw uses the `--agent` flag for ID lookup, not name search.
+- **Cross-repo insight**: Understanding openclaw's `normalizeAgentId` in `src/routing/session-key.ts` was key — `VALID_ID_RE = /^[a-z0-9][a-z0-9_-]{0,63}$/i`, spaces are INVALID_CHARS replaced with "-"
