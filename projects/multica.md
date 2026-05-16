@@ -28,7 +28,17 @@ Claude Code, Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent
 
 (2026-04-21 侦察)
 
-## 2026-05-14 PR #2561: fix(repocache): strip embedded credentials from bare cache remote URL
+## 2026-05-16 PR #2713: feat(auth): make auth token TTL configurable via AUTH_TOKEN_TTL env var
+- **Issue**: #2685 — auth token TTL hardcoded to 30 days, painful for self-hosted
+- **PR**: #2713
+- **Status**: PENDING (backend CI ✅, frontend deploy needs Vercel auth — normal for external PRs)
+- **Root cause**: 30-day TTL hardcoded in 5 locations across auth.go and cookie.go
+- **Fix**: Added `AuthTokenTTL()` in cookie.go — reads `AUTH_TOKEN_TTL` env var (seconds), caches via sync.Once, defaults to 30 days. Updated JWT exp, CF signer, and cookie MaxAge/Expires. Left 72h Google OAuth CF signer TTL untouched (different purpose).
+- **Pattern**: Followed existing `cookieDomain()` pattern (sync.Once + os.Getenv + slog warning) in the same file
+- **Tests**: `go test ./internal/auth/... ./internal/handler/...` all pass
+- **Note**: PR template is detailed — must fill all sections including AI Disclosure and thinking path
+- **CI**: Backend Go tests pass. Frontend is Vercel deploy (needs team auth for external PRs, always "pending")
+- **Testing**: `cd server && go test ./internal/auth/... ./internal/handler/...`
 - **Issue**: #2554 — Security: daemon bare cache remote.origin.url may inherit embedded credentials
 - **PR**: #2561
 - **Status**: PENDING (backend CI ✅, frontend deploy needs Vercel auth — normal for external PRs)
