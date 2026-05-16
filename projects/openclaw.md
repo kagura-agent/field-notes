@@ -201,3 +201,14 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **#82128** (2026-05-15, PENDING): fix(agents): strip truncation sentinel lines from user-facing text. Fixes #82121. Added `TRUNCATION_SENTINEL_LINE_RE` regex and `stripStandaloneLinesByPattern()` helper to `sanitizeUserFacingText()` — strips `...(truncated)...`, `…(truncated)…`, `[... N more characters truncated]`, etc. as standalone lines. 7 positive + 3 negative test assertions added. CI: all checks pass (including Real behavior proof after adding node -e evidence).
 - **Real behavior proof gate accepts node -e output** as evidence when it demonstrates the actual regex/function behavior against realistic input. Key: must include before/after comparison with concrete output, not just "tests pass". The check script parses for screenshots, terminal captures, or copied live output.
 - **Git operations on this large repo (~2.5GB) are memory-hungry**: commit hooks trigger `pnpm install` which OOMs. Use `--no-verify` for commits. `git stash`, `git reset --hard`, and `grep -r` also get OOM-killed. Limit concurrent git operations.
+
+### Slack DM Thread Reply Routing (PR #82418, 2026-05-16)
+- **Issue:** #82390 — DM thread replies routed to thread-specific session instead of main DM session
+- **Fix:** Changed `canonicalThreadId` in `prepare-routing.ts` to always be `undefined` for `isDirectMessage`, plus added logVerbose diagnostic for assistant_app_thread sender resolution failure
+- **Status:** PENDING — all CI green except "Real behavior proof" gate (needs maintainer override, no Slack test env)
+- **Key findings:**
+  - openclaw Slack routing uses `resolveSlackRoutingContext` → `resolveThreadSessionKeys` chain
+  - DM thread routing intentionally documented as "UI affordance, not session boundary" but implementation had a gap for `isThreadReply` case
+  - `prepare.thread-session-key.test.ts` is the canonical test file for routing session keys
+  - "Real behavior proof" CI check requires live runtime evidence — pure logic fixes need `proof: override`
+  - vitest runs require `NODE_OPTIONS="--max-old-space-size=2048"` on this machine
