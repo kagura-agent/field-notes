@@ -115,6 +115,16 @@
 - 经验：hooks.json 是单行 JSON 命令字符串，编辑时注意转义层（JSON 内的 shell 内的引号）
 - 选题理由：maintainer 在 issue 里明确表示想要 Option A（CLAUDE_PLUGIN_ROOT 方案），无竞争 PR
 
+## 2026-05-16 PR #156 — fix(test): sync test ENOTEMPTY cleanup (fixes #155)
+- **Issue**: CI failing on ubuntu-latest Node 22 — `ENOTEMPTY: directory not empty, rmdir .git/objects/pack` during test teardown
+- **Root cause**: `rm(path, { recursive: true })` races with git background processes (auto-gc, pack) that hold file handles
+- **Fix**: Added `maxRetries: 3, retryDelay: 100` to all 21 `rm()` calls in `tests/lib/sync.test.ts`
+- **CI**: 6/6 green (Ubuntu/macOS/Windows × Node 22/24) — the exact job that was failing now passes
+- **Pattern**: Node.js `rm()` retry options are the standard solution for ENOTEMPTY race conditions in test cleanup. Same issue affects any test that creates git repos in /tmp
+- **Status**: pending review
+- **选题**: CI fix = objective, high merge probability. No runtime code changes = low risk
+- **Timing**: ~25 min total (study → implement → submit → verify)
+
 ## 2026-04-17 PR #61 — fix: stdout drain truncation
 - **问题**: `process.exit()` 在 pipe 场景下不等 stdout flush，输出被截断在 8KB（pipe buffer boundary）
 - **症状**: `memex search '' | wc -l` → 116/148 cards；重定向到文件则正常（148）
