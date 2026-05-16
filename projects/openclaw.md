@@ -212,3 +212,12 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
   - `prepare.thread-session-key.test.ts` is the canonical test file for routing session keys
   - "Real behavior proof" CI check requires live runtime evidence — pure logic fixes need `proof: override`
   - vitest runs require `NODE_OPTIONS="--max-old-space-size=2048"` on this machine
+
+### 2026-05-16: PR #82460 (PENDING)
+- **Issue**: #82394 — Empty assistant turn (thinking-only, no text) recorded as success → generic error shown
+- **Root cause**: `shouldApplyNonVisibleTurnRetryGuard` in `run/incomplete-turn.ts` didn't include `bedrock-converse-stream` in the modelApi allowlist. The reasoning-only retry mechanism existed but only gated for `anthropic-messages`, `openai-completions`, strict-agentic providers (OpenAI/Gemini), and Ollama. Bedrock Converse was excluded.
+- **Fix**: Added `bedrock-converse-stream` to the modelApi check in `shouldApplyNonVisibleTurnRetryGuard`. Also extracted repeated `normalizeLowercaseStringOrEmpty` call into local variable.
+- **Files**: `src/agents/pi-embedded-runner/run/incomplete-turn.ts` (4 net lines), `run.incomplete-turn.test.ts` (32 lines, 1 new test)
+- **CI**: agents shard (188/188 pass), agent-runner shard pass. Pre-existing failures in doctor/agent-chat/reply-session/core-runtime. Real behavior proof gate pending override.
+- **Pattern**: Provider/modelApi gatekeeping is a common source of gaps. When adding support for a new provider/modelApi, grep all guard functions that check provider/modelApi lists. The incomplete-turn module has multiple layered guards: `shouldApplyPlanningOnlyRetryGuard` → `shouldApplyNonVisibleTurnRetryGuard` → `resolveReasoningOnlyRetryInstruction` → `resolveEmptyResponseRetryInstruction`.
+- **Code location**: `src/agents/pi-embedded-runner/run/incomplete-turn.ts` is the central module for incomplete/reasoning-only/empty turn retry logic. `src/agents/pi-embedded-runner/thinking.ts` has `assessLastAssistantMessage` which classifies turns as `valid`/`incomplete-text`/`incomplete-thinking`.
