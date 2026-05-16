@@ -21,13 +21,8 @@
 ## PR 记录
 | PR | Issue | 状态 | 备注 |
 |---|---|---|---|
-| #1033 | #967 | pending | corrupt JSON silent fallback → throw error |
-| #1034 | #964 | pending | ghost worktree cleanup false success |
-| #1037 | #1035 | pending | Windows path spaces in --spawn terminal |
-| #1307 | N/A | pending | register safe.directory for bind-mount restart |
-| #1294 | N/A | pending | clear stale session ID on error_during_execution |
-| #1423 | #1419 | pending | cleanup-service respect worktree.baseBranch |
-| #1694 | #1673 | pending | condition_json_parse_failed → workflow error instead of silent skip |
+| #1700 | #1580 | pending | use configured provider as fallback in project registration |
+| #1530 | N/A | pending | preserve completed node state across DAG multi-resume cycles |
 
 ## 注意事项
 - eslint 禁止 unused vars，catch 里不用的 error 要命名为 `_err`
@@ -209,3 +204,15 @@
 - **CI**: Ubuntu ✅ Windows ✅ Docker-build ✅ CodeRabbit: skipped
 - **Pattern**: When a function returns a sentinel value (empty string) that's indistinguishable from a valid state (empty output), the downstream consumer can't differentiate — use exceptions or discriminated unions instead
 - **Selection**: Well-documented issue, clear root cause, no competing PRs, small surgical fix
+
+## 教训
+
+### bun mock.module 泄漏 (2026-05-16)
+bun 的 `mock.module()` 会影响同一个 package 里所有测试文件的模块解析。
+如果 mock 只导出了部分 symbol，其他测试文件 import 同一模块时会报 `Export named 'X' not found`。
+**解法**：mock 时必须导出目标模块的所有被引用的 symbol，不只是当前测试用到的。
+
+### CodeRabbit Review 模式
+- CodeRabbit 会检查 resilience（try/catch for external calls）
+- 会建议 tighten test assertions（avoid `expect.arrayContaining` when exact match is better）
+- Profile: CHILL — 不太严格但有用
