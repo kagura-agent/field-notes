@@ -6,6 +6,7 @@ stars: 292
 repo: https://github.com/dog-qiuqiu/invincat
 language: Python
 license: Unknown
+last_verified: 2026-05-16
 ---
 
 # Invincat
@@ -139,7 +140,7 @@ Systematic resurfacing of old items for reconfirmation is something we lack. Our
 
 ### 5. Deterministic Cleanup
 
-The regex-based invalid-fact scanner is a zero-cost safety net. We could add similar scanning to wiki-lint.py.
+The regex-based invalid-fact scanner is a zero-cost safety net. **Applied 2026-05-16**: Added as check 12 to [[wiki-lint]].py — 7 high-precision patterns (self-referential invalidation, header markers, migration notices, zh equivalents). Initial naive version hit 133 false positives; tightened to require self-referential framing → 3 genuine hits, zero false positives.
 
 ## Positioning in Agent Memory Landscape
 
