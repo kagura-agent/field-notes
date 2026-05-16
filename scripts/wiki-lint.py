@@ -13,6 +13,7 @@ Checks:
   9. Secret scanning
   10. Staleness / confidence decay (last_verified)
   11. Unicode injection detection (hidden chars, bidi overrides)
+  12. Invalid-fact scanner (self-invalidating content)
 
 Usage: python3 scripts/wiki-lint.py [wiki_dir]
 """
@@ -564,6 +565,71 @@ else:
     if total > 20:
         info(f"  ... and {total - 20} more")
     info("Review these — some may be intentional (emoji, RTL text). Tag characters are almost always suspicious.")
+
+# ── 12. Invalid-Fact Scanner ──
+# Inspired by Invincat's regex-based invalid-fact detection (zero-cost safety net).
+# Detects self-invalidating language in wiki notes — signals that content is known
+# to be stale/wrong but hasn't been cleaned up.
+print("\n═══════════════════════════════════════════════════════")
+print(" 12. INVALID-FACT SCANNER")
+print("═══════════════════════════════════════════════════════")
+
+# Patterns must be high-precision: catch notes that invalidate THEMSELVES,
+# not notes that DISCUSS invalidation as a concept.
+# Key principle: require self-referential framing ("this page", "this note",
+# "本文", header-level markers, or ⚠️-prefixed migration notices).
+INVALID_FACT_PATTERNS = [
+    # Self-referential invalidation ("this page/note/file is...")
+    (r'(?:this|the) (?:page|note|file|section|doc(?:ument)?) (?:is|has been|was) (?:outdated|obsolete|deprecated|superseded|stale|invalid|wrong|incorrect)', 'self-invalidation'),
+    # Explicit header-level markers (all caps, at line start)
+    (r'^#+\s*(?:OBSOLETE|DEPRECATED|OUTDATED|ARCHIVED|DO NOT USE)', 'header marker'),
+    # Warning-prefixed migration/deprecation notices
+    (r'^\s*(?:>\s*)?⚠️?\s*\*{0,2}(?:已迁移|已废弃|Deprecated|Moved|Migrated|Superseded|Replaced)', 'migration notice'),
+    # Frontmatter-style status in body text ("Status: deprecated")
+    (r'^\*{0,2}Status\*{0,2}\s*[:：]\s*(?:deprecated|obsolete|archived|superseded|dropped)', 'status marker'),
+    # Direct replacement pointer ("replaced by [[X]]" or "superseded by [[X]]")
+    (r'(?:replaced|superseded) by \[\[', 'replaced-by link'),
+    # Chinese self-referential patterns
+    (r'(?:本[文页篇]|此[文页篇])(?:已|不再)', 'self-invalidation-zh'),
+    (r'^\s*(?:>\s*)?⚠️?\s*\*{0,2}已(?:迁移|废弃|过时|弃用)', 'migration-zh'),
+]
+
+compiled_invalid = [(re.compile(pat, re.IGNORECASE | re.MULTILINE), name) for pat, name in INVALID_FACT_PATTERNS]
+invalid_findings = []
+
+for fpath in all_files:
+    try:
+        content = open(fpath, 'r', errors='replace').read()
+    except Exception:
+        continue
+    # Skip frontmatter — only scan body
+    fm = frontmatter_re.match(content)
+    body = content[fm.end():] if fm else content
+    # Strip code blocks to avoid false positives
+    clean = strip_code_blocks(body)
+    for line_no_offset, line in enumerate(clean.splitlines(), 1):
+        # Compute real line number accounting for frontmatter
+        real_line = line_no_offset + (content[:fm.end()].count('\n') if fm else 0)
+        for pat, category in compiled_invalid:
+            if pat.search(line):
+                # Skip if in a table header or changelog context
+                stripped = line.strip()
+                if stripped.startswith('|') and ('Pattern' in stripped or 'Category' in stripped):
+                    continue
+                invalid_findings.append((fpath, real_line, category, stripped[:80]))
+                break  # one match per line
+
+if not invalid_findings:
+    ok("No self-invalidating content detected")
+else:
+    warn(f"{len(invalid_findings)} self-invalidating statement(s) found:")
+    warnings -= 1
+    for fpath, line_no, category, preview in sorted(invalid_findings)[:30]:
+        warn(f"  {fpath}:{line_no} [{category}] {preview[:60]}")
+    if len(invalid_findings) > 30:
+        info(f"  ... and {len(invalid_findings) - 30} more")
+    info("These notes contain language suggesting their own content is invalid/stale.")
+    info("Action: update the content, mark as dropped, or delete the note.")
 
 # ── Summary ──
 print("\n═══════════════════════════════════════════════════════")
