@@ -666,3 +666,33 @@ Applied the goal_mode budget constraint insight to our [[team-lead]] skill:
 **Before vs After:** Before, team-lead SKILL.md had zero timeout guidance — subagents could run indefinitely. After, every spawn has a recommended budget range and wrap-up pattern. This makes the "conductor never executes, always delegates" pattern safer by ensuring delegation has a termination guarantee.
 
 See [[context-budget-constraint]], [[supervisor-pattern]]
+
+## v0.1.0 Desktop App & Memory Management (2026-05-16 followup)
+
+### Desktop App (v0.1.0, released 05-15)
+
+- Windows executable with aiohttp desktop bridge
+- Portable Python support (`.portable/uv-python/`)
+- `--console` flag for debug mode
+- Python lookup: portable uv-python → system PATH
+- Signals GenericAgent moving from TUI-first → multi-frontend (TUI + WebUI/Streamlit + Desktop)
+
+### Memory Management Automation (#381)
+
+`memory/memory_management.py` — CLI tool for L1↔L2/L3 sync:
+- L2 sync: parse `## [SECTION]` headings, patch L1 index
+- L3 sync: scan `memory/` dir, generate index with SOP>folder>py priority
+- CLI: `--check` / `--rebuild-l3` / `--validate` / `--dry-run`
+
+Mirrors our wiki management patterns. GenericAgent's approach is more automated (CLI tool) vs our manual wiki maintenance + wiki-lint.py checks.
+
+### TUI Polish Sprint (05-14—05-16)
+
+- PR #392: message scrolling + rewind picker improvements
+- PR #390: click-to-expand folds, streaming spinner, layout polish
+- PR #389: file paste, block-delete, ctrl+c copy, per-session input
+
+### Stats (05-16)
+- ⭐ 11,527 (+500 from 05-12, +4.5% in 4 days — strong growth)
+- Desktop release = new distribution surface
+- Active weekend development

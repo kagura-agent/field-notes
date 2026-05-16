@@ -422,3 +422,68 @@ GoGetAJob had a monolithic AGENTS.md (53 lines mixing everything). Now factored 
 Pattern validation: "Identified pattern → applied to first repo → applied to second repo" confirms this is a reusable, mechanical transformation. Remaining candidates: kagura-story, study repo.
 
 *Followup: 2026-05-09 PM. Source: local changes.*
+
+## Sustained Goal State Architecture (PR #3788, 2026-05-15)
+
+4864-line PR introducing `/goal` command — chat-scoped persistent objectives.
+
+### Three-Layer Design
+
+**Data Layer** (`session/goal_state.py`):
+- JSON blob in session metadata: `{status, objective, ui_summary, started_at}`
+- Two projections: runtime context (4000 char) and WebSocket (600 char)
+- Legacy key migration for backward compat
+
+**Tool Layer** (`agent/tools/long_task.py`):
+- `long_task(goal, ui_summary?)` — registers objective. Rejects if one already active
+- `complete_goal(recap?)` — marks done with honest recap (success, cancel, or redirect)
+- Both inherit `_GoalToolsMixin` for session + WebSocket bus access
+
+**Loop Integration** (`agent/loop.py`):
+- `goal_state_runtime_lines()` injected via `supplemental_lines` param each turn
+- Goal state broadcast on `_turn_end` metadata for WebUI sync
+- Turn latency tracking added (`turn_wall_started_at → latency_ms`)
+
+### Key Design Decisions
+
+1. **No sub-agent orchestrator** — explicit choice. Work stays on main agent with normal tools
+2. **Compaction-safe** — goal text re-injected from metadata every turn, not from message history
+3. **Single-goal constraint** — one active goal per session, must complete before starting another
+4. **Idempotent goal wording mandated** — tool description requires reading `long-goal` skill for outcome-focused, retry-safe phrasing
+
+### Architectural Insight
+
+The "supplemental_lines in runtime context" pattern is the key innovation:
+- Session metadata stores durable state
+- Runtime context injection makes it visible to the model every turn
+- Decoupled from message history → survives compaction, session restore, etc.
+
+This is essentially **metadata-driven context injection** — a general pattern for any persistent state that needs model awareness:
+- Active goals/objectives → `supplemental_lines`
+- Active workflow state → `supplemental_lines`
+- Priority overrides → `supplemental_lines`
+
+### Relevance
+
+Our [[FlowForge]] workflow state partially serves this role (current node = persistent objective) but:
+- FlowForge state is NOT injected into agent context automatically — model must `flowforge status` to check
+- This means FlowForge state can be "forgotten" after compaction
+- Adopting nanobot's pattern would mean: inject current FlowForge node task into every turn's runtime context
+
+OpenClaw's heartbeat/cron tasks also have no persistent objective tracking. Each run starts fresh from `HEARTBEAT.md`. The `/goal` pattern shows how to make objectives compaction-proof.
+
+### Also Landed
+
+- **Signal channel support** (#3852) — signal-cli daemon via HTTP JSON-RPC. DMs + groups, markdown conversion, typing indicators
+- **Atomic Chat local provider** (#3750) — OpenAI-compatible local LLM registration
+- **CI Python 3.13/3.14** — dropping older runtimes
+
+### Stats (2026-05-16)
+- ⭐ 42,549 (+290 from 05-12, +0.7%)
+- Pushed today (Saturday) — healthy activity
+- v0.1.5.post3 still latest release
+
+## Links
+- [[write-ahead-session-persistence]]
+- [[session-state-isolation]]
+- [[FlowForge]]
