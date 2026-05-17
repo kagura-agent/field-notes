@@ -10,7 +10,7 @@ Checks:
   6. cards-index.md staleness
   7. Frontmatter consistency
   8. Link density stats
-  9. Secret scanning
+  9. Secret scanning (NFKC-normalized, zero-width stripped)
   10. Staleness / confidence decay (last_verified)
   11. Unicode injection detection (hidden chars, bidi overrides)
   12. Invalid-fact scanner (self-invalidating content)
@@ -21,6 +21,7 @@ Usage: python3 scripts/wiki-lint.py [wiki_dir]
 import os
 import re
 import sys
+import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
@@ -359,6 +360,21 @@ SECRET_PATTERNS = [
 ]
 
 compiled_secrets = [(re.compile(pat), name) for pat, name in SECRET_PATTERNS]
+
+# Zero-width characters to strip before secret scanning (brain-rust pattern).
+# Attackers can insert these to break regex matches while text looks identical.
+ZERO_WIDTH_RE = re.compile('[\u200B\u200C\u200D\u200E\u200F\u2060\uFEFF]')
+
+def normalize_for_scan(text):
+    """NFKC normalize + strip zero-width chars for secret scanning.
+    
+    Catches Unicode evasion: homoglyph substitution (Cyrillic 'А' → Latin 'A'),
+    zero-width joiners splitting token patterns, NFKC-collapsible ligatures.
+    Inspired by brain-rust's write-time secret scanner.
+    """
+    text = ZERO_WIDTH_RE.sub('', text)
+    return unicodedata.normalize('NFKC', text)
+
 secret_findings = []
 
 for fpath in all_files:
@@ -369,8 +385,10 @@ for fpath in all_files:
     # Skip code blocks (patterns in examples/docs are less likely real)
     clean = strip_code_blocks(content)
     for line_no, line in enumerate(clean.splitlines(), 1):
+        # Normalize for scanning: NFKC + strip zero-width chars
+        scan_line = normalize_for_scan(line)
         for pat, name in compiled_secrets:
-            if pat.search(line):
+            if pat.search(scan_line):
                 # Avoid false positives: skip lines that look like documentation/examples
                 line_stripped = line.strip()
                 if any(fp in line_stripped.lower() for fp in [
