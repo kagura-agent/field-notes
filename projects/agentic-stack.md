@@ -504,7 +504,7 @@ v0.16.0 shipped: safe `upgrade` + `sync-manifest` commands, resolving #45 and #4
 **Community**: 🟢 THRIVING (5/6) — 12 unique merged PR authors, 24 external PRs in 30 days. 1,928⭐.
 
 **Actionable for us**:
-1. Lesson retraction pattern → consider for beliefs-candidates.md (status field instead of deletion)
+1. Lesson retraction pattern → ✅ **applied 2026-05-17** — added Status Lifecycle section to beliefs-candidates.md: 3-state model (candidate/graduated/retracted), append-only transitions with rationale
 2. Brain bridge → interesting MCP memory protocol reference
 3. Next contribution: code PR targeting adapter or brain area
 
