@@ -1384,3 +1384,56 @@ Open PRs: ~32
 - New gradients from external feedback: 0
 - DNA changes: 1 (AGENTS.md, self-initiated)
 - Luna interaction: 0 (Day 5 of no interaction)
+
+---
+
+## 🔬 自进化观察日报 2026-05-17 (Day 30)
+
+### 管线活跃度
+- beliefs-candidates: 0 条新增 / 105 行, 7 named candidates, 2 graduated cumulative / 0 条新待升级
+- DNA 变更: 1 commit — `beliefs-candidates.md` 增加 Status Lifecycle（retraction pattern），主动变更
+- nudge 触发: 0 hits in `journalctl -u openclaw-gateway`（⚠️ 可能是 journal 查询范围问题，不代表未触发）
+- dreaming: 运行，99 candidates staged, **0 promoted (连续 Day 30)**
+
+### Dreaming 细节（Issue #6）
+- Light Sleep: 99 candidates staged
+- Confidence 分布: **82 条 = 0.58, 17 条 = 0.62** — 新现象！confidence 从一致 0.62 分裂为两档（0.58 和 0.62），但仍然缺乏有意义的差异化。0.58 是 session corpus 跨天回忆，0.62 是当天 memory 条目
+- Recalls: 0（一致）
+- Promoted: 0
+- REM: "No strong patterns surfaced" + 1 Possible Lasting Truth (confidence=0.73, from 05-08 NemoClaw DCO)
+- **诊断**: confidence 分裂是一个新信号——说明 scorer 至少区分了 source type（session corpus vs daily memory），但区分力仍然不足以触发 promote
+
+### Beliefs Pipeline（Issue #7）
+- 0 new gradients today（连续多日 input drought）
+- 1 structural improvement: Status Lifecycle 添加到 beliefs-candidates.md（retraction pattern），引入 candidate/graduated/retracted 三态，append-only transitions
+- 5 条 count=1 候选仍无新 cross-context 验证
+- "流程存在但不执行" 已于 05-16 正式毕业（graduated → Workflow）
+- **诊断**: 输入侧 drought 持续。日常高执行量（1733 行 memory, 6 commits, 5 merged PRs）但 reflect→gradient 管线仍然断裂
+
+### 闭环追踪
+- 完整闭环: 1 个（beliefs-candidates Status Lifecycle: 观察需求 → 设计三态模型 → 写入 → commit）
+- 断裂处:
+  - reflect→gradient: reflect 产出 pattern 但不写入 beliefs-candidates（结构性断裂，Day 26+ 已确认）
+  - PR merge→learning: 5 PRs merged today, 0 gradients extracted
+  - Issue #6/#7 fix attempts: 仍为 0。观察期超期 22 天，未尝试任何修复
+
+### 今日发现
+
+1. **Confidence 分裂是新信号**: 0.58 vs 0.62 两档分布首次出现（此前为一致 0.62）。scorer 内部有 source-type 区分逻辑，可能是改进切入点
+
+2. **Status Lifecycle 正确但不够**: 解决了 retraction 问题，但核心瓶颈是 input drought。管线末端再精致，入口没水也白搭
+
+3. **Day 30 里程碑**: 观察期满一个月。累计 2 graduated, 0 retracted, 5 stuck at count=1, dreaming 0 promoted (30/30 天)。观察期原定 1 周，已超期 22 天未修复
+
+4. **Fix 优先级**: Issue #7（input drought）> #6（dreaming quality）。reflect→gradient 管线不通，dreaming 修好也无意义
+
+### 原始数据
+- `git log --since="yesterday 22:30" -- beliefs-candidates.md SOUL.md AGENTS.md`: 1 commit (3736745 Status Lifecycle)
+- `beliefs-candidates.md`: 105 行, 7 named candidates, 2 graduated (cumulative)
+- `memory/2026-05-17.md`: 1733 行
+- dreaming: Light Sleep 99 staged (82×0.58 + 17×0.62), REM 1 PLT (0.73), 0 promoted
+- PR activity: 5 merged today (abti×2, multica, kagura-mail, memory-eval)
+- Workspace commits: 6
+- New gradients from external feedback: 0
+- DNA changes: 1 (beliefs-candidates.md, self-initiated)
+- Luna interaction: 0 (Day 6+)
