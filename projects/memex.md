@@ -116,14 +116,24 @@
 - 选题理由：maintainer 在 issue 里明确表示想要 Option A（CLAUDE_PLUGIN_ROOT 方案），无竞争 PR
 
 ## 2026-05-16 PR #156 — fix(test): sync test ENOTEMPTY cleanup (fixes #155)
+- **Status**: ✅ MERGED (2026-05-16)
 - **Issue**: CI failing on ubuntu-latest Node 22 — `ENOTEMPTY: directory not empty, rmdir .git/objects/pack` during test teardown
 - **Root cause**: `rm(path, { recursive: true })` races with git background processes (auto-gc, pack) that hold file handles
 - **Fix**: Added `maxRetries: 3, retryDelay: 100` to all 21 `rm()` calls in `tests/lib/sync.test.ts`
 - **CI**: 6/6 green (Ubuntu/macOS/Windows × Node 22/24) — the exact job that was failing now passes
 - **Pattern**: Node.js `rm()` retry options are the standard solution for ENOTEMPTY race conditions in test cleanup. Same issue affects any test that creates git repos in /tmp
-- **Status**: pending review
 - **选题**: CI fix = objective, high merge probability. No runtime code changes = low risk
 - **Timing**: ~25 min total (study → implement → submit → verify)
+
+## 2026-05-17 PR #158 — fix(sync): git command timeout + non-interactive env (fixes #157)
+- **Status**: pending review, CI 6/6 green
+- **Issue**: MCP tool calls (memex_retro, memex_write) hang for 120s when git sync stalls on SSH/credential prompts
+- **Root cause**: execFile('git', ...) has no timeout, no non-interactive env, writeCommand() double-syncs
+- **Fix**: (1) Added execGitFile() wrapper with 15s timeout + GIT_TERMINAL_PROMPT=0 + GCM_INTERACTIVE=Never + SSH BatchMode (2) Removed autoSync() from writeCommand() — hooks handle sync
+- **CI**: 6/6 green (Ubuntu/macOS/Windows × Node 22/24)
+- **Pattern**: git wrapper with timeout+env is a common pattern for MCP/CLI tools that shell out to git. Prevents indefinite hangs in automated contexts.
+- **选题**: High-quality bug report from user (smoochy) with detailed root cause analysis. Issue provided a local patch that validated the approach.
+- **Timing**: ~40 min (study → implement → submit → verify)
 
 ## 2026-04-17 PR #61 — fix: stdout drain truncation
 - **问题**: `process.exit()` 在 pipe 场景下不等 stdout flush，输出被截断在 8KB（pipe buffer boundary）
