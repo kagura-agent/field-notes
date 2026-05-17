@@ -3,7 +3,7 @@ title: tracking-health.sh
 type: tool
 created: 2026-05-05
 status: active
-last_verified: 2026-05-16
+last_verified: 2026-05-17
 ---
 
 # tracking-health.sh — Tracking Portfolio Health Dashboard
@@ -56,3 +56,13 @@ The tracking list grew to 51 items organically. `tracking-due.sh` only shows tod
 - [[tracking-due-script]] (predecessor, date-only check)
 - [[study-workflow]] (where it's used)
 - [[genericagent]] (architectural inspiration)
+
+## 2026-05-17 Bug Fix: study-saturation.sh
+
+**Bug**: `grep -c` outputs `0` AND exits with status 1 when no matches found. The `|| echo 0` fallback pattern (`var=$(grep -c ... || echo 0)`) then fires, producing `"0\n0"` which breaks bash arithmetic `(( ))`.
+
+**Fix**: Changed to `var=$(grep -c ...) || var=0` — the assignment captures grep's stdout (the `0`), and only if the subshell fails does the fallback assignment run. No double-output.
+
+**Pattern**: This is a common bash pitfall. `grep -c` is unusual among commands because it outputs a result (`0`) even on failure (exit 1). Most `$(cmd || echo default)` patterns assume the command produces no stdout on failure. When using `grep -c`, always use the `var=$(cmd) || var=default` form instead.
+
+**Verification**: Before: syntax errors on every run with zero-count modes. After: clean output with correct integers.
