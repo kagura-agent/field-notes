@@ -208,3 +208,90 @@ Links: [[openclaw]], [[coding-agent]], [[clawhub]], [[skill-ecosystem]], [[self-
 *Deep read: 2026-05-02. Source: GitHub repo + API + release notes.*
 
 *Followup: 2026-05-03. No new activity since v0.4.0 deep read (05-02). Next revisit: 05-09 for v0.5.0.*
+
+## Followup: v0.5.0 + v0.6.0 (2026-05-17)
+
+**Stars:** 63 (was 60 at 05-08) | **Latest:** v0.6.0 (2026-05-14)
+
+Two releases in 3 days. Major evolution in self-governance and skill lifecycle.
+
+### v0.5.0 — Turn Delivery + Context Providers (2026-05-11)
+
+Incremental maturity: delivery orchestration extracted to `src/turn-delivery/`, cron delivery contract v2, five new context providers (`cron-history`, `cron-protocol`, `channel-meta`, `legacy-attachment`, `scratchpad`). Scheduler/worker decomposed further. AskUserQuestion MVP via Slack Block Kit. DocStore goes semantic-first.
+
+Nine new system-scope skills including `claim-vs-reality-margin`, `debug-audit-on-second-miss`, `vendor-api-param-validation` — all discipline/governance skills, not tool skills. Shows maturity in self-regulation.
+
+### v0.6.0 — Self-Curation + Single-Adapter Consolidation (2026-05-14)
+
+The big one. Three significant new patterns:
+
+#### 1. Three-Stage Self-Evolution Pipeline (A/B/C)
+
+Monolithic `Orb 自進化` cron refactored into:
+- **Stage A — Mechanical**: deterministic data gathering, no LLM. Pure data collection.
+- **Stage B — Single-pass LLM**: one reasoning pass over the A bundle. Bounded model budget.
+- **Stage C — Render**: deterministic card formatting. No LLM.
+
+Each stage owns one failure mode and one model budget. Clean separation: data collection (cheap, deterministic) → reasoning (expensive, bounded) → formatting (cheap, deterministic).
+
+**Comparison to our approach:** Our [[FlowForge]] `reflect` workflow is a single LLM pass. Orb's A/B/C split is more disciplined — if Stage A finds nothing, Stages B/C don't run and no LLM tokens are wasted. Worth considering for our `daily-review` cron.
+
+#### 2. Skill Lifecycle Pipeline (Telemetry-Backed)
+
+`lib/lesson-distill/skill_promotion_tick.py` implements a full skill lifecycle:
+
+| State | Condition | Action |
+|---|---|---|
+| `_drafts/` | Newly created | Awaiting usage |
+| `production` | ≥3 uses (SQLite telemetry) | Promoted from drafts |
+| `stale` | 30 days unused (from `memory-usage.db`) | Marked for review |
+| `archived` | 90 days unused + was stale | Moved to `_archive/` |
+| `pin: true` | Manually pinned | Immune to auto-archive |
+
+Key design choices:
+- **Telemetry bootstrap grace period**: TELEMETRY_BOOTSTRAP_DATE (2026-05-02) + STALE_DAYS (30) — new tracking won't prematurely kill old skills
+- **Archive via MCP**: `skill_archive` tool called through MCP JSON-RPC subprocess — dogfooding their own tool ecosystem
+- **Noise detection**: inject-failed candidates with only user text + IDs are auto-classified as noise and skipped
+
+**Comparison to our [[beliefs-candidates]] system:** We use Triple Verification (cross-context ≥3, predictive power, non-obvious) for manual promotion. Orb uses automated usage counting. More objective (telemetry vs judgment) but only measures recall frequency, not impact. A skill recalled 3 times but ignored each time still gets promoted. Our manual review catches this but doesn't scale.
+
+**Borrowable idea:** Track skill/belief recall frequency. Even with manual promotion, usage data would inform review. [[FlowForge]] workflows could log which wiki notes/cards are consulted.
+
+#### 3. Lesson Similarity via LLM Judge
+
+Jaccard replaced with Haiku LLM call for lesson dedup. Short text where Jaccard misclusters, token cost acceptable.
+
+**Comparison:** We don't deduplicate beliefs-candidates at all — detection is manual during review.
+
+#### 4. Memory Freshness States
+
+Holographic facts carry `freshness_state`: fresh → stale → archived, updated by usage instrumentation.
+
+**Comparison:** We have no freshness tracking on wiki notes. A fact in `wiki/projects/X.md` from 3 months ago with zero reads has the same retrieval weight as yesterday's.
+
+#### 5. Permission-Blocker Scan
+
+Repeated approval friction surfaced as evolution signal. Agent repeatedly hitting permission blocks → generates lesson candidate about the pattern.
+
+**Comparison:** Our AGENTS.md has "Blocker 必须 @ Luna" but no automated detection. Good idea — systematic friction patterns should trigger governance review.
+
+#### 6. WeChat Adapter Removed
+
+Single-adapter consolidation to Slack only. Pragmatic at 63⭐ with one developer.
+
+### Anti-Intuitive Findings
+
+1. **"Stalled" assessment wrong (again)**. After v0.4.0 I noted "no v0.5.0 yet" as concerning. Then v0.5.0 AND v0.6.0 shipped within 3 days. Silence ≠ stagnation for solo devs.
+2. **Governance rivals the codebase**. Skill lifecycle (draft→production→stale→archive) with telemetry is more mature than most agent frameworks with 10x the stars.
+3. **Pure solo project**. No issues, no external contributors, no PRs. Bus factor = 1 but coherent architecture.
+4. **Noise detection is pragmatic**. Pattern-match known-noise categories via regex, auto-skip. Simple > expensive.
+
+### Ecosystem Position Update
+
+Orb remains the most architecturally mature Claude Code wrapper. v0.6.0's skill lifecycle pipeline is best-in-class — telemetry-backed skill promotion/demotion unseen in any other agent framework at any star count. Slow growth (63⭐) but punches far above its weight.
+
+**Risk:** Solo developer, Slack-only, Claude-Code-only.
+
+Links: [[openclaw]], [[coding-agent]], [[clawhub]], [[skill-ecosystem]], [[self-evolving-agent-landscape]], [[beliefs-candidates]], [[FlowForge]]
+
+*Deep read: 2026-05-17. Source: GitHub releases, API, code review of lesson-distill/ and governance.*
