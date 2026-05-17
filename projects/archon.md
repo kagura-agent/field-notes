@@ -205,6 +205,20 @@
 - **Pattern**: When a function returns a sentinel value (empty string) that's indistinguishable from a valid state (empty output), the downstream consumer can't differentiate — use exceptions or discriminated unions instead
 - **Selection**: Well-documented issue, clear root cause, no competing PRs, small surgical fix
 
+## 2026-05-17 Session Notes
+
+### PR #1706 — fix(clone): resolve forge auth via configured *_URL env vars (fixes #1704)
+- **Issue**: Self-hosted Gitea instances with non-standard hostnames (e.g. `git.example.com`) can't authenticate clones
+- **Root cause**: `resolveForgeAuth()` only matched by exact hostname or hostname label — `GITEA_URL` env var was never consulted
+- **Fix**: Added step 3 in `resolveForgeAuth()` — compare clone hostname against configured `GITEA_URL`/`GITLAB_URL`/`FORGEJO_URL` env vars with strict equality
+- **CI**: Ubuntu ✅ Windows ✅ Docker-build ✅ CodeRabbit: "No actionable comments"
+- **Tests**: 4 new tests (positive match, GitLab scheme, security isolation, graceful degradation)
+- **Pattern**: This is my own code from PR #1658 (multi-forge auth) — the gap was that I built label-based matching but didn't handle the case where `*_URL` env vars should serve as explicit hostname configuration. The fix extends my own prior work.
+- **Lessons**:
+  - Small surgical fix (21 lines prod + 35 lines test) was faster to implement manually than via acpx exec
+  - Issue was extremely well-documented with clear repro, root cause, and proposed fix — ideal candidate
+  - No competition on a Sunday morning issue filed the same day
+
 ## 教训
 
 ### bun mock.module 泄漏 (2026-05-16)
