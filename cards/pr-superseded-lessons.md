@@ -2,7 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
-last_verified: 2026-05-16
+last_verified: 2026-05-17
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -494,3 +494,9 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 2. My PR only tested the internal `channel-actions.ts` adapter — not where the bug manifested
 **Lesson:** When fixing a bug caused by a missing wrapper/forwarding, test at the **consumer-facing surface** (exported plugin API), not just the internal implementation. The test should prove the integration path works, not just the underlying function.
 **Pattern:** Test at the integration boundary, not the implementation detail.
+
+## 2026-05-17: openclaw#82460 superseded by #82905
+- **My PR**: fix(agents): enable reasoning-only turn retry for Bedrock Converse models
+- **Superseding PR**: Fix silent success for non-deliverable Bedrock Telegram turns (#82905)
+- **Why**: My fix was narrowly scoped (just adding `bedrock-converse-stream` to the retry allowlist). The maintainer fix went broader — changed trajectory terminal status to distinguish real deliverable success from empty turns, and included live AWS proof. Maintainer acknowledged my diagnosis was correct and the test case helped.
+- **Lesson**: When fixing a behavior bug, consider the broader failure mode — not just the immediate allowlist gap. Maintainer PRs often carry a fix forward with additional robustness that a narrow external PR can't match. This is not a bad outcome — the contribution was recognized.

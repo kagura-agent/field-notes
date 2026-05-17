@@ -1370,3 +1370,13 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **坑**: `check-attribution` CI requires adding email to `AUTHOR_MAP` in `scripts/release.py` — first-time contributor requirement
 - **Key learning**: Supermemory API behavior — omitting `container_tags` targets default/My Space (`sm_project_default`), sending literal `"default"` creates a separate tagged container
 - **Approach**: Claude Code for implementation + manual AUTHOR_MAP fix
+
+### #27351 — fix(run_agent): guard multimodal tool content by provider capability (2026-05-17)
+- **Status**: PENDING review
+- **Issue**: #27344 — computer_use multimodal tool message causes 400 error on MiMo and similar providers
+- **Root cause**: `_tool_result_content_for_active_model()` only checks `_model_supports_vision()` but vision support ≠ multimodal tool content support. OpenAI spec defines tool message `content` as string; only some providers extend it to accept arrays.
+- **Fix**: Added `_provider_supports_multimodal_tool_content()` conservative allowlist (api_mode: anthropic_messages/codex_responses/gemini_native; provider: openai/azure/anthropic/google/gemini). Vision-capable but unsupported providers get text summary fallback.
+- **15 tests** added, all pass. 18 existing vision/multimodal tests also pass.
+- **CI**: ruff ✅, e2e ✅, nix ✅, supply chain ✅, Windows ✅. `check-attribution` ❌ (known). build/test pending.
+- **Approach**: Manual edit — targeted change in 1 file (run_agent.py), adding 1 new method + restructuring 1 existing method. Faster than Claude Code for this focused scope.
+- **Pattern**: Provider capability checks should be layered (vision support → tool content format support → specific feature support). Don't conflate "supports images" with "supports images everywhere in the API."
