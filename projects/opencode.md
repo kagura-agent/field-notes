@@ -92,6 +92,15 @@ Open-source coding agent CLI. 148k+ stars (2026-04-23), 92% merge rate. Now unde
 - **Approach**: GitHub API (repo too large to clone)
 - **Note**: 2-line change, very surgical. Same file as #23412 (ripgrep.ts — active area of refactoring)
 
+### #27969 — fix(tui): use contrast-aware foreground for paste summary badge (2026-05-17)
+- **Status**: PENDING (CI all 4 checks passed ✅)
+- **Issue**: #27968 — Paste summary label invisible with transparent/system themes
+- **Root cause**: `extmark.paste` style uses `foreground: theme.background`, which is transparent (alpha=0) in transparent themes. Text becomes invisible on the warning-colored badge background.
+- **Fix**: Changed to `selectedForeground(theme, theme.warning)` — reuses existing contrast helper that computes luminance-based black/white for transparent backgrounds, falls back to `theme.background` for opaque themes (unchanged behavior)
+- **Diff**: 1 line, 1 file (`packages/opencode/src/cli/cmd/tui/context/theme.tsx`)
+- **Approach**: Manual edit (too small for acpx). Local test: 31 pass, 10 fail (pre-existing dependency issues)
+- **Key learning**: Reusing existing helpers (selectedForeground) is cleaner than inline luminance calculations. The function handles both transparent and opaque cases.
+
 ## Session Compaction (v1.14.19, 2026-04-20)
 
 opencode 的 session compaction 架构分三层：
