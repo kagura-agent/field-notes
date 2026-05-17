@@ -3,9 +3,9 @@ title: "re_gent — Version Control for AI Agents"
 created: 2026-05-09
 updated: 2026-05-09
 status: active
-stars: 238
+stars: 518
 url: https://github.com/regent-vcs/re_gent
-last_verified: 2026-05-14
+last_verified: 2026-05-17
 ---
 
 # re_gent — Version Control for AI Agents
@@ -194,3 +194,49 @@ The unified `Recorder` in `internal/capture/capture.go` is the core abstraction 
 | Date | Stars | Notes |
 |------|-------|-------|
 | 2026-05-14 | 473 | v0.2.0 Codex parity. Unified Recorder deep-read. `.agents/skills/` migration. External contributor @adit-chandra |
+| 2026-05-17 | 518 | **v1.0.0!** +9.4% in 3 days. OpenCode integration (PR#36). Interactive multiselect init. 34 forks. Windows colon bug (#37). Codex Desktop sidecar PR#35 (+3114 lines, external). 🟢 THRIVING (6/6) |
+
+## Updates (2026-05-17)
+
+**Stars**: 518 (was 473, +9.4% in 3 days). Sustained strong growth.
+
+**v1.0.0 — Production Release:**
+- Jumped from v0.2.0 to v1.0.0 — the maintainer is signaling production readiness
+- README rewritten in production tone (removed POC/beta language)
+- `rgt init` now uses `charmbracelet/huh` interactive multiselect to choose agents (Claude Code / Codex / OpenCode)
+- `rgt init` made idempotent with existing hook detection
+
+### Deep Read: OpenCode Integration (PR#36)
+
+**Pattern**: Exact same architecture as Codex hook. `opencode-hook` command reads JSON from stdin → maps to 4 normalized lifecycle events → delegates to shared `Recorder`.
+
+**Payload format**: `opencodeHookPayload` has same fields as Codex (session_id, turn_id, cwd, hook_event_name, model, prompt, tool_name, tool_input, tool_response, last_assistant_message). The event normalization (`normalizeHookEventName`) canonicalizes casing.
+
+**Plugin delivery**: OpenCode uses a plugin system (`@regent-vcs/opencode-plugin` in `opencode.jsonc`). This is more modern than Claude Code's hook approach (which patches `.claude/settings.json` allowedTools).
+
+**Origin tagging**: `OriginOpenCode = "opencode"` → session IDs become `opencode:ses_abc123`. Same `canonicalSessionID(origin, externalID)` pattern.
+
+**Tests**: 6 test cases covering full turn capture, no-turn-ID fallback, unsupported events, no-store noop, invalid payload handling. Same quality bar as Codex tests.
+
+**Key architectural insight**: Adding a new agent took only +495/-65 lines because the `Recorder` abstraction from v0.2.0 was correctly designed. The hook handler is just a thin payload parser → shared lifecycle. **This validates the 4-event model** (sessionstart / userpromptsubmit / posttooluse / stop) as a genuine agent lifecycle abstraction, not a Claude Code artifact.
+
+### Bug: Windows Path Colons (#37)
+
+`canonicalSessionID` uses `:` as separator (e.g., `opencode:ses_abc123`), which becomes part of ref file paths. Windows doesn't support `:` in filenames → ref rename fails. This is a real portability bug that reveals the ref-as-file-path assumption inherited from git's ref model.
+
+**Impact**: Blocks Windows users entirely. Likely needs URL-encoding or alternative separator for the ref path component while preserving `:` in the logical session ID.
+
+### External Contribution: Codex Desktop Sidecar (PR#35)
+
+@liuwjchinal submitted a massive +3114/-36 PR adding `rgt codex import` and `rgt codex watch` — reads Codex Desktop's JSONL session files from `~/.codex/sessions/` and imports project-matched history into `.regent/`. Zero changes to Codex Desktop itself. This is the kind of adapter-from-outside pattern that signals real community engagement.
+
+### Community Health
+
+🟢 THRIVING (6/6). 9 external PRs in 30d. 34 forks. 6 discussions. Multiple external contributors (@adit-chandra, @liuwjchinal, @cylixlee). Professional security review offered (#26, unanswered). Responsive maintainer.
+
+### Strategic Assessment
+
+- **v0.2.0→v1.0.0 in 3 days** is aggressive versioning. Either the maintainer's startup is applying pressure to reach "1.0" for credibility, or the scope was always small and it genuinely feels ready.
+- **3 agent hosts** (Claude Code, Codex, OpenCode) in one tool validates multi-agent audit as a real need, not a niche
+- The unified `Recorder` + hook pattern is **directly applicable to [[openclaw]]** — ACP's tool_call events map cleanly to re_gent's PostToolUse
+- **Windows bug** is a good contribution target if we wanted to engage
