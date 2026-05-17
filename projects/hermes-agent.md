@@ -1360,3 +1360,13 @@ This makes the review fork more disciplined — it can't wander off into web bro
 **Efficiency note**: Manual edit (15 lines + 51 lines test) was the right call for this surgical fix — no need for Claude Code on a change this focused.
 
 **Pattern observed**: hermes credential_pool.py uses dataclass with typed fields but from_dict() does no type coercion — general fragility point for any field that's round-tripped through JSON serialization.
+
+### #27281 — fix(supermemory): resolve sentinel container tags to Supermemory default/My Space (2026-05-17)
+- **Status**: PENDING (10/13 CI checks pass, test/build still running)
+- **Issue**: #27226 — Supermemory config sentinel values create literal containers
+- **Root cause**: `_sanitize_tag()` treats `"default"`, `"__default__"`, `""`, etc. as literal tags, but Supermemory's real default (My Space) requires omitting `container_tags` entirely
+- **Fix**: Added `_DEFAULT_CONTAINER_SENTINELS` frozenset, `_is_default_sentinel()` helper. `initialize()` resolves sentinels to `None`. `_SupermemoryClient` methods conditionally include container params.
+- **5 regression tests** added, all 34 tests pass locally
+- **坑**: `check-attribution` CI requires adding email to `AUTHOR_MAP` in `scripts/release.py` — first-time contributor requirement
+- **Key learning**: Supermemory API behavior — omitting `container_tags` targets default/My Space (`sm_project_default`), sending literal `"default"` creates a separate tagged container
+- **Approach**: Claude Code for implementation + manual AUTHOR_MAP fix

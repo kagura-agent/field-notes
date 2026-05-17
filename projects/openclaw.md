@@ -213,7 +213,12 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
   - "Real behavior proof" CI check requires live runtime evidence — pure logic fixes need `proof: override`
   - vitest runs require `NODE_OPTIONS="--max-old-space-size=2048"` on this machine
 
-### 2026-05-16: PR #82460 (PENDING)
+### 2026-05-17: PR #82460 (SUPERSEDED by #82905)
+- **Superseded reason**: Guide rule #1 (方案粒度不匹配). My fix only added `bedrock-converse-stream` to the modelApi allowlist. Maintainer's #82905 did the same root fix PLUS: changed trajectory terminal status for empty attempts, preserved legitimate non-text success paths (message-tool sends, media-only, heartbeat, cron, tool calls, yields, approval prompts, tool errors), included live AWS Crabbox proof. 
+- **Lesson**: For retry/guard modules with multiple layered checks, a single allowlist addition is too narrow. Consider the full success/failure classification chain.
+- **Positive**: Diagnosis was acknowledged as correct. Test case was useful.
+
+### 2026-05-16: PR #82460 (ORIGINAL NOTES)
 - **Issue**: #82394 — Empty assistant turn (thinking-only, no text) recorded as success → generic error shown
 - **Root cause**: `shouldApplyNonVisibleTurnRetryGuard` in `run/incomplete-turn.ts` didn't include `bedrock-converse-stream` in the modelApi allowlist. The reasoning-only retry mechanism existed but only gated for `anthropic-messages`, `openai-completions`, strict-agentic providers (OpenAI/Gemini), and Ollama. Bedrock Converse was excluded.
 - **Fix**: Added `bedrock-converse-stream` to the modelApi check in `shouldApplyNonVisibleTurnRetryGuard`. Also extracted repeated `normalizeLowercaseStringOrEmpty` call into local variable.
