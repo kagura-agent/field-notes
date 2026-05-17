@@ -107,7 +107,7 @@ OpenClaw adapter doesn't use MCP (shell-out to `brain` CLI instead) because Open
 brain treats memory as a systems problem: typed events, idempotency, integrity checks, multi-writer safety. Our memory is "files + convention." This is the git-vs-Dropbox split for agent memory. Both work, but one has stronger guarantees.
 
 ### 2. Write-Time Secret Scanning Is Better Than Batch Scanning
-We run wiki-lint as a batch check. brain rejects secrets at write time — they never enter the git history. The normalized scan (NFKC + zero-width strip) catches Unicode evasion that simple regex misses. Our wiki-lint could adopt the same approach.
+We run wiki-lint as a batch check. brain rejects secrets at write time — they never enter the git history. The normalized scan (NFKC + zero-width strip) catches Unicode evasion that simple regex misses. **Applied 2026-05-17**: added `normalize_for_scan()` to wiki-lint.py check 9 — NFKC normalize + zero-width strip before regex matching. Catches 3/4 evasion vectors (zero-width splits, fullwidth chars, compound prefix splits). Cyrillic confusables need separate table (future).
 
 ### 3. Prescriptive Tool Descriptions Are Underrated
 brain's MCP `ask` tool description says "CALL THIS PROACTIVELY at the start of non-trivial tasks" with specific scenarios. This is more effective than "Search the database" — it drives agent behavior. Our skill descriptions could be more prescriptive.
