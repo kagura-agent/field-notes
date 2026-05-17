@@ -340,3 +340,12 @@ if (p.type === "compaction" && p.tail_start_id) {
 - **Approach**: Manual edit, no Claude Code needed. GitHub API for code review, local typecheck.
 - **Key learning**: PR template compliance is auto-enforced — 2h auto-close window. Always use template from the start.
 - **Lesson applied**: Used PR template immediately (from previous #26641 auto-close lesson)
+
+### #27998 — fix(config): catch schema validation errors in agent scanning loop (2026-05-17)
+- **Status**: PENDING (just submitted)
+- **Issue**: #27988 — Agent scanning silently drops files — only ~119 of 184 register
+- **Root cause**: `ConfigAgent.load()` wraps `ConfigMarkdown.parse()` in `.catch()` but leaves `ConfigParse.schema()` unprotected. Any schema validation error crashes the for-loop, dropping all alphabetically-later agents.
+- **Fix**: Wrap `ConfigParse.schema()` in try/catch matching the existing error handling pattern. Log error, publish Session.Event.Error, continue.
+- **Diff**: +9/-1 lines, 1 file (config/agent.ts)
+- **Tests**: `bun test test/config/` 163 pass, `bun test test/agent/` 47 pass
+- **Note**: `loadMode()` already handles this correctly via `Schema.decodeUnknownExit` + `Exit.isSuccess`.
