@@ -49,6 +49,55 @@ get_decay_rate() {
   esac
 }
 
+# CJK-to-English bridge for memex BM25
+# Problem: memex BM25 doesn't tokenize CJK characters, so Chinese queries
+# return no results even when wiki content is English.
+# Solution: detect CJK in query, map common domain terms to English,
+# extract any embedded English words, and build a supplementary query.
+# Source: brain-rust study (bilingual search gap), applied 2026-05-18
+CJK_TERM_MAP=(
+  # Agent / AI domain
+  "项目:project"  "代理:agent"  "智能体:agent"  "记忆:memory"  "技能:skill"
+  "自进化:self-evolving"  "进化:evolution"  "搜索:search"  "检索:retrieval"
+  "工具:tool"  "工作流:workflow"  "架构:architecture"  "压缩:compression"
+  "安全:security"  "隐私:privacy"  "评估:evaluation"  "测试:test"
+  "部署:deployment"  "配置:config"  "插件:plugin"  "扩展:extension"
+  # Memory-specific
+  "知识:knowledge"  "图谱:graph"  "索引:index"  "向量:vector"  "嵌入:embedding"
+  "衰减:decay"  "权重:weight"  "优先:priority"  "等级:tier"
+  # Meta
+  "开源:open-source"  "贡献:contribution"  "生态:ecosystem"  "市场:marketplace"
+  "框架:framework"  "平台:platform"  "分析:analysis"  "对比:comparison"
+)
+
+cjk_bridge() {
+  local q="$1"
+  # Check if query contains CJK characters (Unicode ranges)
+  if ! echo "$q" | grep -qP '[\x{4e00}-\x{9fff}\x{3400}-\x{4dbf}\x{f900}-\x{faff}]'; then
+    echo ""  # No CJK, no bridge needed
+    return
+  fi
+  
+  local english_parts=""
+  
+  # 1. Extract any embedded English words (project names, tech terms)
+  local eng_words
+  eng_words=$(echo "$q" | grep -oP '[a-zA-Z][a-zA-Z0-9_-]{2,}' || true)
+  [[ -n "$eng_words" ]] && english_parts="$eng_words"
+  
+  # 2. Map known Chinese terms to English
+  for mapping in "${CJK_TERM_MAP[@]}"; do
+    local zh="${mapping%%:*}"
+    local en="${mapping##*:}"
+    if echo "$q" | grep -q "$zh"; then
+      english_parts="${english_parts:+$english_parts }$en"
+    fi
+  done
+  
+  # Deduplicate and return
+  echo "$english_parts" | tr ' ' '\n' | sort -u | tr '\n' ' ' | sed 's/ *$//'
+}
+
 # Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -78,6 +127,15 @@ RESULTS=()
 if [[ "$MODE" == "hybrid" || "$MODE" == "semantic" ]]; then
   echo "🔮 Semantic results (memex):"
   MEMEX_OUT=$(cd "$WIKI_DIR" && MEMEX_HOME=. memex search --all "$QUERY" --limit "$LIMIT" 2>/dev/null || true)
+  
+  # CJK bridge: if query is Chinese and memex returned nothing, try English translation
+  CJK_QUERY=$(cjk_bridge "$QUERY")
+  if [[ -z "$MEMEX_OUT" && -n "$CJK_QUERY" ]]; then
+    [[ $DEBUG -eq 1 ]] && echo "[DBG] CJK bridge: '$QUERY' → '$CJK_QUERY'" >&2
+    MEMEX_OUT=$(cd "$WIKI_DIR" && MEMEX_HOME=. memex search --all "$CJK_QUERY" --limit "$LIMIT" 2>/dev/null || true)
+    [[ -n "$MEMEX_OUT" ]] && echo "  (🌐 CJK→EN bridge: $CJK_QUERY)"
+  fi
+  
   if [[ -n "$MEMEX_OUT" ]]; then
     echo "$MEMEX_OUT"
     # Extract slugs from memex output (## slug-name lines)
