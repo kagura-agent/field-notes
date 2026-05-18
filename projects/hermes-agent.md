@@ -1386,3 +1386,14 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - Maintainer approach: selective bypass via `is_capacity_error` flag
 - teknium1 prefers surgical fixes that preserve existing constraints
 - Lesson: relax gates with conditions, don't remove them
+
+### #27842 — fix(mem0): shut down memory provider on oneshot exit (2026-05-18)
+- **Status**: PENDING review
+- **Issue**: #27832 — mem0-oss gRPC thread causes CLI abort after successful output (exit 134)
+- **Root cause**: `hermes_cli/oneshot.py` `_run_agent()` creates AIAgent with memory providers, calls `agent.chat()`, returns result but never calls `shutdown_memory_provider()`. gRPC daemon threads (from Qdrant client in mem0-oss) stay alive → Python interpreter shutdown triggers SIGABRT.
+- **Fix**: Wrap `agent.chat()` in `try/finally` calling `agent.shutdown_memory_provider()` with inner exception swallowing.
+- **3 unit tests** added (shutdown called, shutdown called on error, exception swallowed). 713 CLI tests pass, 5 pre-existing failures unrelated.
+- **CI**: `check-attribution` fixed by adding email to AUTHOR_MAP. `test`/`build-arm64` pending (needs maintainer approval for first-time contributor).
+- **Approach**: Manual edit — 11-line diff, surgical. No Claude Code needed.
+- **Pattern**: Oneshot mode is a forgotten lifecycle path. Memory providers have `shutdown_all()` and CLI interactive path calls it via `_run_cleanup()`, but oneshot was overlooked. Always check: "does this resource have a cleanup path? Is it called in ALL exit paths?"
+- **Key insight**: The issue reporter provided an excellent minimal repro and root cause analysis. High-quality issues make contribution easy.
