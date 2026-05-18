@@ -219,6 +219,17 @@
   - Issue was extremely well-documented with clear repro, root cause, and proposed fix — ideal candidate
   - No competition on a Sunday morning issue filed the same day
 
+## 2026-05-18 Session Notes
+
+### PR #1718 — fix(workflows): write large node outputs to temp file to prevent bash substitution corruption (fixes #1717)
+- **Issue**: bash node `$nodeId.output` substitution silently corrupts data when output > ~42KB (argv limit issue in Bun's execFile)
+- **Root cause**: `substituteNodeOutputRefs()` inlined the full output via `shellQuote()` into `bash -c` argument string — at ~40KB+ this hits process argument passing limits
+- **Fix**: Added `shellQuoteOrFile()` helper with `NODE_OUTPUT_FILE_THRESHOLD = 32KB`. Large outputs are written to `logDir/{nodeId}.nodeoutput` and substituted with `$(cat '<path>')`. Small outputs unchanged.
+- **CI**: Ubuntu ✅ Windows ✅ Docker-build ✅ CodeRabbit: Review skipped (no issues)
+- **Tests**: 4 new tests + 236 total pass
+- **Lesson**: Claude Code via `claude --print` timed out again (Copilot API 60s idle timeout) — confirmed persistent issue. Manual implementation was efficient for surgical changes.
+- **Pattern**: When data flows through argv/shell boundaries, always consider size limits. Unbounded data needs a channel with no hard size limit (file, pipe, stdin — not argv).
+
 ## 教训
 
 ### bun mock.module 泄漏 (2026-05-16)
