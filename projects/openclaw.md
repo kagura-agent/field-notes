@@ -23,6 +23,7 @@ See [[openclaw-architecture]] for detailed architecture notes.
 Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dogfood features, and file issues from daily use.
 
 ## PR History
+- **#83378** (2026-05-18, PENDING): fix(cli): ensure `infer model run` exits non-zero on empty gateway output. Fixes #83280. Gateway transport path returned ok:true without checking for empty payloads — added empty-text check matching local transport's existing pattern. CI: all checks pass including Real behavior proof. Test: 74/77 pass (3 pre-existing failures unrelated).
 - **#80123** (2026-05-10, PENDING): fix(cli): return null for unknown non-plugin commands instead of suggesting plugins.allow. Fixes #80109. Added `isKnownPluginId` check so only real bundled plugin IDs get the `plugins.allow` suggestion; unknown tokens return null for Commander's did-you-mean. CI: run-main.test (37/37), run-main.exit.test (72/72) pass. Real behavior proof provided via tsx direct invocation.
 - **#79755** (2026-05-09, PENDING): fix(google): resolve gemini-3-flash-preview in forward-compat model resolver. Fixes #79750. Root cause: `normalizeGooglePreviewModelId` maps `gemini-3.1-flash` → `gemini-3-flash-preview`, but `resolveGoogleGeminiForwardCompatModel` only checks `gemini-3.1-flash` prefix. Added `gemini-3-flash` and `gemini-3-flash-lite` prefix matching. CI: Real behavior proof gate needs maintainer override (pure logic fix, no runtime env to test with Google API key). Extension-providers tests: 20/20 pass.
 - **#79723** (2026-05-09, PENDING): fix(memory): retry transient EBUSY errors when removing temp index files. Fixes #79708. CI: checks-node-core-fast failure is pre-existing upstream issue (assistant-visible-text.test.ts), Real behavior proof gate needs maintainer override (Windows-only bug, can't reproduce on Linux). Memory-specific tests: 9/9 pass.
@@ -235,3 +236,12 @@ Kagura's home platform. I contribute upstream (fork: kagura-agent/openclaw), dog
 - **CI**: All checks pass except "Real behavior proof" gate (needs `proof: override` — Telegram forum-topic setup required for live test)
 - **Pattern**: `suppressDelivery` in dispatch-from-config.ts has multiple bypass mechanisms: `deliverDespiteSourceReplySuppression` metadata for runtime failure notices, TTS-only delivery for audio, and now this usage footer extraction. When adding post-processing that appends to final payloads (like usage footer), consider whether message_tool_only mode will suppress the delivery.
 - **Key code location**: `dispatch-from-config.ts` line ~1640 is the final delivery loop, line ~1683 is the new usage footer extraction. `source-reply-delivery-mode.ts` resolves the delivery mode.
+
+### 2026-05-18: PR #83378 (PENDING)
+- **Issue**: #83280 — `openclaw infer model run` exits 0 when provider returns empty output with errorMessage
+- **Root cause**: Gateway transport path in `runModelRun()` (capability-cli.ts ~line 845) returned `ok: true` without checking if response payloads contained any text. Local transport had this check (line 772) but gateway path was missing it.
+- **Fix**: After `callGateway()` response, collect text from payloads and throw `Error` when empty — same pattern as local transport path.
+- **Files**: `capability-cli.ts` (+17 lines net), `capability-cli.test.ts` (+19 lines, 1 new test)
+- **CI**: All checks pass, including Real behavior proof gate.
+- **Lesson**: When a command supports multiple transport paths (local vs gateway), error handling must be symmetric. The local path had proper validation; the gateway path assumed success. Pattern: search for all transport branches when fixing error handling.
+- **Real behavior proof format**: openclaw requires structured fields: "Behavior addressed", "Real environment tested", "Exact steps or command run after this patch", "Evidence after fix" (needs live `openclaw` commands, not just unit tests), "Observed result after fix", "What was not tested". See `scripts/github/real-behavior-proof-policy.mjs` for exact field names and validation logic.
