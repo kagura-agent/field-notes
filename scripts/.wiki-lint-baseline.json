@@ -1,0 +1,2578 @@
+{
+  "e7202d46e424d9f1": {
+    "check": 1,
+    "level": "error",
+    "file": "./eval/probe-set.md",
+    "detail": "broken link to [[data-fabrication-in-review]]",
+    "key": "e7202d46e424d9f1"
+  },
+  "8fac657f995afae7": {
+    "check": 1,
+    "level": "error",
+    "file": "./eval/probe-set.md",
+    "detail": "broken link to [[evoagentbench-deep-read]]",
+    "key": "8fac657f995afae7"
+  },
+  "2ca15e46d7f7b4a9": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/agent-harness-kit.md",
+    "detail": "broken link to [[taskflow]]",
+    "key": "2ca15e46d7f7b4a9"
+  },
+  "67c535dd55619df1": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/agentic-stack.md",
+    "detail": "broken link to [[\u53cc\u94fe]]",
+    "key": "67c535dd55619df1"
+  },
+  "2bec3d3f791971d2": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/agents-md-context-patterns.md",
+    "detail": "broken link to [[token-efficiency]]",
+    "key": "2bec3d3f791971d2"
+  },
+  "cec3e61d82c1b685": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/anthropic-nla-2026-05.md",
+    "detail": "broken link to [[model-internal-state]]",
+    "key": "cec3e61d82c1b685"
+  },
+  "b27da287ba577053": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/anthropic-nla-2026-05.md",
+    "detail": "broken link to [[reconstruction-as-validation]]",
+    "key": "b27da287ba577053"
+  },
+  "f39c4e58962d5971": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/ast-outline.md",
+    "detail": "broken link to [[MCP]]",
+    "key": "f39c4e58962d5971"
+  },
+  "83799a5da79b1b51": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/augment-agents-md-study.md",
+    "detail": "broken link to [[context-management]]",
+    "key": "83799a5da79b1b51"
+  },
+  "30151f5ba5e42471": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/brain-git-memory.md",
+    "detail": "broken link to [[agent-session-resume]]",
+    "key": "30151f5ba5e42471"
+  },
+  "43b233875b92e586": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/bux.md",
+    "detail": "broken link to [[agent-chat-interface]]",
+    "key": "43b233875b92e586"
+  },
+  "58012c1503e913df": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/bux.md",
+    "detail": "broken link to [[agent-proactivity]]",
+    "key": "58012c1503e913df"
+  },
+  "2849337ad3e4357c": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/bux.md",
+    "detail": "broken link to [[agent-security-patterns]]",
+    "key": "2849337ad3e4357c"
+  },
+  "d555989906b6899a": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/byob-browser.md",
+    "detail": "broken link to [[browser-automation]]",
+    "key": "d555989906b6899a"
+  },
+  "4d90c035f544e92e": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/byob-browser.md",
+    "detail": "broken link to [[mcp-protocol]]",
+    "key": "4d90c035f544e92e"
+  },
+  "5fb800e769cafb77": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/byob-chrome-reuse-mcp.md",
+    "detail": "broken link to [[browser-mcp]]",
+    "key": "5fb800e769cafb77"
+  },
+  "a7ea2c03402caae4": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/byob-chrome-reuse-mcp.md",
+    "detail": "broken link to [[browser-use]]",
+    "key": "a7ea2c03402caae4"
+  },
+  "5b40022ece0cdacf": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/byob-chrome-reuse-mcp.md",
+    "detail": "broken link to [[chrome-devtools-mcp]]",
+    "key": "5b40022ece0cdacf"
+  },
+  "662f56fc3dac62ae": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/cc-telegram-bridge.md",
+    "detail": "broken link to [[agent-session-resume]]",
+    "key": "662f56fc3dac62ae"
+  },
+  "aeb885bc50acf2e8": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/craft-agents-oss.md",
+    "detail": "broken link to [[lukiIabs/skills]]",
+    "key": "aeb885bc50acf2e8"
+  },
+  "e160c8c4371cd56d": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/craft-agents-oss.md",
+    "detail": "broken link to [[master-skill]]",
+    "key": "e160c8c4371cd56d"
+  },
+  "ea176ecd84c3017c": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/cursor-sdk.md",
+    "detail": "broken link to [[addyosmani-agent-skills]]",
+    "key": "ea176ecd84c3017c"
+  },
+  "4e8c7d917077e3c8": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/cursor-sdk.md",
+    "detail": "broken link to [[agent-client-protocol]]",
+    "key": "4e8c7d917077e3c8"
+  },
+  "e33cca4c35928453": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/cursor-sdk.md",
+    "detail": "broken link to [[skill-ecosystems]]",
+    "key": "e33cca4c35928453"
+  },
+  "296845421b5a84e5": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/deepclaude.md",
+    "detail": "broken link to [[extended-thinking]]",
+    "key": "296845421b5a84e5"
+  },
+  "0f7b25fbfd4ac440": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/delegate-52-document-corruption.md",
+    "detail": "broken link to [[re_gent]]",
+    "key": "0f7b25fbfd4ac440"
+  },
+  "4d4131f86e5547df": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/dirac.md",
+    "detail": "broken link to [[cline]]",
+    "key": "4d4131f86e5547df"
+  },
+  "93764fd6dbfe735a": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/dirac.md",
+    "detail": "broken link to [[content-addressable-editing]]",
+    "key": "93764fd6dbfe735a"
+  },
+  "aaea2b149333441d": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/elephant-agent.md",
+    "detail": "broken link to [[temporal-decay-retrieval]]",
+    "key": "aaea2b149333441d"
+  },
+  "9073ce41c8abccbe": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/flowforge.md",
+    "detail": "broken link to [[evanflow]]",
+    "key": "9073ce41c8abccbe"
+  },
+  "747551b482fc886f": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/flowforge.md",
+    "detail": "broken link to [[observability]]",
+    "key": "747551b482fc886f"
+  },
+  "177f4b1dd93f1469": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/genericagent.md",
+    "detail": "broken link to [[acp-protocol]]",
+    "key": "177f4b1dd93f1469"
+  },
+  "ce060f808a5c865d": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/gogetajob.md",
+    "detail": "broken link to [[error-handling-in-cli]]",
+    "key": "ce060f808a5c865d"
+  },
+  "f193ccf47601bf21": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/gread-code-reader.md",
+    "detail": "broken link to [[agent-infrastructure]]",
+    "key": "f193ccf47601bf21"
+  },
+  "5f42bdf4be418945": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/harmonist.md",
+    "detail": "broken link to [[wiki]]",
+    "key": "5f42bdf4be418945"
+  },
+  "c24467c750f2bf8e": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/hermes-agent.md",
+    "detail": "broken link to [[kagura-canvas]]",
+    "key": "c24467c750f2bf8e"
+  },
+  "0eb456e2b3c1826a": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/kiwifs.md",
+    "detail": "broken link to [[taskflow]]",
+    "key": "0eb456e2b3c1826a"
+  },
+  "19f5d535f66cf58e": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/learning-opportunities.md",
+    "detail": "broken link to [[TACO]]",
+    "key": "19f5d535f66cf58e"
+  },
+  "f4b6ddfe93450e3d": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/mapick.md",
+    "detail": "broken link to [[AGENTS]]",
+    "key": "f4b6ddfe93450e3d"
+  },
+  "76bd6cbad6b285a2": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/memprivacy.md",
+    "detail": "broken link to [[MEMORY]]",
+    "key": "76bd6cbad6b285a2"
+  },
+  "5238fbddb522b5fd": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/memprivacy.md",
+    "detail": "broken link to [[mem0]]",
+    "key": "5238fbddb522b5fd"
+  },
+  "c241e79f3d387f0f": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/memu.md",
+    "detail": "broken link to [[skill-ecosystems]]",
+    "key": "c241e79f3d387f0f"
+  },
+  "b0bf04745d3a388b": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/microsoft-apm.md",
+    "detail": "broken link to [[agentskills-io]]",
+    "key": "b0bf04745d3a388b"
+  },
+  "903d155a7ec1d066": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/mirage-vfs.md",
+    "detail": "broken link to [[agent-session-resume]]",
+    "key": "903d155a7ec1d066"
+  },
+  "e02934e1d70f2f9e": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/mirage-vfs.md",
+    "detail": "broken link to [[capability-scoping]]",
+    "key": "e02934e1d70f2f9e"
+  },
+  "e7c5e930dc4e9fd1": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/mnem.md",
+    "detail": "broken link to [[agent-memory-landscape]]",
+    "key": "e7c5e930dc4e9fd1"
+  },
+  "4fb98de07fe96577": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/nanobot.md",
+    "detail": "broken link to [[kagura-canvas]]",
+    "key": "4fb98de07fe96577"
+  },
+  "355f7fb7fbe6da5c": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/needle-san.md",
+    "detail": "broken link to [[distillation]]",
+    "key": "355f7fb7fbe6da5c"
+  },
+  "ebbead348e3bfed1": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/needle-san.md",
+    "detail": "broken link to [[on-device-inference]]",
+    "key": "ebbead348e3bfed1"
+  },
+  "a61cc429eb678a64": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/needle-san.md",
+    "detail": "broken link to [[tool-calling]]",
+    "key": "a61cc429eb678a64"
+  },
+  "71fc1db96dec131f": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/oh-my-kimichan.md",
+    "detail": "broken link to [[codex-plusplus]]",
+    "key": "71fc1db96dec131f"
+  },
+  "64a8e6736cf35544": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/oh-my-kimichan.md",
+    "detail": "broken link to [[self-consistency]]",
+    "key": "64a8e6736cf35544"
+  },
+  "b92c9cd487dd31d2": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/openchronicle.md",
+    "detail": "broken link to [[agent-memory]]",
+    "key": "b92c9cd487dd31d2"
+  },
+  "a117076c69f99f03": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/openchronicle.md",
+    "detail": "broken link to [[mcp]]",
+    "key": "a117076c69f99f03"
+  },
+  "42e04c0a78de3a34": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/phantom.md",
+    "detail": "broken link to [[maintainer-merge-pattern]]",
+    "key": "42e04c0a78de3a34"
+  },
+  "74feab360bb7b4b0": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/reasonix.md",
+    "detail": "broken link to [[append-only-log]]",
+    "key": "74feab360bb7b4b0"
+  },
+  "efb0ad5a5e97679b": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/reversa.md",
+    "detail": "broken link to [[agent-skill-ecosystems]]",
+    "key": "efb0ad5a5e97679b"
+  },
+  "99a9746388de21c0": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/runbook-hermes.md",
+    "detail": "broken link to [[agent-runbook-learning]]",
+    "key": "99a9746388de21c0"
+  },
+  "3b5bd9a17f093e12": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/runbook-hermes.md",
+    "detail": "broken link to [[domain-specific-compression]]",
+    "key": "3b5bd9a17f093e12"
+  },
+  "09ebac21b7135220": {
+    "check": 1,
+    "level": "error",
+    "file": "./projects/runbook-hermes.md",
+    "detail": "broken link to [[evidence-driven-rca]]",
+    "key": "09ebac21b7135220"
+  },
+  "ba1566c5af8ee72b": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-budget-control.md",
+    "detail": "not in index",
+    "key": "ba1566c5af8ee72b"
+  },
+  "f67673bf6698e546": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-commerce.md",
+    "detail": "not in index",
+    "key": "f67673bf6698e546"
+  },
+  "672ccfb3aefe5691": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-context-portability-approaches.md",
+    "detail": "not in index",
+    "key": "672ccfb3aefe5691"
+  },
+  "94cce3e2b813b87f": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-isolation.md",
+    "detail": "not in index",
+    "key": "94cce3e2b813b87f"
+  },
+  "23b29e1b10f5fb85": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-native-code-search.md",
+    "detail": "not in index",
+    "key": "23b29e1b10f5fb85"
+  },
+  "662c2ce699691e72": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-skill-ecosystem.md",
+    "detail": "not in index",
+    "key": "662c2ce699691e72"
+  },
+  "22511e6cd53cb007": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/agent-trust-hierarchy.md",
+    "detail": "not in index",
+    "key": "22511e6cd53cb007"
+  },
+  "75b24ba1c67d5b2d": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/apm-triage-panel-patterns.md",
+    "detail": "not in index",
+    "key": "75b24ba1c67d5b2d"
+  },
+  "001f605862303caf": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/bash-as-agent-interface.md",
+    "detail": "not in index",
+    "key": "001f605862303caf"
+  },
+  "801b3f9d90265505": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/clawhub.md",
+    "detail": "not in index",
+    "key": "801b3f9d90265505"
+  },
+  "aae9a220094fc453": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/code-review.md",
+    "detail": "not in index",
+    "key": "aae9a220094fc453"
+  },
+  "065796dee865723c": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/collaboration-bottleneck.md",
+    "detail": "not in index",
+    "key": "065796dee865723c"
+  },
+  "8c37c66b03fe96a6": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/community-health-tracking-signal.md",
+    "detail": "not in index",
+    "key": "8c37c66b03fe96a6"
+  },
+  "a8c5ee5a8728ebd8": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/composable-prompt-assembly.md",
+    "detail": "not in index",
+    "key": "a8c5ee5a8728ebd8"
+  },
+  "207813d8079e1708": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/compose-performance-skills.md",
+    "detail": "not in index",
+    "key": "207813d8079e1708"
+  },
+  "e154848f31ca2253": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/content-before-code.md",
+    "detail": "not in index",
+    "key": "e154848f31ca2253"
+  },
+  "c1f004aab0aadad6": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/cost-of-not-calling.md",
+    "detail": "not in index",
+    "key": "c1f004aab0aadad6"
+  },
+  "57a8d470803a74c4": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/critics-reveal-architecture.md",
+    "detail": "not in index",
+    "key": "57a8d470803a74c4"
+  },
+  "1ccb0667de936331": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/cron-design-principles.md",
+    "detail": "not in index",
+    "key": "1ccb0667de936331"
+  },
+  "9c945e5cff019285": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/cured-tracking-methodology.md",
+    "detail": "not in index",
+    "key": "9c945e5cff019285"
+  },
+  "5fddef9de60d799b": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/db9.md",
+    "detail": "not in index",
+    "key": "5fddef9de60d799b"
+  },
+  "7117836cd9629e49": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/default-fail-contract.md",
+    "detail": "not in index",
+    "key": "7117836cd9629e49"
+  },
+  "a0e0452097a1a100": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/delegation-fidelity-problem.md",
+    "detail": "not in index",
+    "key": "a0e0452097a1a100"
+  },
+  "dc1828b8033208fc": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/delta-mem.md",
+    "detail": "not in index",
+    "key": "dc1828b8033208fc"
+  },
+  "caf72de71f137cbf": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/dogfood-and-closure.md",
+    "detail": "not in index",
+    "key": "caf72de71f137cbf"
+  },
+  "8552971e00d2d11e": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/doubt-driven-development.md",
+    "detail": "not in index",
+    "key": "8552971e00d2d11e"
+  },
+  "7ef2b6b0b0ba3e14": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/dream-consolidation-pattern.md",
+    "detail": "not in index",
+    "key": "7ef2b6b0b0ba3e14"
+  },
+  "b9582d3d3ddb27b1": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/explicit-spawn-contract.md",
+    "detail": "not in index",
+    "key": "b9582d3d3ddb27b1"
+  },
+  "90bf5b862f188de1": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/ffn-free-routing.md",
+    "detail": "not in index",
+    "key": "90bf5b862f188de1"
+  },
+  "1695b7b101768a82": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/functional-area-resolver.md",
+    "detail": "not in index",
+    "key": "1695b7b101768a82"
+  },
+  "98e89645b81755ad": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/git-backed-agent-memory.md",
+    "detail": "not in index",
+    "key": "98e89645b81755ad"
+  },
+  "23a59cd9588e0525": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/hermes-memory-skills.md",
+    "detail": "not in index",
+    "key": "23a59cd9588e0525"
+  },
+  "010d85e065c43068": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/hermes.md",
+    "detail": "not in index",
+    "key": "010d85e065c43068"
+  },
+  "b92f814b3cdbbbed": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/idle-cached-session-resume.md",
+    "detail": "not in index",
+    "key": "b92f814b3cdbbbed"
+  },
+  "3f8b4ea2f48d0128": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/jaccard-belief-clustering.md",
+    "detail": "not in index",
+    "key": "3f8b4ea2f48d0128"
+  },
+  "5e37f190b862ca3a": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/kagura-story.md",
+    "detail": "not in index",
+    "key": "5e37f190b862ca3a"
+  },
+  "44f354ca424292a2": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/kronos-agent-os.md",
+    "detail": "not in index",
+    "key": "44f354ca424292a2"
+  },
+  "dba8843e49735dda": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/llm-decision-layer-pattern.md",
+    "detail": "not in index",
+    "key": "dba8843e49735dda"
+  },
+  "a7e36459c736703c": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/mcp-vs-native-tools.md",
+    "detail": "not in index",
+    "key": "a7e36459c736703c"
+  },
+  "f26c00a102da8a81": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/mechanical-enforcement-via-topology.md",
+    "detail": "not in index",
+    "key": "f26c00a102da8a81"
+  },
+  "e788022878e63457": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/mechanical-preflight-check.md",
+    "detail": "not in index",
+    "key": "e788022878e63457"
+  },
+  "6872a10c71e6d95b": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/memory-complexity-pendulum.md",
+    "detail": "not in index",
+    "key": "6872a10c71e6d95b"
+  },
+  "89514728df93d332": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/memory-trash-filter.md",
+    "detail": "not in index",
+    "key": "89514728df93d332"
+  },
+  "9ebf396e0c9c86c6": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/metadata-driven-context-injection.md",
+    "detail": "not in index",
+    "key": "9ebf396e0c9c86c6"
+  },
+  "30550a989e3d5b23": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/mitchellh-ai-psychosis.md",
+    "detail": "not in index",
+    "key": "30550a989e3d5b23"
+  },
+  "ac3fbb2aba2df8b6": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/model-native-vs-model-agnostic.md",
+    "detail": "not in index",
+    "key": "ac3fbb2aba2df8b6"
+  },
+  "d0f0d76f1101798e": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/multi-agent-quality-gate.md",
+    "detail": "not in index",
+    "key": "d0f0d76f1101798e"
+  },
+  "da1ce6b0daaef48f": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/multi-harness-adapter-pattern.md",
+    "detail": "not in index",
+    "key": "da1ce6b0daaef48f"
+  },
+  "3627e8fa1a4b153e": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/oh-story-claudecode.md",
+    "detail": "not in index",
+    "key": "3627e8fa1a4b153e"
+  },
+  "13c9939869b5b125": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/openhuman.md",
+    "detail": "not in index",
+    "key": "13c9939869b5b125"
+  },
+  "be350342da299d4e": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/oss-contribution-discipline.md",
+    "detail": "not in index",
+    "key": "be350342da299d4e"
+  },
+  "ed36d71298f4f799": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/recall-over-precision.md",
+    "detail": "not in index",
+    "key": "ed36d71298f4f799"
+  },
+  "eab77725dd228719": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/scheduling-over-checklist.md",
+    "detail": "not in index",
+    "key": "eab77725dd228719"
+  },
+  "fa9568495571b609": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/scout-saturation-signal.md",
+    "detail": "not in index",
+    "key": "fa9568495571b609"
+  },
+  "27e4df856a1d68eb": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/session-state-isolation.md",
+    "detail": "not in index",
+    "key": "27e4df856a1d68eb"
+  },
+  "d976874f9bd580d2": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/skill-behavioral-testing.md",
+    "detail": "not in index",
+    "key": "d976874f9bd580d2"
+  },
+  "d8c970f296367a3c": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/skill-category-split.md",
+    "detail": "not in index",
+    "key": "d8c970f296367a3c"
+  },
+  "f6fdb4ca1109deda": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/skill-distribution-convergence.md",
+    "detail": "not in index",
+    "key": "f6fdb4ca1109deda"
+  },
+  "3364c275059a50d7": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/skill-explosion-2026-05.md",
+    "detail": "not in index",
+    "key": "3364c275059a50d7"
+  },
+  "4083703e724a074a": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/skills-as-methodology.md",
+    "detail": "not in index",
+    "key": "4083703e724a074a"
+  },
+  "a2ed7b0f820fea8e": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/source-driven-development.md",
+    "detail": "not in index",
+    "key": "a2ed7b0f820fea8e"
+  },
+  "a4478f17da4bb51b": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/supervisor-pattern.md",
+    "detail": "not in index",
+    "key": "a4478f17da4bb51b"
+  },
+  "bc8c8e326e3df3b0": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/team-lead.md",
+    "detail": "not in index",
+    "key": "bc8c8e326e3df3b0"
+  },
+  "f4e54b33b55c98c5": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/tiered-memory-retrieval.md",
+    "detail": "not in index",
+    "key": "f4e54b33b55c98c5"
+  },
+  "669c7e234cfd015c": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/tree-sitter.md",
+    "detail": "not in index",
+    "key": "669c7e234cfd015c"
+  },
+  "b2206cc5eb5753d8": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/verify-claims.md",
+    "detail": "not in index",
+    "key": "b2206cc5eb5753d8"
+  },
+  "c9d2008bccf30086": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/wiki-lint.md",
+    "detail": "not in index",
+    "key": "c9d2008bccf30086"
+  },
+  "31900f7c376fa40c": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/worktree-convergence-2026-05.md",
+    "detail": "not in index",
+    "key": "31900f7c376fa40c"
+  },
+  "7db855ddd27b7196": {
+    "check": 2,
+    "level": "warn",
+    "file": "cards/zulip.md",
+    "detail": "not in index",
+    "key": "7db855ddd27b7196"
+  },
+  "94331dbde95f02b9": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/addy-agent-skills.md",
+    "detail": "not in index",
+    "key": "94331dbde95f02b9"
+  },
+  "fefebb405c7d9b80": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/aegis.md",
+    "detail": "not in index",
+    "key": "fefebb405c7d9b80"
+  },
+  "fc6cd0384811a607": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agent-ecosystem-scout-2026-05-09.md",
+    "detail": "not in index",
+    "key": "fc6cd0384811a607"
+  },
+  "f0169a750634d5e1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agent-harness-kit.md",
+    "detail": "not in index",
+    "key": "f0169a750634d5e1"
+  },
+  "f1eeb1bd71fb1c52": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agent-install.md",
+    "detail": "not in index",
+    "key": "f1eeb1bd71fb1c52"
+  },
+  "4f8500e66945e18d": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agent-memory-hooks-neo4j.md",
+    "detail": "not in index",
+    "key": "4f8500e66945e18d"
+  },
+  "82bf83205a691885": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agent-skill-survey-2026.md",
+    "detail": "not in index",
+    "key": "82bf83205a691885"
+  },
+  "d6297f22b3200b34": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agent-skills-eval.md",
+    "detail": "not in index",
+    "key": "d6297f22b3200b34"
+  },
+  "21c635d481bdadeb": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agentops.md",
+    "detail": "not in index",
+    "key": "21c635d481bdadeb"
+  },
+  "d28f31b6c218ad6b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/agents-md-context-patterns.md",
+    "detail": "not in index",
+    "key": "d28f31b6c218ad6b"
+  },
+  "4076656ccd3f1466": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/aide-recursive-agent.md",
+    "detail": "not in index",
+    "key": "4076656ccd3f1466"
+  },
+  "cc3390af11f61b63": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/anthropic-nla-2026-05.md",
+    "detail": "not in index",
+    "key": "cc3390af11f61b63"
+  },
+  "cf6394add1b93a2c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/anthropic-nla.md",
+    "detail": "not in index",
+    "key": "cf6394add1b93a2c"
+  },
+  "1f6334f832c92294": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/ast-outline.md",
+    "detail": "not in index",
+    "key": "1f6334f832c92294"
+  },
+  "7cd516ad967dd4fb": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/augment-agents-md-study.md",
+    "detail": "not in index",
+    "key": "7cd516ad967dd4fb"
+  },
+  "ae3df8392873c48c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/autoloops-upskill.md",
+    "detail": "not in index",
+    "key": "ae3df8392873c48c"
+  },
+  "e3a5d20f594ac2a6": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/beads.md",
+    "detail": "not in index",
+    "key": "e3a5d20f594ac2a6"
+  },
+  "1716418481cdabeb": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/beever-atlas.md",
+    "detail": "not in index",
+    "key": "1716418481cdabeb"
+  },
+  "301a9b456b487467": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/blueprint.md",
+    "detail": "not in index",
+    "key": "301a9b456b487467"
+  },
+  "353b6641bf2a8bde": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/brain-git-memory.md",
+    "detail": "not in index",
+    "key": "353b6641bf2a8bde"
+  },
+  "862701f6d0c37193": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/brain-rust.md",
+    "detail": "not in index",
+    "key": "862701f6d0c37193"
+  },
+  "564912ee0f5f0bbc": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/buddyme.md",
+    "detail": "not in index",
+    "key": "564912ee0f5f0bbc"
+  },
+  "64763a28fdd92ddd": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/bux.md",
+    "detail": "not in index",
+    "key": "64763a28fdd92ddd"
+  },
+  "324e260113c254e0": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/byob-browser.md",
+    "detail": "not in index",
+    "key": "324e260113c254e0"
+  },
+  "2944458c48d8d7f3": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/byob-chrome-reuse-mcp.md",
+    "detail": "not in index",
+    "key": "2944458c48d8d7f3"
+  },
+  "62a89d064def786f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cadis.md",
+    "detail": "not in index",
+    "key": "62a89d064def786f"
+  },
+  "c22c531c1b2d62c3": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cangjie-skill-ecosystem.md",
+    "detail": "not in index",
+    "key": "c22c531c1b2d62c3"
+  },
+  "1c0e09175f5a7c3a": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cc-connect.md",
+    "detail": "not in index",
+    "key": "1c0e09175f5a7c3a"
+  },
+  "8be737a4528cc8d5": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cc-telegram-bridge.md",
+    "detail": "not in index",
+    "key": "8be737a4528cc8d5"
+  },
+  "244b5377dba5f251": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/centaur-loop.md",
+    "detail": "not in index",
+    "key": "244b5377dba5f251"
+  },
+  "c8e29cb18479f35c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/clawmem.md",
+    "detail": "not in index",
+    "key": "c8e29cb18479f35c"
+  },
+  "86ab27cfbaabb517": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/control-flow-over-prompts.md",
+    "detail": "not in index",
+    "key": "86ab27cfbaabb517"
+  },
+  "b44a94655ba426f1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/craft-agents-oss.md",
+    "detail": "not in index",
+    "key": "b44a94655ba426f1"
+  },
+  "1dd29f01b52f820c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cursor-sdk.md",
+    "detail": "not in index",
+    "key": "1dd29f01b52f820c"
+  },
+  "9b1b74c4534e1a27": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cve-2026-28353-agent-supply-chain.md",
+    "detail": "not in index",
+    "key": "9b1b74c4534e1a27"
+  },
+  "7cbf7b63450deb1d": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/cwc-long-running-agents.md",
+    "detail": "not in index",
+    "key": "7cbf7b63450deb1d"
+  },
+  "35796992be6fc617": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/deepclaude.md",
+    "detail": "not in index",
+    "key": "35796992be6fc617"
+  },
+  "bb2e8a25b7e8b038": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/deepsec.md",
+    "detail": "not in index",
+    "key": "bb2e8a25b7e8b038"
+  },
+  "79d819b5677bf932": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/delegate-52-document-corruption.md",
+    "detail": "not in index",
+    "key": "79d819b5677bf932"
+  },
+  "2872b965089c5573": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/delegate52.md",
+    "detail": "not in index",
+    "key": "2872b965089c5573"
+  },
+  "0e0ce00fa1aed748": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/dirac.md",
+    "detail": "not in index",
+    "key": "0e0ce00fa1aed748"
+  },
+  "9425b58bf9d70cdb": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/downy.md",
+    "detail": "not in index",
+    "key": "9425b58bf9d70cdb"
+  },
+  "47e092d6080ead64": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/dreamer.md",
+    "detail": "not in index",
+    "key": "47e092d6080ead64"
+  },
+  "05fe68381d156552": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/elephant-agent.md",
+    "detail": "not in index",
+    "key": "05fe68381d156552"
+  },
+  "2ebec09756fe138e": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/eliza.md",
+    "detail": "not in index",
+    "key": "2ebec09756fe138e"
+  },
+  "41c90a5331b66ecd": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/evomap-evolver-gep.md",
+    "detail": "not in index",
+    "key": "41c90a5331b66ecd"
+  },
+  "d5cfc400611daf5b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/felix.md",
+    "detail": "not in index",
+    "key": "d5cfc400611daf5b"
+  },
+  "b9fb91310c723aba": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/fides-protocol.md",
+    "detail": "not in index",
+    "key": "b9fb91310c723aba"
+  },
+  "d1f3edfafa736d01": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/friday-studio.md",
+    "detail": "not in index",
+    "key": "d1f3edfafa736d01"
+  },
+  "cccacd86a90b7a84": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/garden-skills.md",
+    "detail": "not in index",
+    "key": "cccacd86a90b7a84"
+  },
+  "381fb4c294494f25": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/girl-agent.md",
+    "detail": "not in index",
+    "key": "381fb4c294494f25"
+  },
+  "342a10093966e7d1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/godmode-skill.md",
+    "detail": "not in index",
+    "key": "342a10093966e7d1"
+  },
+  "a8365337960276e9": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/gread-code-reader.md",
+    "detail": "not in index",
+    "key": "a8365337960276e9"
+  },
+  "e9880f9cad42a60f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/harmonist.md",
+    "detail": "not in index",
+    "key": "e9880f9cad42a60f"
+  },
+  "a691df2a721c53aa": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/heavyskill.md",
+    "detail": "not in index",
+    "key": "a691df2a721c53aa"
+  },
+  "7e046a876162ca4d": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/hermes-labyrinth.md",
+    "detail": "not in index",
+    "key": "7e046a876162ca4d"
+  },
+  "bbd3cd679ed23e25": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/hn-agents-control-flow.md",
+    "detail": "not in index",
+    "key": "bbd3cd679ed23e25"
+  },
+  "76900b0a21865289": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/holaos.md",
+    "detail": "not in index",
+    "key": "76900b0a21865289"
+  },
+  "0f4f748982719d00": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/html-anything.md",
+    "detail": "not in index",
+    "key": "0f4f748982719d00"
+  },
+  "f95117d65d385d04": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/interaction-models-thinkingmachines.md",
+    "detail": "not in index",
+    "key": "f95117d65d385d04"
+  },
+  "19ca1e24765b3f2f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/invincat.md",
+    "detail": "not in index",
+    "key": "19ca1e24765b3f2f"
+  },
+  "f347352c61b277af": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/iris-clawd-contributor-study.md",
+    "detail": "not in index",
+    "key": "f347352c61b277af"
+  },
+  "2a29280465d63a4a": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/ironcurtain.md",
+    "detail": "not in index",
+    "key": "2a29280465d63a4a"
+  },
+  "a2db0d8c8f3596d1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/kiwifs.md",
+    "detail": "not in index",
+    "key": "a2db0d8c8f3596d1"
+  },
+  "88d9590d4fd9164e": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/krusch-context-mcp.md",
+    "detail": "not in index",
+    "key": "88d9590d4fd9164e"
+  },
+  "d8f0d8c03b9306a5": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/l1-index-layer-evaluation.md",
+    "detail": "not in index",
+    "key": "d8f0d8c03b9306a5"
+  },
+  "cff0b6e323d5547f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/lazar.md",
+    "detail": "not in index",
+    "key": "cff0b6e323d5547f"
+  },
+  "4c1663e595da657f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/learning-opportunities.md",
+    "detail": "not in index",
+    "key": "4c1663e595da657f"
+  },
+  "e3b777c6780aa894": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/library-skills.md",
+    "detail": "not in index",
+    "key": "e3b777c6780aa894"
+  },
+  "7258493a2309b33c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/mapick.md",
+    "detail": "not in index",
+    "key": "7258493a2309b33c"
+  },
+  "6d43857ab0f39960": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/medusa-skill-framework.md",
+    "detail": "not in index",
+    "key": "6d43857ab0f39960"
+  },
+  "d6ddb0943c6cf4b3": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/memos-memory-os.md",
+    "detail": "not in index",
+    "key": "d6ddb0943c6cf4b3"
+  },
+  "ee4da998ed88c0e9": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/memprivacy.md",
+    "detail": "not in index",
+    "key": "ee4da998ed88c0e9"
+  },
+  "2ed7d68f7072ecda": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/memu.md",
+    "detail": "not in index",
+    "key": "2ed7d68f7072ecda"
+  },
+  "4ec86560d01022d0": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/mercury-agent-skills.md",
+    "detail": "not in index",
+    "key": "4ec86560d01022d0"
+  },
+  "9e85c6d5138a551a": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/microsoft-apm.md",
+    "detail": "not in index",
+    "key": "9e85c6d5138a551a"
+  },
+  "93a1b9a5018fd835": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/mirage-vfs.md",
+    "detail": "not in index",
+    "key": "93a1b9a5018fd835"
+  },
+  "1af00a1a2ffc54c1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/mnem.md",
+    "detail": "not in index",
+    "key": "1af00a1a2ffc54c1"
+  },
+  "8e28dc3906fd5436": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/mneo.md",
+    "detail": "not in index",
+    "key": "8e28dc3906fd5436"
+  },
+  "36b7b4223c974062": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/native-feel-skill.md",
+    "detail": "not in index",
+    "key": "36b7b4223c974062"
+  },
+  "e330f8f790909766": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/needle-san.md",
+    "detail": "not in index",
+    "key": "e330f8f790909766"
+  },
+  "92d36cc9dda25671": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/needle-simple-attention.md",
+    "detail": "not in index",
+    "key": "92d36cc9dda25671"
+  },
+  "889055219dd9e438": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/oh-my-hermes.md",
+    "detail": "not in index",
+    "key": "889055219dd9e438"
+  },
+  "23eef84c7ba1df20": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/oh-my-kimichan.md",
+    "detail": "not in index",
+    "key": "23eef84c7ba1df20"
+  },
+  "3f7a670c90245475": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/open-cowork.md",
+    "detail": "not in index",
+    "key": "3f7a670c90245475"
+  },
+  "4902b92005fd774b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/open-design.md",
+    "detail": "not in index",
+    "key": "4902b92005fd774b"
+  },
+  "3b9cc6ad50f21bb0": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/open-multi-agent.md",
+    "detail": "not in index",
+    "key": "3b9cc6ad50f21bb0"
+  },
+  "8d406908e45057ef": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/openchronicle.md",
+    "detail": "not in index",
+    "key": "8d406908e45057ef"
+  },
+  "0acc1d4561af42da": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/openclaw-awd-arena.md",
+    "detail": "not in index",
+    "key": "0acc1d4561af42da"
+  },
+  "1492e497988f5e99": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/openmelon.md",
+    "detail": "not in index",
+    "key": "1492e497988f5e99"
+  },
+  "5101a2ec822d7760": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/opensandbox.md",
+    "detail": "not in index",
+    "key": "5101a2ec822d7760"
+  },
+  "b975916733b00e6a": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/opensquilla.md",
+    "detail": "not in index",
+    "key": "b975916733b00e6a"
+  },
+  "e305a5bdc0a73d97": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/paperclip.md",
+    "detail": "not in index",
+    "key": "e305a5bdc0a73d97"
+  },
+  "6d9b08c5463f97a4": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/paperguru-ccm.md",
+    "detail": "not in index",
+    "key": "6d9b08c5463f97a4"
+  },
+  "b2e8db3cc3521c6d": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/paperguru-lam.md",
+    "detail": "not in index",
+    "key": "b2e8db3cc3521c6d"
+  },
+  "cac7f21df64683cf": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/paragents.md",
+    "detail": "not in index",
+    "key": "cac7f21df64683cf"
+  },
+  "ee2339c29767b858": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/photo-agents.md",
+    "detail": "not in index",
+    "key": "ee2339c29767b858"
+  },
+  "c478a99f45e4b3d1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/poco-claw.md",
+    "detail": "not in index",
+    "key": "c478a99f45e4b3d1"
+  },
+  "a296ba2045308deb": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/pu-shell-agent.md",
+    "detail": "not in index",
+    "key": "a296ba2045308deb"
+  },
+  "d7747f20840237aa": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/re-gent.md",
+    "detail": "not in index",
+    "key": "d7747f20840237aa"
+  },
+  "34e2ecf1932991b6": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/reasonix-cache-first-agent.md",
+    "detail": "not in index",
+    "key": "34e2ecf1932991b6"
+  },
+  "6f2fb4ffaa7caf72": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/reasonix.md",
+    "detail": "not in index",
+    "key": "6f2fb4ffaa7caf72"
+  },
+  "e5ce30c53a179450": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/reversa.md",
+    "detail": "not in index",
+    "key": "e5ce30c53a179450"
+  },
+  "66ead4f9c5b3ec1b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/runbook-hermes.md",
+    "detail": "not in index",
+    "key": "66ead4f9c5b3ec1b"
+  },
+  "92c70259aa13be4f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/scout-2026-05-05-evening.md",
+    "detail": "not in index",
+    "key": "92c70259aa13be4f"
+  },
+  "b788eaf8eb5f72f4": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/scout-2026-05-06.md",
+    "detail": "not in index",
+    "key": "b788eaf8eb5f72f4"
+  },
+  "b810e78a0e8db251": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/security-audit-2026-05-16.md",
+    "detail": "not in index",
+    "key": "b810e78a0e8db251"
+  },
+  "8c6d2946053b0dec": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/semble-rs.md",
+    "detail": "not in index",
+    "key": "8c6d2946053b0dec"
+  },
+  "964c3e78ce5329ba": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/sentra-rag-failure-modes.md",
+    "detail": "not in index",
+    "key": "964c3e78ce5329ba"
+  },
+  "d21983e93a0c2c41": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/signet.md",
+    "detail": "not in index",
+    "key": "d21983e93a0c2c41"
+  },
+  "840de6fbe66bf70f": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/signetai.md",
+    "detail": "not in index",
+    "key": "840de6fbe66bf70f"
+  },
+  "eefa5430270a216b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/skelm.md",
+    "detail": "not in index",
+    "key": "eefa5430270a216b"
+  },
+  "e7c9130e9b955a3b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/skill-ecosystem-wave-2026-05.md",
+    "detail": "not in index",
+    "key": "e7c9130e9b955a3b"
+  },
+  "d063ba25bd00a0ac": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/skill-make.md",
+    "detail": "not in index",
+    "key": "d063ba25bd00a0ac"
+  },
+  "1eca725ada7e49d6": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/skill-mk.md",
+    "detail": "not in index",
+    "key": "1eca725ada7e49d6"
+  },
+  "9ccae22f1b8945aa": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/skillplus.md",
+    "detail": "not in index",
+    "key": "9ccae22f1b8945aa"
+  },
+  "8ff01228c4f95775": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/spawn-agent.md",
+    "detail": "not in index",
+    "key": "8ff01228c4f95775"
+  },
+  "7c6b27c9f04c2a4d": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/speca.md",
+    "detail": "not in index",
+    "key": "7c6b27c9f04c2a4d"
+  },
+  "983a39f19017c521": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/statewave.md",
+    "detail": "not in index",
+    "key": "983a39f19017c521"
+  },
+  "3b432f2b184a76f1": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/stripe-link-cli.md",
+    "detail": "not in index",
+    "key": "3b432f2b184a76f1"
+  },
+  "9d83ffbd9fa505e8": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/system-prompt-skills.md",
+    "detail": "not in index",
+    "key": "9d83ffbd9fa505e8"
+  },
+  "c44bb5a402b810df": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/taco-context-compression.md",
+    "detail": "not in index",
+    "key": "c44bb5a402b810df"
+  },
+  "f58f27333bd60511": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/tactile.md",
+    "detail": "not in index",
+    "key": "f58f27333bd60511"
+  },
+  "8d67717eb7893846": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/text-to-cad.md",
+    "detail": "not in index",
+    "key": "8d67717eb7893846"
+  },
+  "f3c752fc68ceec4c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/thclaws.md",
+    "detail": "not in index",
+    "key": "f3c752fc68ceec4c"
+  },
+  "b2cb00af79053f0d": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/thoth-personal-ai.md",
+    "detail": "not in index",
+    "key": "b2cb00af79053f0d"
+  },
+  "5f0ad1cf262b7980": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/thoth.md",
+    "detail": "not in index",
+    "key": "5f0ad1cf262b7980"
+  },
+  "e66eac2da5b319bd": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/tracking-health-tool.md",
+    "detail": "not in index",
+    "key": "e66eac2da5b319bd"
+  },
+  "47ddefd652a3154a": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/trustclaw.md",
+    "detail": "not in index",
+    "key": "47ddefd652a3154a"
+  },
+  "b7d171acdd2f893a": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/understand-you.md",
+    "detail": "not in index",
+    "key": "b7d171acdd2f893a"
+  },
+  "34b7345ceba0a3a8": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/veniceai-skills.md",
+    "detail": "not in index",
+    "key": "34b7345ceba0a3a8"
+  },
+  "afc1020572ae70ba": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/vscode-icons.md",
+    "detail": "not in index",
+    "key": "afc1020572ae70ba"
+  },
+  "ae872a2c0495a0ad": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/wanman-skill-evolution.md",
+    "detail": "not in index",
+    "key": "ae872a2c0495a0ad"
+  },
+  "3ea47a630643388b": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/wanman.md",
+    "detail": "not in index",
+    "key": "3ea47a630643388b"
+  },
+  "cc34452e854e417c": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/whale-deepseek-agent.md",
+    "detail": "not in index",
+    "key": "cc34452e854e417c"
+  },
+  "25b50f78f6e0e774": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/workspace-bench.md",
+    "detail": "not in index",
+    "key": "25b50f78f6e0e774"
+  },
+  "a4302c7aa2884672": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/yansu-skill.md",
+    "detail": "not in index",
+    "key": "a4302c7aa2884672"
+  },
+  "78abaa75b4a2a146": {
+    "check": 2,
+    "level": "warn",
+    "file": "projects/yansu.md",
+    "detail": "not in index",
+    "key": "78abaa75b4a2a146"
+  },
+  "93f1ad570a154d71": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/agent-trust-hierarchy.md",
+    "detail": "orphan",
+    "key": "93f1ad570a154d71"
+  },
+  "fd4073ece6876d1b": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/collaboration-bottleneck.md",
+    "detail": "orphan",
+    "key": "fd4073ece6876d1b"
+  },
+  "3acd86a57f25e175": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/content-before-code.md",
+    "detail": "orphan",
+    "key": "3acd86a57f25e175"
+  },
+  "f15605da9e0218ba": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/critics-reveal-architecture.md",
+    "detail": "orphan",
+    "key": "f15605da9e0218ba"
+  },
+  "fb57f98dbc324b11": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/cron-design-principles.md",
+    "detail": "orphan",
+    "key": "fb57f98dbc324b11"
+  },
+  "ec2d0bb907a9cbbb": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/cured-tracking-methodology.md",
+    "detail": "orphan",
+    "key": "ec2d0bb907a9cbbb"
+  },
+  "813636ddcf64a8fc": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/delta-mem.md",
+    "detail": "orphan",
+    "key": "813636ddcf64a8fc"
+  },
+  "29f0e63a13df4c7a": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/dogfood-and-closure.md",
+    "detail": "orphan",
+    "key": "29f0e63a13df4c7a"
+  },
+  "25b1e8dccb316e8a": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/ffn-free-routing.md",
+    "detail": "orphan",
+    "key": "25b1e8dccb316e8a"
+  },
+  "4dbd582e33d418fa": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/llm-decision-layer-pattern.md",
+    "detail": "orphan",
+    "key": "4dbd582e33d418fa"
+  },
+  "cb46f2eb4accc4c1": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/metadata-driven-context-injection.md",
+    "detail": "orphan",
+    "key": "cb46f2eb4accc4c1"
+  },
+  "266cc23ecadfd663": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/mitchellh-ai-psychosis.md",
+    "detail": "orphan",
+    "key": "266cc23ecadfd663"
+  },
+  "9a6ebf4637974bc8": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/openhuman.md",
+    "detail": "orphan",
+    "key": "9a6ebf4637974bc8"
+  },
+  "54584f7106a88732": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/recall-over-precision.md",
+    "detail": "orphan",
+    "key": "54584f7106a88732"
+  },
+  "09a9694900eeb0f7": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/scheduling-over-checklist.md",
+    "detail": "orphan",
+    "key": "09a9694900eeb0f7"
+  },
+  "c111c3690783f095": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/tiered-memory-retrieval.md",
+    "detail": "orphan",
+    "key": "c111c3690783f095"
+  },
+  "7e19afb225485a6a": {
+    "check": 3,
+    "level": "warn",
+    "file": "cards/zulip.md",
+    "detail": "orphan",
+    "key": "7e19afb225485a6a"
+  },
+  "e234cbbd6a7f14e3": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/agent-ecosystem-scout-2026-05-09.md",
+    "detail": "orphan",
+    "key": "e234cbbd6a7f14e3"
+  },
+  "dd2048b91e62f268": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/agent-harness-kit.md",
+    "detail": "orphan",
+    "key": "dd2048b91e62f268"
+  },
+  "7ad613a34c12fe4b": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/agent-skill-survey-2026.md",
+    "detail": "orphan",
+    "key": "7ad613a34c12fe4b"
+  },
+  "53d85c882bdea60a": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/agents-md-context-patterns.md",
+    "detail": "orphan",
+    "key": "53d85c882bdea60a"
+  },
+  "a8a05576a1399b23": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/anthropic-nla-2026-05.md",
+    "detail": "orphan",
+    "key": "a8a05576a1399b23"
+  },
+  "0e6a43f90df8327b": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/anthropic-nla.md",
+    "detail": "orphan",
+    "key": "0e6a43f90df8327b"
+  },
+  "840d8d514307e56a": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/beads.md",
+    "detail": "orphan",
+    "key": "840d8d514307e56a"
+  },
+  "87fa2e3d69c6e1fd": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/brain-git-memory.md",
+    "detail": "orphan",
+    "key": "87fa2e3d69c6e1fd"
+  },
+  "6c0967dd88ab7b6d": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/cangjie-skill-ecosystem.md",
+    "detail": "orphan",
+    "key": "6c0967dd88ab7b6d"
+  },
+  "e9c90764c8aead76": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/cc-connect.md",
+    "detail": "orphan",
+    "key": "e9c90764c8aead76"
+  },
+  "6cd05f6257599e4a": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/cc-telegram-bridge.md",
+    "detail": "orphan",
+    "key": "6cd05f6257599e4a"
+  },
+  "57ce6918a53a1934": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/centaur-loop.md",
+    "detail": "orphan",
+    "key": "57ce6918a53a1934"
+  },
+  "3a4ba4dfcb866b44": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/clawmem.md",
+    "detail": "orphan",
+    "key": "3a4ba4dfcb866b44"
+  },
+  "b45c103466e9bbce": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/control-flow-over-prompts.md",
+    "detail": "orphan",
+    "key": "b45c103466e9bbce"
+  },
+  "cc3e93cba0c85c19": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/downy.md",
+    "detail": "orphan",
+    "key": "cc3e93cba0c85c19"
+  },
+  "097fa9b6051f96f0": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/elephant-agent.md",
+    "detail": "orphan",
+    "key": "097fa9b6051f96f0"
+  },
+  "081f3d5dcef10ee2": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/eliza.md",
+    "detail": "orphan",
+    "key": "081f3d5dcef10ee2"
+  },
+  "929813fd24ff4379": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/felix.md",
+    "detail": "orphan",
+    "key": "929813fd24ff4379"
+  },
+  "8fc2ced62aa1b7ab": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/fides-protocol.md",
+    "detail": "orphan",
+    "key": "8fc2ced62aa1b7ab"
+  },
+  "7ece6ecf0be7a1f0": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/friday-studio.md",
+    "detail": "orphan",
+    "key": "7ece6ecf0be7a1f0"
+  },
+  "fb1452e39230e2c0": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/garden-skills.md",
+    "detail": "orphan",
+    "key": "fb1452e39230e2c0"
+  },
+  "444595ab0cf7a0bf": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/gread-code-reader.md",
+    "detail": "orphan",
+    "key": "444595ab0cf7a0bf"
+  },
+  "6c13db08e6c7d522": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/heavyskill.md",
+    "detail": "orphan",
+    "key": "6c13db08e6c7d522"
+  },
+  "51906fe610f62c00": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/hn-agents-control-flow.md",
+    "detail": "orphan",
+    "key": "51906fe610f62c00"
+  },
+  "268fbab9d45a9218": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/holaos.md",
+    "detail": "orphan",
+    "key": "268fbab9d45a9218"
+  },
+  "17e3ab5a35b80768": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/html-anything.md",
+    "detail": "orphan",
+    "key": "17e3ab5a35b80768"
+  },
+  "26b88d99105ec320": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/lazar.md",
+    "detail": "orphan",
+    "key": "26b88d99105ec320"
+  },
+  "667dbce7700dee1a": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/learning-opportunities.md",
+    "detail": "orphan",
+    "key": "667dbce7700dee1a"
+  },
+  "0b424939440cb6cf": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/medusa-skill-framework.md",
+    "detail": "orphan",
+    "key": "0b424939440cb6cf"
+  },
+  "c824afb7165782ed": {
+    "check": 3,
+    "level": "warn",
+    "file": "projects/memprivacy.md",
+    "detail": "orphan",
+    "key": "c824afb7165782ed"
+  },
+  "d4079157c8562745": {
+    "check": 5,
+    "level": "warn",
+    "file": "README",
+    "detail": "duplicate slug",
+    "key": "d4079157c8562745"
+  },
+  "beb66e7d1da0b82d": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/INDEX.md",
+    "detail": "no frontmatter",
+    "key": "beb66e7d1da0b82d"
+  },
+  "0471b36af5da2a7e": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/acp.md",
+    "detail": "no frontmatter",
+    "key": "0471b36af5da2a7e"
+  },
+  "c0d55b405be03032": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/action-authorization-vs-context-integrity.md",
+    "detail": "no frontmatter",
+    "key": "c0d55b405be03032"
+  },
+  "9a5e90af36e59183": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-budget-control.md",
+    "detail": "no frontmatter",
+    "key": "9a5e90af36e59183"
+  },
+  "b1e6e1098b378384": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-context-files.md",
+    "detail": "no frontmatter",
+    "key": "b1e6e1098b378384"
+  },
+  "2900b63915a628ea": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-credential-security.md",
+    "detail": "no frontmatter",
+    "key": "2900b63915a628ea"
+  },
+  "cf3c4220302bbe63": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-identity-protocol.md",
+    "detail": "no frontmatter",
+    "key": "cf3c4220302bbe63"
+  },
+  "4de88fa859b98d0a": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-isolation.md",
+    "detail": "no frontmatter",
+    "key": "4de88fa859b98d0a"
+  },
+  "dbe1f73fdc6770e2": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-lifecycle-fsm.md",
+    "detail": "no frontmatter",
+    "key": "dbe1f73fdc6770e2"
+  },
+  "000bc578ee69afd0": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-reputation-weaponization.md",
+    "detail": "no frontmatter",
+    "key": "000bc578ee69afd0"
+  },
+  "f78c9507843db1d2": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-safety.md",
+    "detail": "no frontmatter",
+    "key": "f78c9507843db1d2"
+  },
+  "02fd447483cab9e8": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-self-evolution-paradigms.md",
+    "detail": "no frontmatter",
+    "key": "02fd447483cab9e8"
+  },
+  "06b5a08689b67284": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-self-evolution.md",
+    "detail": "no frontmatter",
+    "key": "06b5a08689b67284"
+  },
+  "663467e2f6d7fb56": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agent-trust-hierarchy.md",
+    "detail": "no created date",
+    "key": "663467e2f6d7fb56"
+  },
+  "63b7beb725090bc1": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/agentskills.md",
+    "detail": "no frontmatter",
+    "key": "63b7beb725090bc1"
+  },
+  "ae5bee6836ee1245": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/anthropic-thinking-signature.md",
+    "detail": "no frontmatter",
+    "key": "ae5bee6836ee1245"
+  },
+  "cbc7b4b25cca76e3": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/apm-triage-panel-patterns.md",
+    "detail": "no frontmatter",
+    "key": "cbc7b4b25cca76e3"
+  },
+  "4816da463881e51c": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/asset-temperature-model.md",
+    "detail": "no frontmatter",
+    "key": "4816da463881e51c"
+  },
+  "0474587f78bf83c7": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/async-agent-transport.md",
+    "detail": "no frontmatter",
+    "key": "0474587f78bf83c7"
+  },
+  "1877abd075e21b49": {
+    "check": 7,
+    "level": "warn",
+    "file": "cards/authorization-layer-confusion.md",
+    "detail": "no frontmatter",
+    "key": "1877abd075e21b49"
+  },
+  "b05ea3eac7496e32": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/clawhub-evolution-skills.md",
+    "detail": "stale 56d",
+    "key": "b05ea3eac7496e32"
+  },
+  "161f854c6e17e9dc": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/acp-permission-model.md",
+    "detail": "stale 56d",
+    "key": "161f854c6e17e9dc"
+  },
+  "62974b37a6e0140c": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/acpx-exec-vs-acp-runtime.md",
+    "detail": "stale 56d",
+    "key": "62974b37a6e0140c"
+  },
+  "97ce2142673bd1a5": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/debug-check-state-file-first.md",
+    "detail": "stale 56d",
+    "key": "97ce2142673bd1a5"
+  },
+  "477432daeb0521cb": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/evolution-needs-eval.md",
+    "detail": "stale 56d",
+    "key": "477432daeb0521cb"
+  },
+  "9fd85b56a206e8c1": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/knowledge-needs-upgrade-path.md",
+    "detail": "stale 56d",
+    "key": "9fd85b56a206e8c1"
+  },
+  "484719a388aa5cbd": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/mechanism-bootstrapping-paradox.md",
+    "detail": "stale 56d",
+    "key": "484719a388aa5cbd"
+  },
+  "9b426b61a7240128": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/self-evolution-architecture.md",
+    "detail": "stale 56d",
+    "key": "9b426b61a7240128"
+  },
+  "c6b2e0a5a6dfe321": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/tool-eval-duckduckgo.md",
+    "detail": "stale 56d",
+    "key": "c6b2e0a5a6dfe321"
+  },
+  "bd0924bb06ad4f67": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/tool-eval-flowforge.md",
+    "detail": "stale 56d",
+    "key": "bd0924bb06ad4f67"
+  },
+  "13b42dbfacd314ee": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/tool-eval-gh-cli.md",
+    "detail": "stale 56d",
+    "key": "13b42dbfacd314ee"
+  },
+  "f8f436b244fedbc8": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/two-evolution-paths.md",
+    "detail": "stale 56d",
+    "key": "f8f436b244fedbc8"
+  },
+  "df0d6a71d77f2bce": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/agent-publishing-identity.md",
+    "detail": "stale 55d",
+    "key": "df0d6a71d77f2bce"
+  },
+  "91786d469f5fa209": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/dependency-vs-association.md",
+    "detail": "stale 55d",
+    "key": "91786d469f5fa209"
+  },
+  "d20ffabacf657130": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/direction-driven-contribution.md",
+    "detail": "stale 55d",
+    "key": "d20ffabacf657130"
+  },
+  "27f9729928c37619": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/open-pr-discipline.md",
+    "detail": "stale 55d",
+    "key": "27f9729928c37619"
+  },
+  "59566e49528a71d7": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/premise-drift.md",
+    "detail": "stale 55d",
+    "key": "59566e49528a71d7"
+  },
+  "d6abf54338632f13": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/skill-type-taxonomy.md",
+    "detail": "stale 55d",
+    "key": "d6abf54338632f13"
+  },
+  "826383e92bc6609a": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/static-regression-tests.md",
+    "detail": "stale 55d",
+    "key": "826383e92bc6609a"
+  },
+  "19b725dec486a30b": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/trajectory-informed-memory.md",
+    "detail": "stale 55d",
+    "key": "19b725dec486a30b"
+  },
+  "3333379301d4dd8c": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/ace-agentic-context-engineering.md",
+    "detail": "stale 54d",
+    "key": "3333379301d4dd8c"
+  },
+  "570beab2a6355c55": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/agent-ecosystem-scout-2026-03-25-pm.md",
+    "detail": "stale 54d",
+    "key": "570beab2a6355c55"
+  },
+  "a628a41ba0a8fc86": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/agent-ecosystem-scout-2026-03-25.md",
+    "detail": "stale 54d",
+    "key": "a628a41ba0a8fc86"
+  },
+  "68bc989584ca50b7": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/agent-memory-research.md",
+    "detail": "stale 54d",
+    "key": "68bc989584ca50b7"
+  },
+  "5c7bbab9ca3e082f": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/family-butler.md",
+    "detail": "stale 54d",
+    "key": "5c7bbab9ca3e082f"
+  },
+  "1f6a6ab06ac19f21": {
+    "check": 10,
+    "level": "warn",
+    "file": "projects/memskill.md",
+    "detail": "stale 54d",
+    "key": "1f6a6ab06ac19f21"
+  },
+  "2b2585ff62603ddf": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/agent-human-collaboration-product.md",
+    "detail": "stale 54d",
+    "key": "2b2585ff62603ddf"
+  },
+  "5a8dec168ed96844": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/agent-marketplace-landscape.md",
+    "detail": "stale 54d",
+    "key": "5a8dec168ed96844"
+  },
+  "a277c9efcecb0019": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/agent-memory-landscape-202603.md",
+    "detail": "stale 54d",
+    "key": "a277c9efcecb0019"
+  },
+  "b3398a3dfe359207": {
+    "check": 10,
+    "level": "warn",
+    "file": "cards/agent-memory-taxonomy.md",
+    "detail": "stale 54d",
+    "key": "b3398a3dfe359207"
+  },
+  "5a5227b9b1c031e1": {
+    "check": 12,
+    "level": "warn",
+    "file": "./research.md",
+    "detail": "migration notice at line 3",
+    "key": "5a5227b9b1c031e1"
+  },
+  "bedf434a572f820f": {
+    "check": 12,
+    "level": "warn",
+    "file": "./study/field-notes.md",
+    "detail": "migration notice at line 3",
+    "key": "bedf434a572f820f"
+  },
+  "4e582f00fcc74910": {
+    "check": 12,
+    "level": "warn",
+    "file": "./study/guide.md",
+    "detail": "migration notice at line 3",
+    "key": "4e582f00fcc74910"
+  }
+}

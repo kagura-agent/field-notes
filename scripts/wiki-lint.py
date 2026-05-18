@@ -18,6 +18,8 @@ Checks:
 Usage: python3 scripts/wiki-lint.py [wiki_dir]
 """
 
+import hashlib
+import json
 import os
 import re
 import sys
@@ -25,16 +27,49 @@ import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
-WIKI_DIR = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent.parent
+# Parse CLI flags
+args = [a for a in sys.argv[1:] if not a.startswith('--')]
+flags = [a for a in sys.argv[1:] if a.startswith('--')]
+
+DIFF_MODE = '--diff' in flags        # Show only new findings since baseline
+SAVE_BASELINE = '--save-baseline' in flags  # Save current findings as baseline
+BASELINE_PATH = Path(__file__).parent / '.wiki-lint-baseline.json'
+
+WIKI_DIR = Path(args[0]) if args else Path(__file__).parent.parent
 os.chdir(WIKI_DIR)
 
 errors = 0
 warnings = 0
 
-def error(msg):
-    global errors; errors += 1; print(f"ERROR {msg}")
-def warn(msg):
-    global warnings; warnings += 1; print(f"WARN  {msg}")
+# Accumulate structured findings for diff tracking
+# Each finding: {"check": int, "level": "error"|"warn", "file": str, "detail": str}
+all_findings = []
+
+def _finding_key(check, level, file, detail):
+    """Stable hash key for a finding (deepsec producedByRunId pattern)."""
+    raw = f"{check}|{level}|{file}|{detail}"
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+def record_finding(check, level, file, detail):
+    """Record a structured finding for diff tracking."""
+    all_findings.append({
+        "check": check,
+        "level": level,
+        "file": file,
+        "detail": detail,
+        "key": _finding_key(check, level, file, detail),
+    })
+
+def error(msg, check=0, file="", detail=""):
+    global errors; errors += 1
+    if detail or file:
+        record_finding(check, "error", file, detail or msg)
+    print(f"ERROR {msg}")
+def warn(msg, check=0, file="", detail=""):
+    global warnings; warnings += 1
+    if detail or file:
+        record_finding(check, "warn", file, detail or msg)
+    print(f"WARN  {msg}")
 def info(msg):
     print(f"INFO  {msg}")
 def ok(msg):
@@ -110,7 +145,7 @@ else:
     error(f"{len(unique_broken)} broken wikilinks found:")
     errors -= 1  # counted once above, will add individual
     for src, link in sorted(unique_broken)[:60]:
-        error(f"  {src} -> [[{link}]]")
+        error(f"  {src} -> [[{link}]]", check=1, file=src, detail=f"broken link to [[{link}]]")
     if len(unique_broken) > 60:
         info(f"  ... and {len(unique_broken) - 60} more")
 
@@ -129,7 +164,7 @@ if index_path.exists():
     for m in md_link_re.finditer(index_content):
         ref = m.group(1)
         if not Path(ref).exists():
-            error(f"index.md -> '{ref}' (file missing)")
+            error(f"index.md -> '{ref}' (file missing)", check=2, file="index.md", detail=f"missing {ref}")
             missing_disk += 1
 
     # Files not in index
@@ -139,7 +174,7 @@ if index_path.exists():
             continue
         for f in sorted(Path(d).glob('*.md')):
             if f.name not in index_content:
-                warn(f"{f} not in index.md")
+                warn(f"{f} not in index.md", check=2, file=str(f), detail="not in index")
                 missing_index += 1
 
     if missing_disk == 0 and missing_index == 0:
@@ -194,13 +229,13 @@ else:
     if orphan_cards:
         info(f"Orphan cards ({len(orphan_cards)}):")
         for c in orphan_cards[:30]:
-            warn(f"  {c}")
+            warn(f"  {c}", check=3, file=f"cards/{c}.md", detail="orphan")
         if len(orphan_cards) > 30:
             info(f"  ... and {len(orphan_cards) - 30} more")
     if orphan_projects:
         info(f"Orphan projects ({len(orphan_projects)}):")
         for p in orphan_projects[:30]:
-            warn(f"  {p}")
+            warn(f"  {p}", check=3, file=f"projects/{p}.md", detail="orphan")
         if len(orphan_projects) > 30:
             info(f"  ... and {len(orphan_projects) - 30} more")
 
@@ -223,7 +258,7 @@ if not stubs:
     ok("No stub files")
 else:
     for path, lines, size in stubs:
-        warn(f"Stub: {path} ({lines} lines, {size} bytes)")
+        warn(f"Stub: {path} ({lines} lines, {size} bytes)", check=4, file=path, detail="stub")
 
 # ── 5. Duplicate Slugs ──
 print("\n═══════════════════════════════════════════════════════")
@@ -235,7 +270,7 @@ if not dupes:
     ok("No duplicate slugs")
 else:
     for slug, paths in sorted(dupes.items()):
-        warn(f"Duplicate '{slug}':")
+        warn(f"Duplicate '{slug}':", check=5, file=slug, detail="duplicate slug")
         for p in paths:
             print(f"    {p}")
 
@@ -284,7 +319,7 @@ else:
     warn(f"{len(missing_fm)} cards with frontmatter issues:")
     warnings -= 1
     for slug, issue in missing_fm[:20]:
-        warn(f"  {slug}: {issue}")
+        warn(f"  {slug}: {issue}", check=7, file=f"cards/{slug}.md", detail=issue)
     if len(missing_fm) > 20:
         info(f"  ... and {len(missing_fm) - 20} more")
 
@@ -305,7 +340,7 @@ if links_per_file:
     info(f"Cards with zero outbound links: {len(zero_link_cards)}")
     if len(zero_link_cards) <= 10:
         for c in zero_link_cards:
-            warn(f"  No outbound links: {c}")
+            warn(f"  No outbound links: {c}", check=8, file=c, detail="no outbound links")
 
 
 # ── 9. Secret Scanning ──
@@ -406,7 +441,7 @@ else:
     error(f"{len(secret_findings)} potential secrets found:")
     errors -= 1  # counted once above
     for fpath, line_no, name, preview in secret_findings[:30]:
-        error(f"  {fpath}:{line_no} [{name}] {preview[:60]}...")
+        error(f"  {fpath}:{line_no} [{name}] {preview[:60]}...", check=9, file=fpath, detail=f"{name} at line {line_no}")
     if len(secret_findings) > 30:
         info(f"  ... and {len(secret_findings) - 30} more")
     info("Review these — some may be false positives in documentation")
@@ -477,7 +512,7 @@ else:
     warn(f"{len(stale_files)} stale files (past threshold):")
     warnings -= 1
     for fpath, days, thresh, vdate in stale_files[:30]:
-        warn(f"  {fpath} — {days}d old (threshold {thresh}d, date {vdate})")
+        warn(f"  {fpath} — {days}d old (threshold {thresh}d, date {vdate})", check=10, file=fpath, detail=f"stale {days}d")
     if len(stale_files) > 30:
         info(f"  ... and {len(stale_files) - 30} more")
     info("Update content + set 'last_verified: YYYY-MM-DD' in frontmatter to clear")
@@ -578,7 +613,7 @@ else:
     warnings -= 1  # counted once above
     shown = 0
     for (fpath, line_no, col, category, codepoint, context) in unicode_findings[:20]:
-        warn(f"  {fpath}:{line_no}:{col} [{category}] {codepoint} near: {context[:50]}")
+        warn(f"  {fpath}:{line_no}:{col} [{category}] {codepoint} near: {context[:50]}", check=11, file=fpath, detail=f"{category} {codepoint} at {line_no}:{col}")
         shown += 1
     if total > 20:
         info(f"  ... and {total - 20} more")
@@ -643,7 +678,7 @@ else:
     warn(f"{len(invalid_findings)} self-invalidating statement(s) found:")
     warnings -= 1
     for fpath, line_no, category, preview in sorted(invalid_findings)[:30]:
-        warn(f"  {fpath}:{line_no} [{category}] {preview[:60]}")
+        warn(f"  {fpath}:{line_no} [{category}] {preview[:60]}", check=12, file=fpath, detail=f"{category} at line {line_no}")
     if len(invalid_findings) > 30:
         info(f"  ... and {len(invalid_findings) - 30} more")
     info("These notes contain language suggesting their own content is invalid/stale.")
@@ -670,5 +705,45 @@ elif errors == 0:
     print("⚠ Wiki has warnings but no critical errors")
 else:
     print(f"❌ Wiki has {errors} errors that need attention")
+
+# ── Diff / Baseline Logic ──
+# Save baseline if requested
+if SAVE_BASELINE:
+    baseline_data = {f["key"]: f for f in all_findings}
+    BASELINE_PATH.write_text(json.dumps(baseline_data, indent=2))
+    print(f"\n📸 Baseline saved: {len(baseline_data)} findings → {BASELINE_PATH}")
+
+# Show diff if requested
+if DIFF_MODE:
+    print("\n═══════════════════════════════════════════════════════")
+    print(" DIFF: NEW FINDINGS SINCE BASELINE")
+    print("═══════════════════════════════════════════════════════")
+    if not BASELINE_PATH.exists():
+        print("⚠ No baseline found. Run with --save-baseline first.")
+        print("  Usage: python3 scripts/wiki-lint.py --save-baseline")
+    else:
+        baseline = json.loads(BASELINE_PATH.read_text())
+        baseline_keys = set(baseline.keys())
+        current_keys = {f["key"] for f in all_findings}
+
+        new_findings = [f for f in all_findings if f["key"] not in baseline_keys]
+        resolved = [baseline[k] for k in baseline_keys - current_keys]
+
+        if new_findings:
+            print(f"\n🆕 {len(new_findings)} NEW finding(s):")
+            for f in new_findings:
+                level = "ERROR" if f["level"] == "error" else "WARN "
+                print(f"  {level} [check {f['check']}] {f['file']}: {f['detail']}")
+        else:
+            print("\n✅ No new findings since baseline!")
+
+        if resolved:
+            print(f"\n✨ {len(resolved)} RESOLVED finding(s):")
+            for f in resolved[:20]:
+                print(f"  ✓ [check {f['check']}] {f['file']}: {f['detail']}")
+            if len(resolved) > 20:
+                print(f"  ... and {len(resolved) - 20} more")
+
+        print(f"\nBaseline: {len(baseline_keys)} | Current: {len(current_keys)} | New: +{len(new_findings)} | Resolved: -{len(resolved)}")
 
 sys.exit(min(errors, 1))

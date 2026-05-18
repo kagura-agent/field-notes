@@ -15,6 +15,20 @@
 - Most bug issues already have competing PRs as of 2026-05-13
 - gogetajob reported 0% merge rate (misleading — uses batch merge pattern)
 - Worth checking back after maintainer does next batch merge
+- **DCO/CLA**: None required. Run `go test ./...` before submitting
+- **PR style**: `Closes #<number>` in body. Call out breaking changes
+- **CI**: lint + unit-test GitHub Actions. Lint ~2min, unit-test can be slow (GitHub Actions queue)
+- **Agent**: Go codebase, agent interface pattern with `SetWorkDir`/`GetWorkDir`/`StartSession`
+
+## PRs
+- #990 fix(config): preserve project-level thinking_messages — APPROVED by chenhg5 (2026-05-18), awaiting merge
+- #1045 fix(dir): normalize Windows drive letter case — submitted 2026-05-18, CI pending
+
+## Lessons
+- Windows path normalization: `filepath.Abs` doesn't uppercase drive letters; need manual normalization
+- `filepath.VolumeName` is platform-specific — doesn't work on Linux for Windows paths; use direct byte check instead
+- Core `dirApply` in engine.go is the central path normalization point for `/dir` command
+- Agent-specific `SetWorkDir` is belt-and-suspenders for paths bypassing `dirApply`
 
 ## Issues checked (2026-05-13)
 - #786 (cursor skills) → competing PR #885
