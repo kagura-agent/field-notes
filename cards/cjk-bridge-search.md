@@ -41,4 +41,4 @@ Full jieba/MeCab tokenization would add a Python dependency to a bash script. Th
 
 ## Links
 
-[[memex]], [[search-sh]], [[intent-aware-retrieval]], [[brain-rust]]
+[[memex]], [[intent-aware-retrieval]], [[brain-rust]]
