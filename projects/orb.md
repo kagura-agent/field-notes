@@ -295,3 +295,18 @@ Orb remains the most architecturally mature Claude Code wrapper. v0.6.0's skill 
 Links: [[openclaw]], [[coding-agent]], [[clawhub]], [[skill-ecosystem]], [[self-evolving-agent-landscape]], [[beliefs-candidates]], [[FlowForge]]
 
 *Deep read: 2026-05-17. Source: GitHub releases, API, code review of lesson-distill/ and governance.*
+
+## Applied: Recall Frequency Logging (2026-05-18)
+
+Applied the **telemetry-backed skill lifecycle** concept to our wiki search. Instead of full SQLite tracking, implemented lightweight append-only logging in `search.sh`:
+
+- Every search appends `timestamp|intent|query|slug1,slug2,...` to `.recall-log`
+- `scripts/recall-report.sh` analyzes: hot notes (most recalled), cold notes (never returned), intent distribution
+- `--cold` flag shows notes that exist but were never retrieved — candidates for review/archive
+- Data-driven alternative to Orb's SQLite `memory-usage.db` — simpler (flat file vs DB) but same signal
+
+**Difference from Orb:** Orb auto-promotes/archives based on counts. We log for human review. This is intentional — our wiki notes have different lifecycle than executable skills. A note can be valuable even if rarely recalled (deep-dive reference material).
+
+**What changed:** Before, we had no data on which notes search actually returns. Now we can ask "which notes have never been recalled in 30 days?" and review them for staleness. Connects to existing [[wiki-lint]] check 10 (mtime-based staleness) — recall data adds a usage dimension beyond just "when was it last edited."
+
+Links: [[wiki-lint]], [[search-sh]], [[elephant-agent]]
