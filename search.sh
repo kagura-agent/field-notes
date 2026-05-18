@@ -235,3 +235,14 @@ if [[ ${#RESULTS[@]} -gt 0 ]]; then
     echo "$r"
   done
 fi
+
+# ---- Recall frequency logging ----
+# Source: Orb telemetry-backed skill lifecycle (v0.6.0) — track which notes are recalled
+# Log format: ISO timestamp | intent | query | slug1,slug2,...
+# Used by staleness analysis to identify never-recalled notes
+RECALL_LOG="$WIKI_DIR/.recall-log"
+if [[ ${#RESULTS[@]} -gt 0 ]]; then
+  _slugs=$(printf '%s\n' "${RESULTS[@]}" | sed 's/^  [🔮🔍] //' | paste -sd ',' -)
+  _intent=$(classify_intent "$QUERY")
+  echo "$(date -Iseconds)|${_intent}|${QUERY}|${_slugs}" >> "$RECALL_LOG" 2>/dev/null || true
+fi
