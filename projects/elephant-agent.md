@@ -3,7 +3,7 @@ title: Elephant Agent (agentic-in)
 created: 2026-05-17
 status: active
 tags: [self-evolution, personal-model, memory, agent-infrastructure, curiosity]
-stars: 247
+stars: 287
 repo: agentic-in/elephant-agent
 last_verified: 2026-05-18
 ---
@@ -12,7 +12,7 @@ last_verified: 2026-05-18
 
 > "Elephants never forget." — Personal-Model-first self-evolving AI agent.
 
-**Repo**: [agentic-in/elephant-agent](https://github.com/agentic-in/elephant-agent) | 247⭐ (2026-05-17, created 05-15) | Python | No license yet
+**Repo**: [agentic-in/elephant-agent](https://github.com/agentic-in/elephant-agent) | 287⭐ (2026-05-18, created 05-15) | Python | No license yet
 
 ## What It Is
 
@@ -122,8 +122,35 @@ Configurable curiosity levels: Quiet → Balanced → Active
 
 **Temporal freshness policy** — claims have volatility levels (situational vs durable), and freshness scoring penalizes stale claims without overriding semantic relevance. The penalty is capped at 0.49 to prevent freshness from dominating relevance.
 
-**Single maintainer risk** — all code and issues by Xunzhuo. 247⭐ in 2 days suggests Product Hunt launch hype. Need to watch if community contributors appear.
+**Single maintainer risk** — Initial concern about solo project **alleviated** (05-18). Now 4+ contributors: Xunzhuo (maintainer), haowu1234 (lifecycle/tests), minimAluminiumalism (uv migration, provider caps), BokwaiHo (docs). 10 external PRs in first week. Community health upgraded from SOLO → THRIVING.
 
-**Watch for:** License (none yet), community adoption, whether the structured model actually works better than flat notes in practice, contributor diversification.
+**Watch for:** License (none yet), whether the structured model actually works better than flat notes in practice, episode lifecycle stability (3 refactors in 2 days suggests churn).
+
+## Update 2026-05-18: Unified Daemon + Episode Lifecycle Maturation
+
+**Key changes since last review (05-17 → 05-18):**
+
+1. **Unified ServiceDaemon** (PR #29, +2752 lines): All services (IM gateways, cron, supervisor, learning worker) run in a single asyncio process with fault isolation via `DaemonTaskGuard`, health heartbeats, and graceful shutdown with configurable timeouts. Replaces per-adapter detached processes. Pattern worth studying — OpenClaw uses similar but less structured approach.
+
+2. **Episode session boundary unification** (PR #30, 763+/784-): Major refactor across 44 files. All episode close paths now go through a single `close_episode()` function with guaranteed side-effects (semantic indexing + learning job enqueue). Clean state machine: `open → closed` with idempotent close.
+
+3. **Episode status normalization** (PR #32): Daemon lock (`fcntl.flock`) prevents TOCTOU races on concurrent `daemon start`. Gateway adapter dedup for hot-start.
+
+4. **uv migration** (PR #26): Replaced pip with uv for dependency management. Modern Python tooling.
+
+5. **Provider capability alignment** (PR #28): Model provider capabilities mapped to official API specs.
+
+**Architectural insight — single close path pattern:**
+```python
+def close_episode(storage, episode_id, *, reason, summary, ...):
+    """ONLY path through which an episode should be closed."""
+    # 1. Load + idempotent guard
+    # 2. Update status
+    # 3. Side-effect: index exit summary for recall
+    # 4. Side-effect: enqueue learning job
+```
+This "single gateway with guaranteed side-effects" is a pattern we should consider for our own state transitions (e.g., memory writes, DNA updates).
+
+**Community health:** 287⭐ (up from 285 on 05-17). Growth slowing from initial burst but still healthy. 4+ contributors now active. Issue #18 (provider capability registry) shows thoughtful roadmap evolution.
 
 Links: [[self-evolving-agent-landscape]], [[hermes-agent]], [[genericagent]], [[gbrain]], [[agent-brain-portability]]
