@@ -38,6 +38,15 @@
 - #1502 (skip prek hook): merged by cv ✅
 - #1703 (enabledChannels → messagingChannels): rebased on main 2026-04-11, aligned with upstream naming
 - #1723 (ARM64 health): wscurran approved ✅, waiting merge
+- #3722 (RequiredArgsError handling): pending review — 1-line fix in oclif-runner.ts
+
+## Notes (2026-05-18)
+- CLI has been fully migrated to TypeScript. `bin/nemoclaw.js` just does `require("../dist/nemoclaw")` now
+- Source is now in `src/` at repo root (not `nemoclaw/src/` which is the OpenClaw plugin)
+- `src/lib/cli/oclif-runner.ts` is the central error handler for all oclif commands
+- `oclif-command-metadata.test.ts` has pre-existing failures on main (2 tests)
+- NVIDIA uses `copy-pr-bot` for external contributor CI vetting — normal, just wait
+- Local `git fetch upstream` can timeout on full clone; `--depth=1` + `reset --hard` works
 - #2833 (stale onboard.lock #2765): **SUPERSEDED by #2890**. My malformed-lock age check replayed + PID reuse detection added. ericksoa credited.
 
 ## Build & Test Notes (2026-05-01)
