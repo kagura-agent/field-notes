@@ -17,6 +17,38 @@ MODE="hybrid"
 QUERY=""
 DEBUG=0
 
+# Intent-aware recall reranking
+# Source: elephant-agent intent-aware recall (plan_recall_query), applied 2026-05-18
+# Classifies query intent to adjust temporal decay:
+#   recent  → δ=0.35 (strong recency bias, penalize old)
+#   current → δ=0.50 (very strong freshness, only recent relevant)
+#   historical → δ=0.05 (preserve old context, minimal decay)
+#   neutral → δ=0.17 (default Darr et al.)
+classify_intent() {
+  local q="$1"
+  # Recent intent: user wants recent/new information
+  if echo "$q" | grep -qiE '最近|lately|recently|last.week|last.month|new|新的|recent|刚|刚才|latest|这几天|近期'; then
+    echo "recent"
+  # Current intent: user wants current state
+  elif echo "$q" | grep -qiE '现在|now|current|today|今天|目前|ongoing|正在|当前|此刻'; then
+    echo "current"
+  # Historical intent: user wants past context
+  elif echo "$q" | grep -qiE '当初|之前|originally|早期|history|历史|used.to|back.when|以前|过去|曾经|起初|最初|一开始'; then
+    echo "historical"
+  else
+    echo "neutral"
+  fi
+}
+
+get_decay_rate() {
+  case "$1" in
+    recent)     echo "0.35" ;;
+    current)    echo "0.50" ;;
+    historical) echo "0.05" ;;
+    *)          echo "0.17" ;;
+  esac
+}
+
 # Parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -32,6 +64,12 @@ if [[ -z "$QUERY" ]]; then
   echo "Usage: bash search.sh \"<query>\" [--limit N] [--keyword-only] [--semantic-only]"
   exit 1
 fi
+
+# Classify query intent
+INTENT=$(classify_intent "$QUERY")
+DECAY_RATE=$(get_decay_rate "$INTENT")
+[[ "$INTENT" != "neutral" ]] && echo "🎯 Intent: $INTENT (decay δ=$DECAY_RATE)"
+[[ $DEBUG -eq 1 ]] && echo "[DBG] intent=$INTENT decay_rate=$DECAY_RATE" >&2
 
 declare -A SEEN
 RESULTS=()
@@ -109,9 +147,9 @@ if [[ "$MODE" == "hybrid" || "$MODE" == "keyword" ]]; then
     AGE_WEEKS=$(( (NOW - MTIME) / 604800 ))  # seconds per week
     [[ $AGE_WEEKS -lt 0 ]] && AGE_WEEKS=0
 
-    # Exponential decay: exp(-0.17 * ageWeeks), clamped to [0.1, 1.0]
-    # Using awk for floating point math
-    DECAY=$(awk "BEGIN { d = exp(-0.17 * $AGE_WEEKS); if (d < 0.1) d = 0.1; if (d > 1.0) d = 1.0; printf \"%.4f\", d }")
+    # Exponential decay: exp(-δ * ageWeeks), clamped to [0.1, 1.0]
+    # δ varies by query intent (recent=0.35, current=0.50, historical=0.05, neutral=0.17)
+    DECAY=$(awk "BEGIN { d = exp(-$DECAY_RATE * $AGE_WEEKS); if (d < 0.1) d = 0.1; if (d > 1.0) d = 1.0; printf \"%.4f\", d }")
 
     # Maturity weight from frontmatter status field
     # active/deep-dive=1.3, stable=1.2, candidate/provisional=1.0, archived=0.7, dropped=0.4

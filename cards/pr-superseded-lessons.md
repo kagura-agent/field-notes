@@ -2,7 +2,7 @@
 title: PR 被关复盘 - 绕路 vs 直达
 created: 2026-03-26
 source: NemoClaw #871/#879, hindsight #678 被关复盘
-last_verified: 2026-05-17
+last_verified: 2026-05-18
 ---
 
 被 supersede/关闭的 PR 是最好的学习材料--有人用更好的方法解决了同一个问题。
@@ -500,3 +500,15 @@ The checks are **shift-left** — catching issues at submit time rather than aft
 - **Superseding PR**: Fix silent success for non-deliverable Bedrock Telegram turns (#82905)
 - **Why**: My fix was narrowly scoped (just adding `bedrock-converse-stream` to the retry allowlist). The maintainer fix went broader — changed trajectory terminal status to distinguish real deliverable success from empty turns, and included live AWS proof. Maintainer acknowledged my diagnosis was correct and the test case helped.
 - **Lesson**: When fixing a behavior bug, consider the broader failure mode — not just the immediate allowlist gap. Maintainer PRs often carry a fix forward with additional robustness that a narrow external PR can't match. This is not a bad outcome — the contribution was recognized.
+
+## hermes-agent #26809 → #27625: Gate Relaxation Granularity (2026-05-18)
+
+**Issue**: #26803 — explicit-provider users got no fallback on quota exhaustion
+**My PR**: #26809 — removed `is_auto` gate entirely (`if should_fallback:`)
+**Winning PR**: #27625 (teknium1, salvage of Bartok9's #26811) — added `is_capacity_error` flag to bypass gate selectively
+
+**Key difference**: I removed the gate completely; they kept it and added a bypass only for capacity errors (payment/quota + connection). This preserves explicit-provider semantics for auth/validation errors while fixing the actual bug.
+
+**Pattern**: "Scalpel vs Sledgehammer" — when a gate is too restrictive, don't remove it. Add a condition that relaxes it precisely where needed. Over-broadening a fix introduces new failure modes (e.g., explicit-provider users getting unexpected fallback on transient 429s).
+
+**Also**: Their keyword list was more comprehensive (`resource exhausted`, `quota_exceeded`, `daily quota`) — I missed Vertex AI/gRPC-specific error strings.

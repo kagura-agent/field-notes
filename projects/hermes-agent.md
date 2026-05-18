@@ -1380,3 +1380,9 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **CI**: ruff ✅, e2e ✅, nix ✅, supply chain ✅, Windows ✅. `check-attribution` ❌ (known). build/test pending.
 - **Approach**: Manual edit — targeted change in 1 file (run_agent.py), adding 1 new method + restructuring 1 existing method. Faster than Claude Code for this focused scope.
 - **Pattern**: Provider capability checks should be layered (vision support → tool content format support → specific feature support). Don't conflate "supports images" with "supports images everywhere in the API."
+
+### PR #26809 Superseded by #27625 (2026-05-18)
+- My approach: removed `is_auto` gate entirely → too broad
+- Maintainer approach: selective bypass via `is_capacity_error` flag
+- teknium1 prefers surgical fixes that preserve existing constraints
+- Lesson: relax gates with conditions, don't remove them

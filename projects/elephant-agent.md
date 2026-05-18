@@ -5,7 +5,7 @@ status: active
 tags: [self-evolution, personal-model, memory, agent-infrastructure, curiosity]
 stars: 247
 repo: agentic-in/elephant-agent
-last_verified: 2026-05-17
+last_verified: 2026-05-18
 ---
 
 # Elephant Agent
@@ -93,10 +93,13 @@ Configurable curiosity levels: Quiet → Balanced → Active
 - **DNA self-governance** — beliefs → verification → DNA updates
 
 **Potential borrowing:**
-1. Four-lens Personal Model structure for MEMORY.md organization
+1. ~~Four-lens Personal Model structure for MEMORY.md organization~~
 2. Curiosity system — proactive question generation during conversations
-3. Temporal freshness scoring for beliefs-candidates
+3. ~~Temporal freshness scoring for beliefs-candidates~~ (already have temporal decay in search.sh)
 4. Auto-retire for stale memory entries
+
+**Applied:**
+- **Intent-aware recall reranking** (2026-05-18): Ported `plan_recall_query()` concept to `wiki/search.sh`. Classifies query intent (recent/historical/current/neutral) and adjusts decay rate (δ=0.05–0.50). Benchmark: 100% precision maintained. See [[temporal-decay-retrieval]].
 
 ## Assessment
 
