@@ -213,3 +213,13 @@
 - **CodeRabbit feedback**: Flagged third-party GitHub link (Colima repo URL) — removed in amended commit
 - **Lesson**: NemoClaw docs disallow links to third-party GitHub repos in `**/*.md` files. Use descriptive text without external repo links. docker.com is OK.
 - **Pattern**: Docs parity issues ("X has it, Y doesn't") are good targets — clear scope, mirroring existing patterns
+
+## PR #3795 — tirith startup recovery (2026-05-19)
+- **Issue**: #3793 — NemoHermes onboard step 7 times out — Tirith build-time download_failed not retried at startup
+- **Status**: PENDING, CI pass (check-pr-limit ✅, assign-linked-issue-author ✅, onboard-entrypoint-budget ✅)
+- **Scope**: 1 file (agents/hermes/start.sh), ~20 lines added
+- **Root cause**: Tirith binary download fails during `docker build` (no proxy env). Hermes writes `.tirith-install-failed` marker. At runtime, `ensure_installed()` sees marker and skips retry → gateway never starts → 90s timeout
+- **Fix**: Clear the marker in `start.sh` before launching gateway, so `ensure_installed()` retries at runtime. Added post-removal verification (CodeRabbit suggestion).
+- **Pattern**: Build-time vs runtime network context mismatch. Marker files that block retry need runtime clearing if the failure condition is transient.
+- **Lesson**: NemoClaw repo is extremely large (~648MB+). Git operations get OOM-killed. Use shallow clones (`--depth=1 --single-branch --branch <branch>`) for all git ops. Don't try `grep -r` or `git commit --amend` on full clone.
+- **CodeRabbit feedback**: Verify `rm -f` success (may fail silently if marker is root-owned). Adopted with post-removal `[ -f ]` check.
