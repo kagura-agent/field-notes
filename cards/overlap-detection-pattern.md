@@ -16,7 +16,7 @@ Finding redundant knowledge entries via word-overlap similarity, inspired by [[s
 1. **Index-first** — extract keywords from each note (title + first paragraph), build inverted index (word → notes)
 2. **Candidate generation** — only compare note pairs sharing ≥3 keywords (avoids O(n²) full comparison)
 3. **Jaccard similarity** — |intersection| / |union| of keyword sets. Threshold ≥0.5 = likely duplicate
-4. **Action** — merge (combine into one), supersede (keep newer/better), or cross-link ([[wikilink]])
+4. **Action** — merge (combine into one), supersede (keep newer/better), or cross-link ([[wikilinks]])
 
 ## Statewave Original
 
