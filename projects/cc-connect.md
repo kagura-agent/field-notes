@@ -24,6 +24,7 @@
 - #990 fix(config): preserve project-level thinking_messages — APPROVED by chenhg5 (2026-05-18), awaiting merge
 - #1045 fix(dir): normalize Windows drive letter case — submitted 2026-05-18, CI pending
 - #1055 fix(claudecode): encode dot and @ in project key — submitted 2026-05-19, lint ✅, unit-test pending
+- #1056 fix(agent): skip bypass-permissions flags when running as root — submitted 2026-05-19
 
 ## Architecture Notes
 - `encodeClaudeProjectKey()` in `agent/claudecode/claudecode.go` — maps abs path to Claude Code's on-disk project dir name
@@ -37,6 +38,8 @@
 - `filepath.VolumeName` is platform-specific — doesn't work on Linux for Windows paths; use direct byte check instead
 - Core `dirApply` in engine.go is the central path normalization point for `/dir` command
 - Agent-specific `SetWorkDir` is belt-and-suspenders for paths bypassing `dirApply`
+- Root user detection: `os.Geteuid() == 0` — Claude Code rejects bypassPermissions under root, cc-connect's `auto` mode is the correct fallback (auto-approves internally)
+- Known pre-existing build failure: web/embed.go needs `dist/` dir (frontend not built locally); use `mkdir -p web/dist && touch web/dist/.gitkeep` for testing
 
 ## Issues checked (2026-05-13)
 - #786 (cursor skills) → competing PR #885
