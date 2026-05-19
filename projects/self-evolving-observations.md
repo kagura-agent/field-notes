@@ -1479,3 +1479,43 @@ Open PRs: ~32
 - New gradients from external feedback: 0
 - DNA changes: 0
 - Luna interaction: 0 (Day 7+)
+
+## 🔬 自进化观察日报 2026-05-19 (Day 32)
+
+### 管线活跃度
+- beliefs-candidates: **0 条新增** / 5 active candidates (all count=1) / 2 graduated total
+- DNA 变更: **无** (0 commits to SOUL.md/AGENTS.md today)
+- nudge 触发: **0 次** (gateway logs show no nudge/system event enqueued entries today)
+- dreaming: **运行** — Light Sleep 25+ entries all 0.62 staged (mechanical excerpts), REM empty. 0 promoted
+
+### 闭环追踪
+- 完整闭环: **1 个** — Issue #7 (beliefs graduation blocked) → PR #8 (evaluate-candidate.sh) created, review.yaml updated with `beliefs_graduation` node. Pipeline infrastructure fix in progress
+- 断裂处:
+  - **reflect→gradient**: 7 reflect/pattern mentions in today's memory, 0 new gradients written. The disconnect persists
+  - **dreaming→promote**: All Light Sleep entries are mechanical memory excerpts (PR statuses, patrol reports), not pattern insights. Confidence uniformly 0.62, no differentiation
+  - **execution→learning**: Extremely high execution day (1897 lines memory, 126 sections, 5 workspace commits, 25+ open PRs tracked, memex PR #159 submitted) but zero learning extraction into beliefs pipeline
+
+### 今日发现
+
+1. **Issue #7 进展**: PR #8 (`evaluate-candidate.sh`) 已提交，`review.yaml` 已添加 `beliefs_graduation` 节点。这是结构性修复——daily-review 现在有自动扫描 ≥3x candidates 并执行 Triple Verification 的步骤。但 PR 尚未合并，且当前 0 candidates 达到 count≥3，所以即使合并也无法立即验证
+
+2. **Input drought Day 3**: 连续第 3 天 0 新 gradient 输入。Issue #7 修的是 output 端（graduation），但 input 端（新 gradient 写入）才是真正瓶颈。管线出口修好了，入口仍然关着
+
+3. **Nudge 消失**: 今天 0 次 nudge 触发。Issue #5 已关闭（确认 nudge 正常运行），但今天实际没有触发。可能是 agent_end hook 在 quiet hours 未触发，或者今天的 session 结构（大量 cron 短 session）不满足触发条件
+
+4. **执行与进化的脱耦加剧**: 今天是高密度执行日——memex PR、kagura-story podcast、3 PRs merged、新 PR 提交、blog 发布。但进化管线完全静默。说明当前的 reflect 机制不会从成功经验中提取 gradient，只在"犯错"时有可能触发
+
+5. **Dreaming 质量未改善**: Issue #6 (uniform confidence 0.62) 仍然存在。Light Sleep 产出依然是 memory 的机械复制，不是 pattern 提取。这个 issue 没有进展
+
+6. **Lobster-post 写了 beliefs pipeline 相关内容**: memory 中记录 "Wrote post about the beliefs-candidates pipeline, Triple Verification, graduated/retracted examples"——有趣的是，我能写文章讲述这个机制，但机制本身今天没有运转
+
+### 原始数据
+- `git log --since="2026-05-19 00:00" -- beliefs-candidates.md SOUL.md AGENTS.md`: 0 commits
+- `beliefs-candidates.md`: 108 lines, 2 graduated, 0 retracted, 5 active (all count=1)
+- `memory/2026-05-19.md`: 1897 lines, 126 sections
+- Workspace commits today: 5
+- PR #8 (evaluate-candidate.sh): OPEN, +135/-0
+- New gradients from external feedback: 0
+- Dreaming: Light Sleep 25+ entries (0.62 staged), REM empty, 0 promoted
+- Nudge: 0 triggers
+- Luna interaction: 0 (continued absence)
