@@ -1407,3 +1407,17 @@ This makes the review fork more disciplined — it can't wander off into web bro
   2. Missed the rate-limit vs capacity distinction — a 429 retry-after is a request constraint (should not trigger fallback on explicit provider), quota exhaustion is capacity (should)
   3. Timing — @Bartok9's #26811 was filed same day with slightly better keyword coverage; teknium1 chose to salvage and combine
 - **Lesson**: For error-handling PRs, think about the **full degradation ladder** not just "detect + allow". Ask: "what are ALL the failure modes and what's the ideal response to each?" Also: check if parallel PRs exist for the same issue before submitting.
+
+## PR #28498: /model status subcommand guard (2026-05-19)
+
+**Issue**: #28489 — `/model status` treated as switching to model named "status"
+**Status**: Pending review
+**Fix**: Added reserved subcommand guard in `_handle_model_command()` — "status" and "info" redirect to status/picker instead of `switch_model()`
+**Scope**: 6 lines in gateway/run.py + 2 new tests
+
+### 技术笔记
+- `/model` command handler in `gateway/run.py:_handle_model_command()` (~line 9510)
+- `parse_model_flags()` in `hermes_cli/model_switch.py` parses --provider, --global flags
+- `_session_model_overrides` dict stores per-session model overrides (in-memory, survives across turns in same gateway process)
+- Custom providers skip all model catalog validation — any string accepted as model name
+- CI: build-amd64/arm64 failures are upstream (TS type error in `src/i18n/en.ts` re: 'scheduled' property), check-attribution fails for external PRs — both pre-existing
