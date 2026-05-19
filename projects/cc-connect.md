@@ -25,6 +25,7 @@
 - #1045 fix(dir): normalize Windows drive letter case — submitted 2026-05-18, CI pending
 - #1055 fix(claudecode): encode dot and @ in project key — submitted 2026-05-19, lint ✅, unit-test pending
 - #1056 fix(agent): skip bypass-permissions flags when running as root — submitted 2026-05-19
+- #1060 fix(kimi): handle string content in stream-json responses — submitted 2026-05-19, lint ✅, unit-test queued
 
 ## Architecture Notes
 - `encodeClaudeProjectKey()` in `agent/claudecode/claudecode.go` — maps abs path to Claude Code's on-disk project dir name
@@ -40,6 +41,8 @@
 - Agent-specific `SetWorkDir` is belt-and-suspenders for paths bypassing `dirApply`
 - Root user detection: `os.Geteuid() == 0` — Claude Code rejects bypassPermissions under root, cc-connect's `auto` mode is the correct fallback (auto-approves internally)
 - Known pre-existing build failure: web/embed.go needs `dist/` dir (frontend not built locally); use `mkdir -p web/dist && touch web/dist/.gitkeep` for testing
+- Kimi CLI stream-json format inconsistency: `content` field can be either `[]any` (array of typed blocks) or `string` (plain text). Always use type switch, not direct type assertion. Same pattern may apply to other agents with multiple output formats
+- CI unit-test job often gets stuck in GitHub Actions queue for extended periods (>5 min); lint passes quickly. Don't wait for unit-test before moving on
 
 ## Issues checked (2026-05-13)
 - #786 (cursor skills) → competing PR #885
