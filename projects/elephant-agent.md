@@ -5,7 +5,7 @@ status: active
 tags: [self-evolution, personal-model, memory, agent-infrastructure, curiosity]
 stars: 287
 repo: agentic-in/elephant-agent
-last_verified: 2026-05-18
+last_verified: 2026-05-19
 ---
 
 # Elephant Agent
@@ -100,6 +100,7 @@ Configurable curiosity levels: Quiet → Balanced → Active
 
 **Applied:**
 - **Intent-aware recall reranking** (2026-05-18): Ported `plan_recall_query()` concept to `wiki/search.sh`. Classifies query intent (recent/historical/current/neutral) and adjusts decay rate (δ=0.05–0.50). Benchmark: 100% precision maintained. See [[temporal-decay-retrieval]].
+- **Auto-retire staleness scorer** (2026-05-19): Created `wiki/scripts/retire-candidates.sh` — multi-signal scoring (age + recall frequency + frontmatter status + orphan links) with log maturity adjustment. Integrated into review.yaml memory_hygiene (weekly Monday scan). Source: elephant-agent's auto-retire pattern for stale claims.
 
 ## Assessment
 
