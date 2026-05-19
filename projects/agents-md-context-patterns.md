@@ -6,7 +6,7 @@ created: 2026-05-11
 source: https://github.com/Austin1serb/agents-md
 status: noted
 stars: 82
-last_verified: 2026-05-11
+last_verified: 2026-05-19
 ---
 
 # agents-md — AGENTS.md Context Engineering Patterns
@@ -24,7 +24,7 @@ COMMAND 2>&1 | tail -c 4000   # for recent output
 
 One huge line can flood the entire context window. `head -n 20` is unsafe because it doesn't bound bytes. Author claims ~50% token reduction from this single rule.
 
-**Our status**: We don't have a byte-cap convention. Our agents use `head -n` or `| head -20` which is vulnerable to the same failure mode. Consider adopting `head -c` in subagent templates.
+**Our status**: ✅ **Applied 2026-05-19**: Added byte-cap (512KB input, 4KB/line) to `tools/compress-output.sh`. Also fixed pre-existing SIGPIPE bug (exit 141) that crashed the script on inputs >~5000 lines. Uses temp file + awk `substr()` instead of piping large strings through head/tail.
 
 ### Context discipline hierarchy
 
