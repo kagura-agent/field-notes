@@ -487,3 +487,40 @@ OpenClaw's heartbeat/cron tasks also have no persistent objective tracking. Each
 - [[write-ahead-session-persistence]]
 - [[session-state-isolation]]
 - [[FlowForge]]
+
+## v0.2.0 (2026-05-16)
+
+Major release. 105 PRs, 33 contributors (20 new).
+
+### `/goal` — Sustained Objectives
+- `long_task` tool marks thread as sustained objective
+- Active goal pinned in Runtime Context every turn — survives compaction
+- Wall-clock timeout auto-widens while goal active
+- WebUI shows goal in chat header
+- `complete_goal` to close
+
+### Architecture Changes
+- `_process_message` → functional state machine (explicit transitions)
+- `AgentLoop.from_config()` for clean embedding
+- Tools → self-describing plugin architecture
+- `ask_user` removed (replaced by structured message-tool choices)
+- `GlobTool` retired (→ `read_file` glob support)
+- Archived summary moved into system prompt (KV cache stability)
+- Runtime context appended AFTER user content (prompt cache key preservation)
+
+### Model Ecosystem
+- `fallback_models`: list secondary models for failover
+- 5 new providers: AWS Bedrock Converse, NVIDIA NIM, LongCat, Atomic Chat, MiMo
+- Model presets: named bundles switchable at runtime via `/model`
+
+### Security
+- SSRF blocked in DingTalk outbound media
+- Feishu media filename confinement
+- Local media attachment confinement
+- Chat-native DM pairing (approve from chat, not config)
+
+### WebUI Graduation
+- Shipped inside pip wheel (no separate build step)
+- Image generation tool + inline preview
+- Settings/BYOK redesign, localized slash palette
+- LAN access gated by token

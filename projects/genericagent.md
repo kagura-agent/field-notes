@@ -696,3 +696,32 @@ Mirrors our wiki management patterns. GenericAgent's approach is more automated 
 - ⭐ 11,527 (+500 from 05-12, +4.5% in 4 days — strong growth)
 - Desktop release = new distribution surface
 - Active weekend development
+
+## Goal Hive SOP (2026-05-18)
+
+Multi-agent coordination via shared BBS (bulletin board) server:
+- HTTP API on localhost: `/readme`, task posting, worker pickup
+- **Master** decomposes objective → posts sub-tasks to BBS
+- **Workers** (independent processes) pick tasks, execute, report back
+- Master verifies results, finds improvements, posts new tasks
+- Time-budget driven: "as long as time isn't up, keep improving"
+- Max 10 workers, typically 2-4
+- Explicit separation: "Master schedules, doesn't do work"
+
+Compare with our [[team-lead]] skill: similar decomposition philosophy but ours uses GitHub issues + subagents rather than a shared BBS. Hive's real-time BBS feels more nimble for time-boxed sprints; our approach leaves better audit trail.
+
+## Morphling SOP (2026-05-18)
+
+Operationalized capability absorption pattern:
+1. **Lock target** — identify project/capability to absorb
+2. **Extract tests** — find official tests, benchmarks, CI, demo scripts
+3. **Fill test gaps** — if none exist, construct minimal verifiable task set
+4. **Decompose components** — list core modules and dependencies
+5. **Per-component decision**: CALL (use as dependency) / REWRITE (implement better) / DISCARD
+6. **Implement** — minimum viable that passes extracted tests
+7. **Compare** — run same test suite against target and morphling product
+8. **Fixate** — integrate into toolchain (call) or publish as replacement (rewrite)
+
+Key principle: "复刻/照抄只作为理解阶段，不作为交付策略" (copy only for understanding, not delivery).
+
+Relevance: This is basically [[mechanism-vs-evolution]] applied to competitive analysis. Could inform how we evaluate [[poco-claw]] or similar competitors — extract their test suite first, then ask "can we pass the same tests better?"

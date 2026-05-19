@@ -1397,3 +1397,13 @@ This makes the review fork more disciplined — it can't wander off into web bro
 - **Approach**: Manual edit — 11-line diff, surgical. No Claude Code needed.
 - **Pattern**: Oneshot mode is a forgotten lifecycle path. Memory providers have `shutdown_all()` and CLI interactive path calls it via `_run_cleanup()`, but oneshot was overlooked. Always check: "does this resource have a cleanup path? Is it called in ALL exit paths?"
 - **Key insight**: The issue reporter provided an excellent minimal repro and root cause analysis. High-quality issues make contribution easy.
+
+### PR #26809 superseded by #27625 (2026-05-18)
+- Issue: quota/payment errors not detected → explicit-provider users get no fallback
+- My approach (#26809): detect quota keywords in `_is_payment_error` + allow fallback for explicit providers
+- Winning approach (#27625 by teknium1, salvaging @Bartok9 #26811 + @zccyman #26998): 4-step layered fallback ladder (primary → user chain → main agent → raise) + more thorough quota-keyword set + correct gate: only capacity errors bypass explicit-provider constraint, transient 429s still respect it
+- **Gap analysis**:
+  1. Scope too narrow — I fixed detection + removed gate entirely; they fixed detection + added graduated fallback + kept correct gate for transient errors
+  2. Missed the rate-limit vs capacity distinction — a 429 retry-after is a request constraint (should not trigger fallback on explicit provider), quota exhaustion is capacity (should)
+  3. Timing — @Bartok9's #26811 was filed same day with slightly better keyword coverage; teknium1 chose to salvage and combine
+- **Lesson**: For error-handling PRs, think about the **full degradation ladder** not just "detect + allow". Ask: "what are ALL the failure modes and what's the ideal response to each?" Also: check if parallel PRs exist for the same issue before submitting.
