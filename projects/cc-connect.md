@@ -23,6 +23,14 @@
 ## PRs
 - #990 fix(config): preserve project-level thinking_messages — APPROVED by chenhg5 (2026-05-18), awaiting merge
 - #1045 fix(dir): normalize Windows drive letter case — submitted 2026-05-18, CI pending
+- #1055 fix(claudecode): encode dot and @ in project key — submitted 2026-05-19, lint ✅, unit-test pending
+
+## Architecture Notes
+- `encodeClaudeProjectKey()` in `agent/claudecode/claudecode.go` — maps abs path to Claude Code's on-disk project dir name
+- `findProjectDir()` tries multiple candidates then falls back to directory scan
+- Claude Code replaces: `/`, `:`, `_`, ` `, `~`, `.`, `@`, non-ASCII → all become `-`
+- Tests: `go test ./agent/claudecode/ -run TestEncodeClaudeProjectKey`
+- CI build failure on `cmd/cc-connect` and `web` packages is pre-existing (missing `dist/` embed dir)
 
 ## Lessons
 - Windows path normalization: `filepath.Abs` doesn't uppercase drive letters; need manual normalization
