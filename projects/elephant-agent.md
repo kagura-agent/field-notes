@@ -3,7 +3,7 @@ title: Elephant Agent (agentic-in)
 created: 2026-05-17
 status: active
 tags: [self-evolution, personal-model, memory, agent-infrastructure, curiosity]
-stars: 287
+stars: 318
 repo: agentic-in/elephant-agent
 last_verified: 2026-05-19
 ---
@@ -154,4 +154,50 @@ This "single gateway with guaranteed side-effects" is a pattern we should consid
 
 **Community health:** 287⭐ (up from 285 on 05-17). Growth slowing from initial burst but still healthy. 4+ contributors now active. Issue #18 (provider capability registry) shows thoughtful roadmap evolution.
 
-Links: [[self-evolving-agent-landscape]], [[hermes-agent]], [[genericagent]], [[gbrain]], [[agent-brain-portability]]
+## Update 2026-05-19: Prefix-Cache Stabilization + Tool-Group-Safe Compaction
+
+**Star growth:** 318⭐ (+31 in 1 day from 287). Accelerating again after brief plateau.
+
+**Key changes (05-17 → 05-19): 10 PRs merged in 3 days**
+
+### Prefix-Cache Reuse (PR #39, +90/-45 in kernel)
+
+Problem: Multi-turn loops reconstruct system prompt every turn, causing Anthropic prompt cache misses.
+
+Solution — three-pronged stabilization:
+1. **Tool ordering**: `registry.list()` now returns `sorted(definitions, key=tool_id)` — one-line change that guarantees byte-stable tool ordering regardless of registration order.
+2. **Frozen prefix cache**: SHA-256 hash of (base_prefix + PM facts + resume lines + skill section). If hash matches previous turn, skip reconstruction. LRU eviction at 32 entries per process.
+3. **Explicit `cache_control` breakpoints**: On Anthropic-only, system prompt becomes `[{"type": "text", "text": ..., "cache_control": {"type": "ephemeral"}}]` and last tool in the list gets `cache_control`. Non-Anthropic providers get plain string (guarded by `_supports_cache_control()`).
+4. **PM fact ordering**: Secondary sort key prevents same-confidence facts from reordering between turns.
+
+**Design insight — provider-aware cache hints:**
+```python
+def _supports_cache_control(self) -> bool:
+    return self.provider_id == "anthropic" or "api.anthropic.com" in base_url
+```
+Only injects cache_control for native Anthropic API, not for OpenAI-compatible endpoints that happen to proxy Claude. Avoids 400 errors from non-compliant providers.
+
+**Relevance to [[OpenClaw]]:** OpenClaw's gateway assembles tool definitions from skills/ACP — tool ordering is likely unstable across sessions. Adding sorted tool lists + cache_control breakpoints could significantly reduce prompt cache miss rate.
+
+### Tool-Group-Safe Compaction (PR #36, Issue #35)
+
+Problem: `split_for_compress()` split by user-message boundaries or raw index, orphaning `tool` responses from their paired `assistant(tool_calls)`. Provider returns 400.
+
+Solution:
+- Introduced `message_groups()` — identifies atomic groups: `assistant(tool_calls)` + all following `tool` messages with matching `tool_call_id`.
+- All split logic (normal multi-turn, aggressive, fallback) now operates on group boundaries, not message indices.
+- Group-boundary fallback: `_group_boundary_after_index(groups, cut)` finds nearest valid split point.
+
+**This is a universal problem** — any system doing context window management with tool-calling models must handle tool_calls/tool atomicity. liteLLM has similar "message sanitization." OpenClaw's context handling should be audited for this.
+
+### Other Notable PRs
+- PR#31: **OpenTelemetry GenAI observability** — Episode/Loop/Step correlation via OTEL spans. `cache_read_tokens` + `cache_creation_tokens` logged per call.
+- PR#30: Episode boundary unification (single `close_episode()` path)
+- PR#29: Unified ServiceDaemon (all adapters in one asyncio process)
+- PR#26: pip → uv migration
+- PR#37: Semantic query dimension alignment for recall
+
+### Contributor Growth
+Now 4+ active contributors. PR#39 and Issue#35 by `minimAluminiumalism` (external contributor) — community is generating architectural improvements, not just bug fixes. Strong health signal.
+
+Links: [[self-evolving-agent-landscape]], [[hermes-agent]], [[genericagent]], [[gbrain]], [[agent-brain-portability]], [[prompt-cache-optimization]]
